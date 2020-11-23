@@ -1,0 +1,6 @@
+{
+    "app_name": "MarmaraConnector",
+    "author": "MD Software",
+    "main_module": "src/main/python/mainApp.py",
+    "version": "1.0.0"
+}
