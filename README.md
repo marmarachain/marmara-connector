@@ -19,7 +19,7 @@ This GUI application provides control of the MCL system on the remote server.
 ## Download And Installation
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)]()
 
-[RELEASES](https://github.com/marmarachain/marmara-connector/releases)
+* [RELEASES](https://github.com/marmarachain/marmara-connector/releases)
 
 
 Linux (Ubuntu-Debian)              |  Windows (Win10)
