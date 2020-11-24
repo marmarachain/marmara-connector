@@ -44,10 +44,8 @@ chmod +x MarmaraConnector
 
 Double-click the downloaded mcl-gui.exe file to install it.
 You can run it with a shortcut on the desktop.<br>
-
 After the application is installed, run it as an administrator.
 
- 
 ## For Developers
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)]()
 ### Installation requirements
