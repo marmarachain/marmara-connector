@@ -19,15 +19,14 @@ This GUI application provides control of the MCL system on the remote server.
 ## Download And Installation
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)]()
 
+* [RELEASES](https://github.com/marmarachain/marmara-connector/releases)
+
+
 Linux (Ubuntu-Debian)              |  Windows (Win10)
 :-------------------------:|:-------------------------:
-[![Download For Ubuntu](src/main/resources/base/images/1linux-dow.png)](https://github.com/mucahittopcu/MCL-Remote-Server-Connection-GUI)|  [![Download For Win10](src/main/resources/base/images/win_dow.png)](https://github.com/mucahittopcu/MCL-Remote-Server-Connection-GUI)
+[![Download For Ubuntu](src/main/resources/base/images/1linux-dow.png)](https://github.com/marmarachain/marmara-connector/releases)|  [![Download For Win10](src/main/resources/base/images/win_dow.png)](https://github.com/marmarachain/marmara-connector/releases)
 
 ### Ubuntu Installation
-
-```sh
-wget "www.link.com"
-```
 
 Go to downloaded file. Click MarmaraConnector.<br>
 If the app does not work, check executable status of the file.
@@ -41,7 +40,9 @@ chmod +x MarmaraConnector
 Double-click the downloaded mcl-gui.exe file to install it.
 You can run it with a shortcut on the desktop.<br>
 
-[Download Here](www.google.com.tr)
+After the application is installed, run it as an administrator.
+
+[Download Here](https://github.com/marmarachain/marmara-connector/releases)
  
 ## For Developers
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)]()
