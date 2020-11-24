@@ -28,6 +28,8 @@ Linux (Ubuntu-Debian)              |  Windows (Win10)
 
 ### Ubuntu Installation
 
+[Download Here](https://github.com/marmarachain/marmara-connector/releases/tag/0.1.0-alpha)
+
 Go to downloaded file. Click MarmaraConnector.<br>
 If the app does not work, check executable status of the file.
 
@@ -37,12 +39,14 @@ chmod +x MarmaraConnector
 ```
 
 ### Windows Installation
+
+[Download Here](https://github.com/marmarachain/marmara-connector/releases/tag/0.1.0-alpha)
+
 Double-click the downloaded mcl-gui.exe file to install it.
 You can run it with a shortcut on the desktop.<br>
 
 After the application is installed, run it as an administrator.
 
-[Download Here](https://github.com/marmarachain/marmara-connector/releases)
  
 ## For Developers
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)]()
