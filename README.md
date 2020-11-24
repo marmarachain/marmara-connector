@@ -24,7 +24,7 @@ This GUI application provides control of the MCL system on the remote server.
 
 Linux (Ubuntu-Debian)              |  Windows (Win10)
 :-------------------------:|:-------------------------:
-[![Download For Ubuntu](src/main/resources/base/images/1linux-dow.png)](https://github.com/mucahittopcu/MCL-Remote-Server-Connection-GUI)|  [![Download For Win10](src/main/resources/base/images/win_dow.png)](https://github.com/mucahittopcu/MCL-Remote-Server-Connection-GUI)
+[![Download For Ubuntu](src/main/resources/base/images/1linux-dow.png)](https://github.com/marmarachain/marmara-connector/releases)|  [![Download For Win10](src/main/resources/base/images/win_dow.png)](https://github.com/marmarachain/marmara-connector/releases)
 
 ### Ubuntu Installation
 
