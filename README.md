@@ -9,11 +9,12 @@
 
 [![N|Solid](https://i.hizliresim.com/pZlzCq.png)](https://github.com/marmarachain)
 
-This GUI application provides control of the MCL system on the remote server.
+Marmara Connector is an easy to use GUI application for installing Marmara Chain and easily conduct credit loops on a Linux platform which can be both in your local machine or located remotely. It establishes the connection to Linux platform through SSH technology.
+  
   - Install MCL on Remote Server
   - Connect remote MCL server
   - See MCL info
-  - Recive and transfer MCL
+  - Receiver and transfer MCL
   - Create credit loop
 
 ## Download And Installation
