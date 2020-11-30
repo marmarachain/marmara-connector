@@ -12,10 +12,15 @@ The developed platform establishes a connection to a Linux platform through SSH 
 
 For more detailed information on creating Marmara credit loops, kindly refer to [Making Marmara Credit Loops](https://github.com/marmarachain/marmara/wiki/How-to-make-Marmara-Credit-Loops?). 
 
+## Features
+- Enables installing Marmara Chain on a remote server or local virtual machine,
+- Send/receive MCL transactions,
+- Enables making Marmara Credit Loops and managing them on a single interface without having to know the commands.
+
 ## Getting Started
 
-- To install/download Marmara Connector, follow the [Marmara Connector Installation Guidelines]().
-- For development purposes, follow the [Developer Guidelines for Marmara Connector]().
+- To install/download Marmara Connector, follow the [Marmara Connector Installation Guidelines](https://github.com/marmarachain/marmara-connector/wiki).
+- For development purposes, follow the [Developer Guidelines for Marmara Connector](https://github.com/marmarachain/marmara-connector/wiki/Getting-Started-with-Marmara-Connector-Development).
 
 ## Contact
 - B. Gültekin Çetiner [![twitter](https://img.shields.io/twitter/follow/drcetiner?style=social)](https://twitter.com/drcetiner )
