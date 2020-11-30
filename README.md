@@ -1,128 +1,42 @@
-![](https://img.shields.io/github/downloads/zekiahmetbayar/Valf/total?color=brightgreen)
-![](https://img.shields.io/github/languages/code-size/zekiahmetbayar/Valf?color=brightgreen)
-![](https://img.shields.io/github/last-commit/zekiahmetbayar/Valf?color=blue)
-![](https://img.shields.io/github/license/zekiahmetbayar/Valf?color=blue)
+[![downloads](https://img.shields.io/github/downloads/marmarachain/marmara-connector/total?color=brightgreen&style=plastic)]()
+![last commit](https://img.shields.io/github/last-commit/marmarachain/marmara-connector?color=blue)
+[![issues](https://img.shields.io/github/issues/marmarachain/marmara-connector?color=yellow)](https://github.com/marmarachain/marmara-connector/issues)
+![language](https://img.shields.io/github/languages/top/marmarachain/marmara-connector)
+![twitter](https://img.shields.io/twitter/follow/marmarachain?label=marmarachain&style=social)
 
+![MarmaraCreditLoops Logo](https://raw.githubusercontent.com/marmarachain/marmara/master/MCL-Logo.png "Marmara Credit Loops Logo")
 
-# Marmara Connector
-[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)]()
+## Marmara Connector
+Marmara Connector is an easy to use GUI application for installing Marmara Chain and conducting credit loops on a Linux platform which can be both in your local machine or located on a remote server. 
+The developed platform establishes a connection to a Linux platform through SSH technology.
 
-[![N|Solid](https://i.hizliresim.com/pZlzCq.png)](https://github.com/marmarachain)
+For more detailed information on creating Marmara credit loops, kindly refer to [Making Marmara Credit Loops](https://github.com/marmarachain/marmara/wiki/How-to-make-Marmara-Credit-Loops?). 
 
-Marmara Connector is an easy to use GUI application for installing Marmara Chain and easily conduct credit loops on a Linux platform which can be both in your local machine or located remotely. It establishes the connection to Linux platform through SSH technology.
-  
-  - Install MCL
-  - See MCL info
-  - Receive and transfer MCL
-  - Create credit loop
+## Features
+- Enables installing Marmara Chain on a remote server or local virtual machine,
+- Send/receive MCL transactions,
+- Enables making Marmara Credit Loops and managing them on a single interface without having to know the commands.
 
-## Download And Installation
-[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)]()
+## Getting Started
 
-* [RELEASES](https://github.com/marmarachain/marmara-connector/releases)
+- To install/download Marmara Connector, follow the [Marmara Connector Installation Guidelines](https://github.com/marmarachain/marmara-connector/wiki).
+- For development purposes, follow the [Developer Guidelines for Marmara Connector](https://github.com/marmarachain/marmara-connector/wiki/Getting-Started-with-Marmara-Connector-Development).
 
+## Contact
+- B. Gültekin Çetiner [![twitter](https://img.shields.io/twitter/follow/drcetiner?style=social)](https://twitter.com/drcetiner )
 
-Linux (Ubuntu-Debian)              |  Windows (Win10)
-:-------------------------:|:-------------------------:
-[![Download For Ubuntu](src/main/resources/base/images/1linux-dow.png)](https://github.com/marmarachain/marmara-connector/releases)|  [![Download For Win10](src/main/resources/base/images/win_dow.png)](https://github.com/marmarachain/marmara-connector/releases)
+Contribution
+---
+Contributions to the development of this software in any way are very welcomed and can be made through PRs.
 
-### Ubuntu Installation
-
-[Download Here](https://github.com/marmarachain/marmara-connector/releases/tag/0.1.0-alpha)
-
-Go to downloaded file. Click MarmaraConnector.<br>
-If the app does not work, check executable status of the file.
-
-To authorize the application file to run:
-```sh
-chmod +x MarmaraConnector
-```
-
-### Windows Installation
-
-[Download Here](https://github.com/marmarachain/marmara-connector/releases/tag/0.1.0-alpha)
-
-Double-click the downloaded mcl-gui.exe file to install it.
-You can run it with a shortcut on the desktop.<br>
-After the application is installed, run it as an administrator.
-
-## For Developers
-[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)]()
-### Installation requirements
-
-Install the dependencies and devDependencies
-
-- PYTHON3 required
-
-
-PYQT5 and Designer Installation
-```sh
-pip install PyQt5
-
-sudo apt-get install qttools5-dev-tools
-sudo apt-get install python3-pyqt5
-sudo apt-get install pyqt5-dev-tools
-```
-
-### Development
-[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)]()
-
-If you want to improve the design and change the design, open the **"gui_designer.ui"** file with QT Designer.
-
-The desired development can be made from the opened QT Designer screen.
-
-After the design part is finished, the .ui file should be converted to the python file.
-
-Convert code ui to python:
-```sh
-pyuic5 -x guiDesigner.ui -o guiDesign.py
-```
-
-Then a python file named **"guiDesign.py"** created.
-
-Open the **mainApp.py** file with pycharm.
-
-In the **mainApp.py** file, the file named **"guiDesign.py"** is import. **"Ui_MainWindow"** is extend to the class.
-
-    from guiDesign import Ui_MainWindow  # Import
-    
-    class MainClassGUI(QMainWindow, Ui_MainWindow): #Extend
-    
-    def __init__(self, parent=None):
-        super(MainClassGUI, self).__init__(parent)
-        self.setupUi(self)
-
-In this way, we can reach every feature of the GUI design.
-
-We can try our project with the command below.
-
-```sh
-python3 mainApp.py
-```
-
-### Contact
- [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)]()
-
-Contact for information
-
-| Social Media | Link |
-| ------ | ------ |
-| Website | [http://www.marmara.io/en/][website_link] |
-| GitHub | [https://github.com/marmarachain][github_link] |
-| Discord | [discord.gg/8mBSKC7][discord_link] |
-| Detailed information | [It's here][info_eng]  |
-| MCL Market | [http://mclmarket.com/][mcl_market]  |
-| Mail | mucahittopcu0@gmail.com |
+Important Notice
+---
+Marmara Connector is experimental and a work-in-progress. Use at your own risk. 
  
 License
-----
+---
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-MIT - Free Software
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-   [website_link]: <http://www.marmara.io/en/>
-   [discord_link]: <discord.gg/8mBSKC7>
-   [github_link]: <https://github.com/marmarachain>
-   [info_eng]: <https://github.com/rumeysayilmaz/Marmara-v.1.0/blob/master/MCLUsageGuide.md>
-   [mcl_market]: <http://mclmarket.com/>
-  
-
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
