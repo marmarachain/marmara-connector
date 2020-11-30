@@ -13,11 +13,7 @@ Marmara Connector is an easy to use GUI application for installing Marmara Chain
   
   - Install MCL
   - See MCL info
-<<<<<<< HEAD
   - Receive and transfer MCL
-=======
-  - Receiver and transfer MCL
->>>>>>> master
   - Create credit loop
 
 ## Download And Installation
