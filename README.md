@@ -13,7 +13,11 @@ Marmara Connector is an easy to use GUI application for installing Marmara Chain
   
   - Install MCL
   - See MCL info
+<<<<<<< HEAD
+  - Receive and transfer MCL
+=======
   - Receiver and transfer MCL
+>>>>>>> master
   - Create credit loop
 
 ## Download And Installation
@@ -107,7 +111,7 @@ Contact for information
 
 | Social Media | Link |
 | ------ | ------ |
-| Webside | [http://www.marmara.io/en/][webside_link] |
+| Website | [http://www.marmara.io/en/][website_link] |
 | GitHub | [https://github.com/marmarachain][github_link] |
 | Discord | [discord.gg/8mBSKC7][discord_link] |
 | Detailed information | [It's here][info_eng]  |
@@ -119,7 +123,7 @@ License
 
 MIT - Free Software
 
-   [webside_link]: <http://www.marmara.io/en/>
+   [website_link]: <http://www.marmara.io/en/>
    [discord_link]: <discord.gg/8mBSKC7>
    [github_link]: <https://github.com/marmarachain>
    [info_eng]: <https://github.com/rumeysayilmaz/Marmara-v.1.0/blob/master/MCLUsageGuide.md>
