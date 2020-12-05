@@ -29,6 +29,7 @@ import json
 
 import requests
 from bs4 import BeautifulSoup
+from Connection import ServerConnect
 
 
 class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
@@ -305,8 +306,8 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.thread_import_wallet.change_value_information_get_wallet.connect(self.changingInformationWalletAdressAfterImportWallet)
         self.thread_import_wallet.change_value_information_get_pubkey.connect(self.changingInformationPubkeyAdressAfterImportWallet)
 
-        self.thread_import_wallet.command_mcl_import_privkey = "./" + self.mcl_install_file_path + self.command_mcl_import_privkey + self.lineEdit_28.text()
-        self.thread_import_wallet.command_mcl_get_pubkey = "./" + self.mcl_install_file_path + self.command_get_pubkey
+        self.thread_import_wallet.command_mcl_import_privkey =  self.mcl_install_file_path + self.command_mcl_import_privkey + self.lineEdit_28.text()
+        self.thread_import_wallet.command_mcl_get_pubkey =  self.mcl_install_file_path + self.command_get_pubkey
 
         self.thread_import_wallet.server_username = self.server_username
         self.thread_import_wallet.server_hostname = self.server_hostname
@@ -339,7 +340,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
         self.thread_get_private_key.change_value_information_privkey.connect(self.changingInformationSetPrivkey)
 
-        self.thread_get_private_key.command_mcl_get_privkey = "./" + self.mcl_install_file_path + self.command_get_privkey + self.lineEdit_31.text()
+        self.thread_get_private_key.command_mcl_get_privkey =  self.mcl_install_file_path + self.command_get_privkey + self.lineEdit_31.text()
 
         self.thread_get_private_key.server_username = self.server_username
         self.thread_get_private_key.server_hostname = self.server_hostname
@@ -354,8 +355,8 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.thread_wallet_list = ThreadGui.AllWallet()
         self.thread_wallet_list.change_value_information_wallet.connect(self.changingInformationWalletList)
 
-        self.thread_wallet_list.command_mcl_all_wallet_list = "./" + self.mcl_install_file_path + self.command_mcl_all_wallet_list
-        self.thread_wallet_list.command_mcl_get_pubkey = "./" + self.mcl_install_file_path + self.command_get_pubkey +" "
+        self.thread_wallet_list.command_mcl_all_wallet_list =  self.mcl_install_file_path + self.command_mcl_all_wallet_list
+        self.thread_wallet_list.command_mcl_get_pubkey =  self.mcl_install_file_path + self.command_get_pubkey +" "
 
         self.thread_wallet_list.server_username = self.server_username
         self.thread_wallet_list.server_hostname = self.server_hostname
@@ -567,7 +568,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.loading_screen.startAnimation()
 
         self.thread_refresh_wallet.change_value_information_get_marmara_info.connect(self.changingInformationWalletInfo)
-        self.thread_refresh_wallet.command_mcl_get_marmara_info = "./" + self.mcl_install_file_path + self.command_mcl_marmara_get_info
+        self.thread_refresh_wallet.command_mcl_get_marmara_info =  self.mcl_install_file_path + self.command_mcl_marmara_get_info
 
         self.thread_refresh_wallet.pubkey = self.pubkey
         self.thread_refresh_wallet.server_username = self.server_username
@@ -589,11 +590,11 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.thread_create_wallet_after_install.change_value_information_getinfo_check_chain_with_pubkey.connect(
             self.changingInformationGetInfoPubkeyCheck)
 
-        self.thread_create_wallet_after_install.command_mcl_start_chain_without_pubkey = "./" + self.mcl_install_file_path + self.command_start_mcl_mining_without_pubkey
-        self.thread_create_wallet_after_install.command_mcl_create_wallet_adress = "./" + self.mcl_install_file_path + self.command_get_adress
-        self.thread_create_wallet_after_install.command_mcl_get_info = "./" + self.mcl_install_file_path + self.command_mcl_get_info
-        self.thread_create_wallet_after_install.command_mcl_get_pubkey = "./" + self.mcl_install_file_path + self.command_get_pubkey
-        self.thread_create_wallet_after_install.command_mcl_get_privkey = "./" + self.mcl_install_file_path + self.command_get_privkey
+        self.thread_create_wallet_after_install.command_mcl_start_chain_without_pubkey =  self.mcl_install_file_path + self.command_start_mcl_mining_without_pubkey
+        self.thread_create_wallet_after_install.command_mcl_create_wallet_adress =  self.mcl_install_file_path + self.command_get_adress
+        self.thread_create_wallet_after_install.command_mcl_get_info =  self.mcl_install_file_path + self.command_mcl_get_info
+        self.thread_create_wallet_after_install.command_mcl_get_pubkey =  self.mcl_install_file_path + self.command_get_pubkey
+        self.thread_create_wallet_after_install.command_mcl_get_privkey =  self.mcl_install_file_path + self.command_get_privkey
 
         self.thread_create_wallet_after_install.server_username = self.server_username
         self.thread_create_wallet_after_install.server_hostname = self.server_hostname
@@ -647,11 +648,11 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             self.thread_create_wallet_click_button.change_value_information_getinfo_check_chain_with_pubkey.connect(
                 self.changingInformationGetInfoPubkeyCheck)
 
-            self.thread_create_wallet_click_button.command_mcl_start_chain_without_pubkey = "./" + self.mcl_install_file_path + self.command_start_mcl_mining_without_pubkey
-            self.thread_create_wallet_click_button.command_mcl_create_wallet_adress = "./" + self.mcl_install_file_path + self.command_get_adress
-            self.thread_create_wallet_click_button.command_mcl_get_info = "./" + self.mcl_install_file_path + self.command_mcl_get_info
-            self.thread_create_wallet_click_button.command_mcl_get_pubkey = "./" + self.mcl_install_file_path + self.command_get_pubkey
-            self.thread_create_wallet_click_button.command_mcl_get_privkey = "./" + self.mcl_install_file_path + self.command_get_privkey
+            self.thread_create_wallet_click_button.command_mcl_start_chain_without_pubkey =  self.mcl_install_file_path + self.command_start_mcl_mining_without_pubkey
+            self.thread_create_wallet_click_button.command_mcl_create_wallet_adress =  self.mcl_install_file_path + self.command_get_adress
+            self.thread_create_wallet_click_button.command_mcl_get_info =  self.mcl_install_file_path + self.command_mcl_get_info
+            self.thread_create_wallet_click_button.command_mcl_get_pubkey =  self.mcl_install_file_path + self.command_get_pubkey
+            self.thread_create_wallet_click_button.command_mcl_get_privkey =  self.mcl_install_file_path + self.command_get_privkey
 
             self.thread_create_wallet_click_button.server_username = self.server_username
             self.thread_create_wallet_click_button.server_hostname = self.server_hostname
@@ -678,10 +679,10 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
                     self.thread_create_wallet_convertpassphrase.change_value_information_getinfo_check_chain_with_pubkey.connect(
                         self.changingInformationGetInfoPubkeyCheck)
 
-                    self.thread_create_wallet_convertpassphrase.command_mcl_start_chain_without_pubkey = "./" + self.mcl_install_file_path + self.command_start_mcl_mining_without_pubkey
-                    self.thread_create_wallet_convertpassphrase.command_mcl_create_convertpassphrase = "./" + self.mcl_install_file_path + self.command_get_adress_convertpassphrase + "\"" + self.lineEdit_7.text() + "\""
-                    self.thread_create_wallet_convertpassphrase.command_mcl_get_info = "./" + self.mcl_install_file_path + self.command_mcl_get_info
-                    self.thread_create_wallet_convertpassphrase.command_mcl_import_private_Key = "./" + self.mcl_install_file_path + self.command_mcl_import_privkey
+                    self.thread_create_wallet_convertpassphrase.command_mcl_start_chain_without_pubkey =  self.mcl_install_file_path + self.command_start_mcl_mining_without_pubkey
+                    self.thread_create_wallet_convertpassphrase.command_mcl_create_convertpassphrase =  self.mcl_install_file_path + self.command_get_adress_convertpassphrase + "\"" + self.lineEdit_7.text() + "\""
+                    self.thread_create_wallet_convertpassphrase.command_mcl_get_info =  self.mcl_install_file_path + self.command_mcl_get_info
+                    self.thread_create_wallet_convertpassphrase.command_mcl_import_private_Key =  self.mcl_install_file_path + self.command_mcl_import_privkey
 
                     self.thread_create_wallet_convertpassphrase.server_username = self.server_username
                     self.thread_create_wallet_convertpassphrase.server_hostname = self.server_hostname
@@ -1151,7 +1152,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             self.thread_holder_details_info.change_value_information_loop_details.connect(
                 self.changingInformationsHolderDetails)
 
-            self.thread_holder_details_info.command_mcl_credit_loop_search = "./" + self.mcl_install_file_path + self.command_mcl_credit_loop_search + " " + self.tableWidget_4.item(
+            self.thread_holder_details_info.command_mcl_credit_loop_search =  self.mcl_install_file_path + self.command_mcl_credit_loop_search + " " + self.tableWidget_4.item(
                 index.row(), 0).text()
 
             self.thread_holder_details_info.server_username = self.server_username
@@ -1202,7 +1203,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.loading_screen.startAnimation()
         self.thread_list_holders.change_value_information.connect(self.changingInformationMarmaraHoldersList)
 
-        self.thread_list_holders.command_mcl_marmara_holders = "./" + self.mcl_install_file_path + self.command_mcl_marmar_holders + self.command_mcl_marmar_holders_min_matures + " " + self.command_mcl_marmar_holders_max_matures + " " + self.command_mcl_marmar_holders_min_amount + " " + self.command_mcl_marmar_holders_max_amount + " " + self.pubkey
+        self.thread_list_holders.command_mcl_marmara_holders =  self.mcl_install_file_path + self.command_mcl_marmar_holders + self.command_mcl_marmar_holders_min_matures + " " + self.command_mcl_marmar_holders_max_matures + " " + self.command_mcl_marmar_holders_min_amount + " " + self.command_mcl_marmar_holders_max_amount + " " + self.pubkey
 
         self.thread_list_holders.server_username = self.server_username
         self.thread_list_holders.server_hostname = self.server_hostname
@@ -1241,7 +1242,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.loading_screen.startAnimation()
         self.thread_active_list.change_value_information.connect(self.changingInformationActiveList)
 
-        self.thread_active_list.command_mcl_marmara_info = "./" + self.mcl_install_file_path + self.command_mcl_marmara_get_info + self.pubkey
+        self.thread_active_list.command_mcl_marmara_info =  self.mcl_install_file_path + self.command_mcl_marmara_get_info + self.pubkey
 
         self.thread_active_list.server_username = self.server_username
         self.thread_active_list.server_hostname = self.server_hostname
@@ -1275,7 +1276,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.loading_screen.startAnimation()
         self.thread_refresh_credit_request.change_value_information.connect(self.changingInformationCreditRequestList)
 
-        self.thread_refresh_credit_request.command_mcl_credit_request_list = "./" + self.mcl_install_file_path + self.command_mcl_credit_request_list + self.pubkey + " " + self.last_matures_minute
+        self.thread_refresh_credit_request.command_mcl_credit_request_list =  self.mcl_install_file_path + self.command_mcl_credit_request_list + self.pubkey + " " + self.last_matures_minute
 
         self.thread_refresh_credit_request.server_username = self.server_username
         self.thread_refresh_credit_request.server_hostname = self.server_hostname
@@ -1290,7 +1291,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.thread_refresh_credit_request.change_value_information.connect(
             self.changingInformationCreditRequestListCiranta)
 
-        self.thread_refresh_credit_request.command_mcl_credit_request_list = "./" + self.mcl_install_file_path + self.command_mcl_credit_request_list + self.pubkey
+        self.thread_refresh_credit_request.command_mcl_credit_request_list =  self.mcl_install_file_path + self.command_mcl_credit_request_list + self.pubkey
 
         self.thread_refresh_credit_request.server_username = self.server_username
         self.thread_refresh_credit_request.server_hostname = self.server_hostname
@@ -1414,7 +1415,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             if ok:
                 if self.pushButton_9.isChecked():
                     self.pushButton_9.setChecked(False)
-                command = "./" + self.mcl_install_file_path + self.command_mcl_set_mining + str(text)
+                command =  self.mcl_install_file_path + self.command_mcl_set_mining + str(text)
                 self.label_5.setText(str(text))
                 stdin, stdout, stderr = ssh.exec_command(command)
                 self.label_11.setText("MINING")
@@ -1424,7 +1425,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             self.label_5.setText("0")
             if not self.pushButton_9.isChecked():
                 self.label_11.setText("(-)")
-                command = "./" + self.mcl_install_file_path + self.command_mcl_set_off_generate
+                command =  self.mcl_install_file_path + self.command_mcl_set_off_generate
                 stdin, stdout, stderr = ssh.exec_command(command)
 
 
@@ -1439,11 +1440,11 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             self.label_11.setText("STAKING")
             if self.pushButton_6.isChecked():
                 self.pushButton_6.setChecked(False)
-            command = "./" + self.mcl_install_file_path + self.command_mcl_set_stacking
+            command =  self.mcl_install_file_path + self.command_mcl_set_stacking
             stdin, stdout, stderr = ssh.exec_command(command)
         else:
             if not self.pushButton_6.isChecked():
-                command = "./" + self.mcl_install_file_path + self.command_mcl_set_off_generate
+                command =  self.mcl_install_file_path + self.command_mcl_set_off_generate
                 self.label_11.setText("(-)")
                 stdin, stdout, stderr = ssh.exec_command(command)
 
@@ -1462,11 +1463,11 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
                 self.thread_credit_request.change_value_information_get_transactionID.connect(
                     self.changingInformationTransactionID)
 
-                self.thread_credit_request.command_mcl_credit_request = "./" + self.mcl_install_file_path + self.command_mcl_credit_request + \
+                self.thread_credit_request.command_mcl_credit_request =  self.mcl_install_file_path + self.command_mcl_credit_request + \
                                                                         self.lineEdit_21.text() + " " + self.lineEdit_2.text() + " " + self.lineEdit_4.text() + " " + str(
                     matures_) + " " + self.command_mcl_credit_request_countine
 
-                self.thread_credit_request.command_mcl_credit_request_sendrawtransaction = "./" + self.mcl_install_file_path + self.command_mcl_coin_sendrawtransaction
+                self.thread_credit_request.command_mcl_credit_request_sendrawtransaction =  self.mcl_install_file_path + self.command_mcl_coin_sendrawtransaction
 
                 self.thread_credit_request.server_username = self.server_username
                 self.thread_credit_request.server_hostname = self.server_hostname
@@ -1489,10 +1490,10 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
                 self.thread_credit_request_ciranta.change_value_information_get_transactionID.connect(
                     self.changingInformationTransactionID)
 
-                self.thread_credit_request_ciranta.command_mcl_credit_request = "./" + self.mcl_install_file_path + self.command_mcl_credit_request + \
+                self.thread_credit_request_ciranta.command_mcl_credit_request =  self.mcl_install_file_path + self.command_mcl_credit_request + \
                                                                                 self.lineEdit_24.text() + " " + self.lineEdit_25.text() + " " + self.command_mcl_credit_request_countine
 
-                self.thread_credit_request_ciranta.command_mcl_credit_request_sendrawtransaction = "./" + self.mcl_install_file_path + self.command_mcl_coin_sendrawtransaction
+                self.thread_credit_request_ciranta.command_mcl_credit_request_sendrawtransaction =  self.mcl_install_file_path + self.command_mcl_coin_sendrawtransaction
 
                 self.thread_credit_request_ciranta.server_username = self.server_username
                 self.thread_credit_request_ciranta.server_hostname = self.server_hostname
@@ -1529,11 +1530,11 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
                         self.thread_credit_request_accept.change_value_information_get_transactionID.connect(
                             self.changingInformationTransactionID)
 
-                        self.thread_credit_request_accept.command_mcl_credit_request_accept = "./" + self.mcl_install_file_path + self.command_mcl_credit_request_accept + \
+                        self.thread_credit_request_accept.command_mcl_credit_request_accept =  self.mcl_install_file_path + self.command_mcl_credit_request_accept + \
                                                                                               item[
                                                                                                   'receivepk'] + self.command_mcl_credit_request_accept_countine + \
                                                                                               item['txid']
-                        self.thread_credit_request_accept.command_mcl_credit_request_sendrawtransaction = "./" + self.mcl_install_file_path + self.command_mcl_coin_sendrawtransaction
+                        self.thread_credit_request_accept.command_mcl_credit_request_sendrawtransaction =  self.mcl_install_file_path + self.command_mcl_coin_sendrawtransaction
 
                         self.thread_credit_request_accept.server_username = self.server_username
                         self.thread_credit_request_accept.server_hostname = self.server_hostname
@@ -1563,11 +1564,11 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
                         self.thread_ciranta_request_accept.change_value_information_get_transactionID.connect(
                             self.changingInformationTransactionID)
 
-                        self.thread_ciranta_request_accept.command_mcl_ciranta_request_accept = "./" + self.mcl_install_file_path + self.command_mcl_marmaratransfer_accept + \
+                        self.thread_ciranta_request_accept.command_mcl_ciranta_request_accept =  self.mcl_install_file_path + self.command_mcl_marmaratransfer_accept + \
                                                                                                 item[
                                                                                                     'receivepk'] + " " + self.command_mcl_marmaratransfer_accept_countine + " " + \
                                                                                                 item['txid']
-                        self.thread_ciranta_request_accept.command_mcl_credit_request_sendrawtransaction = "./" + self.mcl_install_file_path + self.command_mcl_coin_sendrawtransaction
+                        self.thread_ciranta_request_accept.command_mcl_credit_request_sendrawtransaction =  self.mcl_install_file_path + self.command_mcl_coin_sendrawtransaction
 
                         self.thread_ciranta_request_accept.server_username = self.server_username
                         self.thread_ciranta_request_accept.server_hostname = self.server_hostname
@@ -1586,7 +1587,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
                 reciever_wallet_adress = self.lineEdit_9.text()
                 number_of_coin = self.lineEdit_15.text()
 
-                self.thread_send_coin.command_mcl_send_coin = "./" + self.mcl_install_file_path + self.command_mcl_send_coin + "\"" + reciever_wallet_adress + "\" " + number_of_coin
+                self.thread_send_coin.command_mcl_send_coin =  self.mcl_install_file_path + self.command_mcl_send_coin + "\"" + reciever_wallet_adress + "\" " + number_of_coin
 
                 self.thread_send_coin.server_username = self.server_username
                 self.thread_send_coin.server_hostname = self.server_hostname
@@ -1618,8 +1619,8 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
                 number_of_coin = self.lineEdit_12.text()
 
-                self.thread_lock_coin.command_mcl_lock_coin = "./" + self.mcl_install_file_path + self.command_mcl_lock_coin + number_of_coin
-                self.thread_lock_coin.command_mcl_lock_coin_sendrawtransaction = "./" + self.mcl_install_file_path + self.command_mcl_coin_sendrawtransaction
+                self.thread_lock_coin.command_mcl_lock_coin =  self.mcl_install_file_path + self.command_mcl_lock_coin + number_of_coin
+                self.thread_lock_coin.command_mcl_lock_coin_sendrawtransaction =  self.mcl_install_file_path + self.command_mcl_coin_sendrawtransaction
 
                 self.thread_lock_coin.pubkey = self.pubkey
                 self.thread_lock_coin.server_username = self.server_username
@@ -1643,8 +1644,8 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
                 number_of_coin = self.lineEdit_16.text()
 
-                self.thread_unlock_coin.command_mcl_unlock_coin = "./" + self.mcl_install_file_path + self.command_mcl_unlock_coin + number_of_coin
-                self.thread_unlock_coin.command_mcl_unlock_coin_sendrawtransaction = "./" + self.mcl_install_file_path + self.command_mcl_coin_sendrawtransaction
+                self.thread_unlock_coin.command_mcl_unlock_coin =  self.mcl_install_file_path + self.command_mcl_unlock_coin + number_of_coin
+                self.thread_unlock_coin.command_mcl_unlock_coin_sendrawtransaction =  self.mcl_install_file_path + self.command_mcl_coin_sendrawtransaction
 
                 self.thread_unlock_coin.pubkey = self.pubkey
                 self.thread_unlock_coin.server_username = self.server_username
@@ -1687,7 +1688,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             self.thread_request_search.change_value_information_loop_details.connect(
                 self.changingInformationLoopDetails)
 
-            self.thread_request_search.command_mcl_credit_loop_search = "./" + self.mcl_install_file_path + self.command_mcl_credit_loop_search + " " + self.lineEdit_13.text()
+            self.thread_request_search.command_mcl_credit_loop_search =  self.mcl_install_file_path + self.command_mcl_credit_loop_search + " " + self.lineEdit_13.text()
 
             self.thread_request_search.server_username = self.server_username
             self.thread_request_search.server_hostname = self.server_hostname
@@ -1727,10 +1728,10 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
                 self.pubkey = self.lineEdit_14.text().replace(" ", "")
                 print(self.pubkey)
 
-                self.thread_start_chain.command_mcl_start_chain = "./" + self.mcl_install_file_path + self.command_start_mcl_mining_with_pubkey
-                self.thread_start_chain.command_mcl_get_info = "./" + self.mcl_install_file_path + self.command_mcl_get_info
-                self.thread_start_chain.command_mcl_get_marmara_info = "./" + self.mcl_install_file_path + self.command_mcl_marmara_get_info
-                self.thread_start_chain.command_mcl_get_stacking_and_mining = "./" + self.mcl_install_file_path + self.command_mcl_get_stacking_and_mining
+                self.thread_start_chain.command_mcl_start_chain =  self.mcl_install_file_path + self.command_start_mcl_mining_with_pubkey
+                self.thread_start_chain.command_mcl_get_info =  self.mcl_install_file_path + self.command_mcl_get_info
+                self.thread_start_chain.command_mcl_get_marmara_info =  self.mcl_install_file_path + self.command_mcl_marmara_get_info
+                self.thread_start_chain.command_mcl_get_stacking_and_mining =  self.mcl_install_file_path + self.command_mcl_get_stacking_and_mining
 
                 self.thread_start_chain.pubkey = self.pubkey
                 self.thread_start_chain.server_username = self.server_username
@@ -1750,8 +1751,8 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
                 self.loading_screen.startAnimation()
                 self.thread_stop_chain.change_value_did_run_chain.connect(self.changingInformation5)
 
-                self.thread_stop_chain.command_mcl_stop_chain = "./" + self.mcl_install_file_path + self.command_mcl_stop_chain
-                self.thread_stop_chain.command_mcl_get_info = "./" + self.mcl_install_file_path + self.command_mcl_get_info
+                self.thread_stop_chain.command_mcl_stop_chain =  self.mcl_install_file_path + self.command_mcl_stop_chain
+                self.thread_stop_chain.command_mcl_get_info =  self.mcl_install_file_path + self.command_mcl_get_info
 
                 self.thread_stop_chain.pubkey = self.pubkey
                 self.thread_stop_chain.server_username = self.server_username
@@ -1770,9 +1771,9 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.thread_refresh.change_value_information_get_generate.connect(self.changingInformation3)
         self.thread_refresh.change_value_did_run_chain.connect(self.changingInformation4)
 
-        self.thread_refresh.command_mcl_get_info = "./" + self.mcl_install_file_path + self.command_mcl_get_info
-        # self.thread_refresh.command_mcl_get_marmara_info = "./" + self.mcl_install_file_path + self.command_mcl_marmara_get_info
-        self.thread_refresh.command_mcl_get_stacking_and_mining = "./" + self.mcl_install_file_path + self.command_mcl_get_stacking_and_mining
+        self.thread_refresh.command_mcl_get_info =  self.mcl_install_file_path + self.command_mcl_get_info
+        # self.thread_refresh.command_mcl_get_marmara_info =  self.mcl_install_file_path + self.command_mcl_marmara_get_info
+        self.thread_refresh.command_mcl_get_stacking_and_mining =  self.mcl_install_file_path + self.command_mcl_get_stacking_and_mining
 
         self.thread_refresh.pubkey = self.pubkey
         self.thread_refresh.server_username = self.server_username
@@ -1968,9 +1969,9 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
                 self.thread_first_get_info.change_value_information_get_generate.connect(self.changingInformation3)
                 self.thread_first_get_info.change_value_did_run_chain.connect(self.changingInformation4)
 
-                self.thread_first_get_info.command_mcl_get_info = "./" + self.mcl_install_file_path + self.command_mcl_get_info
-                self.thread_first_get_info.command_mcl_get_marmara_info = "./" + self.mcl_install_file_path + self.command_mcl_marmara_get_info
-                self.thread_first_get_info.command_mcl_get_stacking_and_mining = "./" + self.mcl_install_file_path + self.command_mcl_get_stacking_and_mining
+                self.thread_first_get_info.command_mcl_get_info =  self.mcl_install_file_path + self.command_mcl_get_info
+                self.thread_first_get_info.command_mcl_get_marmara_info =  self.mcl_install_file_path + self.command_mcl_marmara_get_info
+                self.thread_first_get_info.command_mcl_get_stacking_and_mining =  self.mcl_install_file_path + self.command_mcl_get_stacking_and_mining
 
                 self.thread_first_get_info.pubkey = self.pubkey
                 self.thread_first_get_info.server_username = self.server_username
@@ -1994,8 +1995,8 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
                 # self.thread_start_chain_without_pubkey.change_value_information_getinfo_check_chain_with_pubkey.connect(self.changingInformationStartWithoutPubkeyGetInfo)
                 # self.thread_start_chain_without_pubkey.change_value_information_wallet.connect(self.changingInformationWalletList)
                 #
-                # self.thread_start_chain_without_pubkey.command_mcl_start_chain_without_pubkey = "./" + self.mcl_install_file_path + self.command_start_mcl_mining_without_pubkey
-                # self.thread_start_chain_without_pubkey.command_mcl_get_info = "./" + self.mcl_install_file_path + self.command_mcl_get_info
+                # self.thread_start_chain_without_pubkey.command_mcl_start_chain_without_pubkey =  self.mcl_install_file_path + self.command_start_mcl_mining_without_pubkey
+                # self.thread_start_chain_without_pubkey.command_mcl_get_info =  self.mcl_install_file_path + self.command_mcl_get_info
                 #
                 # self.thread_start_chain_without_pubkey.server_username = self.server_username
                 # self.thread_start_chain_without_pubkey.server_hostname = self.server_hostname
@@ -2020,38 +2021,49 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
     def checkMclInstall(self):
         tmp_file_check_home = []
         tmp_file_check_compilier = []
-        try:
-            ssh = paramiko.SSHClient()
-            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            ssh.connect(str(self.server_hostname), self.server_port, str(self.server_username),
-                        str(self.server_password))
+        # try:
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(str(self.server_hostname), self.server_port, str(self.server_username),
+                    str(self.server_password))
 
-            stdin, stdout, stderr = ssh.exec_command(str("ls"))
+        stdin, stdout, stderr = ssh.exec_command(str("ls"))
+        lines = stdout.readlines()
+        for deger in lines:
+            deger = deger.split("\n")
+            tmp_file_check_home.append(deger[0])
+
+        self.is_mcl_install = False
+        if "komodo-cli" in tmp_file_check_home and "komodod" in tmp_file_check_home:
+            con = ServerConnect(self.server_hostname, self.server_username, self.server_password)
+            user_n = con.command("whoami")
+            user_n = user_n.readlines()
+            user_n = user_n[0]
+            user_name = user_n.split("\n")
+            print("-"+user_name[0]+"-")
+            self.mcl_install_file_path = "/home/"+user_name[0]+"/"
+            self.is_mcl_install = True
+
+        else:
+            # MCL Install Compiler Check
+            stdin, stdout, stderr = ssh.exec_command(str("cd komodo/src; ls"))
             lines = stdout.readlines()
             for deger in lines:
                 deger = deger.split("\n")
-                tmp_file_check_home.append(deger[0])
+                tmp_file_check_compilier.append(deger[0])
+            print(tmp_file_check_compilier)
 
-            self.is_mcl_install = False
-            if "komodo-cli" in tmp_file_check_home and "komodod" in tmp_file_check_home:
-                self.mcl_install_file_path = ""
+            if "komodo-cli" in tmp_file_check_compilier and "komodod" in tmp_file_check_compilier:
+                con = ServerConnect(self.server_hostname, self.server_username, self.server_password)
+                user_n = con.command("whoami")
+                user_n = user_n.readlines()
+                user_n = user_n[0]
+                user_name = user_n.split("\n")
+                print("-" + user_name[0] + "-")
+                self.mcl_install_file_path = "/home/"+user_name[0]+"/komodo/src/"
                 self.is_mcl_install = True
-
-            else:
-                # MCL Install Compiler Check
-                stdin, stdout, stderr = ssh.exec_command(str("cd komodo/src; ls"))
-                lines = stdout.readlines()
-                for deger in lines:
-                    deger = deger.split("\n")
-                    tmp_file_check_compilier.append(deger[0])
-                print(tmp_file_check_compilier)
-
-                if "komodo-cli" in tmp_file_check_compilier and "komodod" in tmp_file_check_compilier:
-                    self.mcl_install_file_path = "komodo/src/"
-                    self.is_mcl_install = True
-        except:
-            print("Bağlanılamadı")
-            return False
+        # except:
+        #     print("Bağlanılamadı")
 
     def checkRunningChain(self):
         try:
@@ -2060,7 +2072,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             ssh.connect(str(self.server_hostname), self.server_port, str(self.server_username),
                         str(self.server_password))
 
-            asd = "./" + self.mcl_install_file_path + self.command_mcl_get_info
+            asd =  self.mcl_install_file_path + self.command_mcl_get_info
             stdin, stdout, stderr = ssh.exec_command(asd)
             lines = stdout.readlines()
             if not lines:
@@ -2408,10 +2420,10 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.thread_start_chain_without_pubkey.change_value_information_getinfo_check_chain_with_pubkey.connect(self.changingInformationStartWithoutPubkeyGetInfo)
         self.thread_start_chain_without_pubkey.change_value_information_wallet.connect(self.changingInformationWalletList)
 
-        self.thread_start_chain_without_pubkey.command_mcl_start_chain_without_pubkey = "./" + self.mcl_install_file_path + self.command_start_mcl_mining_without_pubkey
-        self.thread_start_chain_without_pubkey.command_mcl_get_info = "./" + self.mcl_install_file_path + self.command_mcl_get_info
-        self.thread_start_chain_without_pubkey.command_mcl_all_wallet_list = "./" + self.mcl_install_file_path + self.command_mcl_all_wallet_list
-        self.thread_start_chain_without_pubkey.command_mcl_get_pubkey = "./" + self.mcl_install_file_path + self.command_get_pubkey + " "
+        self.thread_start_chain_without_pubkey.command_mcl_start_chain_without_pubkey =  self.mcl_install_file_path + self.command_start_mcl_mining_without_pubkey
+        self.thread_start_chain_without_pubkey.command_mcl_get_info =  self.mcl_install_file_path + self.command_mcl_get_info
+        self.thread_start_chain_without_pubkey.command_mcl_all_wallet_list =  self.mcl_install_file_path + self.command_mcl_all_wallet_list
+        self.thread_start_chain_without_pubkey.command_mcl_get_pubkey =  self.mcl_install_file_path + self.command_get_pubkey + " "
 
         self.thread_start_chain_without_pubkey.server_username = self.server_username
         self.thread_start_chain_without_pubkey.server_hostname = self.server_hostname
@@ -2426,8 +2438,9 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             self.showDialogInfo(self.msg_title_info, self.msg_box_end_1, "", self.msg_ok)
             self.tabWidget.setCurrentIndex(2)
             self.stackedWidget.setCurrentIndex(0)
-            self.showDialogInfo(self.msg_title_warning, self.msg_box_end_2, "", self.msg_ok)
-            self.startChainWithoutPubkeyForWalletList()
+            # self.showDialogInfo(self.msg_title_warning, self.msg_box_end_2, "", self.msg_ok)
+            self.close()
+            # self.startChainWithoutPubkeyForWalletList()
 
     def showDialogYesNo(self, title, text, button_yes_name, button_no_name):
         msgBox = QMessageBox()

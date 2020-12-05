@@ -124,7 +124,7 @@
 "label_72_text":"* Installation takes a little longer."
 "label_73_text":"* Bootstrap speeds up the synchronization of the chain. It is recommended to do from the installation with bootstarp. Installation with bootstarp will take much longer due to the size of the file to download."
 "label_74_text":"* You can easily follow the installation."
-"msg_box_end_1":"The installation was successful. The chain is currently not active. You can create a wallet from the screen that will appear and start the wallet."
+"msg_box_end_1":"Setup was successful. The chain is currently not active. Now the application will close, open it again to start the chain."
 "msg_box_end_2":"The chain is not active because you made a new installation. The chain will be activated now. It will take a little longer. You can login with the key to be created."
 "pushbutton_36":"CREATE WALLET ADRESS"
 "label_63":"*Optional"

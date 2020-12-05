@@ -10,7 +10,9 @@ class ServerConnect:
         self.ssh.connect(server_hostname, self.server_port, server_username, server_password)
 
     def command(self,command):
+        print(command)
         stdin, stdout, stderr = self.ssh.exec_command(command)
+        print(stdout)
         return stdout
 
 

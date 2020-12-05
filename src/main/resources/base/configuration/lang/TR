@@ -124,7 +124,7 @@
 "label_72_text":"* Kurulum bir miktar uzun sürmektedir."
 "label_73_text":"* Bootstrap zincirin senkronizasyonunu hızlandırır. Bootstrap ile kurulum yapmanız önerilir. Bootstrap ile kurulum indirilecek dosya büyüklülüğünden dolayı çok daha uzun sürecektir."
 "label_74_text":"* Kurulumu kolaylıkla takip edebilirsiniz."
-"msg_box_end_1":"Kurulum başarılı oldu. Zincir şu anda aktif değil. Görünecek ekrandan bir cüzdan oluşturabilir ve cüzdanı başlatabilirsiniz."
+"msg_box_end_1":"Kurulum başarılı oldu. Zincir şu anda aktif değil. Şuan uygulama kapanacak, zinciri başlatmak için tekrar açınız."
 "msg_box_end_2":"Yeni kurulum yaptığınız için zincir aktif değil. Şu an zincir aktifleşecek. Biraz uzun sürecektir. Oluşturulacak key ile giriş yapabilirsin."
 "pushbutton_36":"CÜZDAN ADRESİ OLUŞTUR"
 "label_63":"*Opsiyonlu"
