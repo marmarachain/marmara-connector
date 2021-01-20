@@ -1,6 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QDoubleValidator, QIcon
-from ThreadGui import ActiveLoops
 from guiDesign import Ui_MainWindow
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 
@@ -212,11 +211,11 @@ class GuiStyle(Ui_MainWindow,ApplicationContext):
                                                                     "QPushButton::hover   {image: url(" + self.icon_path + "/search_hover.png);border:0px}"
                                                                                                                           "QPushButton::pressed {image: url(" + self.icon_path + "/search_press.png);border:0px}")
         self.pushButton_14.setStyleSheet(
-            "QPushButton          {image: url(" + self.icon_path + "/copy_key_icon.png); border: 0; width: 30px; height: 30px;}"
+            "QPushButton          {image: url(" + self.icon_path + "/copy_key_icon.png); border: 0; width: 20px; height: 20px;}"
                                                                     "QPushButton::hover   {image: url(" + self.icon_path + "/copy_key_icon_hover.png);border:0px}"
                                                                                                                           "QPushButton::pressed {image: url(" + self.icon_path + "/copy_key_icon_press.png);border:0px}")
         self.pushButton_7.setStyleSheet(
-            "QPushButton          {image: url(" + self.icon_path + "/copy_wallet_icon_.png); border: 0; width: 30px; height: 30px;}"
+            "QPushButton          {image: url(" + self.icon_path + "/copy_wallet_icon_.png); border: 0; width: 20px; height: 20px;}"
                                                                     "QPushButton::hover   {image: url(" + self.icon_path + "/copy_wallet_icon_hover_.png);border:0px}"
                                                                                                                           "QPushButton::pressed {image: url(" + self.icon_path + "/copy_wallet_icon_press_.png);border:0px}")
         self.pushButton_39.setStyleSheet(
@@ -632,7 +631,7 @@ class GuiStyle(Ui_MainWindow,ApplicationContext):
         self.pushButton_6.setVisible(False)
         self.pushButton_9.setVisible(False)
 
-        from SwitchButton import MySwitch
+        from customizedItem.SwitchButton import MySwitch
         self.pushButton_6 = MySwitch(self.frame_18)
         self.pushButton_6.setObjectName("pushButton_6")
         self.horizontalLayout_12.addWidget(self.pushButton_6)
