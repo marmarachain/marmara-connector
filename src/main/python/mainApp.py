@@ -861,18 +861,18 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
         self.last_update = res["label_last_update"]
         self.label_28.setText(res["choose_language"])
-        self.label_19.setText(res["server_informations"])
+        self.label_19.setText(res["server_information"])
 
         self.tabWidget_3.setTabText(0, res["button_chain"])
         self.tabWidget_3.setTabText(1, res["button_wallet"])
-        self.tabWidget_3.setTabText(2, res["button_coin_send_recive"])
+        self.tabWidget_3.setTabText(2, res["button_coin_send_receive"])
         self.tabWidget_3.setTabText(3, res["button_credit_transaction"])
         self.tabWidget_3.setTabText(4, res["persons"])
         self.tabWidget_3.setTabText(5, res["button_setting"])
         self.tabWidget_3.setTabText(6, res["button_exit"])
 
         self.label_27.setText(res["label_pubkey"])
-        self.label_56.setText(res["label_wallet_adress"])
+        self.label_56.setText(res["label_wallet_address"])
         self.pushButton_17.setText(res["button_start"])
         self.pushButton_11.setText(res["button_stop"])
         self.active_text = res["active"]
@@ -908,7 +908,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.label_30.setText(res["receiver_adress"])
         self.label_31.setText(res["amount"])
         self.label_32.setText(res["my_wallet_adress"])
-        self.lineEdit_9.setPlaceholderText(res["label_wallet_adress"])
+        self.lineEdit_9.setPlaceholderText(res["label_wallet_address"])
         self.lineEdit_15.setPlaceholderText(res["amount_to_sent"])
 
         self.tabWidget_4.setTabText(0, res["issuer_operations"])
@@ -931,12 +931,12 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.label_42.setText(res["currency_request"])
         self.label_43.setText(res["request_credit"])
         self.label_53.setText(res["request_credit"])
-        self.label_49.setText(res["botton_txid"])
+        self.label_49.setText(res["baton_txid"])
 
         self.lineEdit_2.setPlaceholderText(res["amount"])
         self.lineEdit_21.setPlaceholderText(res["receiver_pub_key"])
         self.lineEdit_24.setPlaceholderText(res["receiver_pub_key"])
-        self.lineEdit_25.setPlaceholderText(res["botton_txid"])
+        self.lineEdit_25.setPlaceholderText(res["baton_txid"])
 
         self.groupBox_14.setTitle(res["list_of_credit_requests_in_loop"])
         self.groupBox_15.setTitle(res["bearer_loops"])
@@ -952,7 +952,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.label_17.setText(res["issuer_pk"])
 
         self.label_68.setText(res["label_name"].capitalize())
-        self.label_67.setText(res["label_wallet_adress"])
+        self.label_67.setText(res["label_wallet_address"])
 
         # Install Objects
         self.pushButton_5.setText(res["button_install"])
@@ -1005,7 +1005,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.label_55.setText(res["max_amount"])
         self.label_65.setText(res["from"])
         self.label_66.setText(res["to"])
-        self.label_83.setText(res["label_wallet_adress"])
+        self.label_83.setText(res["label_wallet_address"])
 
         self.groupBox_3.setTitle(res["matures"])
         self.groupBox_18.setTitle(res["amount"])
@@ -1065,13 +1065,13 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             ['TXID', res["amount_table_title"], res["matures"].upper(), res["review_and_confirm"]])
         self.tableWidget_2.setHorizontalHeaderLabels(
             ['TXID', res["amount_table_title"], res["matures"].upper(), res["review_and_confirm"]])
-        self.tableWidget_3.setHorizontalHeaderLabels([res["loop_adress"], res["amount_table_title"]])
+        self.tableWidget_3.setHorizontalHeaderLabels([res["loop_address"], res["amount_table_title"]])
         self.tableWidget_4.setHorizontalHeaderLabels(['TXID', res["copy_txid_table_title"], res["msg_title_info"]])
         self.tableWidget_5.setHorizontalHeaderLabels(
-            [res["label_name"].capitalize(), res["label_wallet_adress"].capitalize(), res["copy"].capitalize(),
+            [res["label_name"].capitalize(), res["label_wallet_address"].capitalize(), res["copy"].capitalize(),
              "Pubkey", res["copy"].capitalize(), res["button_delete"]])
         self.tableWidget_6.setHorizontalHeaderLabels(
-            [res["label_wallet_adress"].capitalize(), res["copy"].capitalize(),
+            [res["label_wallet_address"].capitalize(), res["copy"].capitalize(),
              "Pubkey", res["copy"].capitalize()])
 
     def readConfFile(self):
