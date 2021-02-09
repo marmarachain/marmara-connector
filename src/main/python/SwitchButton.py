@@ -3,7 +3,7 @@ from PyQt5 import QtWidgets, QtGui
 
 
 class MySwitch(QtWidgets.QPushButton):
-    def __init__(self, parent = None):
+    def __init__(self, parent=None):
         super().__init__(parent)
 
         self.setCheckable(True)

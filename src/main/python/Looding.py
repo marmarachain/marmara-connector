@@ -5,8 +5,7 @@ from PyQt5 import QtCore
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 
 
-
-class LoadingScreen(QWidget,ApplicationContext):
+class LoadingScreen(QWidget, ApplicationContext):
     def __init__(self):
         super().__init__()
         self.setFixedSize(200, 200)

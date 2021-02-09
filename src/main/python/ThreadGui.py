@@ -93,7 +93,7 @@ class AutoInstall(QThread):
         self.change_value_progressbar.emit(15)
 
         # Unzip mcl zip file in remote server
-        print("İndirilen dosya zipten çıkartılıyor.")
+        print("Extracting the downloaded files.")
         self.change_value_text_edit.emit(str("Extracting Files..."))
 
         session = ssh.get_transport().open_session()
