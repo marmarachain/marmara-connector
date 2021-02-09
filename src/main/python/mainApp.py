@@ -64,7 +64,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.deactive_text = ""
         self.long_chain_blocks = ""
 
-        self.count_wallet_list=0
+        self.count_wallet_list = 0
         # Messages
         # --------------------------------------------------
         self.msg_title_warning = ""
@@ -81,19 +81,19 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.msg_do_you_want_to_request = ""
         self.msg_do_you_want_endorser = ""
         self.msg_do_you_want_to_accept = ""
-        self.msg_credit_confirmaiton = ""
+        self.msg_credit_confirmation = ""
         self.msg_do_you_want_to_send_coin = ""
         self.msg_sended_coin = ""
-        self.msg_do_you_want_to_acitvate_coins = ""
-        self.msg_do_you_want_to_deacitvate_coins = ""
-        self.msg_succes_lock = ""
-        self.msg_unsucces_lock = ""
-        self.msg_succes_unlock = ""
-        self.msg_unsucces_unlock = ""
-        self.msg_succes_request = ""
-        self.msg_unsucces_request = ""
-        self.msg_succes_request_aceept = ""
-        self.msg_unsucces_request_aceept = ""
+        self.msg_do_you_want_to_activate_coins = ""
+        self.msg_do_you_want_to_deactivate_coins = ""
+        self.msg_success_lock = ""
+        self.msg_unsuccess_lock = ""
+        self.msg_success_unlock = ""
+        self.msg_unsuccess_unlock = ""
+        self.msg_success_request = ""
+        self.msg_unsuccess_request = ""
+        self.msg_success_request_accept = ""
+        self.msg_unsuccess_request_accept = ""
         self.msg_start_chain = ""
         self.msg_stop_chain = ""
         self.msg_stop_chain_last = ""
@@ -123,7 +123,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.server_port = 22
 
         self.pubkey = ""
-        self.walletAdress = ""
+        self.walletAddress = ""
         self.privkey = ""
         self.chain_info = ""
         self.request_credit_out = ""
@@ -145,9 +145,9 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         # Komodo commands parameters
         # --------------------------------------------------
         self.command_start_mcl_mining_without_pubkey = "komodod -ac_name=MCL -ac_supply=2000000 -ac_cc=2 -addnode=37.148.210.158 -addnode=37.148.212.36 -addnode=46.4.238.65 -addressindex=1 -spentindex=1 -ac_marmara=1 -ac_staked=75 -ac_reward=3000000000"
-        self.command_get_adress = "komodo-cli -ac_name=MCL getnewaddress"
+        self.command_get_address = "komodo-cli -ac_name=MCL getnewaddress"
         self.command_get_pubkey = "komodo-cli -ac_name=MCL validateaddress"
-        self.command_get_adress_convertpassphrase = "komodo-cli -ac_name=MCL convertpassphrase "
+        self.command_get_address_convertpassphrase = "komodo-cli -ac_name=MCL convertpassphrase "
         self.command_get_privkey = "komodo-cli -ac_name=MCL dumpprivkey  "
 
         self.command_start_mcl_mining_with_pubkey = "komodod -ac_name=MCL -ac_supply=2000000 -ac_cc=2 " \
@@ -164,7 +164,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.command_mcl_unlock_coin = "komodo-cli -ac_name=MCL marmaraunlock "
         self.command_mcl_coin_sendrawtransaction = "komodo-cli -ac_name=MCL sendrawtransaction "
         self.command_mcl_send_coin = "komodo-cli -ac_name=MCL sendtoaddress "
-        self.command_mcl_request_creadit_loop = "komodo-cli -ac_name=MCL marmarareceivelist "
+        self.command_mcl_request_credit_loop = "komodo-cli -ac_name=MCL marmarareceivelist "
 
         self.command_mcl_set_mining = "komodo-cli -ac_name=MCL setgenerate true "
         self.command_mcl_set_stacking = "komodo-cli -ac_name=MCL setgenerate true 0"
@@ -181,11 +181,11 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.command_mcl_marmaratransfer_accept_countine = """'{"avalcount":"0"}'"""
 
         self.command_mcl_credit_loop_search = "komodo-cli -ac_name=MCL marmaracreditloop "
-        self.command_mcl_marmar_holders = "komodo-cli -ac_name=MCL marmaraholderloops "
-        self.command_mcl_marmar_holders_min_matures = "0"
-        self.command_mcl_marmar_holders_max_matures = "0"
-        self.command_mcl_marmar_holders_min_amount = "0"
-        self.command_mcl_marmar_holders_max_amount = "0"
+        self.command_mcl_marmara_holders = "komodo-cli -ac_name=MCL marmaraholderloops "
+        self.command_mcl_marmara_holders_min_matures = "0"
+        self.command_mcl_marmara_holders_max_matures = "0"
+        self.command_mcl_marmara_holders_min_amount = "0"
+        self.command_mcl_marmara_holders_max_amount = "0"
 
         self.command_mcl_wallet_list = "komodo-cli -ac_name=MCL listaddressgroupings"
         self.command_mcl_import_privkey = "komodo-cli -ac_name=MCL importprivkey "
@@ -199,7 +199,6 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.readPersons()
 
         self.pushButton_44.setVisible(True)
-
 
         self.progressBar_2.setValue(self.progressBarValue)
         self.tabWidget.tabBar().setVisible(False)
@@ -252,8 +251,6 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.tabWidget_4.currentChanged.connect(self.tabWidgetOnChange)
         self.comboBox_3.currentTextChanged.connect(self.on_combobox_changed)
 
-
-
         # Click Enter
         self.lineEdit_6.returnPressed.connect(self.buttonClickSshConnect)
         self.checkBox_2.stateChanged.connect(self.state_changed_checkBox_2)
@@ -292,8 +289,6 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.thread_import_wallet = ThreadGui.ImportPrivkey()
         self.thread_get_private_key = ThreadGui.ShowPrivateKey()
 
-
-
         # Loading Gif
         # --------------------------------------------------
         self.loading_screen = LoadingScreen()
@@ -306,8 +301,8 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.thread_import_wallet.change_value_information_get_wallet.connect(self.changingInformationWalletAdressAfterImportWallet)
         self.thread_import_wallet.change_value_information_get_pubkey.connect(self.changingInformationPubkeyAdressAfterImportWallet)
 
-        self.thread_import_wallet.command_mcl_import_privkey =  self.mcl_install_file_path + self.command_mcl_import_privkey + self.lineEdit_28.text()
-        self.thread_import_wallet.command_mcl_get_pubkey =  self.mcl_install_file_path + self.command_get_pubkey
+        self.thread_import_wallet.command_mcl_import_privkey = self.mcl_install_file_path + self.command_mcl_import_privkey + self.lineEdit_28.text()
+        self.thread_import_wallet.command_mcl_get_pubkey = self.mcl_install_file_path + self.command_get_pubkey
 
         self.thread_import_wallet.server_username = self.server_username
         self.thread_import_wallet.server_hostname = self.server_hostname
@@ -315,13 +310,13 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
         self.thread_import_wallet.start()
 
-    def changingInformationWalletAdressAfterImportWallet(self,val):
+    def changingInformationWalletAdressAfterImportWallet(self, val):
         self.lineEdit_34.setText(val)
 
-    def changingInformationPubkeyAdressAfterImportWallet(self,val):
-        if val=="":
+    def changingInformationPubkeyAdressAfterImportWallet(self, val):
+        if val == "":
             self.loading_screen.stopAnimotion()
-            self.showDialogInfo(self.msg_title_warning,self.msg_unsuccess_import,"",self.msg_ok)
+            self.showDialogInfo(self.msg_title_warning, self.msg_unsuccess_import, "", self.msg_ok)
         else:
             self.thread_wallet_list.terminate()
 
@@ -364,23 +359,23 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
         self.thread_wallet_list.start()
 
-    def changingInformationWalletList(self,val):
+    def changingInformationWalletList(self, val):
         print("*****")
         if val != "0":
             print("///")
             self.tableWidget_6.setRowCount(self.tableWidget_6.rowCount()+1)
 
             val_ = val.split(",")
-            walletAdress_ = QTableWidgetItem(val_[0])
-            self.tableWidget_6.setItem(self.count_wallet_list, 0, walletAdress_)
+            walletAddress_ = QTableWidgetItem(val_[0])
+            self.tableWidget_6.setItem(self.count_wallet_list, 0, walletAddress_)
 
-            self.btn_wallet_coppy = QPushButton('')
-            self.btn_wallet_coppy.setStyleSheet(
+            self.btn_wallet_copy = QPushButton('')
+            self.btn_wallet_copy.setStyleSheet(
                     "QPushButton          {image: url("+self.icon_path+"/copy_wallet_icon_.png); border: 0; width: 30px; height: 30px;}"
                     "QPushButton::hover   {image: url("+self.icon_path+"/copy_wallet_icon_hover_.png);border:0px}"
                     "QPushButton::pressed {image: url("+self.icon_path+"/copy_wallet_icon_press_.png);border:0px}")
-            self.btn_wallet_coppy.clicked.connect(self.buttonClickCopyWalletFromList)
-            self.tableWidget_6.setCellWidget(self.count_wallet_list, 1, self.btn_wallet_coppy)
+            self.btn_wallet_copy.clicked.connect(self.buttonClickCopyWalletFromList)
+            self.tableWidget_6.setCellWidget(self.count_wallet_list, 1, self.btn_wallet_copy)
 
             pubkey_ = QTableWidgetItem(val_[1])
             self.tableWidget_6.setItem(self.count_wallet_list, 2, pubkey_)
@@ -448,15 +443,15 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
     def buttonClickNewPersonSave(self):
         if self.lineEdit_39.text() != "" and self.lineEdit_10.text() != "" and self.lineEdit_38.text() != "":
             try:
-                dosya = open(self.person_info_file_name, 'a')
+                file = open(self.person_info_file_name, 'a')
                 person_infos = self.lineEdit_39.text() + ","
                 person_infos = person_infos + self.lineEdit_10.text() + ","
                 person_infos = person_infos + self.lineEdit_38.text() + "\n"
-                dosya.write(person_infos)
+                file.write(person_infos)
             except IOError:
-                print("Except error when read server file!")
+                print("Exception error while reading server file!")
             finally:
-                dosya.close()
+                file.close()
 
             self.readPersons()
             self.lineEdit_39.setText("")
@@ -476,7 +471,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
                     person_all_info = file.read().rstrip()
                     self.person_list = person_all_info.split("\n")
                 except IOError:
-                    print("Except error when read server file!")
+                    print("Except error while reading server file!")
                 finally:
                     file.close()
 
@@ -497,16 +492,16 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             name = QTableWidgetItem(person[0])
             self.tableWidget_5.setItem(row_index, 0, name)
 
-            walletAdress_ = QTableWidgetItem(person[1])
-            self.tableWidget_5.setItem(row_index, 1, walletAdress_)
+            walletAddress_ = QTableWidgetItem(person[1])
+            self.tableWidget_5.setItem(row_index, 1, walletAddress_)
 
-            self.btn_wallet_coppy = QPushButton('')
-            self.btn_wallet_coppy.setStyleSheet(
+            self.btn_wallet_copy = QPushButton('')
+            self.btn_wallet_copy.setStyleSheet(
                     "QPushButton          {image: url("+self.icon_path+"/copy_wallet_icon_.png); border: 0; width: 30px; height: 30px;}"
                     "QPushButton::hover   {image: url("+self.icon_path+"/copy_wallet_icon_hover_.png);border:0px}"
                     "QPushButton::pressed {image: url("+self.icon_path+"/copy_wallet_icon_press_.png);border:0px}")
-            self.btn_wallet_coppy.clicked.connect(self.buttonClickPersonCopyWalletAdress)
-            self.tableWidget_5.setCellWidget(row_index, 2, self.btn_wallet_coppy)
+            self.btn_wallet_copy.clicked.connect(self.buttonClickPersonCopyWalletAdress)
+            self.tableWidget_5.setCellWidget(row_index, 2, self.btn_wallet_copy)
 
             pubkey_ = QTableWidgetItem(person[2])
             self.tableWidget_5.setItem(row_index, 3, pubkey_)
@@ -536,13 +531,13 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         del self.person_list[index.row()]
 
         try:
-            dosya = open(self.person_info_file_name, 'w')
+            file = open(self.person_info_file_name, 'w')
             for list in self.person_list:
-                dosya.write(list + "\n")
+                file.write(list + "\n")
         except IOError:
-            print("Except error when read server file!")
+            print("Exception error while reading server file!")
         finally:
-            dosya.close()
+            file.close()
 
         self.readPersons()
 
@@ -591,7 +586,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             self.changingInformationGetInfoPubkeyCheck)
 
         self.thread_create_wallet_after_install.command_mcl_start_chain_without_pubkey =  self.mcl_install_file_path + self.command_start_mcl_mining_without_pubkey
-        self.thread_create_wallet_after_install.command_mcl_create_wallet_adress =  self.mcl_install_file_path + self.command_get_adress
+        self.thread_create_wallet_after_install.command_mcl_create_wallet_adress =  self.mcl_install_file_path + self.command_get_address
         self.thread_create_wallet_after_install.command_mcl_get_info =  self.mcl_install_file_path + self.command_mcl_get_info
         self.thread_create_wallet_after_install.command_mcl_get_pubkey =  self.mcl_install_file_path + self.command_get_pubkey
         self.thread_create_wallet_after_install.command_mcl_get_privkey =  self.mcl_install_file_path + self.command_get_privkey
@@ -649,7 +644,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
                 self.changingInformationGetInfoPubkeyCheck)
 
             self.thread_create_wallet_click_button.command_mcl_start_chain_without_pubkey =  self.mcl_install_file_path + self.command_start_mcl_mining_without_pubkey
-            self.thread_create_wallet_click_button.command_mcl_create_wallet_adress =  self.mcl_install_file_path + self.command_get_adress
+            self.thread_create_wallet_click_button.command_mcl_create_wallet_adress =  self.mcl_install_file_path + self.command_get_address
             self.thread_create_wallet_click_button.command_mcl_get_info =  self.mcl_install_file_path + self.command_mcl_get_info
             self.thread_create_wallet_click_button.command_mcl_get_pubkey =  self.mcl_install_file_path + self.command_get_pubkey
             self.thread_create_wallet_click_button.command_mcl_get_privkey =  self.mcl_install_file_path + self.command_get_privkey
@@ -680,7 +675,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
                         self.changingInformationGetInfoPubkeyCheck)
 
                     self.thread_create_wallet_convertpassphrase.command_mcl_start_chain_without_pubkey =  self.mcl_install_file_path + self.command_start_mcl_mining_without_pubkey
-                    self.thread_create_wallet_convertpassphrase.command_mcl_create_convertpassphrase =  self.mcl_install_file_path + self.command_get_adress_convertpassphrase + "\"" + self.lineEdit_7.text() + "\""
+                    self.thread_create_wallet_convertpassphrase.command_mcl_create_convertpassphrase =  self.mcl_install_file_path + self.command_get_address_convertpassphrase + "\"" + self.lineEdit_7.text() + "\""
                     self.thread_create_wallet_convertpassphrase.command_mcl_get_info =  self.mcl_install_file_path + self.command_mcl_get_info
                     self.thread_create_wallet_convertpassphrase.command_mcl_import_private_Key =  self.mcl_install_file_path + self.command_mcl_import_privkey
 
@@ -839,20 +834,20 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.msg_do_you_want_to_request = res["msg_do_you_want_to_request"]
         self.msg_do_you_want_endorser = res["msg_do_you_want_endorser"]
         self.msg_do_you_want_to_accept = res["msg_do_you_want_to_accept"]
-        self.msg_credit_confirmaiton = res["msg_credit_confirmaiton"]
+        self.msg_credit_confirmation = res["msg_credit_confirmation"]
         self.msg_do_you_want_to_send_coin = res["msg_do_you_want_to_send_coin"]
         self.msg_sended_coin = res["msg_sended_coin"]
         self.msg_not_sended_coin = res["msg_not_sended_coin"]
-        self.msg_do_you_want_to_acitvate_coins = res["msg_do_you_want_to_acitvate_coins"]
-        self.msg_do_you_want_to_deacitvate_coins = res["msg_do_you_want_to_deacitvate_coins"]
-        self.msg_succes_lock = res["msg_succes_lock"]
-        self.msg_unsucces_lock = res["msg_unsucces_lock"]
-        self.msg_succes_unlock = res["msg_succes_unlock"]
-        self.msg_unsucces_unlock = res["msg_unsucces_unlock"]
-        self.msg_succes_request = res["msg_succes_request"]
-        self.msg_unsucces_request = res["msg_unsucces_request"]
-        self.msg_succes_request_aceept = res["msg_succes_request_aceept"]
-        self.msg_unsucces_request_aceept = res["msg_unsucces_request_aceept"]
+        self.msg_do_you_want_to_activate_coins = res["msg_do_you_want_to_activate_coins"]
+        self.msg_do_you_want_to_deactivate_coins = res["msg_do_you_want_to_deactivate_coins"]
+        self.msg_succes_lock = res["msg_success_lock"]
+        self.msg_unsuccess_lock = res["msg_unsuccess_lock"]
+        self.msg_success_unlock = res["msg_success_unlock"]
+        self.msg_unsuccess_unlock = res["msg_unsuccess_unlock"]
+        self.msg_success_request = res["msg_success_request"]
+        self.msg_unsuccess_request = res["msg_unsuccess_request"]
+        self.msg_success_request_accept = res["msg_success_request_accept"]
+        self.msg_unsuccess_request_accept = res["msg_unsuccess_request_accept"]
         self.msg_start_chain = res["msg_start_chain"]
         self.msg_stop_chain = res["msg_stop_chain"]
         self.msg_stop_chain_last = res["msg_stop_chain_last"]
@@ -959,7 +954,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.label_68.setText(res["label_name"].capitalize())
         self.label_67.setText(res["label_wallet_adress"])
 
-        # Intall Objects
+        # Install Objects
         self.pushButton_5.setText(res["button_install"])
         self.label_71.setText(res["label_notice"])
         self.msg_box_end_1 = res["msg_box_end_1"]
@@ -1185,25 +1180,25 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             min_mat = int(self.long_chain_blocks) + int(abs(date_min).total_seconds() / 60)
             max_mat = int(self.long_chain_blocks) + int(abs(date_max).total_seconds() / 60)
 
-            self.command_mcl_marmar_holders_min_matures = str(min_mat)
-            self.command_mcl_marmar_holders_max_matures = str(max_mat)
+            self.command_mcl_marmara_holders_min_matures = str(min_mat)
+            self.command_mcl_marmara_holders_max_matures = str(max_mat)
         else:
-            self.command_mcl_marmar_holders_min_matures = "0"
-            self.command_mcl_marmar_holders_max_matures = "0"
+            self.command_mcl_marmara_holders_min_matures = "0"
+            self.command_mcl_marmara_holders_max_matures = "0"
 
         if not self.checkBox_5.isChecked():
-            self.command_mcl_marmar_holders_min_amount = self.lineEdit_29.text()
-            self.command_mcl_marmar_holders_max_amount = self.lineEdit_30.text()
+            self.command_mcl_marmara_holders_min_amount = self.lineEdit_29.text()
+            self.command_mcl_marmara_holders_max_amount = self.lineEdit_30.text()
         else:
-            self.command_mcl_marmar_holders_min_amount = "0"
-            self.command_mcl_marmar_holders_max_amount = "0"
+            self.command_mcl_marmara_holders_min_amount = "0"
+            self.command_mcl_marmara_holders_max_amount = "0"
 
         self.thread_list_holders = ThreadGui.SearchHolders()
 
         self.loading_screen.startAnimation()
         self.thread_list_holders.change_value_information.connect(self.changingInformationMarmaraHoldersList)
 
-        self.thread_list_holders.command_mcl_marmara_holders =  self.mcl_install_file_path + self.command_mcl_marmar_holders + self.command_mcl_marmar_holders_min_matures + " " + self.command_mcl_marmar_holders_max_matures + " " + self.command_mcl_marmar_holders_min_amount + " " + self.command_mcl_marmar_holders_max_amount + " " + self.pubkey
+        self.thread_list_holders.command_mcl_marmara_holders =  self.mcl_install_file_path + self.command_mcl_marmara_holders + self.command_mcl_marmara_holders_min_matures + " " + self.command_mcl_marmara_holders_max_matures + " " + self.command_mcl_marmara_holders_min_amount + " " + self.command_mcl_marmara_holders_max_amount + " " + self.pubkey
 
         self.thread_list_holders.server_username = self.server_username
         self.thread_list_holders.server_hostname = self.server_hostname
@@ -1515,7 +1510,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
                     matures_date_ = str(matures_time.day) + "/" + str(matures_time.month) + "/" + str(matures_time.year)
 
-                    self.showDialogYesNo(self.msg_credit_confirmaiton,
+                    self.showDialogYesNo(self.msg_credit_confirmation,
                                          "TXID: " + item['txid'] + "\n" +
                                          self.amount.upper() + ": " + str(item['amount']) + "\n" +
                                          self.matures.upper() + ": " + matures_date_ + "\n" +
@@ -1548,7 +1543,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         if index.isValid():
             for item in self.request_list_in_loop:
                 if item['txid'] == (self.tableWidget_2.item(index.row(), 0)).text():
-                    self.showDialogYesNo(self.msg_credit_confirmaiton,
+                    self.showDialogYesNo(self.msg_credit_confirmation,
                                          "TXID: " + item['txid'] + "\n" +
                                          "AMOUNT: " + str(item['amount']) + "\n"
                                                                             "MATURES: " + str(item['matures']) + "\n"
@@ -1608,7 +1603,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
     def buttonClickLockCoin(self):
         if not self.lineEdit_12.text() == "":
-            self.showDialogYesNo(self.msg_title_warning, self.msg_do_you_want_to_acitvate_coins, self.msg_yes,
+            self.showDialogYesNo(self.msg_title_warning, self.msg_do_you_want_to_activate_coins, self.msg_yes,
                                  self.msg_no)
             if self.message_button_return_boolean:
                 self.thread_lock_coin = ThreadGui.LockCoin()
@@ -1633,7 +1628,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
     def buttonClickUnlockCoin(self):
         if not self.lineEdit_16.text() == "":
-            self.showDialogYesNo(self.msg_title_warning, self.msg_do_you_want_to_deacitvate_coins, self.msg_yes,
+            self.showDialogYesNo(self.msg_title_warning, self.msg_do_you_want_to_deactivate_coins, self.msg_yes,
                                  self.msg_no)
             if self.message_button_return_boolean:
                 self.thread_unlock_coin = ThreadGui.UnlockCoin()
@@ -1659,26 +1654,26 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
     def changingInformationLock(self, val):
         if val:
             self.loading_screen.stopAnimotion()
-            self.showDialogInfo(self.msg_title_info, self.msg_succes_lock, "", self.msg_ok)
+            self.showDialogInfo(self.msg_title_info, self.msg_success_lock, "", self.msg_ok)
         else:
             self.loading_screen.stopAnimotion()
-            self.showDialogInfo(self.msg_title_info, self.msg_unsucces_lock, "", self.msg_ok)
+            self.showDialogInfo(self.msg_title_info, self.msg_unsuccess_lock, "", self.msg_ok)
 
     def changingInformationUnlock(self, val):
         if val:
             self.loading_screen.stopAnimotion()
-            self.showDialogInfo(self.msg_title_info, self.msg_succes_unlock, "", self.msg_ok)
+            self.showDialogInfo(self.msg_title_info, self.msg_success_unlock, "", self.msg_ok)
         else:
             self.loading_screen.stopAnimotion()
-            self.showDialogInfo(self.msg_title_info, self.msg_unsucces_unlock, "", self.msg_ok)
+            self.showDialogInfo(self.msg_title_info, self.msg_unsuccess_unlock, "", self.msg_ok)
 
     def changingInformationAcceptCreditRequest(self, val):
         if val:
             self.loading_screen.stopAnimotion()
-            self.showDialogInfo(self.msg_title_info, self.msg_succes_request_aceept, "", self.msg_ok)
+            self.showDialogInfo(self.msg_title_info, self.msg_success_request_accept, "", self.msg_ok)
         else:
             self.loading_screen.stopAnimotion()
-            self.showDialogInfo(self.msg_title_info, self.msg_unsucces_request_aceept, "", self.msg_ok)
+            self.showDialogInfo(self.msg_title_info, self.msg_unsuccess_request_accept, "", self.msg_ok)
 
     def buttonClickMarmaraCreditLoopDetails(self):
         if not self.lineEdit_13.text() == "":
@@ -1703,13 +1698,13 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
         if val:
             self.loading_screen.stopAnimotion()
-            self.showDialogInfo(self.msg_title_info, self.msg_succes_request, "", self.msg_ok)
+            self.showDialogInfo(self.msg_title_info, self.msg_success_request, "", self.msg_ok)
         else:
             self.loading_screen.stopAnimotion()
-            self.showDialogInfo(self.msg_title_info, self.msg_unsucces_request, "", self.msg_ok)
+            self.showDialogInfo(self.msg_title_info, self.msg_unsuccess_request, "", self.msg_ok)
 
     def changingInformationTransactionID(self, val):
-        print("TrasnID")
+        print("TransactionID")
 
     def buttonClickStartChain(self):
         if not self.lineEdit_14.text() == "":
@@ -1864,9 +1859,9 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         try:
             y = json.loads(val)
 
-            self.walletAdress = y["myNormalAddress"]
-            self.lineEdit.setText(self.walletAdress)
-            self.lineEdit_31.setText(self.walletAdress)
+            self.walletAddress = y["myNormalAddress"]
+            self.lineEdit.setText(self.walletAddress)
+            self.lineEdit_31.setText(self.walletAddress)
 
             self.label_59.setText(str(y["myActivatedAmount"]))
             self.label_45.setText(str(y["myWalletNormalAmount"]))
@@ -1878,8 +1873,8 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             self.loading_screen.stopAnimotion()
             y = json.loads(val)
 
-            self.walletAdress = y["myNormalAddress"]
-            self.lineEdit.setText(self.walletAdress)
+            self.walletAddress = y["myNormalAddress"]
+            self.lineEdit.setText(self.walletAddress)
 
             self.label_59.setText(str(y["myActivatedAmount"]))
             self.label_45.setText(str(y["myWalletNormalAmount"]))
@@ -1942,14 +1937,14 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             self.pushButton_17.setDisabled(False)
 
     def firstLoginController(self):
-        print("İlk kontrl loaad")
+        print("First Check")
         self.checkMclInstall()
-        print("Check mcl")
+        print("Check MCL")
         self.checkRunningChain()
         print("Check run")
 
         if self.is_mcl_install:
-            print("Mcl kurulu")
+            print("Chain is installed")
             if self.is_chain_run:
                 self.count_wallet_list = 0
                 self.listWallet()
@@ -1979,11 +1974,11 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
                 self.thread_first_get_info.server_password = self.server_password
 
                 self.thread_first_get_info.start()
-                print("Zincir çalıyor.")
+                print("MCL is running.")
 
             elif not self.is_chain_run:
                 # self.label_57.setText(self.last_update + ":   " + "00:00")
-                # print("Zincir çalışmıyor")
+                # print("MCL is not running")
                 # self.frame_11.setDisabled(True)
                 # self.pushButton_15.setIcon(QIcon(self.icon_path+'/circle-inactive.png'))
                 # self.pushButton_15.setText(self.deactive_text)
@@ -2009,7 +2004,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             self.tabWidget_3.setCurrentIndex(0)
         elif not self.is_mcl_install:
             self.label_57.setText(self.last_update + ":   " + "00:00")
-            print("Mcl kurulu değil.")
+            print("MCL is not installed.")
             self.tabWidget.setCurrentIndex(1)
             self.showDialogInfo(self.msg_title_warning, self.msg_mcl_not_installed, "", self.msg_ok)
 
@@ -2063,7 +2058,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
                 self.mcl_install_file_path = "/home/"+user_name[0]+"/komodo/src/"
                 self.is_mcl_install = True
         # except:
-        #     print("Bağlanılamadı")
+        #     print("can't get connected")
 
     def checkRunningChain(self):
         try:
@@ -2072,12 +2067,12 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             ssh.connect(str(self.server_hostname), self.server_port, str(self.server_username),
                         str(self.server_password))
 
-            asd =  self.mcl_install_file_path + self.command_mcl_get_info
+            asd = self.mcl_install_file_path + self.command_mcl_get_info
             stdin, stdout, stderr = ssh.exec_command(asd)
             lines = stdout.readlines()
             if not lines:
                 self.is_chain_run = False
-                print("Zincir Çalışmıyor")
+                print("MCL is not running.")
             else:
                 out_ = ""
                 for deger in lines:
@@ -2085,9 +2080,9 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
                     out_ = out_ + " " + deger[0]
                 self.chainGetInfo(out_)
                 self.is_chain_run = True
-                print("Zincir çalışıyor.")
+                print("MCL is running.")
         except:
-            print("Bağlanılamadı")
+            print("Couldn't connect")
             return False
 
     def chainGetInfo(self, val):
@@ -2134,7 +2129,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
                     self.server_all_info = file.read().rstrip()
                     self.server_list = self.server_all_info.split("\n")
                 except IOError:
-                    print("Except error when read server file!")
+                    print("Exception error while reading server file!")
                 finally:
                     file.close()
 
@@ -2261,31 +2256,31 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
                 server_info_index = self.comboBox_2.currentIndex()
                 del self.server_list[server_info_index - 1]
                 try:
-                    dosya = open(self.server_info_file_name, 'w')
+                    file = open(self.server_info_file_name, 'w')
                     for list in self.server_list:
-                        dosya.write(list + "\n")
+                        file.write(list + "\n")
                 except IOError:
-                    print("Except error when read server file!")
+                    print("Exception error while reading server file!")
                 finally:
-                    dosya.close()
+                    file.close()
 
                 # Again Save
                 try:
-                    dosya = open(self.server_info_file_name, 'a')
+                    file = open(self.server_info_file_name, 'a')
                     server_infos = self.lineEdit_19.text() + ","
                     server_infos = server_infos + self.lineEdit_20.text() + ","
                     server_infos = server_infos + self.lineEdit_18.text() + "\n"
-                    dosya.write(server_infos)
+                    file.write(server_infos)
                 except IOError:
-                    print("Except error when read server file!")
+                    print("Exception error while reading server file!")
                 finally:
-                    dosya.close()
+                    file.close()
 
                 msg = QMessageBox()
                 msg.setIcon(QMessageBox.Information)
                 msg.setText("Değişiklikler kaydedildi.")
                 msg.setInformativeText("Please select server!")
-                msg.setWindowTitle("WARRNING")
+                msg.setWindowTitle("WARNING")
                 msg.setStandardButtons(QMessageBox.Ok)
                 msg.exec_()
 
@@ -2301,7 +2296,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             msg.setIcon(QMessageBox.Information)
             msg.setText("The server has not been selected.")
             msg.setInformativeText("Please select server!")
-            msg.setWindowTitle("WARRNING")
+            msg.setWindowTitle("WARNING")
             msg.setStandardButtons(QMessageBox.Ok)
             msg.exec_()
 
@@ -2317,13 +2312,13 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
                 del self.server_list[server_info_index - 1]
 
                 try:
-                    dosya = open(self.server_info_file_name, 'w')
+                    file = open(self.server_info_file_name, 'w')
                     for list in self.server_list:
-                        dosya.write(list + "\n")
+                        file.write(list + "\n")
                 except IOError:
-                    print("Except error when read server file!")
+                    print("Exception error when reading server file!")
                 finally:
-                    dosya.close()
+                    file.close()
 
                 self.readServersInfo()
                 self.comboBox_2.setCurrentIndex(0)
@@ -2343,15 +2338,15 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
     def buttonClickNewServerInfoSave(self):
         if self.lineEdit_8.text() != "" and self.lineEdit_11.text() != "" and self.lineEdit_17.text() != "":
             try:
-                dosya = open(self.server_info_file_name, 'a')
+                file = open(self.server_info_file_name, 'a')
                 server_infos = self.lineEdit_8.text() + ","
                 server_infos = server_infos + self.lineEdit_11.text() + ","
                 server_infos = server_infos + self.lineEdit_17.text() + "\n"
-                dosya.write(server_infos)
+                file.write(server_infos)
             except IOError:
-                print("Except error when read server file!")
+                print("Exception error while reading server file!")
             finally:
-                dosya.close()
+                file.close()
 
             self.readServersInfo()
             self.lineEdit_8.setText("")
