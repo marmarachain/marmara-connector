@@ -22,7 +22,7 @@ from PyQt5.QtWidgets import QMessageBox
 from functools import partial
 import os
 import ThreadGui
-from Looding import LoadingScreen
+from Loading import LoadingScreen
 
 from guiStyle import GuiStyle
 import json
