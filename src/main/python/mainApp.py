@@ -2024,9 +2024,9 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
         stdin, stdout, stderr = ssh.exec_command(str("ls"))
         lines = stdout.readlines()
-        for deger in lines:
-            deger = deger.split("\n")
-            tmp_file_check_home.append(deger[0])
+        for value in lines:
+            value = value.split("\n")
+            tmp_file_check_home.append(value[0])
 
         self.is_mcl_install = False
         if "komodo-cli" in tmp_file_check_home and "komodod" in tmp_file_check_home:
@@ -2043,9 +2043,9 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             # MCL Install Compiler Check
             stdin, stdout, stderr = ssh.exec_command(str("cd komodo/src; ls"))
             lines = stdout.readlines()
-            for deger in lines:
-                deger = deger.split("\n")
-                tmp_file_check_compilier.append(deger[0])
+            for value in lines:
+                value = value.split("\n")
+                tmp_file_check_compilier.append(value[0])
             print(tmp_file_check_compilier)
 
             if "komodo-cli" in tmp_file_check_compilier and "komodod" in tmp_file_check_compilier:
@@ -2075,9 +2075,9 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
                 print("MCL is not running.")
             else:
                 out_ = ""
-                for deger in lines:
-                    deger = deger.split("\n")
-                    out_ = out_ + " " + deger[0]
+                for value in lines:
+                    value = value.split("\n")
+                    out_ = out_ + " " + value[0]
                 self.chainGetInfo(out_)
                 self.is_chain_run = True
                 print("MCL is running.")
@@ -2157,9 +2157,9 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             stdin, stdout, stderr = ssh.exec_command(str("ls"))
             lines = stdout.readlines()
             out_ = ""
-            for deger in lines:
-                deger = deger.split("\n")
-                out_ = out_ + " " + deger[0]
+            for value in lines:
+                value = value.split("\n")
+                out_ = out_ + " " + value[0]
 
             transport = ssh.get_transport()
             transport.send_ignore()

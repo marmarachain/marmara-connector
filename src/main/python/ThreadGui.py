@@ -19,7 +19,7 @@ class AutoInstall(QThread):
         self.mcl_install_connect_ssh()
 
     def mcl_install_connect_ssh(self):
-        print("Sunucya bağlanmak için bilgiler alindi.")
+        print("Data collected to connect to the server")
         self.change_value_text_edit.emit(str("Get Info..."))
 
         ssh = paramiko.SSHClient()
@@ -29,12 +29,12 @@ class AutoInstall(QThread):
         session.set_combine_stderr(True)
         session.get_pty()
 
-        print("bağlantı tamam.")
+        print("Connection established.")
         self.change_value_text_edit.emit(str("Connection ok."))
         self.change_value_progressbar.emit(2)
 
-        #Install Lib
-        self.change_value_text_edit.emit(str("Installing some libs..."))
+        # Install Libraries
+        self.change_value_text_edit.emit(str("Installing libraries..."))
 
         session = ssh.get_transport().open_session()
         session.set_combine_stderr(True)
@@ -46,14 +46,14 @@ class AutoInstall(QThread):
         stdin.write("yes" + '\n')
         stdin.write("yes" + '\n')
 
-        self.change_value_text_edit.emit("Install depends...")
+        self.change_value_text_edit.emit("Install dependencies...")
         for line in stdout:
             print(line.rstrip())
             # self.change_value_text_edit.emit(str(line.rstrip()))
             # stdin.write("yes" + '\n')
 
-        print("Downloaded depends.")
-        self.change_value_text_edit.emit(str("*** Downloaded Depends. ***"))
+        print("Installed dependencies.")
+        self.change_value_text_edit.emit(str("*** Installed dependencies. ***"))
         self.change_value_progressbar.emit(7)
 
         # Install mcl zip in remote server
@@ -88,7 +88,7 @@ class AutoInstall(QThread):
             print(line.rstrip())
             self.change_value_text_edit.emit("Unzip ....")
 
-        print("Unzip İndirildi.")
+        print("Unzip installed.")
         self.change_value_text_edit.emit(str("*** Installed Unzip ***"))
         self.change_value_progressbar.emit(15)
 
@@ -108,12 +108,12 @@ class AutoInstall(QThread):
             print(line.rstrip())
             self.change_value_text_edit.emit(str(line.rstrip()))
 
-        print("Zipten Çıkarıldı")
+        print("Extracted Files")
         self.change_value_text_edit.emit("Extracted Files.")
         self.change_value_progressbar.emit(22)
 
-        # Set sermission mcl files
-        print("İzinler Ayarlanılıyor...")
+        # Set permission for mcl files
+        print("Setting permissions...")
         self.change_value_text_edit.emit("Setting permissions...")
 
         session = ssh.get_transport().open_session()
@@ -132,7 +132,7 @@ class AutoInstall(QThread):
         self.change_value_progressbar.emit(25)
 
         # Run fetch parameters in remote server
-        print("Fetch Parametrs Çalıştırıldı...")
+        print("Running Fetch Parameters...")
         self.change_value_text_edit.emit("Running Fetch Parameters...")
 
         session = ssh.get_transport().open_session()
@@ -157,7 +157,7 @@ class AutoInstall(QThread):
 
         self.change_value_progressbar.emit(67)
 
-        print("Fetch Parametrs bitti...")
+        print("Completed Fetch Parameters...")
         self.change_value_text_edit.emit("Finished Fetch Parameters.")
 
         stdin.flush()
@@ -245,44 +245,44 @@ class CreateWalletAdressAfterInstall(QThread):
             else:
                 print("Zincir çalışıyor.")
                 out_ = ""
-                for deger in lines:
-                    deger = deger.split("\n")
-                    out_ = out_ + " " + deger[0]
+                for value in lines:
+                    value = value.split("\n")
+                    out_ = out_ + " " + value[0]
 
                 self.change_value_information_getinfo_check_chain_with_pubkey.emit(out_)
 
                 # ---------------------------------------------------------------
-                # Get Adress
+                # Get Address
                 print(self.command_mcl_create_wallet_adress)
                 stdout = ssh.command(self.self.command_mcl_create_wallet_adress)
                 lines = stdout.readlines()
-                adress_ = ""
-                for deger in lines:
-                    deger = deger.split("\n")
-                    adress_ = adress_ + " " + deger[0]
-                self.change_value_information_adress.emit(adress_)
+                address_ = ""
+                for value in lines:
+                    value = value.split("\n")
+                    address_ = address_ + " " + value[0]
+                self.change_value_information_adress.emit(address_)
 
                 # ---------------------------------------------------------------
                 # Get Privkey
-                print(self.command_mcl_get_privkey + adress_)
-                stdout = ssh.command(self.command_mcl_get_privkey + adress_)
+                print(self.command_mcl_get_privkey + address_)
+                stdout = ssh.command(self.command_mcl_get_privkey + address_)
                 lines = stdout.readlines()
                 out_ = ""
-                for deger in lines:
-                    deger = deger.split("\n")
-                    out_ = out_ + " " + deger[0]
+                for value in lines:
+                    value = value.split("\n")
+                    out_ = out_ + " " + value[0]
                 print(out_)
                 self.change_value_information_privkey.emit(out_)
 
                 # ---------------------------------------------------------------
                 # Get Pubkey
-                print(self.command_mcl_get_pubkey + " " + adress_)
-                stdout = ssh.command(self.command_mcl_get_privkey + adress_)
+                print(self.command_mcl_get_pubkey + " " + address_)
+                stdout = ssh.command(self.command_mcl_get_privkey + address_)
                 lines = stdout.readlines()
                 out_ = ""
-                for deger in lines:
-                    deger = deger.split("\n")
-                    out_ = out_ + " " + deger[0]
+                for value in lines:
+                    value = value.split("\n")
+                    out_ = out_ + " " + value[0]
 
                 y = json.loads(out_)
                 print(y["pubkey"])
@@ -352,15 +352,15 @@ class CreateWalletAdressClickButton(QThread):
                     # --------------------------------------------------
                     # Get New Adress
                     out_ = ""
-                    for deger in lines:
-                        deger = deger.split("\n")
-                        out_ = out_ + " " + deger[0]
+                    for value in lines:
+                        value = value.split("\n")
+                        out_ = out_ + " " + value[0]
                     break
         else:
             out_ = ""
-            for deger in lines:
-                deger = deger.split("\n")
-                out_ = out_ + " " + deger[0]
+            for value in lines:
+                value = value.split("\n")
+                out_ = out_ + " " + value[0]
 
         self.change_value_information_getinfo_check_chain_with_pubkey.emit(out_)
 
@@ -369,34 +369,34 @@ class CreateWalletAdressClickButton(QThread):
         print(self.command_mcl_create_wallet_adress)
         stdout = ssh.command(self.command_mcl_create_wallet_adress)
         lines = stdout.readlines()
-        adress_ = ""
-        for deger in lines:
-            deger = deger.split("\n")
-            adress_ = adress_ + " " + deger[0]
-        self.change_value_information_adress.emit(adress_)
+        address_ = ""
+        for value in lines:
+            value = value.split("\n")
+            address_ = address_ + " " + value[0]
+        self.change_value_information_adress.emit(address_)
 
         # ---------------------------------------------------------------
         # Get Privkey
-        command_getprivkey = self.command_mcl_get_privkey + adress_
-        print(self.command_mcl_get_privkey + adress_)
-        stdout = ssh.command(self.command_mcl_get_privkey + adress_)
+        command_getprivkey = self.command_mcl_get_privkey + address_
+        print(self.command_mcl_get_privkey + address_)
+        stdout = ssh.command(self.command_mcl_get_privkey + address_)
         lines = stdout.readlines()
         out_ = ""
-        for deger in lines:
-            deger = deger.split("\n")
-            out_ = out_ + " " + deger[0]
+        for value in lines:
+            value = value.split("\n")
+            out_ = out_ + " " + value[0]
         print(out_)
         self.change_value_information_privkey.emit(out_)
 
         # ---------------------------------------------------------------
         # Get Pubkey
-        print(self.command_mcl_get_pubkey + " " + adress_)
-        stdout = ssh.command(self.command_mcl_get_pubkey + " " + adress_)
+        print(self.command_mcl_get_pubkey + " " + address_)
+        stdout = ssh.command(self.command_mcl_get_pubkey + " " + address_)
         lines = stdout.readlines()
         out_ = ""
-        for deger in lines:
-            deger = deger.split("\n")
-            out_ = out_ + " " + deger[0]
+        for value in lines:
+            value = value.split("\n")
+            out_ = out_ + " " + value[0]
 
         y = json.loads(out_)
         print(y["pubkey"])
@@ -463,17 +463,17 @@ class CreateWalletAdressConvertpassphrase(QThread):
                 else:
                     print("Zincir çalışıyor.")
                     # --------------------------------------------------
-                    # Get New Adress
+                    # Get New Address
                     out_ = ""
-                    for deger in lines:
-                        deger = deger.split("\n")
-                        out_ = out_ + " " + deger[0]
+                    for value in lines:
+                        value = value.split("\n")
+                        out_ = out_ + " " + value[0]
                     break
         else:
             out_ = ""
-            for deger in lines:
-                deger = deger.split("\n")
-                out_ = out_ + " " + deger[0]
+            for value in lines:
+                value = value.split("\n")
+                out_ = out_ + " " + value[0]
 
         self.change_value_information_getinfo_check_chain_with_pubkey.emit(out_)
 
@@ -482,9 +482,9 @@ class CreateWalletAdressConvertpassphrase(QThread):
         stdout = ssh.command(self.command_mcl_create_convertpassphrase)
         lines = stdout.readlines()
         out_ = ""
-        for deger in lines:
-            deger = deger.split("\n")
-            out_ = out_ + " " + deger[0]
+        for value in lines:
+            value = value.split("\n")
+            out_ = out_ + " " + value[0]
 
         convertpassphrase_out= json.loads(out_)
 
@@ -492,9 +492,9 @@ class CreateWalletAdressConvertpassphrase(QThread):
         stdout = ssh.command(self.command_mcl_import_private_Key + convertpassphrase_out["wif"])
         lines = stdout.readlines()
         out_ = ""
-        for deger in lines:
-            deger = deger.split("\n")
-            out_ = out_ + " " + deger[0]
+        for value in lines:
+            value = value.split("\n")
+            out_ = out_ + " " + value[0]
 
         self.change_value_information_adress.emit(convertpassphrase_out["address"])
         self.change_value_information_pubkey.emit(convertpassphrase_out["pubkey"])
@@ -554,21 +554,21 @@ class StartChain(QThread):
             # --------------------------------------------------
                 #Get info
                 out_ = ""
-                for deger in lines:
-                    deger = deger.split("\n")
-                    out_ = out_ + " " + deger[0]
+                for value in lines:
+                    value = value.split("\n")
+                    out_ = out_ + " " + value[0]
                 self.change_value_information_get_info.emit(out_)
 
             # ---------------------------------------------------------------
-                #Get Marmara
+                # Get Marmara
                 print(self.command_mcl_get_marmara_info + self.pubkey)
                 stdout = ssh.command(self.command_mcl_get_marmara_info + self.pubkey)
                 print("Marmara Info")
                 lines = stdout.readlines()
                 out_ = ""
-                for deger in lines:
-                    deger = deger.split("\n")
-                    out_ = out_ + " " + deger[0]
+                for value in lines:
+                    value = value.split("\n")
+                    out_ = out_ + " " + value[0]
 
                 self.change_value_information_get_marmara_info.emit(out_)
 
@@ -578,15 +578,15 @@ class StartChain(QThread):
                 stdout = ssh.command(self.command_mcl_get_stacking_and_mining)
                 lines = stdout.readlines()
                 out_ = ""
-                for deger in lines:
-                    deger = deger.split("\n")
-                    out_ = out_ + " " + deger[0]
+                for value in lines:
+                    value = value.split("\n")
+                    out_ = out_ + " " + value[0]
 
                 self.change_value_information_get_generate.emit(out_)
                 self.change_value_did_run_chain.emit(True)
                 break
 
-        print("THREAD BİTTİ")
+        print("THREAD ENDED")
 
 
 class StopChain(QThread):
@@ -605,7 +605,7 @@ class StopChain(QThread):
 
     def stopChain(self):
 
-        print("Sunucya bağlanmak için bilgiler alindi.")
+        print("SunucUya bağlanmak için bilgiler alindi.")
         ssh = ServerConnect(self.server_hostname, self.server_username, self.server_password)
 
         print(self.command_mcl_stop_chain)
@@ -614,9 +614,9 @@ class StopChain(QThread):
         lines = stdout.readlines()
         out_ = ""
         print(lines)
-        for deger in lines:
-            deger = deger.split("\n")
-            out_ = out_ + " " + deger[0]
+        for value in lines:
+            value = value.split("\n")
+            out_ = out_ + " " + value[0]
         print(out_)
         print("STOP Bitti")
         print("-------")
@@ -671,9 +671,9 @@ class RefreshInformations(QThread):
         print("-------")
 
         out_ = ""
-        for deger in lines:
-            deger = deger.split("\n")
-            out_ = out_ + " " + deger[0]
+        for value in lines:
+            value = value.split("\n")
+            out_ = out_ + " " + value[0]
         self.change_value_information_get_info.emit(out_)
 
         # ---------------------------------------------------------------
@@ -682,9 +682,9 @@ class RefreshInformations(QThread):
         stdout = ssh.command(self.command_mcl_get_stacking_and_mining)
         lines = stdout.readlines()
         out_ = ""
-        for deger in lines:
-            deger = deger.split("\n")
-            out_ = out_ + " " + deger[0]
+        for value in lines:
+            value = value.split("\n")
+            out_ = out_ + " " + value[0]
 
         self.change_value_information_get_generate.emit(out_)
         self.change_value_did_run_chain.emit(True)
@@ -728,9 +728,9 @@ class FirstRefreshInformations(QThread):
         # --------------------------------------------------
         # Get info
         out_ = ""
-        for deger in lines:
-            deger = deger.split("\n")
-            out_ = out_ + " " + deger[0]
+        for value in lines:
+            value = value.split("\n")
+            out_ = out_ + " " + value[0]
         self.change_value_information_get_info.emit(out_)
 
         # ---------------------------------------------------------------
@@ -741,9 +741,9 @@ class FirstRefreshInformations(QThread):
         print("Marmara Info")
         lines = stdout.readlines()
         out_ = ""
-        for deger in lines:
-            deger = deger.split("\n")
-            out_ = out_ + " " + deger[0]
+        for value in lines:
+            value = value.split("\n")
+            out_ = out_ + " " + value[0]
 
         self.change_value_information_get_marmara_info.emit(out_)
 
@@ -753,9 +753,9 @@ class FirstRefreshInformations(QThread):
         stdout = ssh.command(self.command_mcl_get_stacking_and_mining)
         lines = stdout.readlines()
         out_ = ""
-        for deger in lines:
-            deger = deger.split("\n")
-            out_ = out_ + " " + deger[0]
+        for value in lines:
+            value = value.split("\n")
+            out_ = out_ + " " + value[0]
 
         self.change_value_information_get_generate.emit(out_)
         self.change_value_did_run_chain.emit(True)
@@ -787,9 +787,9 @@ class RefreshWalletInformations(QThread):
         print("Marmara Info")
         lines = stdout.readlines()
         out_ = ""
-        for deger in lines:
-            deger = deger.split("\n")
-            out_ = out_ + " " + deger[0]
+        for value in lines:
+            value = value.split("\n")
+            out_ = out_ + " " + value[0]
         print(out_)
         self.change_value_information_get_marmara_info.emit(out_)
 
@@ -820,9 +820,9 @@ class LockCoin(QThread):
         print("Get Info")
         lines = stdout.readlines()
         out_ = ""
-        for deger in lines:
-            deger = deger.split("\n")
-            out_ = out_ + " " + deger[0]
+        for value in lines:
+            value = value.split("\n")
+            out_ = out_ + " " + value[0]
 
 
         print("Get Info Bitti")
@@ -842,9 +842,9 @@ class LockCoin(QThread):
 
             lines = stdout.readlines()
             out_ = ""
-            for deger in lines:
-                deger = deger.split("\n")
-                out_ = out_ + " " + deger[0]
+            for value in lines:
+                value = value.split("\n")
+                out_ = out_ + " " + value[0]
             print(out_)
             self.change_value_information_get_transactionID.emit(out_)
             self.change_value_information_get_lock.emit(True)
@@ -877,9 +877,9 @@ class UnlockCoin(QThread):
         stdout = ssh.command(self.command_mcl_unlock_coin)
         lines = stdout.readlines()
         out_ = ""
-        for deger in lines:
-            deger = deger.split("\n")
-            out_ = out_ + " " + deger[0]
+        for value in lines:
+            value = value.split("\n")
+            out_ = out_ + " " + value[0]
 
 
         print("Get Info Bitti")
@@ -903,9 +903,9 @@ class UnlockCoin(QThread):
 
             lines = stdout.readlines()
             out_ = ""
-            for deger in lines:
-                deger = deger.split("\n")
-                out_ = out_ + " " + deger[0]
+            for value in lines:
+                value = value.split("\n")
+                out_ = out_ + " " + value[0]
             print(out_)
             self.change_value_information_get_transactionID.emit(out_)
             self.change_value_information_get_unlock.emit(True)
@@ -933,9 +933,9 @@ class SendCoin(QThread):
         lines = stdout.readlines()
         out_ = ""
 
-        for deger in lines:
-            deger = deger.split("\n")
-            out_ = out_ + " " + deger[0]
+        for value in lines:
+            value = value.split("\n")
+            out_ = out_ + " " + value[0]
 
         print(out_)
         out_ = out_.strip()
@@ -965,9 +965,9 @@ class RefreshCreditRequest(QThread):
         lines = stdout.readlines()
         out_ = ""
 
-        for deger in lines:
-            deger = deger.split("\n")
-            out_ = out_ + " " + deger[0]
+        for value in lines:
+            value = value.split("\n")
+            out_ = out_ + " " + value[0]
 
         print(out_)
 
@@ -1000,17 +1000,16 @@ class CreditAccept(QThread):
         stdout = ssh.command(self.command_mcl_credit_request_accept)
         lines = stdout.readlines()
         out_ = ""
-        for deger in lines:
-            deger = deger.split("\n")
-            out_ = out_ + " " + deger[0]
+        for value in lines:
+            value = value.split("\n")
+            out_ = out_ + " " + value[0]
 
         print(out_)
         y = json.loads(out_)
 
         print(y["result"])
 
-
-        # Hex Onay
+        # Hex Approval
         # ---------------------------------------------------------------
         if y["result"] == "success":
             print(y["hex"])
@@ -1022,9 +1021,9 @@ class CreditAccept(QThread):
 
             lines = stdout.readlines()
             out_ = ""
-            for deger in lines:
-                deger = deger.split("\n")
-                out_ = out_ + " " + deger[0]
+            for value in lines:
+                value = value.split("\n")
+                out_ = out_ + " " + value[0]
             print(out_)
             self.change_value_information_get_transactionID.emit(out_)
             self.change_value_information_accept.emit(True)
@@ -1059,9 +1058,9 @@ class CreditRequest(QThread):
         lines = stdout.readlines()
         print(lines)
         out_ = ""
-        for deger in lines:
-            deger = deger.split("\n")
-            out_ = out_ + " " + deger[0]
+        for value in lines:
+            value = value.split("\n")
+            out_ = out_ + " " + value[0]
 
         print(out_)
 
@@ -1076,9 +1075,9 @@ class CreditRequest(QThread):
 
                 lines = stdout.readlines()
                 out_ = ""
-                for deger in lines:
-                    deger = deger.split("\n")
-                    out_ = out_ + " " + deger[0]
+                for value in lines:
+                    value = value.split("\n")
+                    out_ = out_ + " " + value[0]
                 print(out_)
                 self.change_value_information_get_transactionID.emit(out_)
                 self.change_value_information_credit_request.emit(True)
@@ -1112,10 +1111,10 @@ class SearchRequest(QThread):
         lines = stdout.readlines()
         print(lines)
         out_ = ""
-        for deger in lines:
-            deger = deger.split("\n")
-            out_ = out_ + " " + deger[0]
-        self.coun=self.coun+1
+        for value in lines:
+            value = value.split("\n")
+            out_ = out_ + " " + value[0]
+        self.coun = self.coun+1
         self.change_value_information_loop_details.emit(out_)
 
 
@@ -1142,9 +1141,9 @@ class SearchHolders(QThread):
         lines = stdout.readlines()
         print(lines)
         out_ = ""
-        for deger in lines:
-            deger = deger.split("\n")
-            out_ = out_ + " " + deger[0]
+        for value in lines:
+            value = value.split("\n")
+            out_ = out_ + " " + value[0]
 
         self.change_value_information.emit(out_)
 
@@ -1173,9 +1172,9 @@ class ActiveLoops(QThread):
         lines = stdout.readlines()
         print(lines)
         out_ = ""
-        for deger in lines:
-            deger = deger.split("\n")
-            out_ = out_ + " " + deger[0]
+        for value in lines:
+            value = value.split("\n")
+            out_ = out_ + " " + value[0]
 
         self.change_value_information.emit(out_)
 
@@ -1206,9 +1205,9 @@ class CirantaAccept(QThread):
         stdout = ssh.command(self.command_mcl_ciranta_request_accept)
         lines = stdout.readlines()
         out_ = ""
-        for deger in lines:
-            deger = deger.split("\n")
-            out_ = out_ + " " + deger[0]
+        for value in lines:
+            value = value.split("\n")
+            out_ = out_ + " " + value[0]
 
         print(out_)
         y = json.loads(out_)
@@ -1228,9 +1227,9 @@ class CirantaAccept(QThread):
 
             lines = stdout.readlines()
             out_ = ""
-            for deger in lines:
-                deger = deger.split("\n")
-                out_ = out_ + " " + deger[0]
+            for value in lines:
+                value = value.split("\n")
+                out_ = out_ + " " + value[0]
             print(out_)
             self.change_value_information_get_transactionID.emit(out_)
             self.change_value_information_accept.emit(True)
@@ -1262,9 +1261,9 @@ class AllWallet(QThread):
         stdout = ssh.command(self.command_mcl_all_wallet_list)
         lines = stdout.readlines()
         out_ = ""
-        for deger in lines:
-            deger = deger.split("\n")
-            out_ = out_ + " " + deger[0]
+        for value in lines:
+            value = value.split("\n")
+            out_ = out_ + " " + value[0]
 
         print(out_)
         y = json.loads(out_)
@@ -1280,9 +1279,9 @@ class AllWallet(QThread):
                 stdout = ssh.command(self.command_mcl_get_pubkey + w)
                 lines = stdout.readlines()
                 out_ = ""
-                for deger in lines:
-                    deger = deger.split("\n")
-                    out_ = out_ + " " + deger[0]
+                for value in lines:
+                    value = value.split("\n")
+                    out_ = out_ + " " + value[0]
 
                 wallet_info = json.loads(out_)
                 print(wallet_info["pubkey"])
@@ -1344,9 +1343,9 @@ class StartChainWithoutPubkey(QThread):
             else:
                 print("Zincir çalışıyor.")
                 out_ = ""
-                for deger in lines:
-                    deger = deger.split("\n")
-                    out_ = out_ + " " + deger[0]
+                for value in lines:
+                    value = value.split("\n")
+                    out_ = out_ + " " + value[0]
 
                 self.change_value_information_getinfo_check_chain_with_pubkey.emit(out_)
 
@@ -1355,9 +1354,9 @@ class StartChainWithoutPubkey(QThread):
                 stdout = ssh.command(self.command_mcl_all_wallet_list)
                 lines = stdout.readlines()
                 out_ = ""
-                for deger in lines:
-                    deger = deger.split("\n")
-                    out_ = out_ + " " + deger[0]
+                for value in lines:
+                    value = value.split("\n")
+                    out_ = out_ + " " + value[0]
 
                 print(out_)
                 y = json.loads(out_)
@@ -1371,9 +1370,9 @@ class StartChainWithoutPubkey(QThread):
                         stdout = ssh.command(self.command_mcl_get_pubkey + w)
                         lines = stdout.readlines()
                         out_ = ""
-                        for deger in lines:
-                            deger = deger.split("\n")
-                            out_ = out_ + " " + deger[0]
+                        for value in lines:
+                            value = value.split("\n")
+                            out_ = out_ + " " + value[0]
 
                         wallet_info = json.loads(out_)
                         print(wallet_info["pubkey"])
@@ -1425,9 +1424,9 @@ class ImportPrivkey(QThread):
             self.change_value_information_get_pubkey.emit("")
         else:
             out_ = ""
-            for deger in lines:
-                deger = deger.split("\n")
-                out_ = out_ + " " + deger[0]
+            for value in lines:
+                value = value.split("\n")
+                out_ = out_ + " " + value[0]
 
             self.change_value_information_get_wallet.emit(out_)
 
@@ -1439,9 +1438,9 @@ class ImportPrivkey(QThread):
             print(stdout)
             lines = stdout.readlines()
             out_ = ""
-            for deger in lines:
-                deger = deger.split("\n")
-                out_ = out_ + " " + deger[0]
+            for value in lines:
+                value = value.split("\n")
+                out_ = out_ + " " + value[0]
 
             wallet_info = json.loads(out_)
             print(wallet_info["pubkey"])
@@ -1474,9 +1473,9 @@ class ShowPrivateKey(QThread):
         stdout = ssh.command(self.command_mcl_get_privkey)
         lines = stdout.readlines()
         out_ = ""
-        for deger in lines:
-            deger = deger.split("\n")
-            out_ = out_ + " " + deger[0]
+        for value in lines:
+            value = value.split("\n")
+            out_ = out_ + " " + value[0]
         print(out_)
         self.change_value_information_privkey.emit(out_)
 
