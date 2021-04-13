@@ -32,10 +32,7 @@ class ServerSettings:
                     file.close()
         return server_list
 
-    def edit_record(self, server_list):
-        print(server_list)
-        return
-    
+
     def delete_record(self, server_list):
         print(server_list)
         try:

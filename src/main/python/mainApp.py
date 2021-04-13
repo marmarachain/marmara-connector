@@ -64,11 +64,11 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
             configuration.ServerSettings().save_file(server_name=self.add_servername_lineEdit.text(),
                                                      server_username=self.add_serverusername_lineEdit.text(),
                                                      server_ip=self.add_serverip_lineEdit.text())
-            self.login_stackedWidget.setCurrentIndex(1)
             self.add_servername_lineEdit.setText("")
             self.add_serverusername_lineEdit.setText("")
             self.add_serverip_lineEdit.setText("")
             self.get_server_combobox_names()
+            self.login_stackedWidget.setCurrentIndex(1)
         else:
             print('write all values')
 
@@ -81,8 +81,22 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
         self.server_comboBox.addItems(server_name_list)
 
     def edit_server_settings(self):
-        server_list = configuration.ServerSettings().read_file()
-        selected_server_info = server_list[self.server_comboBox.currentIndex()]
+        if self.edit_servername_lineEdit.text() != "" and self.edit_serverusername_lineEdit.text() != "" and self.edit_serverip_lineEdit.text() != "":
+            server_list = configuration.ServerSettings().read_file()
+            del server_list[self.server_comboBox.currentIndex()]
+            configuration.ServerSettings().delete_record(server_list)
+            configuration.ServerSettings().save_file(server_name=self.edit_servername_lineEdit.text(),
+                                                     server_username=self.edit_serverusername_lineEdit.text(),
+                                                     server_ip=self.edit_serverip_lineEdit.text())
+            self.login_stackedWidget.setCurrentIndex(1)
+            self.edit_servername_lineEdit.setText("")
+            self.edit_serverusername_lineEdit.setText("")
+            self.edit_serverip_lineEdit.setText("")
+            self.get_server_combobox_names()
+            self.login_stackedWidget.setCurrentIndex(1)
+        else:
+            print('write all values')
+
 
     def delete_server_setting(self):
         server_list = configuration.ServerSettings().read_file()
