@@ -19,6 +19,7 @@ class ServerSettings:
             file.close()
 
     def read_file(self):
+        server_list = []
         if os.stat(self.server_conf_file).st_size != 0:
             if os.path.isfile(self.server_conf_file):
                 try:

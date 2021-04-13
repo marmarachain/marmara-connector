@@ -12,48 +12,65 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
         self.main_tab.setCurrentIndex(0)
         self.main_tab.tabBar().setVisible(False)
         self.login_stackedWidget.setCurrentIndex(0)
-        self.loginback_button.setVisible(False)
+        self.home_button.setVisible(False)
         #   Login page Host Selection
         self.local_button.clicked.connect(self.local_selection)
         self.remote_button.clicked.connect(self.remote_selection)
 
         #   Login page Server authentication
-        self.loginback_button.clicked.connect(self.host_selection)
+        self.home_button.clicked.connect(self.host_selection)
         self.serveradd_button.clicked.connect(self.server_add_selected)
         self.connect_button
-        self.serveredit_button.clicked.connect(self.edit_server_settings)
-        #  Server Settings page
-        self.serversave_button.clicked.connect(self.save_server_settings)
+        self.serveredit_button.clicked.connect(self.server_edit_selected)
+        #  Add Server Settings page
+        self.add_serversave_button.clicked.connect(self.save_server_settings)
+        self.servercancel_button.clicked.connect(self.add_cancel_selected)
+        # Edit Server Settings page
+        self.edit_serversave_button.clicked.connect(self.edit_server_settings)
         self.serverdelete_button.clicked.connect(self.delete_server_setting)
 
     def host_selection(self):
         self.login_stackedWidget.setCurrentIndex(0)
-        self.login_label.setText('Select Host')
-        self.loginback_button.setVisible(False)
+        self.home_button.setVisible(False)
 
     def local_selection(self):
         self.main_tab.setCurrentIndex(1)
 
     def remote_selection(self):
         self.login_stackedWidget.setCurrentIndex(1)
-        self.login_label.setText('Select Server')
         self.get_server_combobox_names()
-        self.loginback_button.setVisible(True)
+        self.home_button.setVisible(True)
 
     def server_add_selected(self):
         self.login_stackedWidget.setCurrentIndex(2)
-        self.login_label.setText('Server Settings')
+
+    def add_cancel_selected(self):
+        self.add_servername_lineEdit.setText("")
+        self.add_serverusername_lineEdit.setText("")
+        self.add_serverip_lineEdit.setText("")
+        self.remote_selection()
+
+    def server_edit_selected(self):
+        self.login_stackedWidget.setCurrentIndex(3)
+        server_list = configuration.ServerSettings().read_file()
+        selected_server_info = server_list[self.server_comboBox.currentIndex()]
+        selected_server_info = selected_server_info.split(",")
+        self.edit_servername_lineEdit.setText(selected_server_info[0])
+        self.edit_serverusername_lineEdit.setText(selected_server_info[1])
+        self.edit_serverip_lineEdit.setText(selected_server_info[2])
 
     def save_server_settings(self):
-        if self.servername_lineEdit.text() != "" and self.serverusername_lineEdit.text() != "" and self.serverip_lineEdit.text() != "":
-            configuration.ServerSettings().save_file(server_name=self.servername_lineEdit.text(),
-                                                     server_username=self.serverusername_lineEdit.text(),
-                                                     server_ip=self.serverip_lineEdit.text())
+        if self.add_servername_lineEdit.text() != "" and self.add_serverusername_lineEdit.text() != "" and self.add_serverip_lineEdit.text() != "":
+            configuration.ServerSettings().save_file(server_name=self.add_servername_lineEdit.text(),
+                                                     server_username=self.add_serverusername_lineEdit.text(),
+                                                     server_ip=self.add_serverip_lineEdit.text())
             self.login_stackedWidget.setCurrentIndex(1)
-            self.servername_lineEdit.setText("")
-            self.serverusername_lineEdit.setText("")
-            self.serverip_lineEdit.setText("")
+            self.add_servername_lineEdit.setText("")
+            self.add_serverusername_lineEdit.setText("")
+            self.add_serverip_lineEdit.setText("")
             self.get_server_combobox_names()
+        else:
+            print('write all values')
 
     def get_server_combobox_names(self):
         server_name_list = []
@@ -66,11 +83,6 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
     def edit_server_settings(self):
         server_list = configuration.ServerSettings().read_file()
         selected_server_info = server_list[self.server_comboBox.currentIndex()]
-        self.login_stackedWidget.setCurrentIndex(2)
-        selected_server_info = selected_server_info.split(",")
-        self.servername_lineEdit.setText(selected_server_info[0])
-        self.serverusername_lineEdit.setText(selected_server_info[1])
-        self.serverip_lineEdit.setText(selected_server_info[2])
 
     def delete_server_setting(self):
         server_list = configuration.ServerSettings().read_file()
