@@ -155,9 +155,9 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
         # Install commands parameters
         # --------------------------------------------------
-        self.mcl_compiler_zip_command = "wget http://www.marmara.io/guifiles/Linux-MCL-HF.zip"
+        self.mcl_compiler_zip_command = "wget https://github.com/marmarachain/marmara/releases/download/v1.1.2/MCL-linux.zip"
         self.mcl_unzip_install_command = "sudo apt-get install unzip"
-        self.mcl_compiler_unzip_command = "unzip Linux-MCL-HF.zip"
+        self.mcl_compiler_unzip_command = "unzip MCL-linux.zip"
         self.mcl_permission_command = "sudo chmod +x komodod komodo-cli fetch-params.sh"
         self.mcl_fetch_parameters_command = "./fetch-params.sh"
 
