@@ -1,6 +1,7 @@
 from qtguidesign import Ui_MainWindow
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtWidgets
 import configuration
+import marmarachain_rpc as mc
 
 
 class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -35,14 +36,21 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def local_selection(self):
         self.main_tab.setCurrentIndex(1)
+        mc.set_connection_local()
+        mc.getinfo()
 
     def remote_selection(self):
         self.login_stackedWidget.setCurrentIndex(1)
         self.get_server_combobox_names()
         self.home_button.setVisible(True)
+        mc.set_connection_remote()
+        mc.getinfo()
+
 
     def server_add_selected(self):
         self.login_stackedWidget.setCurrentIndex(2)
+
+
 
     def add_cancel_selected(self):
         self.add_servername_lineEdit.setText("")
