@@ -1,3 +1,5 @@
+import json
+
 from qtguidesign import Ui_MainWindow
 from PyQt5 import QtWidgets
 import configuration
@@ -37,20 +39,35 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
     def local_selection(self):
         self.main_tab.setCurrentIndex(1)
         mc.set_connection_local()
-        mc.getinfo()
+        self.chain_initilazation()
 
     def remote_selection(self):
         self.login_stackedWidget.setCurrentIndex(1)
         self.get_server_combobox_names()
         self.home_button.setVisible(True)
         mc.set_connection_remote()
-        mc.getinfo()
 
+    def chain_initilazation(self):
+        self.bottom_message_label.setText('Checking marmarachain')
+        if mc.mcl_chain_status():
+            getinfo = mc.getinfo()
+        else:
+            mc.start_chain()
+        getinfo_result = json.loads(getinfo.read())
+        self.bottom_message_label.setText('loading values')
+        print(getinfo_result)
+        print(str(getinfo_result.get('pubkey')))
 
+        self.difficulty_value_label.setText(str(getinfo_result['difficulty']))
+        self.currentblock_value_label.setText(str(getinfo_result['blocks']))
+        self.longestchain_value_label.setText(str(getinfo_result['longestchain']))
+        self.connections_value_label.setText(str(getinfo_result['connections']))
+
+        self.bottom_message_label.setText('finished')
+        if getinfo_result.get('pubkey') == None:
+            self.bottom_message_label.setText('pubkey is not setted')
     def server_add_selected(self):
         self.login_stackedWidget.setCurrentIndex(2)
-
-
 
     def add_cancel_selected(self):
         self.add_servername_lineEdit.setText("")
@@ -104,7 +121,6 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
             self.login_stackedWidget.setCurrentIndex(1)
         else:
             print('write all values')
-
 
     def delete_server_setting(self):
         server_list = configuration.ServerSettings().read_file()
