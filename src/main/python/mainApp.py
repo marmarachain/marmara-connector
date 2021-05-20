@@ -3,8 +3,8 @@ import json
 from qtguidesign import Ui_MainWindow
 from PyQt5 import QtWidgets
 import configuration
-import marmarachain_rpc as mc
-
+import marmarachain_rpc
+import remote_connection
 
 class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
 
@@ -23,7 +23,7 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
         #   Login page Server authentication
         self.home_button.clicked.connect(self.host_selection)
         self.serveradd_button.clicked.connect(self.server_add_selected)
-        self.connect_button
+        self.connect_button.clicked.connect(self.server_connect)
         self.serveredit_button.clicked.connect(self.server_edit_selected)
         #  Add Server Settings page
         self.add_serversave_button.clicked.connect(self.save_server_settings)
@@ -38,21 +38,32 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def local_selection(self):
         self.main_tab.setCurrentIndex(1)
-        mc.set_connection_local()
+        marmarachain_rpc.set_connection_local()
         self.chain_initilazation()
 
     def remote_selection(self):
         self.login_stackedWidget.setCurrentIndex(1)
         self.get_server_combobox_names()
         self.home_button.setVisible(True)
-        mc.set_connection_remote()
+        marmarachain_rpc.set_connection_remote()
+
+    def server_connect(self):
+        server_list = configuration.ServerSettings().read_file()
+        selected_server_info = server_list[self.server_comboBox.currentIndex()]
+        selected_server_info = selected_server_info.split(",")
+        remote_connection.set_server_connection(ip=selected_server_info[2], username=selected_server_info[1], pw=self.serverpw_lineEdit.text())
+        validate = remote_connection.check_server_connection()
+        if validate:
+            self.login_message_label.setText(str(validate))
+        else:
+            self.main_tab.setCurrentIndex(1)
 
     def chain_initilazation(self):
         self.bottom_message_label.setText('Checking marmarachain')
-        if mc.mcl_chain_status():
-            getinfo = mc.getinfo()
+        if marmarachain_rpc.mcl_chain_status():
+            getinfo = marmarachain_rpc.getinfo()
         else:
-            mc.start_chain()
+            marmarachain_rpc.start_chain()
         getinfo_result = json.loads(getinfo.read())
         self.bottom_message_label.setText('loading values')
         print(getinfo_result)
@@ -66,6 +77,7 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
         self.bottom_message_label.setText('finished')
         if getinfo_result.get('pubkey') == None:
             self.bottom_message_label.setText('pubkey is not setted')
+
     def server_add_selected(self):
         self.login_stackedWidget.setCurrentIndex(2)
 
