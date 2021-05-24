@@ -70,23 +70,26 @@
            <bool>false</bool>
           </property>
           <property name="frameShape">
-           <enum>QFrame::StyledPanel</enum>
+           <enum>QFrame::WinPanel</enum>
           </property>
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
+          </property>
+          <property name="lineWidth">
+           <number>2</number>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
            <item row="3" column="1">
             <widget class="QStackedWidget" name="login_stackedWidget">
              <property name="currentIndex">
-              <number>0</number>
+              <number>1</number>
              </property>
              <widget class="QWidget" name="hostselection_page">
               <layout class="QGridLayout" name="gridLayout_5">
                <item row="1" column="0" colspan="5">
                 <widget class="QFrame" name="hostselection_frame">
                  <property name="frameShape">
-                  <enum>QFrame::StyledPanel</enum>
+                  <enum>QFrame::NoFrame</enum>
                  </property>
                  <property name="frameShadow">
                   <enum>QFrame::Raised</enum>
@@ -243,7 +246,7 @@
                <item row="0" column="0" colspan="5">
                 <widget class="QFrame" name="selecthost_frame">
                  <property name="frameShape">
-                  <enum>QFrame::StyledPanel</enum>
+                  <enum>QFrame::NoFrame</enum>
                  </property>
                  <property name="frameShadow">
                   <enum>QFrame::Raised</enum>
@@ -274,7 +277,7 @@
                <item row="4" column="0" colspan="2">
                 <widget class="QFrame" name="serverpw_frame">
                  <property name="frameShape">
-                  <enum>QFrame::StyledPanel</enum>
+                  <enum>QFrame::NoFrame</enum>
                  </property>
                  <property name="frameShadow">
                   <enum>QFrame::Raised</enum>
@@ -287,6 +290,15 @@
                       <pointsize>16</pointsize>
                      </font>
                     </property>
+                    <property name="cursor">
+                     <cursorShape>IBeamCursor</cursorShape>
+                    </property>
+                    <property name="inputMethodHints">
+                     <set>Qt::ImhHiddenText|Qt::ImhNoAutoUppercase|Qt::ImhNoPredictiveText|Qt::ImhSensitiveData</set>
+                    </property>
+                    <property name="echoMode">
+                     <enum>QLineEdit::Password</enum>
+                    </property>
                     <property name="placeholderText">
                      <string>Server Login password</string>
                     </property>
@@ -298,10 +310,13 @@
                <item row="5" column="0" colspan="2">
                 <widget class="QFrame" name="serverconnect_frame">
                  <property name="frameShape">
-                  <enum>QFrame::StyledPanel</enum>
+                  <enum>QFrame::NoFrame</enum>
                  </property>
                  <property name="frameShadow">
-                  <enum>QFrame::Raised</enum>
+                  <enum>QFrame::Plain</enum>
+                 </property>
+                 <property name="lineWidth">
+                  <number>1</number>
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_2">
                   <item>
@@ -339,6 +354,15 @@
                     <property name="text">
                      <string>Connect</string>
                     </property>
+                    <property name="autoDefault">
+                     <bool>false</bool>
+                    </property>
+                    <property name="default">
+                     <bool>false</bool>
+                    </property>
+                    <property name="flat">
+                     <bool>false</bool>
+                    </property>
                    </widget>
                   </item>
                   <item>
@@ -360,7 +384,7 @@
                <item row="1" column="0" colspan="2">
                 <widget class="QFrame" name="serverselection_frame">
                  <property name="frameShape">
-                  <enum>QFrame::StyledPanel</enum>
+                  <enum>QFrame::NoFrame</enum>
                  </property>
                  <property name="frameShadow">
                   <enum>QFrame::Raised</enum>
@@ -444,7 +468,7 @@
                <item row="0" column="0" colspan="2">
                 <widget class="QFrame" name="remoteloginlabel_frame">
                  <property name="frameShape">
-                  <enum>QFrame::StyledPanel</enum>
+                  <enum>QFrame::NoFrame</enum>
                  </property>
                  <property name="frameShadow">
                   <enum>QFrame::Raised</enum>
@@ -470,12 +494,12 @@
                </item>
               </layout>
              </widget>
-             <widget class="QWidget" name="hostedit_page">
+             <widget class="QWidget" name="hostadd_page">
               <layout class="QGridLayout" name="gridLayout_13">
                <item row="4" column="0" colspan="2">
                 <widget class="QFrame" name="add_serversave_frame">
                  <property name="frameShape">
-                  <enum>QFrame::StyledPanel</enum>
+                  <enum>QFrame::NoFrame</enum>
                  </property>
                  <property name="frameShadow">
                   <enum>QFrame::Raised</enum>
@@ -536,7 +560,7 @@
                <item row="0" column="0" colspan="2">
                 <widget class="QFrame" name="add_remotehostlabel_frame">
                  <property name="frameShape">
-                  <enum>QFrame::StyledPanel</enum>
+                  <enum>QFrame::NoFrame</enum>
                  </property>
                  <property name="frameShadow">
                   <enum>QFrame::Raised</enum>
@@ -563,7 +587,7 @@
                <item row="1" column="0" colspan="2">
                 <widget class="QFrame" name="add_serversettings_frame">
                  <property name="frameShape">
-                  <enum>QFrame::StyledPanel</enum>
+                  <enum>QFrame::NoFrame</enum>
                  </property>
                  <property name="frameShadow">
                   <enum>QFrame::Raised</enum>
@@ -646,7 +670,7 @@
                </item>
               </layout>
              </widget>
-             <widget class="QWidget" name="page">
+             <widget class="QWidget" name="hostedit_page">
               <layout class="QGridLayout" name="gridLayout_23">
                <item row="0" column="0">
                 <widget class="QFrame" name="edit_remotehostlabel_frame">
@@ -656,7 +680,7 @@
                   </font>
                  </property>
                  <property name="frameShape">
-                  <enum>QFrame::StyledPanel</enum>
+                  <enum>QFrame::NoFrame</enum>
                  </property>
                  <property name="frameShadow">
                   <enum>QFrame::Raised</enum>
@@ -683,7 +707,7 @@
                <item row="1" column="0">
                 <widget class="QFrame" name="edit_serversettings_frame">
                  <property name="frameShape">
-                  <enum>QFrame::StyledPanel</enum>
+                  <enum>QFrame::NoFrame</enum>
                  </property>
                  <property name="frameShadow">
                   <enum>QFrame::Raised</enum>
@@ -767,7 +791,7 @@
                <item row="2" column="0">
                 <widget class="QFrame" name="edit_serversave_frame">
                  <property name="frameShape">
-                  <enum>QFrame::StyledPanel</enum>
+                  <enum>QFrame::NoFrame</enum>
                  </property>
                  <property name="frameShadow">
                   <enum>QFrame::Raised</enum>
@@ -835,10 +859,13 @@
         <item row="2" column="1">
          <widget class="QFrame" name="language_frame">
           <property name="frameShape">
-           <enum>QFrame::StyledPanel</enum>
+           <enum>QFrame::WinPanel</enum>
           </property>
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
+          </property>
+          <property name="lineWidth">
+           <number>2</number>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">
            <item row="0" column="1">
@@ -905,19 +932,6 @@
           </property>
          </spacer>
         </item>
-        <item row="1" column="0">
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>319</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
         <item row="3" column="1">
          <widget class="QLabel" name="login_message_label">
           <property name="font">
@@ -926,7 +940,356 @@
            </font>
           </property>
           <property name="frameShape">
-           <enum>QFrame::StyledPanel</enum>
+           <enum>QFrame::NoFrame</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <property name="lineWidth">
+           <number>1</number>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="marmara_tab">
+       <attribute name="title">
+        <string>Marmara</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_8">
+        <item row="0" column="0">
+         <widget class="QTabWidget" name="mcl_tab">
+          <property name="minimumSize">
+           <size>
+            <width>728</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="tabPosition">
+           <enum>QTabWidget::North</enum>
+          </property>
+          <property name="tabShape">
+           <enum>QTabWidget::Rounded</enum>
+          </property>
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <property name="elideMode">
+           <enum>Qt::ElideNone</enum>
+          </property>
+          <property name="documentMode">
+           <bool>false</bool>
+          </property>
+          <property name="tabsClosable">
+           <bool>false</bool>
+          </property>
+          <property name="movable">
+           <bool>false</bool>
+          </property>
+          <property name="tabBarAutoHide">
+           <bool>false</bool>
+          </property>
+          <widget class="QWidget" name="chain_tab">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
+           <property name="layoutDirection">
+            <enum>Qt::LeftToRight</enum>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <attribute name="title">
+            <string>Chain</string>
+           </attribute>
+           <layout class="QGridLayout" name="gridLayout_18">
+            <item row="0" column="0">
+             <widget class="QStackedWidget" name="chain_stackedWidget">
+              <property name="frameShape">
+               <enum>QFrame::NoFrame</enum>
+              </property>
+              <property name="frameShadow">
+               <enum>QFrame::Raised</enum>
+              </property>
+              <property name="currentIndex">
+               <number>0</number>
+              </property>
+              <widget class="QWidget" name="chainaddresses_page">
+               <layout class="QGridLayout" name="gridLayout_26">
+                <item row="0" column="0" colspan="2">
+                 <widget class="QTableWidget" name="tableWidget">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="horizontalScrollBarPolicy">
+                   <enum>Qt::ScrollBarAsNeeded</enum>
+                  </property>
+                  <property name="sizeAdjustPolicy">
+                   <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
+                  </property>
+                  <property name="editTriggers">
+                   <set>QAbstractItemView::DoubleClicked|QAbstractItemView::SelectedClicked</set>
+                  </property>
+                  <property name="defaultDropAction">
+                   <enum>Qt::IgnoreAction</enum>
+                  </property>
+                  <property name="alternatingRowColors">
+                   <bool>true</bool>
+                  </property>
+                  <property name="selectionBehavior">
+                   <enum>QAbstractItemView::SelectItems</enum>
+                  </property>
+                  <property name="horizontalScrollMode">
+                   <enum>QAbstractItemView::ScrollPerPixel</enum>
+                  </property>
+                  <property name="gridStyle">
+                   <enum>Qt::SolidLine</enum>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>true</bool>
+                  </property>
+                  <property name="rowCount">
+                   <number>0</number>
+                  </property>
+                  <property name="columnCount">
+                   <number>4</number>
+                  </property>
+                  <attribute name="horizontalHeaderDefaultSectionSize">
+                   <number>170</number>
+                  </attribute>
+                  <attribute name="horizontalHeaderHighlightSections">
+                   <bool>true</bool>
+                  </attribute>
+                  <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+                   <bool>true</bool>
+                  </attribute>
+                  <attribute name="horizontalHeaderStretchLastSection">
+                   <bool>false</bool>
+                  </attribute>
+                  <column>
+                   <property name="text">
+                    <string>Address</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Pubkey</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Amount</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </column>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QFrame" name="frame">
+                  <property name="frameShape">
+                   <enum>QFrame::NoFrame</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Raised</enum>
+                  </property>
+                  <layout class="QGridLayout" name="gridLayout_27">
+                   <item row="0" column="2">
+                    <widget class="QPushButton" name="pushButton_3">
+                     <property name="maximumSize">
+                      <size>
+                       <width>160</width>
+                       <height>30</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string>Create new Address</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="2">
+                    <widget class="QPushButton" name="pushButton_2">
+                     <property name="maximumSize">
+                      <size>
+                       <width>120</width>
+                       <height>30</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string>See private key</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="3" rowspan="2">
+                    <spacer name="horizontalSpacer_11">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item row="3" column="0">
+                 <widget class="QFrame" name="frame_2">
+                  <property name="frameShape">
+                   <enum>QFrame::NoFrame</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Raised</enum>
+                  </property>
+                  <layout class="QGridLayout" name="gridLayout_28">
+                   <item row="0" column="0">
+                    <spacer name="horizontalSpacer_15">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="QPushButton" name="pushButton">
+                     <property name="minimumSize">
+                      <size>
+                       <width>100</width>
+                       <height>60</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>60</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string>Stop Chain</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+              <widget class="QWidget" name="addaddress_page"/>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="wallet_tab">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
+           <attribute name="title">
+            <string>Wallet</string>
+           </attribute>
+          </widget>
+          <widget class="QWidget" name="credit_tab">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
+           <attribute name="title">
+            <string>Credit Transaction</string>
+           </attribute>
+          </widget>
+          <widget class="QWidget" name="person_tab">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
+           <attribute name="title">
+            <string>Persons</string>
+           </attribute>
+          </widget>
+          <widget class="QWidget" name="settings_tab">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
+           <attribute name="title">
+            <string>Setting</string>
+           </attribute>
+          </widget>
+          <widget class="QWidget" name="exit_tab">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
+           <attribute name="title">
+            <string>Exit</string>
+           </attribute>
+           <layout class="QGridLayout" name="gridLayout_25"/>
+          </widget>
+         </widget>
+        </item>
+        <item row="1" column="0" colspan="2">
+         <widget class="QLabel" name="bottom_message_label">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>17</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
           </property>
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
@@ -936,17 +1299,22 @@
           </property>
          </widget>
         </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="marmara_tab">
-       <attribute name="title">
-        <string>Marmara</string>
-       </attribute>
-       <layout class="QGridLayout" name="gridLayout_8">
         <item row="0" column="1">
          <widget class="QFrame" name="chainsummary_frame">
+          <property name="minimumSize">
+           <size>
+            <width>250</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>250</width>
+            <height>16777215</height>
+           </size>
+          </property>
           <property name="frameShape">
-           <enum>QFrame::StyledPanel</enum>
+           <enum>QFrame::NoFrame</enum>
           </property>
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
@@ -954,8 +1322,14 @@
           <layout class="QGridLayout" name="gridLayout_9">
            <item row="4" column="0" colspan="2">
             <widget class="QFrame" name="walletsummary_frame">
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>100</height>
+              </size>
+             </property>
              <property name="frameShape">
-              <enum>QFrame::StyledPanel</enum>
+              <enum>QFrame::WinPanel</enum>
              </property>
              <property name="frameShadow">
               <enum>QFrame::Raised</enum>
@@ -1029,8 +1403,14 @@
            </item>
            <item row="0" column="0" colspan="2">
             <widget class="QFrame" name="reflesh_frame">
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>100</height>
+              </size>
+             </property>
              <property name="frameShape">
-              <enum>QFrame::StyledPanel</enum>
+              <enum>QFrame::WinPanel</enum>
              </property>
              <property name="frameShadow">
               <enum>QFrame::Raised</enum>
@@ -1074,8 +1454,14 @@
            </item>
            <item row="3" column="0" colspan="2">
             <widget class="QFrame" name="miningstatus_frame">
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>135</height>
+              </size>
+             </property>
              <property name="frameShape">
-              <enum>QFrame::StyledPanel</enum>
+              <enum>QFrame::WinPanel</enum>
              </property>
              <property name="frameShadow">
               <enum>QFrame::Raised</enum>
@@ -1113,7 +1499,7 @@
                  </font>
                 </property>
                 <property name="text">
-                 <string>Unknow</string>
+                 <string>Unknown</string>
                 </property>
                </widget>
               </item>
@@ -1182,8 +1568,14 @@
            </item>
            <item row="7" column="0" colspan="2">
             <widget class="QFrame" name="address_pubkey_frame">
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>100</height>
+              </size>
+             </property>
              <property name="frameShape">
-              <enum>QFrame::StyledPanel</enum>
+              <enum>QFrame::WinPanel</enum>
              </property>
              <property name="frameShadow">
               <enum>QFrame::Raised</enum>
@@ -1242,8 +1634,14 @@
            </item>
            <item row="2" column="0" colspan="2">
             <widget class="QFrame" name="chainstatus_frame">
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>200</height>
+              </size>
+             </property>
              <property name="frameShape">
-              <enum>QFrame::StyledPanel</enum>
+              <enum>QFrame::WinPanel</enum>
              </property>
              <property name="frameShadow">
               <enum>QFrame::Raised</enum>
@@ -1396,131 +1794,29 @@
              </layout>
             </widget>
            </item>
+           <item row="8" column="0" colspan="2">
+            <widget class="QFrame" name="empty_frame">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+            </widget>
+           </item>
           </layout>
-         </widget>
-        </item>
-        <item row="0" column="0">
-         <widget class="QTabWidget" name="mcl_tab">
-          <property name="maximumSize">
-           <size>
-            <width>735</width>
-            <height>675</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>12</pointsize>
-           </font>
-          </property>
-          <property name="tabPosition">
-           <enum>QTabWidget::North</enum>
-          </property>
-          <property name="tabShape">
-           <enum>QTabWidget::Rounded</enum>
-          </property>
-          <property name="currentIndex">
-           <number>0</number>
-          </property>
-          <property name="elideMode">
-           <enum>Qt::ElideNone</enum>
-          </property>
-          <property name="documentMode">
-           <bool>false</bool>
-          </property>
-          <property name="tabsClosable">
-           <bool>false</bool>
-          </property>
-          <property name="movable">
-           <bool>false</bool>
-          </property>
-          <property name="tabBarAutoHide">
-           <bool>false</bool>
-          </property>
-          <widget class="QWidget" name="chain_tab">
-           <property name="font">
-            <font>
-             <pointsize>12</pointsize>
-            </font>
-           </property>
-           <property name="layoutDirection">
-            <enum>Qt::LeftToRight</enum>
-           </property>
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-           <attribute name="title">
-            <string>Chain</string>
-           </attribute>
-          </widget>
-          <widget class="QWidget" name="wallet_tab">
-           <property name="font">
-            <font>
-             <pointsize>12</pointsize>
-            </font>
-           </property>
-           <attribute name="title">
-            <string>Wallet</string>
-           </attribute>
-          </widget>
-          <widget class="QWidget" name="credit_tab">
-           <property name="font">
-            <font>
-             <pointsize>12</pointsize>
-            </font>
-           </property>
-           <attribute name="title">
-            <string>Credit Transaction</string>
-           </attribute>
-          </widget>
-          <widget class="QWidget" name="person_tab">
-           <property name="font">
-            <font>
-             <pointsize>12</pointsize>
-            </font>
-           </property>
-           <attribute name="title">
-            <string>Persons</string>
-           </attribute>
-          </widget>
-          <widget class="QWidget" name="settings_tab">
-           <property name="font">
-            <font>
-             <pointsize>12</pointsize>
-            </font>
-           </property>
-           <attribute name="title">
-            <string>Setting</string>
-           </attribute>
-          </widget>
-          <widget class="QWidget" name="exit_tab">
-           <property name="font">
-            <font>
-             <pointsize>12</pointsize>
-            </font>
-           </property>
-           <attribute name="title">
-            <string>Exit</string>
-           </attribute>
-           <layout class="QGridLayout" name="gridLayout_25"/>
-          </widget>
-         </widget>
-        </item>
-        <item row="1" column="0" colspan="2">
-         <widget class="QLabel" name="bottom_message_label">
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-           </font>
-          </property>
-          <property name="frameShape">
-           <enum>QFrame::StyledPanel</enum>
-          </property>
-          <property name="frameShadow">
-           <enum>QFrame::Raised</enum>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
          </widget>
         </item>
        </layout>

@@ -57,6 +57,7 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
             self.login_message_label.setText(str(validate))
         else:
             self.main_tab.setCurrentIndex(1)
+        self.chain_initilazation()
 
     def chain_initilazation(self):
         self.bottom_message_label.setText('Checking marmarachain')
@@ -65,6 +66,7 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             marmarachain_rpc.start_chain()
         getinfo_result = json.loads(getinfo.read())
+        getinfo.close()
         self.bottom_message_label.setText('loading values')
         print(getinfo_result)
         print(str(getinfo_result.get('pubkey')))
@@ -75,8 +77,8 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
         self.connections_value_label.setText(str(getinfo_result['connections']))
 
         self.bottom_message_label.setText('finished')
-        if getinfo_result.get('pubkey') == None:
-            self.bottom_message_label.setText('pubkey is not setted')
+        if getinfo_result.get('pubkey') is None:
+            self.bottom_message_label.setText('pubkey is not set')
 
     def server_add_selected(self):
         self.login_stackedWidget.setCurrentIndex(2)

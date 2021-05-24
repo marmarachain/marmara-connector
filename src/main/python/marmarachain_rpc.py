@@ -2,13 +2,8 @@ import os, subprocess, pathlib
 import remote_connection
 import chain_rpc_const as cp
 
-marmara_path = str(pathlib.Path.home()) + '/komodo/src'
+marmara_path = str(pathlib.Path.home()) + '/komodo/src/'
 is_local = None
-
-
-def mcl_chain_status():
-    marmarad_pid = subprocess.Popen('pidof komodod', shell=True, stdout=subprocess.PIPE)
-    return marmarad_pid
 
 
 def set_connection_local():
@@ -21,6 +16,14 @@ def set_connection_remote():
     is_local = False
 
 
+def mcl_chain_status():
+    if is_local:
+        marmarad_pid = subprocess.Popen('pidof komodod', shell=True, stdout=subprocess.PIPE)
+    else:
+        marmarad_pid = remote_connection.server_execute_command('pidof komodod')
+    return marmarad_pid
+
+
 def start_chain():
     if is_local:
         marmara_param = cp.start_param_local()
@@ -28,7 +31,8 @@ def start_chain():
                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     else:
         marmara_param = cp.start_param_remote()
-        start = remote_connection.send_command(marmara_param)
+        marmara_param = marmara_path + marmara_param
+        start = remote_connection.server_execute_command(marmara_param)
     return start
 
 
@@ -40,5 +44,13 @@ def getinfo():
         proc.stdout.flush()
     else:
         cmd = cp.getinfo_remote()
-        remote_connection.send_command(cmd)
+        cmd = marmara_path + cmd
+        result = remote_connection.server_execute_command(cmd)
     return result
+
+# def getaddresses():
+#     if is_local:
+#         cmd = cp.
+#     else:
+#
+#     return
