@@ -1,4 +1,5 @@
 import json
+import time
 
 from qtguidesign import Ui_MainWindow
 from PyQt5 import QtWidgets
@@ -61,24 +62,42 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def chain_initilazation(self):
         self.bottom_message_label.setText('Checking marmarachain')
-        if marmarachain_rpc.mcl_chain_status():
-            getinfo = marmarachain_rpc.getinfo()
-        else:
+        if not marmarachain_rpc.mcl_chain_status().read():
             marmarachain_rpc.start_chain()
-        getinfo_result = json.loads(getinfo.read())
-        getinfo.close()
-        self.bottom_message_label.setText('loading values')
-        print(getinfo_result)
-        print(str(getinfo_result.get('pubkey')))
 
-        self.difficulty_value_label.setText(str(getinfo_result['difficulty']))
-        self.currentblock_value_label.setText(str(getinfo_result['blocks']))
-        self.longestchain_value_label.setText(str(getinfo_result['longestchain']))
-        self.connections_value_label.setText(str(getinfo_result['connections']))
+        while True:
+            getinfo = marmarachain_rpc.getinfo()
+            getinfo_result = getinfo[0].read()
+            if getinfo_result:
+                getinfo_result = json.loads(getinfo_result)
+                print(getinfo_result)
+                self.bottom_message_label.setText('loading values')
 
-        self.bottom_message_label.setText('finished')
-        if getinfo_result.get('pubkey') is None:
-            self.bottom_message_label.setText('pubkey is not set')
+                self.difficulty_value_label.setText(str(getinfo_result['difficulty']))
+                self.currentblock_value_label.setText(str(getinfo_result['blocks']))
+                self.longestchain_value_label.setText(str(getinfo_result['longestchain']))
+                self.connections_value_label.setText(str(getinfo_result['connections']))
+
+                self.bottom_message_label.setText('finished')
+                if getinfo_result.get('pubkey') is None:
+                    self.bottom_message_label.setText('pubkey is not set')
+                if marmarachain_rpc.is_local:
+                    getinfo[2].terminate()
+                if not marmarachain_rpc.is_local:
+                    getinfo[2].close()
+                break
+            getinfo_result = getinfo[1].read()
+            if getinfo_result:
+                print(getinfo_result)
+                self.bottom_message_label.setText(str(getinfo_result))
+                self.login_message_label.setText(str(getinfo_result))
+                if marmarachain_rpc.is_local:
+                    getinfo[2].terminate()
+                if not marmarachain_rpc.is_local:
+                    getinfo[2].close()
+                time.sleep(2)
+
+
 
     def server_add_selected(self):
         self.login_stackedWidget.setCurrentIndex(2)

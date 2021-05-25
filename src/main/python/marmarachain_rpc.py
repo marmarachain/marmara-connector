@@ -19,9 +19,11 @@ def set_connection_remote():
 def mcl_chain_status():
     if is_local:
         marmarad_pid = subprocess.Popen('pidof komodod', shell=True, stdout=subprocess.PIPE)
+        result = marmarad_pid.stdout
     else:
         marmarad_pid = remote_connection.server_execute_command('pidof komodod')
-    return marmarad_pid
+        result = marmarad_pid[0]
+    return result
 
 
 def start_chain():
@@ -39,14 +41,17 @@ def start_chain():
 def getinfo():
     if is_local:
         cmd = cp.getinfo_local()
-        proc = subprocess.Popen(cmd, cwd=marmara_path, shell=True, stdout=subprocess.PIPE)
-        result = proc.stdout
-        proc.stdout.flush()
+        result = subprocess.Popen(cmd, cwd=marmara_path, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout = result.stdout
+        stderr = result.stderr
     else:
         cmd = cp.getinfo_remote()
         cmd = marmara_path + cmd
-        result = remote_connection.server_execute_command(cmd)
-    return result
+        ssh = remote_connection.server_execute_command(cmd)
+        result = ssh[2]
+        stdout = ssh[0]
+        stderr = ssh[1]
+    return stdout, stderr, result
 
 # def getaddresses():
 #     if is_local:

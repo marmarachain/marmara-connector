@@ -28,4 +28,4 @@ def server_execute_command(command):
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh.connect(hostname=server_hostname, username=server_username, password=server_password, port=22)
     stdin, stdout, stderr = ssh.exec_command(command)
-    return stdout
+    return stdout, stderr, ssh
