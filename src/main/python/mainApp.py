@@ -64,6 +64,16 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
         self.bottom_message_label.setText('Checking marmarachain')
         if not marmarachain_rpc.mcl_chain_status().read():
             marmarachain_rpc.start_chain()
+        while True:
+            if marmarachain_rpc.mcl_chain_status().read():
+                break
+            time.sleep(2)
+            self.bottom_message_label.setText('Chain is not started')
+        while True:
+            if marmarachain_rpc.mcl_chain_status().read():
+                break
+            print('Chain not started')
+            time.sleep(1)
 
         while True:
             getinfo = marmarachain_rpc.getinfo()
@@ -81,20 +91,14 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.bottom_message_label.setText('finished')
                 if getinfo_result.get('pubkey') is None:
                     self.bottom_message_label.setText('pubkey is not set')
-                if marmarachain_rpc.is_local:
-                    getinfo[2].terminate()
-                if not marmarachain_rpc.is_local:
-                    getinfo[2].close()
+                marmarachain_rpc.rpc_close(getinfo)
                 break
             getinfo_result = getinfo[1].read()
             if getinfo_result:
                 print(getinfo_result)
                 self.bottom_message_label.setText(str(getinfo_result))
                 self.login_message_label.setText(str(getinfo_result))
-                if marmarachain_rpc.is_local:
-                    getinfo[2].terminate()
-                if not marmarachain_rpc.is_local:
-                    getinfo[2].close()
+                marmarachain_rpc.rpc_close(getinfo)
                 time.sleep(2)
 
 
