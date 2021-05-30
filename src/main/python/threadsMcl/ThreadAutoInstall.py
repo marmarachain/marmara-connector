@@ -57,8 +57,8 @@ class AutoInstall(QThread):
         session = ssh.get_transport().open_session()
         session.set_combine_stderr(True)
         session.get_pty()
-        session.exec_command("wget http://marmara.io/guifiles/MCL-linux.zip -O MCL-linux.zip")
-        # stdin = session.makefile('wb', -1)
+        session.exec_command("wget https://github.com/marmarachain/marmara/releases/download/v1.1.2/MCL-linux.zip -O MCL-linux.zip")
+        # stdin = session.makefile('wb', -1)    
         stdout = session.makefile('rb', -1)
 
         for line in stdout:
