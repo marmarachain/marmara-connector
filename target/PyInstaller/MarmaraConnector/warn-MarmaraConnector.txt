@@ -1,0 +1,48 @@
+
+This file lists modules PyInstaller was not able to find. This does not
+necessarily mean this module is required for running you program. Python and
+Python 3rd-party packages include a lot of conditional or optional module. For
+example the module 'ntpath' only exists on Windows, whereas the module
+'posixpath' only exists on Posix systems.
+
+Types if import:
+* top-level: imported at the top-level - look at these first
+* conditional: imported within an if-statement
+* delayed: imported from within a function
+* optional: imported within a try-except-statement
+
+IMPORTANT: Do NOT post this list to the issue-tracker. Use it as a basis for
+           yourself tracking down the missing module. Thanks!
+
+missing module named org - imported by pickle (optional), /home/monster/1_Projects/marmara-connector/src/main/python/mainApp.py (top-level)
+excluded module named _frozen_importlib - imported by importlib (optional), importlib.abc (optional), /home/monster/1_Projects/marmara-connector/src/main/python/mainApp.py (top-level)
+missing module named _frozen_importlib_external - imported by importlib._bootstrap (delayed), importlib (optional), importlib.abc (optional), /home/monster/1_Projects/marmara-connector/src/main/python/mainApp.py (top-level)
+missing module named _winreg - imported by platform (delayed, optional), /home/monster/1_Projects/marmara-connector/src/main/python/mainApp.py (top-level)
+missing module named _scproxy - imported by urllib.request (conditional)
+missing module named java - imported by platform (delayed), /home/monster/1_Projects/marmara-connector/src/main/python/mainApp.py (top-level)
+missing module named 'java.lang' - imported by platform (delayed, optional), /home/monster/1_Projects/marmara-connector/src/main/python/mainApp.py (top-level), xml.sax._exceptions (conditional)
+missing module named vms_lib - imported by platform (delayed, conditional, optional), /home/monster/1_Projects/marmara-connector/src/main/python/mainApp.py (top-level)
+missing module named winreg - imported by platform (delayed, optional), mimetypes (optional), /home/monster/1_Projects/marmara-connector/src/main/python/mainApp.py (top-level), urllib.request (delayed, conditional, optional)
+missing module named nt - imported by os (conditional, optional), ntpath (conditional, optional), shutil (conditional), pathlib (conditional), /home/monster/1_Projects/marmara-connector/src/main/python/mainApp.py (top-level)
+missing module named msvcrt - imported by subprocess (conditional), getpass (optional), /home/monster/1_Projects/marmara-connector/src/main/python/mainApp.py (top-level)
+missing module named _winapi - imported by subprocess (conditional), /home/monster/1_Projects/marmara-connector/src/main/python/mainApp.py (top-level)
+missing module named _dummy_threading - imported by dummy_threading (optional), /home/monster/1_Projects/marmara-connector/src/main/python/mainApp.py (top-level)
+missing module named 'org.python' - imported by copy (optional), /home/monster/1_Projects/marmara-connector/src/main/python/mainApp.py (top-level), xml.sax (delayed, conditional)
+missing module named AppKit - imported by pyperclip (delayed, conditional, optional)
+missing module named Foundation - imported by pyperclip (delayed, conditional, optional)
+missing module named PyQt4 - imported by pyperclip (delayed, conditional, optional)
+missing module named qtpy - imported by pyperclip (delayed, conditional, optional)
+missing module named gtk - imported by pyperclip (delayed, conditional, optional)
+missing module named cStringIO - imported by paramiko.py3compat (conditional)
+missing module named copy_reg - imported by cStringIO (top-level)
+missing module named __builtin__ - imported by paramiko.py3compat (conditional)
+missing module named invoke - imported by paramiko.config (optional)
+missing module named StringIO - imported by six (conditional)
+missing module named thread - imported by paramiko.win_pageant (optional)
+missing module named 'pyasn1.codec' - imported by paramiko.ssh_gss (delayed)
+missing module named pyasn1 - imported by paramiko.ssh_gss (delayed)
+missing module named sspi - imported by paramiko.ssh_gss (optional)
+missing module named sspicon - imported by paramiko.ssh_gss (optional)
+missing module named pywintypes - imported by paramiko.ssh_gss (optional)
+missing module named gssapi - imported by paramiko.ssh_gss (optional)
+missing module named rsa - imported by fbs_runtime.licensing (top-level)
