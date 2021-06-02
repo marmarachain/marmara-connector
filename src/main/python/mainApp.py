@@ -77,7 +77,7 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
 
         while True:
             getinfo = marmarachain_rpc.getinfo()
-            getinfo_result = getinfo[0].read()
+            getinfo_result = getinfo[0].read()  # getting result of stdout
             if getinfo_result:
                 getinfo_result = json.loads(getinfo_result)
                 print(getinfo_result)
@@ -93,8 +93,9 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
                     self.bottom_message_label.setText('pubkey is not set')
                 marmarachain_rpc.rpc_close(getinfo)
                 break
-            getinfo_result = getinfo[1].read()
+            getinfo_result = getinfo[1].read()   # getting result of stderr
             if getinfo_result:
+                getinfo_result = str(getinfo_result).replace("b'", ' ').replace("\\n", " ")
                 print(getinfo_result)
                 self.bottom_message_label.setText(str(getinfo_result))
                 self.login_message_label.setText(str(getinfo_result))

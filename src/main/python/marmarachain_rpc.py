@@ -29,7 +29,6 @@ def mcl_chain_status():
 def start_chain():
     if is_local:
         marmara_param = cp.start_param_local()
-        print(marmara_param)
         start = subprocess.Popen(marmara_param, cwd=marmara_path, shell=True, stdin=subprocess.PIPE,
                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     else:
@@ -49,7 +48,6 @@ def execute_rpc(command):
     else:
         cmd = cp.set_remote(command)
         cmd = marmara_path + cmd
-        print(cmd)
         ssh = remote_connection.server_execute_command(cmd)
         result = ssh[2]
         stdout = ssh[0]
