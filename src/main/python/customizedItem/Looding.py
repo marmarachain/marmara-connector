@@ -31,7 +31,7 @@ class LoadingScreen(QWidget,ApplicationContext):
         self.movie.start()
         self.show()
 
-    def stopAnimotion(self):
+    def stop_animation(self):
         self.movie.stop()
         self.close()
 

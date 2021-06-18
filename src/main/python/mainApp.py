@@ -17,7 +17,6 @@ import sys
 
 from PyQt5.QtWidgets import QMessageBox
 
-
 from functools import partial
 import os
 
@@ -59,7 +58,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.setGeometry(0, 0, 1000, 550)
         self.center()
         self.setWindowIcon(QtGui.QIcon(self.get_resource('images') + '/mcl.png'))
-        
+
         # self.tabWidget.setCurrentIndex(2)
 
         self.icon_path = self.get_resource("images")
@@ -83,7 +82,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.deactive_text = ""
         self.long_chain_blocks = ""
 
-        self.count_wallet_list=0
+        self.count_wallet_list = 0
         # Messages
         # --------------------------------------------------
         self.msg_title_warning = ""
@@ -224,7 +223,6 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
         self.pushButton_44.setVisible(True)
 
-
         self.progressBar_2.setValue(self.progressBarValue)
         self.tabWidget.tabBar().setVisible(False)
         self.tabWidget_3.setTabEnabled(7, False)
@@ -276,8 +274,6 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.tabWidget_4.currentChanged.connect(self.tabWidgetOnChange)
         self.comboBox_3.currentTextChanged.connect(self.on_combobox_changed)
 
-
-
         # Click Enter
         self.lineEdit_6.returnPressed.connect(self.buttonClickSshConnect)
         self.checkBox_2.stateChanged.connect(self.state_changed_checkBox_2)
@@ -316,8 +312,6 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.thread_import_wallet = ThreadImportPrivkey.ImportPrivkey()
         self.thread_get_private_key = ThreadShowPrivateKey.ShowPrivateKey()
 
-
-
         # Loading Gif
         # --------------------------------------------------
         self.loading_screen = LoadingScreen()
@@ -327,8 +321,10 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.loading_screen.startAnimation()
 
         self.thread_import_wallet = ThreadImportPrivkey.ImportPrivkey()
-        self.thread_import_wallet.change_value_information_get_wallet.connect(self.changingInformationWalletAdressAfterImportWallet)
-        self.thread_import_wallet.change_value_information_get_pubkey.connect(self.changingInformationPubkeyAdressAfterImportWallet)
+        self.thread_import_wallet.change_value_information_get_wallet.connect(
+            self.changingInformationWalletAdressAfterImportWallet)
+        self.thread_import_wallet.change_value_information_get_pubkey.connect(
+            self.changingInformationPubkeyAdressAfterImportWallet)
 
         self.thread_import_wallet.command_mcl_import_privkey = "./" + self.mcl_install_file_path + self.command_mcl_import_privkey + self.lineEdit_28.text()
         self.thread_import_wallet.command_mcl_get_pubkey = "./" + self.mcl_install_file_path + self.command_get_pubkey
@@ -339,13 +335,13 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
         self.thread_import_wallet.start()
 
-    def changingInformationWalletAdressAfterImportWallet(self,val):
+    def changingInformationWalletAdressAfterImportWallet(self, val):
         self.lineEdit_34.setText(val)
 
-    def changingInformationPubkeyAdressAfterImportWallet(self,val):
-        if val=="":
-            self.loading_screen.stopAnimotion()
-            self.showDialogInfo(self.msg_title_warning,self.msg_unsuccess_import,"",self.msg_ok)
+    def changingInformationPubkeyAdressAfterImportWallet(self, val):
+        if val == "":
+            self.loading_screen.stop_animation()
+            self.showDialogInfo(self.msg_title_warning, self.msg_unsuccess_import, "", self.msg_ok)
         else:
             self.thread_wallet_list.terminate()
 
@@ -354,9 +350,9 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             while self.tableWidget_6.rowCount() > 0:
                 self.tableWidget_6.removeRow(0)
             self.count_wallet_list = 0
-            self.loading_screen.stopAnimotion()
+            self.loading_screen.stop_animation()
             self.listWallet()
-            self.showDialogInfo(self.msg_title_warning,self.msg_success_import,"",self.msg_ok)
+            self.showDialogInfo(self.msg_title_warning, self.msg_success_import, "", self.msg_ok)
 
     def buttonClickSeePrivkey(self):
         self.stackedWidget.setCurrentIndex(3)
@@ -379,7 +375,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.thread_wallet_list.change_value_information_wallet.connect(self.changingInformationWalletList)
 
         self.thread_wallet_list.command_mcl_all_wallet_list = "./" + self.mcl_install_file_path + self.command_mcl_all_wallet_list
-        self.thread_wallet_list.command_mcl_get_pubkey = "./" + self.mcl_install_file_path + self.command_get_pubkey +" "
+        self.thread_wallet_list.command_mcl_get_pubkey = "./" + self.mcl_install_file_path + self.command_get_pubkey + " "
 
         self.thread_wallet_list.server_username = self.server_username
         self.thread_wallet_list.server_hostname = self.server_hostname
@@ -387,11 +383,11 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
         self.thread_wallet_list.start()
 
-    def changingInformationWalletList(self,val):
+    def changingInformationWalletList(self, val):
         print("*****")
         if val != "0":
             print("///")
-            self.tableWidget_6.setRowCount(self.tableWidget_6.rowCount()+1)
+            self.tableWidget_6.setRowCount(self.tableWidget_6.rowCount() + 1)
 
             val_ = val.split(",")
             walletAdress_ = QTableWidgetItem(val_[0])
@@ -399,9 +395,9 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
             self.btn_wallet_coppy = QPushButton('')
             self.btn_wallet_coppy.setStyleSheet(
-                    "QPushButton          {image: url("+self.icon_path+"/copy_wallet_icon_.png); border: 0; width: 30px; height: 30px;}"
-                    "QPushButton::hover   {image: url("+self.icon_path+"/copy_wallet_icon_hover_.png);border:0px}"
-                    "QPushButton::pressed {image: url("+self.icon_path+"/copy_wallet_icon_press_.png);border:0px}")
+                "QPushButton          {image: url(" + self.icon_path + "/copy_wallet_icon_.png); border: 0; width: 30px; height: 30px;}"
+                                                                       "QPushButton::hover   {image: url(" + self.icon_path + "/copy_wallet_icon_hover_.png);border:0px}"
+                                                                                                                              "QPushButton::pressed {image: url(" + self.icon_path + "/copy_wallet_icon_press_.png);border:0px}")
             self.btn_wallet_coppy.clicked.connect(self.buttonClickCopyWalletFromList)
             self.tableWidget_6.setCellWidget(self.count_wallet_list, 1, self.btn_wallet_coppy)
 
@@ -410,16 +406,16 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
             self.btn_pubkey_copy = QPushButton('')
             self.btn_pubkey_copy.setStyleSheet(
-                                   "QPushButton          {image: url("+self.icon_path+"/copy_key_icon.png); border: 0; width: 15px; height: 15px;}"
-                                   "QPushButton::hover   {image: url("+self.icon_path+"/copy_key_icon_hover.png);border:0px}"
-                                   "QPushButton::pressed {image: url("+self.icon_path+"/copy_key_icon_press.png);border:0px}"
+                "QPushButton          {image: url(" + self.icon_path + "/copy_key_icon.png); border: 0; width: 15px; height: 15px;}"
+                                                                       "QPushButton::hover   {image: url(" + self.icon_path + "/copy_key_icon_hover.png);border:0px}"
+                                                                                                                              "QPushButton::pressed {image: url(" + self.icon_path + "/copy_key_icon_press.png);border:0px}"
             )
             self.btn_pubkey_copy.clicked.connect(self.buttonClickCopyPubkeyFromList)
             self.tableWidget_6.setCellWidget(self.count_wallet_list, 3, self.btn_pubkey_copy)
             self.count_wallet_list = self.count_wallet_list + 1
         else:
             print("Couunt 0")
-            self.count_wallet_list=0
+            self.count_wallet_list = 0
 
     def buttonClickCopyPubkeyFromList(self):
         button = self.sender()
@@ -525,9 +521,9 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
             self.btn_wallet_coppy = QPushButton('')
             self.btn_wallet_coppy.setStyleSheet(
-                    "QPushButton          {image: url("+self.icon_path+"/copy_wallet_icon_.png); border: 0; width: 30px; height: 30px;}"
-                    "QPushButton::hover   {image: url("+self.icon_path+"/copy_wallet_icon_hover_.png);border:0px}"
-                    "QPushButton::pressed {image: url("+self.icon_path+"/copy_wallet_icon_press_.png);border:0px}")
+                "QPushButton          {image: url(" + self.icon_path + "/copy_wallet_icon_.png); border: 0; width: 30px; height: 30px;}"
+                                                                       "QPushButton::hover   {image: url(" + self.icon_path + "/copy_wallet_icon_hover_.png);border:0px}"
+                                                                                                                              "QPushButton::pressed {image: url(" + self.icon_path + "/copy_wallet_icon_press_.png);border:0px}")
             self.btn_wallet_coppy.clicked.connect(self.buttonClickPersonCopyWalletAdress)
             self.tableWidget_5.setCellWidget(row_index, 2, self.btn_wallet_coppy)
 
@@ -536,18 +532,18 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
             self.btn_pubkey_copy = QPushButton('')
             self.btn_pubkey_copy.setStyleSheet(
-                                   "QPushButton          {image: url("+self.icon_path+"/copy_key_icon.png); border: 0; width: 15px; height: 15px;}"
-                                   "QPushButton::hover   {image: url("+self.icon_path+"/copy_key_icon_hover.png);border:0px}"
-                                   "QPushButton::pressed {image: url("+self.icon_path+"/copy_key_icon_press.png);border:0px}"
+                "QPushButton          {image: url(" + self.icon_path + "/copy_key_icon.png); border: 0; width: 15px; height: 15px;}"
+                                                                       "QPushButton::hover   {image: url(" + self.icon_path + "/copy_key_icon_hover.png);border:0px}"
+                                                                                                                              "QPushButton::pressed {image: url(" + self.icon_path + "/copy_key_icon_press.png);border:0px}"
             )
             self.btn_pubkey_copy.clicked.connect(self.buttonClickPersonCopyPubkey)
             self.tableWidget_5.setCellWidget(row_index, 4, self.btn_pubkey_copy)
 
             self.btn_delete_person = QPushButton('')
             self.btn_delete_person.setStyleSheet(
-                                   "QPushButton          {image: url("+self.icon_path+"/delete_person.png); border: 0; width: 15px; height: 15px;}"
-                                   "QPushButton::hover   {image: url("+self.icon_path+"/delete_person_hover.png);border:0px}"
-                                   "QPushButton::pressed {image: url("+self.icon_path+"/delete_person_press.png);border:0px}")
+                "QPushButton          {image: url(" + self.icon_path + "/delete_person.png); border: 0; width: 15px; height: 15px;}"
+                                                                       "QPushButton::hover   {image: url(" + self.icon_path + "/delete_person_hover.png);border:0px}"
+                                                                                                                              "QPushButton::pressed {image: url(" + self.icon_path + "/delete_person_press.png);border:0px}")
             self.btn_delete_person.clicked.connect(self.buttonClickPersonDelete)
             self.tableWidget_5.setCellWidget(row_index, 5, self.btn_delete_person)
 
@@ -630,7 +626,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
     def changingInformationPubkey(self, val):
         self.lineEdit_33.setText(val)
-        self.loading_screen.stopAnimotion()
+        self.loading_screen.stop_animation()
 
     def changingInformationCreateWalletAdress(self, val):
         self.lineEdit_32.setText(val)
@@ -656,7 +652,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
     def buttonClickCreateWallet(self):
         self.thread_wallet_list.terminate()
-        self.count_wallet_list=0
+        self.count_wallet_list = 0
         if self.lineEdit_7.text() == "":
             self.thread_create_wallet_click_button = ThreadCreateWalletAdressClickButton.CreateWalletAdressClickButton()
 
@@ -1020,9 +1016,8 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.pushButton_42.setText(res["button_refresh"])
         self.label_78.setText(res["difficultly"])
 
-        self.msg_unsuccess_import=res["unsuccess_import"]
-        self.msg_success_import=res["success_import"]
-
+        self.msg_unsuccess_import = res["unsuccess_import"]
+        self.msg_success_import = res["success_import"]
 
         self.checkBox_2.setText(res["checkbox_all"])
         self.checkBox_4.setText(res["checkbox_all"])
@@ -1142,22 +1137,22 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
             btn_copy = QPushButton('')
             btn_copy.setStyleSheet(
-            "QPushButton          {image: url("+self.icon_path+"/copy_wallet_icon_.png); border: 0; width: 30px; height: 30px;}"
-            "QPushButton::hover   {image: url("+self.icon_path+"/copy_wallet_icon_hover_.png);border:0px}"
-            "QPushButton::pressed {image: url("+self.icon_path+"/copy_wallet_icon_press_.png);border:0px}")
+                "QPushButton          {image: url(" + self.icon_path + "/copy_wallet_icon_.png); border: 0; width: 30px; height: 30px;}"
+                                                                       "QPushButton::hover   {image: url(" + self.icon_path + "/copy_wallet_icon_hover_.png);border:0px}"
+                                                                                                                              "QPushButton::pressed {image: url(" + self.icon_path + "/copy_wallet_icon_press_.png);border:0px}")
             btn_copy.clicked.connect(self.buttonClickBottonTxidCoppy)
             self.tableWidget_4.setCellWidget(row_index, 1, btn_copy)
 
             btn_info = QPushButton('')
             btn_info.setStyleSheet(
-            "QPushButton          {image: url("+self.icon_path+"/details.png); border: 0; width: 30px; height: 30px;}"
-            "QPushButton::hover   {image: url("+self.icon_path+"/details_hover.png);border:0px}"
-            "QPushButton::pressed {image: url("+self.icon_path+"/details_press.png);border:0px}")
+                "QPushButton          {image: url(" + self.icon_path + "/details.png); border: 0; width: 30px; height: 30px;}"
+                                                                       "QPushButton::hover   {image: url(" + self.icon_path + "/details_hover.png);border:0px}"
+                                                                                                                              "QPushButton::pressed {image: url(" + self.icon_path + "/details_press.png);border:0px}")
             btn_info.clicked.connect(self.buttonClickHolderDetails)
             self.tableWidget_4.setCellWidget(row_index, 2, btn_info)
             row_index = row_index + 1
 
-        self.loading_screen.stopAnimotion()
+        self.loading_screen.stop_animation()
 
     def buttonClickBottonTxidCoppy(self):
         button = self.sender()
@@ -1185,7 +1180,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
     def changingInformationsHolderDetails(self, val):
         y = json.loads(val)
-        self.loading_screen.stopAnimotion()
+        self.loading_screen.stop_animation()
         matures_date = y['matures'] - int(self.long_chain_blocks)
         matures_time = datetime.now() + timedelta(minutes=matures_date)
 
@@ -1256,7 +1251,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             self.tableWidget_3.setItem(row_index, 1, amount)
             row_index = row_index + 1
 
-        self.loading_screen.stopAnimotion()
+        self.loading_screen.stop_animation()
 
     def buttonClickActiveLoops(self):
         self.thread_active_list = ThreadActiveLoops.ActiveLoops()
@@ -1367,7 +1362,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             self.btn_review_.clicked.connect(self.buttonClickFirstRequestListReview)
             self.tableWidget.setCellWidget(row_index, 3, self.btn_review_)
             row_index = row_index + 1
-        self.loading_screen.stopAnimotion()
+        self.loading_screen.stop_animation()
 
     def changingInformationCreditRequestListCiranta(self, val):
         self.request_credit_out = val
@@ -1416,7 +1411,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             self.tableWidget_2.setCellWidget(row_index, 3, self.btn_rew_)
             row_index = row_index + 1
 
-        self.loading_screen.stopAnimotion()
+        self.loading_screen.stop_animation()
 
     def buttonClickMining(self):
 
@@ -1430,7 +1425,6 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         #     cpu_max=4
         # else:
         #     cpu_max = os.cpu_count() -1
-
 
         if self.pushButton_6.isChecked():
             text, ok = QInputDialog.getInt(self, 'CPU For Mining', 'Enter numbur of cpu:', 1, 1, 3, 1)
@@ -1449,7 +1443,6 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
                 self.label_11.setText("(-)")
                 command = "./" + self.mcl_install_file_path + self.command_mcl_set_off_generate
                 stdin, stdout, stderr = ssh.exec_command(command)
-
 
     def buttonClickStacking(self):
         ssh = paramiko.SSHClient()
@@ -1621,11 +1614,11 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             self.showDialogInfo(self.msg_title_warning, self.msg_missing_info, self.msg_fill_blank, self.msg_ok)
 
     def changingInformationSendCoin(self, val):
-        if val=="":
-            self.loading_screen.stopAnimotion()
+        if val == "":
+            self.loading_screen.stop_animation()
             self.showDialogInfo(self.msg_title_info, self.msg_not_sended_coin, "", self.msg_ok)
         else:
-            self.loading_screen.stopAnimotion()
+            self.loading_screen.stop_animation()
             self.showDialogInfo(self.msg_title_info, self.msg_sended_coin, "", self.msg_ok)
 
     def buttonClickLockCoin(self):
@@ -1680,26 +1673,26 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
     def changingInformationLock(self, val):
         if val:
-            self.loading_screen.stopAnimotion()
+            self.loading_screen.stop_animation()
             self.showDialogInfo(self.msg_title_info, self.msg_succes_lock, "", self.msg_ok)
         else:
-            self.loading_screen.stopAnimotion()
+            self.loading_screen.stop_animation()
             self.showDialogInfo(self.msg_title_info, self.msg_unsucces_lock, "", self.msg_ok)
 
     def changingInformationUnlock(self, val):
         if val:
-            self.loading_screen.stopAnimotion()
+            self.loading_screen.stop_animation()
             self.showDialogInfo(self.msg_title_info, self.msg_succes_unlock, "", self.msg_ok)
         else:
-            self.loading_screen.stopAnimotion()
+            self.loading_screen.stop_animation()
             self.showDialogInfo(self.msg_title_info, self.msg_unsucces_unlock, "", self.msg_ok)
 
     def changingInformationAcceptCreditRequest(self, val):
         if val:
-            self.loading_screen.stopAnimotion()
+            self.loading_screen.stop_animation()
             self.showDialogInfo(self.msg_title_info, self.msg_succes_request_aceept, "", self.msg_ok)
         else:
-            self.loading_screen.stopAnimotion()
+            self.loading_screen.stop_animation()
             self.showDialogInfo(self.msg_title_info, self.msg_unsucces_request_aceept, "", self.msg_ok)
 
     def buttonClickMarmaraCreditLoopDetails(self):
@@ -1724,10 +1717,10 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
     def changingInformationCreditRequest(self, val):
 
         if val:
-            self.loading_screen.stopAnimotion()
+            self.loading_screen.stop_animation()
             self.showDialogInfo(self.msg_title_info, self.msg_succes_request, "", self.msg_ok)
         else:
-            self.loading_screen.stopAnimotion()
+            self.loading_screen.stop_animation()
             self.showDialogInfo(self.msg_title_info, self.msg_unsucces_request, "", self.msg_ok)
 
     def changingInformationTransactionID(self, val):
@@ -1812,7 +1805,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
     def changingInformationLoopDetails(self, val):
         y = json.loads(val)
-        self.loading_screen.stopAnimotion()
+        self.loading_screen.stop_animation()
         try:
             if y["result"] == "success":
                 b = y["creditloop"]
@@ -1856,16 +1849,16 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             self.lineEdit_14.setText(y["pubkey"])
             self.pubkey = y["pubkey"]
         except:
-            self.loading_screen.stopAnimotion()
+            self.loading_screen.stop_animation()
             self.lineEdit_14.setText(self.lineEdit_14_withoutPubkey)
 
             self.thread_start_chain.quit()
             self.thread_refresh.quit()
         if y["synced"]:
-            self.pushButton_3.setIcon(QIcon(self.icon_path+'/circle-active.png'))
+            self.pushButton_3.setIcon(QIcon(self.icon_path + '/circle-active.png'))
             self.pushButton_3.setText(self.synchronous)
         else:
-            self.pushButton_3.setIcon(QIcon(self.icon_path+'/circle-inactive.png'))
+            self.pushButton_3.setIcon(QIcon(self.icon_path + '/circle-inactive.png'))
             self.pushButton_3.setText(self.asynchronous)
         self.label_13.setText(y["name"])
         self.label_52.setText(str(y["longestchain"]))
@@ -1875,9 +1868,9 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.label_79.setText(str(int(y["difficulty"])))
 
         self.frame_11.setDisabled(False)
-        self.pushButton_15.setIcon(QIcon(self.icon_path+'/circle-active.png'))
+        self.pushButton_15.setIcon(QIcon(self.icon_path + '/circle-active.png'))
         self.pushButton_15.setText(self.active_text)
-        self.pushButton_16.setIcon(QIcon(self.icon_path+'/circle-active.png'))
+        self.pushButton_16.setIcon(QIcon(self.icon_path + '/circle-active.png'))
         self.pushButton_16.setText(self.active_text)
         self.pushButton_17.setDisabled(True)
         self.pushButton_11.setDisabled(False)
@@ -1897,7 +1890,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
     def changingInformationWalletInfo(self, val):
         try:
-            self.loading_screen.stopAnimotion()
+            self.loading_screen.stop_animation()
             y = json.loads(val)
 
             self.walletAdress = y["myNormalAddress"]
@@ -1907,7 +1900,6 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             self.label_45.setText(str(y["myPubkeyNormalAmount"]))
         except:
             print("Error")
-
 
     def changingInformation3(self, val):
         y = json.loads(val)
@@ -1934,7 +1926,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.is_chain_run = val
         if self.is_chain_run:
             self.frame_11.setDisabled(False)
-            self.pushButton_15.setIcon(QIcon(self.icon_path+'/circle-active.png'))
+            self.pushButton_15.setIcon(QIcon(self.icon_path + '/circle-active.png'))
             self.pushButton_15.setText(self.active_text)
             self.pushButton_17.setDisabled(True)
             self.pushButton_11.setDisabled(False)
@@ -1944,11 +1936,11 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             self.tabWidget_3.setTabEnabled(4, True)
             self.tabWidget_3.setTabEnabled(5, True)
             self.tabWidget_3.setTabEnabled(6, True)
-            self.loading_screen.stopAnimotion()
+            self.loading_screen.stop_animation()
 
         else:
             self.frame_11.setDisabled(True)
-            self.pushButton_15.setIcon(QIcon(self.icon_path+'/circle-inactive.png'))
+            self.pushButton_15.setIcon(QIcon(self.icon_path + '/circle-inactive.png'))
             self.pushButton_15.setText(self.deactive_text)
             self.pushButton_11.setDisabled(True)
             self.pushButton_17.setDisabled(False)
@@ -1956,9 +1948,9 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
     def changingInformation5(self, val):
         self.is_chain_run = val
         if not self.is_chain_run:
-            self.loading_screen.stopAnimotion()
+            self.loading_screen.stop_animation()
             self.frame_11.setDisabled(True)
-            self.pushButton_15.setIcon(QIcon(self.icon_path+'/circle-inactive.png'))
+            self.pushButton_15.setIcon(QIcon(self.icon_path + '/circle-inactive.png'))
             self.pushButton_15.setText("INACTIVE")
             self.pushButton_11.setDisabled(True)
             self.pushButton_17.setDisabled(False)
@@ -2107,14 +2099,14 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             self.lineEdit_14.setText(y["pubkey"])
             self.pubkey = y["pubkey"]
         except:
-            self.loading_screen.stopAnimotion()
+            self.loading_screen.stop_animation()
             self.lineEdit_14.setText(self.lineEdit_14_withoutPubkey)
 
         if y["synced"]:
-            self.pushButton_3.setIcon(QIcon(self.icon_path+'/circle-active.png'))
+            self.pushButton_3.setIcon(QIcon(self.icon_path + '/circle-active.png'))
             self.pushButton_3.setText(self.synchronous)
         else:
-            self.pushButton_3.setIcon(QIcon(self.icon_path+'/circle-inactive.png'))
+            self.pushButton_3.setIcon(QIcon(self.icon_path + '/circle-inactive.png'))
             self.pushButton_3.setText(self.asynchronous)
         self.label_13.setText(y["name"])
         self.label_52.setText(str(y["longestchain"]))
@@ -2122,9 +2114,9 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.label_58.setText(str(y["balance"]))
 
         self.frame_11.setDisabled(False)
-        self.pushButton_15.setIcon(QIcon(self.icon_path+'/circle-active.png'))
+        self.pushButton_15.setIcon(QIcon(self.icon_path + '/circle-active.png'))
         self.pushButton_15.setText(self.active_text)
-        self.pushButton_16.setIcon(QIcon(self.icon_path+'/circle-active.png'))
+        self.pushButton_16.setIcon(QIcon(self.icon_path + '/circle-active.png'))
         self.pushButton_16.setText(self.active_text)
         self.pushButton_17.setDisabled(True)
         self.pushButton_11.setDisabled(False)
@@ -2428,8 +2420,10 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.count_wallet_list = 0
         self.thread_start_chain_without_pubkey = ThreadStartChainWithoutPubkey.StartChainWithoutPubkey()
         self.loading_screen.startAnimation()
-        self.thread_start_chain_without_pubkey.change_value_information_getinfo_check_chain_with_pubkey.connect(self.changingInformationStartWithoutPubkeyGetInfo)
-        self.thread_start_chain_without_pubkey.change_value_information_wallet.connect(self.changingInformationWalletList)
+        self.thread_start_chain_without_pubkey.change_value_information_getinfo_check_chain_with_pubkey.connect(
+            self.changingInformationStartWithoutPubkeyGetInfo)
+        self.thread_start_chain_without_pubkey.change_value_information_wallet.connect(
+            self.changingInformationWalletList)
 
         self.thread_start_chain_without_pubkey.command_mcl_start_chain_without_pubkey = "./" + self.mcl_install_file_path + self.command_start_mcl_mining_without_pubkey
         self.thread_start_chain_without_pubkey.command_mcl_get_info = "./" + self.mcl_install_file_path + self.command_mcl_get_info
