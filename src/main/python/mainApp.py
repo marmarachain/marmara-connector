@@ -22,7 +22,7 @@ from functools import partial
 import os
 
 from customizedItem.Looding import LoadingScreen
-
+import git_request
 from guiStyle import GuiStyle
 import json
 
@@ -153,11 +153,16 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.progressBarValue = 0
         self.last_matures_minute = ""
 
-        # Install commands parameters
+        # Install command parameters
         # --------------------------------------------------
-        self.mcl_compiler_zip_command = "wget https://github.com/marmarachain/marmara/releases/download/v1.1.2/MCL-linux.zip -O MCL-linux.zip"
+        self.wget_command = "wget"
+        self.overwrite_command = "-O"
+        self.unzip_command = "unzip"
+        self.mcl_zip_name = "MCL-linux-" + git_request.git_request_tag() + ".zip"
+        self.mcl_zip_url = git_request.latest_marmara_zip_url()
+        self.mcl_compiler_zip_command = self.wget_command + " " + self.mcl_zip_url + " " + self.overwrite_command + " " + self.mcl_zip_name
         self.mcl_unzip_install_command = "sudo apt-get install unzip"
-        self.mcl_compiler_unzip_command = "unzip MCL-linux.zip"
+        self.mcl_compiler_unzip_command = self.unzip_command + " " + self.mcl_zip_name
         self.mcl_permission_command = "sudo chmod +x komodod komodo-cli fetch-params.sh"
         self.mcl_fetch_parameters_command = "./fetch-params.sh"
 
