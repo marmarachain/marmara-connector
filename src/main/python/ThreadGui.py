@@ -207,7 +207,7 @@ class AutoInstall(QThread):
         self.change_value_progressbar.emit(100)
 
 
-class CreateWalletAdressAfterInstall(QThread):
+class CreateWalletAddressAfterInstall(QThread):
     change_value_information_pubkey = pyqtSignal(str)
     change_value_information_adress = pyqtSignal(str)
     change_value_information_privkey = pyqtSignal(str)

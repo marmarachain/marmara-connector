@@ -21,7 +21,7 @@ from threadsMcl import ThreadActiveLoops
 from threadsMcl import ThreadAllWallet
 from threadsMcl import ThreadAutoInstall
 from threadsMcl import ThreadCirantaAccept
-from threadsMcl import ThreadCreateWalletAdressAfterInstall
+from threadsMcl import ThreadCreateWalletAddressAfterInstall
 from threadsMcl import ThreadCreateWalletAdressClickButton
 from threadsMcl import ThreadCreateWalletAdressConvertpassphrase
 from threadsMcl import ThreadCreditAccept
@@ -296,7 +296,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.thread_list_holders = ThreadSearchHolders.SearchHolders()
         self.thread_active_list = ThreadActiveLoops.ActiveLoops()
         self.thread_ciranta_request_accept = ThreadCirantaAccept.CirantaAccept()
-        self.thread_create_wallet_after_install = ThreadCreateWalletAdressAfterInstall.CreateWalletAdressAfterInstall()
+        self.thread_create_wallet_after_install = ThreadCreateWalletAddressAfterInstall.CreateWalletAddressAfterInstall()
         self.thread_create_wallet_click_button = ThreadCreateWalletAdressClickButton.CreateWalletAdressClickButton()
         self.thread_create_wallet_convertpassphrase = ThreadCreateWalletAdressConvertpassphrase.CreateWalletAdressConvertpassphrase()
         self.thread_refresh_wallet = ThreadRefreshWalletInformations.RefreshWalletInformations()
@@ -589,8 +589,8 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
         self.thread_refresh_wallet.start()
 
-    def createWalletAdressAfterInstall(self):
-        self.thread_create_wallet_after_install = ThreadCreateWalletAdressAfterInstall.CreateWalletAdressAfterInstall()
+    def createWalletAddressAfterInstall(self):
+        self.thread_create_wallet_after_install = ThreadCreateWalletAddressAfterInstall.CreateWalletAddressAfterInstall()
 
         self.loading_screen.start_animation()
 

@@ -3,7 +3,7 @@ from threadsMcl.Connection import ServerConnect
 from PyQt5.QtCore import pyqtSignal, QThread
 
 
-class CreateWalletAdressAfterInstall(QThread):
+class CreateWalletAddressAfterInstall(QThread):
     change_value_information_pubkey = pyqtSignal(str)
     change_value_information_adress = pyqtSignal(str)
     change_value_information_privkey = pyqtSignal(str)
