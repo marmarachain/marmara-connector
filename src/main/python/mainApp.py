@@ -20,7 +20,7 @@ from PyQt5.QtWidgets import QMessageBox
 from functools import partial
 import os
 
-from customizedItem.Looding import LoadingScreen
+from customizedItem.Loading import LoadingScreen
 import git_request
 from guiStyle import GuiStyle
 import json
@@ -318,7 +318,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         # self.listWallet()
 
     def buttonClickImportWalletCommand(self):
-        self.loading_screen.startAnimation()
+        self.loading_screen.start_animation()
 
         self.thread_import_wallet = ThreadImportPrivkey.ImportPrivkey()
         self.thread_import_wallet.change_value_information_get_wallet.connect(
@@ -584,7 +584,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
     def buttonClickRefreshWalletInfo(self):
         self.thread_refresh_wallet = ThreadRefreshWalletInformations.RefreshWalletInformations()
-        self.loading_screen.startAnimation()
+        self.loading_screen.start_animation()
 
         self.thread_refresh_wallet.change_value_information_get_marmara_info.connect(self.changingInformationWalletInfo)
         self.thread_refresh_wallet.command_mcl_get_marmara_info = "./" + self.mcl_install_file_path + self.command_mcl_marmara_get_info
@@ -599,7 +599,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
     def createWalletAdressAfterInstall(self):
         self.thread_create_wallet_after_install = ThreadCreateWalletAdressAfterInstall.CreateWalletAdressAfterInstall()
 
-        self.loading_screen.startAnimation()
+        self.loading_screen.start_animation()
 
         self.thread_create_wallet_after_install.change_value_information_adress.connect(
             self.changingInformationCreateWalletAdress)
@@ -656,7 +656,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         if self.lineEdit_7.text() == "":
             self.thread_create_wallet_click_button = ThreadCreateWalletAdressClickButton.CreateWalletAdressClickButton()
 
-            self.loading_screen.startAnimation()
+            self.loading_screen.start_animation()
 
             self.thread_create_wallet_click_button.change_value_information_adress.connect(
                 self.changingInformationCreateWalletAdress)
@@ -687,7 +687,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
                 if self.lineEdit_7.text() == self.lineEdit_3.text():
                     self.thread_create_wallet_convertpassphrase = ThreadCreateWalletAdressConvertpassphrase.CreateWalletAdressConvertpassphrase()
 
-                    self.loading_screen.startAnimation()
+                    self.loading_screen.start_animation()
 
                     self.thread_create_wallet_convertpassphrase.change_value_information_adress.connect(
                         self.changingInformationCreateWalletAdress)
@@ -1165,7 +1165,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         button = self.sender()
         index = self.tableWidget_4.indexAt(button.pos())
         if index.isValid():
-            self.loading_screen.startAnimation()
+            self.loading_screen.start_animation()
             self.thread_holder_details_info.change_value_information_loop_details.connect(
                 self.changingInformationsHolderDetails)
 
@@ -1217,7 +1217,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
         self.thread_list_holders = ThreadSearchHolders.SearchHolders()
 
-        self.loading_screen.startAnimation()
+        self.loading_screen.start_animation()
         self.thread_list_holders.change_value_information.connect(self.changingInformationMarmaraHoldersList)
 
         self.thread_list_holders.command_mcl_marmara_holders = "./" + self.mcl_install_file_path + self.command_mcl_marmar_holders + self.command_mcl_marmar_holders_min_matures + " " + self.command_mcl_marmar_holders_max_matures + " " + self.command_mcl_marmar_holders_min_amount + " " + self.command_mcl_marmar_holders_max_amount + " " + self.pubkey
@@ -1256,7 +1256,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
     def buttonClickActiveLoops(self):
         self.thread_active_list = ThreadActiveLoops.ActiveLoops()
 
-        self.loading_screen.startAnimation()
+        self.loading_screen.start_animation()
         self.thread_active_list.change_value_information.connect(self.changingInformationActiveList)
 
         self.thread_active_list.command_mcl_marmara_info = "./" + self.mcl_install_file_path + self.command_mcl_marmara_get_info + self.pubkey
@@ -1290,7 +1290,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
         self.thread_refresh_credit_request = ThreadRefreshCreditRequest.RefreshCreditRequest()
 
-        self.loading_screen.startAnimation()
+        self.loading_screen.start_animation()
         self.thread_refresh_credit_request.change_value_information.connect(self.changingInformationCreditRequestList)
 
         self.thread_refresh_credit_request.command_mcl_credit_request_list = "./" + self.mcl_install_file_path + self.command_mcl_credit_request_list + self.pubkey + " " + self.last_matures_minute
@@ -1304,7 +1304,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
     def buttonClickRefreshAllCreditRequestCiranta(self):
         self.thread_refresh_credit_request = ThreadRefreshCreditRequest.RefreshCreditRequest()
 
-        self.loading_screen.startAnimation()
+        self.loading_screen.start_animation()
         self.thread_refresh_credit_request.change_value_information.connect(
             self.changingInformationCreditRequestListCiranta)
 
@@ -1472,7 +1472,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
                 self.thread_credit_request = ThreadCreditRequest.CreditRequest()
 
-                self.loading_screen.startAnimation()
+                self.loading_screen.start_animation()
                 self.thread_credit_request.change_value_information_credit_request.connect(
                     self.changingInformationCreditRequest)
                 self.thread_credit_request.change_value_information_get_transactionID.connect(
@@ -1499,7 +1499,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             if self.message_button_return_boolean:
                 self.thread_credit_request_ciranta = ThreadCreditRequest.CreditRequest()
 
-                self.loading_screen.startAnimation()
+                self.loading_screen.start_animation()
                 self.thread_credit_request_ciranta.change_value_information_credit_request.connect(
                     self.changingInformationCreditRequest)
                 self.thread_credit_request_ciranta.change_value_information_get_transactionID.connect(
@@ -1539,7 +1539,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
                     if self.message_button_return_boolean:
                         self.thread_credit_request_accept = ThreadCreditAccept.CreditAccept()
 
-                        self.loading_screen.startAnimation()
+                        self.loading_screen.start_animation()
                         self.thread_credit_request_accept.change_value_information_accept.connect(
                             self.changingInformationAcceptCreditRequest)
                         self.thread_credit_request_accept.change_value_information_get_transactionID.connect(
@@ -1573,7 +1573,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
                     if self.message_button_return_boolean:
                         self.thread_ciranta_request_accept = ThreadCirantaAccept.CirantaAccept()
 
-                        self.loading_screen.startAnimation()
+                        self.loading_screen.start_animation()
                         self.thread_ciranta_request_accept.change_value_information_accept.connect(
                             self.changingInformationAcceptCreditRequest)
                         self.thread_ciranta_request_accept.change_value_information_get_transactionID.connect(
@@ -1596,7 +1596,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             self.showDialogYesNo(self.msg_title_warning, self.msg_do_you_want_to_send_coin, self.msg_yes, self.msg_no)
             if self.message_button_return_boolean:
                 self.thread_send_coin = ThreadSendCoin.SendCoin()
-                self.loading_screen.startAnimation()
+                self.loading_screen.start_animation()
                 self.thread_send_coin.change_value_information_txid.connect(self.changingInformationSendCoin)
 
                 reciever_wallet_adress = self.lineEdit_9.text()
@@ -1627,7 +1627,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
                                  self.msg_no)
             if self.message_button_return_boolean:
                 self.thread_lock_coin = ThreadLockCoin.LockCoin()
-                self.loading_screen.startAnimation()
+                self.loading_screen.start_animation()
                 self.thread_lock_coin.change_value_information_get_lock.connect(self.changingInformationLock)
                 self.thread_lock_coin.change_value_information_get_transactionID.connect(
                     self.changingInformationTransactionID)
@@ -1652,7 +1652,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
                                  self.msg_no)
             if self.message_button_return_boolean:
                 self.thread_unlock_coin = ThreadUnlockCoin.UnlockCoin()
-                self.loading_screen.startAnimation()
+                self.loading_screen.start_animation()
                 self.thread_unlock_coin.change_value_information_get_unlock.connect(self.changingInformationUnlock)
                 self.thread_unlock_coin.change_value_information_get_transactionID.connect(
                     self.changingInformationTransactionID)
@@ -1699,7 +1699,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         if not self.lineEdit_13.text() == "":
             self.thread_request_search = ThreadSearchRequest.SearchRequest()
 
-            self.loading_screen.startAnimation()
+            self.loading_screen.start_animation()
             self.thread_request_search.change_value_information_loop_details.connect(
                 self.changingInformationLoopDetails)
 
@@ -1734,7 +1734,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
                 self.label_57.setText(
                     self.last_update + ":   " + str(current_time.hour) + ":" + str(current_time.minute))
                 self.thread_start_chain = ThreadStartChain.StartChain()
-                self.loading_screen.startAnimation()
+                self.loading_screen.start_animation()
                 self.thread_start_chain.change_value_information_get_info.connect(self.changingInformation1)
                 self.thread_start_chain.change_value_information_get_marmara_info.connect(self.changingInformation2)
                 self.thread_start_chain.change_value_information_get_generate.connect(self.changingInformation3)
@@ -1763,7 +1763,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             self.showDialogYesNo(self.msg_title_warning, self.msg_stop_chain_last, self.msg_yes, self.msg_no)
             if self.message_button_return_boolean:
                 self.thread_stop_chain = ThreadStopChain.StopChain()
-                self.loading_screen.startAnimation()
+                self.loading_screen.start_animation()
                 self.thread_stop_chain.change_value_did_run_chain.connect(self.changingInformation5)
 
                 self.thread_stop_chain.command_mcl_stop_chain = "./" + self.mcl_install_file_path + self.command_mcl_stop_chain
@@ -1780,7 +1780,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         current_time = datetime.now()
         self.label_57.setText(self.last_update + ":   " + str(current_time.hour) + ":" + str(current_time.minute))
         self.thread_refresh = ThreadRefreshInformations.RefreshInformations()
-        self.loading_screen.startAnimation()
+        self.loading_screen.start_animation()
         self.thread_refresh.change_value_information_get_info.connect(self.changingInformation1)
         # self.thread_refresh.change_value_information_get_marmara_info.connect(self.changingInformation2)
         self.thread_refresh.change_value_information_get_generate.connect(self.changingInformation3)
@@ -1973,7 +1973,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
                 self.tabWidget_3.setTabEnabled(4, True)
                 self.tabWidget_3.setTabEnabled(5, True)
                 self.tabWidget_3.setTabEnabled(6, True)
-                self.loading_screen.startAnimation()
+                self.loading_screen.start_animation()
                 current_time = datetime.now()
                 self.thread_first_get_info = ThreadFirstRefreshInformations.FirstRefreshInformations()
                 self.label_57.setText(
@@ -2005,7 +2005,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
                 # self.pushButton_17.setDisabled(False)
 
                 # self.thread_start_chain_without_pubkey = ThreadGui.StartChainWithoutPubkey()
-                # self.loading_screen.startAnimation()
+                # self.loading_screen.start_animation()
                 # self.thread_start_chain_without_pubkey.change_value_information_getinfo_check_chain_with_pubkey.connect(self.changingInformationStartWithoutPubkeyGetInfo)
                 # self.thread_start_chain_without_pubkey.change_value_information_wallet.connect(self.changingInformationWalletList)
                 #
@@ -2419,7 +2419,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
     def startChainWithoutPubkeyForWalletList(self):
         self.count_wallet_list = 0
         self.thread_start_chain_without_pubkey = ThreadStartChainWithoutPubkey.StartChainWithoutPubkey()
-        self.loading_screen.startAnimation()
+        self.loading_screen.start_animation()
         self.thread_start_chain_without_pubkey.change_value_information_getinfo_check_chain_with_pubkey.connect(
             self.changingInformationStartWithoutPubkeyGetInfo)
         self.thread_start_chain_without_pubkey.change_value_information_wallet.connect(

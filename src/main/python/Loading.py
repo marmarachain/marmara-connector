@@ -26,7 +26,7 @@ class LoadingScreen(QWidget, ApplicationContext):
         if event.key() == Qt.Key_Escape:
             self.close()
 
-    def startAnimation(self):
+    def start_animation(self):
         self.movie.start()
         self.show()
 
