@@ -92,19 +92,19 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.msg_do_you_want_to_request = ""
         self.msg_do_you_want_endorser = ""
         self.msg_do_you_want_to_accept = ""
-        self.msg_credit_confirmaiton = ""
+        self.msg_credit_confirmation = ""
         self.msg_do_you_want_to_send_coin = ""
         self.msg_sended_coin = ""
-        self.msg_do_you_want_to_acitvate_coins = ""
-        self.msg_do_you_want_to_deacitvate_coins = ""
-        self.msg_succes_lock = ""
-        self.msg_unsucces_lock = ""
-        self.msg_succes_unlock = ""
+        self.msg_do_you_want_to_activate_coins = ""
+        self.msg_do_you_want_to_deactivate_coins = ""
+        self.msg_success_lock = ""
+        self.msg_unsuccess_lock = ""
+        self.msg_success_unlock = ""
         self.msg_unsucces_unlock = ""
-        self.msg_succes_request = ""
-        self.msg_unsucces_request = ""
-        self.msg_succes_request_aceept = ""
-        self.msg_unsucces_request_aceept = ""
+        self.msg_success_request = ""
+        self.msg_unsuccess_request = ""
+        self.msg_success_request_accept = ""
+        self.msg_unsuccess_request_accept = ""
         self.msg_start_chain = ""
         self.msg_stop_chain = ""
         self.msg_stop_chain_last = ""
@@ -134,7 +134,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.server_port = 22
 
         self.pubkey = ""
-        self.walletAdress = ""
+        self.walletAddress = ""
         self.privkey = ""
         self.chain_info = ""
         self.request_credit_out = ""
@@ -851,20 +851,20 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.msg_do_you_want_to_request = res["msg_do_you_want_to_request"]
         self.msg_do_you_want_endorser = res["msg_do_you_want_endorser"]
         self.msg_do_you_want_to_accept = res["msg_do_you_want_to_accept"]
-        self.msg_credit_confirmaiton = res["msg_credit_confirmaiton"]
+        self.msg_credit_confirmation = res["msg_credit_confirmation"]
         self.msg_do_you_want_to_send_coin = res["msg_do_you_want_to_send_coin"]
         self.msg_sended_coin = res["msg_sended_coin"]
         self.msg_not_sended_coin = res["msg_not_sended_coin"]
-        self.msg_do_you_want_to_acitvate_coins = res["msg_do_you_want_to_acitvate_coins"]
-        self.msg_do_you_want_to_deacitvate_coins = res["msg_do_you_want_to_deacitvate_coins"]
-        self.msg_succes_lock = res["msg_succes_lock"]
-        self.msg_unsucces_lock = res["msg_unsucces_lock"]
-        self.msg_succes_unlock = res["msg_succes_unlock"]
+        self.msg_do_you_want_to_activate_coins = res["msg_do_you_want_to_activate_coins"]
+        self.msg_do_you_want_to_deactivate_coins = res["msg_do_you_want_to_deactivate_coins"]
+        self.msg_success_lock = res["msg_success_lock"]
+        self.msg_unsuccess_lock = res["msg_unsuccess_lock"]
+        self.msg_success_unlock = res["msg_success_unlock"]
         self.msg_unsucces_unlock = res["msg_unsucces_unlock"]
-        self.msg_succes_request = res["msg_succes_request"]
-        self.msg_unsucces_request = res["msg_unsucces_request"]
-        self.msg_succes_request_aceept = res["msg_succes_request_aceept"]
-        self.msg_unsucces_request_aceept = res["msg_unsucces_request_aceept"]
+        self.msg_success_request = res["msg_success_request"]
+        self.msg_unsuccess_request = res["msg_unsuccess_request"]
+        self.msg_success_request_accept = res["msg_success_request_accept"]
+        self.msg_unsuccess_request_accept = res["msg_unsuccess_request_accept"]
         self.msg_start_chain = res["msg_start_chain"]
         self.msg_stop_chain = res["msg_stop_chain"]
         self.msg_stop_chain_last = res["msg_stop_chain_last"]
@@ -1523,7 +1523,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
                     matures_date_ = str(matures_time.day) + "/" + str(matures_time.month) + "/" + str(matures_time.year)
 
-                    self.showDialogYesNo(self.msg_credit_confirmaiton,
+                    self.showDialogYesNo(self.msg_credit_confirmation,
                                          "TXID: " + item['txid'] + "\n" +
                                          self.amount.upper() + ": " + str(item['amount']) + "\n" +
                                          self.matures.upper() + ": " + matures_date_ + "\n" +
@@ -1556,7 +1556,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         if index.isValid():
             for item in self.request_list_in_loop:
                 if item['txid'] == (self.tableWidget_2.item(index.row(), 0)).text():
-                    self.showDialogYesNo(self.msg_credit_confirmaiton,
+                    self.showDialogYesNo(self.msg_credit_confirmation,
                                          "TXID: " + item['txid'] + "\n" +
                                          "AMOUNT: " + str(item['amount']) + "\n"
                                                                             "MATURES: " + str(item['matures']) + "\n"
@@ -1616,7 +1616,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
     def buttonClickLockCoin(self):
         if not self.lineEdit_12.text() == "":
-            self.showDialogYesNo(self.msg_title_warning, self.msg_do_you_want_to_acitvate_coins, self.msg_yes,
+            self.showDialogYesNo(self.msg_title_warning, self.msg_do_you_want_to_activate_coins, self.msg_yes,
                                  self.msg_no)
             if self.message_button_return_boolean:
                 self.thread_lock_coin = ThreadLockCoin.LockCoin()
@@ -1641,7 +1641,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
     def buttonClickUnlockCoin(self):
         if not self.lineEdit_16.text() == "":
-            self.showDialogYesNo(self.msg_title_warning, self.msg_do_you_want_to_deacitvate_coins, self.msg_yes,
+            self.showDialogYesNo(self.msg_title_warning, self.msg_do_you_want_to_deactivate_coins, self.msg_yes,
                                  self.msg_no)
             if self.message_button_return_boolean:
                 self.thread_unlock_coin = ThreadUnlockCoin.UnlockCoin()
@@ -1667,15 +1667,15 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
     def changingInformationLock(self, val):
         if val:
             self.loading_screen.stop_animation()
-            self.showDialogInfo(self.msg_title_info, self.msg_succes_lock, "", self.msg_ok)
+            self.showDialogInfo(self.msg_title_info, self.msg_success_lock, "", self.msg_ok)
         else:
             self.loading_screen.stop_animation()
-            self.showDialogInfo(self.msg_title_info, self.msg_unsucces_lock, "", self.msg_ok)
+            self.showDialogInfo(self.msg_title_info, self.msg_unsuccess_lock, "", self.msg_ok)
 
     def changingInformationUnlock(self, val):
         if val:
             self.loading_screen.stop_animation()
-            self.showDialogInfo(self.msg_title_info, self.msg_succes_unlock, "", self.msg_ok)
+            self.showDialogInfo(self.msg_title_info, self.msg_success_unlock, "", self.msg_ok)
         else:
             self.loading_screen.stop_animation()
             self.showDialogInfo(self.msg_title_info, self.msg_unsucces_unlock, "", self.msg_ok)
@@ -1683,10 +1683,10 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
     def changingInformationAcceptCreditRequest(self, val):
         if val:
             self.loading_screen.stop_animation()
-            self.showDialogInfo(self.msg_title_info, self.msg_succes_request_aceept, "", self.msg_ok)
+            self.showDialogInfo(self.msg_title_info, self.msg_success_request_accept, "", self.msg_ok)
         else:
             self.loading_screen.stop_animation()
-            self.showDialogInfo(self.msg_title_info, self.msg_unsucces_request_aceept, "", self.msg_ok)
+            self.showDialogInfo(self.msg_title_info, self.msg_unsuccess_request_accept, "", self.msg_ok)
 
     def buttonClickMarmaraCreditLoopDetails(self):
         if not self.lineEdit_13.text() == "":
@@ -1711,10 +1711,10 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
         if val:
             self.loading_screen.stop_animation()
-            self.showDialogInfo(self.msg_title_info, self.msg_succes_request, "", self.msg_ok)
+            self.showDialogInfo(self.msg_title_info, self.msg_success_request, "", self.msg_ok)
         else:
             self.loading_screen.stop_animation()
-            self.showDialogInfo(self.msg_title_info, self.msg_unsucces_request, "", self.msg_ok)
+            self.showDialogInfo(self.msg_title_info, self.msg_unsuccess_request, "", self.msg_ok)
 
     def changingInformationTransactionID(self, val):
         print("TrasnID")
@@ -1794,7 +1794,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         pyperclip.copy(self.pubkey)
 
     def buttonClickCopyWalletAdress(self):
-        pyperclip.copy(self.walletAdress)
+        pyperclip.copy(self.walletAddress)
 
     def changingInformationLoopDetails(self, val):
         y = json.loads(val)
@@ -1872,9 +1872,9 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         try:
             y = json.loads(val)
 
-            self.walletAdress = y["myNormalAddress"]
-            self.lineEdit.setText(self.walletAdress)
-            self.lineEdit_31.setText(self.walletAdress)
+            self.walletAddress = y["myNormalAddress"]
+            self.lineEdit.setText(self.walletAddress)
+            self.lineEdit_31.setText(self.walletAddress)
 
             self.label_59.setText(str(y["myActivatedAmount"]))
             self.label_45.setText(str(y["myPubkeyNormalAmount"]))
@@ -1886,8 +1886,8 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             self.loading_screen.stop_animation()
             y = json.loads(val)
 
-            self.walletAdress = y["myNormalAddress"]
-            self.lineEdit.setText(self.walletAdress)
+            self.walletAddress = y["myNormalAddress"]
+            self.lineEdit.setText(self.walletAddress)
 
             self.label_59.setText(str(y["myActivatedAmount"]))
             self.label_45.setText(str(y["myPubkeyNormalAmount"]))
