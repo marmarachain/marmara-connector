@@ -3014,7 +3014,7 @@ color: rgb(0, 0, 0);</string>
                      <item row="0" column="0">
                       <widget class="QLabel" name="label_34">
                        <property name="text">
-                        <string>Reciever Pub Key</string>
+                        <string>Receiver Pubkey</string>
                        </property>
                       </widget>
                      </item>
@@ -3024,7 +3024,7 @@ color: rgb(0, 0, 0);</string>
                         <string/>
                        </property>
                        <property name="placeholderText">
-                        <string>Reciever Pub Key</string>
+                        <string>Receiver Pubkey</string>
                        </property>
                       </widget>
                      </item>
@@ -3193,14 +3193,14 @@ color: rgb(0, 0, 0);</string>
                      <item row="1" column="0">
                       <widget class="QLabel" name="label_49">
                        <property name="text">
-                        <string>Boton TXID </string>
+                        <string>Baton TXID </string>
                        </property>
                       </widget>
                      </item>
                      <item row="0" column="0">
                       <widget class="QLabel" name="label_51">
                        <property name="text">
-                        <string>Reciever Pub Key</string>
+                        <string>Receiver Pubkey</string>
                        </property>
                       </widget>
                      </item>
@@ -3210,7 +3210,7 @@ color: rgb(0, 0, 0);</string>
                         <string/>
                        </property>
                        <property name="placeholderText">
-                        <string>Reciever Pub Key</string>
+                        <string>Receiver Pubkey</string>
                        </property>
                       </widget>
                      </item>

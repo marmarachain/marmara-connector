@@ -948,12 +948,12 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.label_42.setText(res["currency_request"])
         self.label_43.setText(res["request_credit"])
         self.label_53.setText(res["request_credit"])
-        self.label_49.setText(res["botton_txid"])
+        self.label_49.setText(res["baton_txid"])
 
         self.lineEdit_2.setPlaceholderText(res["amount"])
         self.lineEdit_21.setPlaceholderText(res["receiver_pub_key"])
         self.lineEdit_24.setPlaceholderText(res["receiver_pub_key"])
-        self.lineEdit_25.setPlaceholderText(res["botton_txid"])
+        self.lineEdit_25.setPlaceholderText(res["baton_txid"])
 
         self.groupBox_14.setTitle(res["list_of_credit_requests_in_loop"])
         self.groupBox_15.setTitle(res["bearer_loops"])
@@ -1133,7 +1133,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
                 "QPushButton          {image: url(" + self.icon_path + "/copy_wallet_icon_.png); border: 0; width: 30px; height: 30px;}"
                                                                        "QPushButton::hover   {image: url(" + self.icon_path + "/copy_wallet_icon_hover_.png);border:0px}"
                                                                                                                               "QPushButton::pressed {image: url(" + self.icon_path + "/copy_wallet_icon_press_.png);border:0px}")
-            btn_copy.clicked.connect(self.buttonClickBottonTxidCoppy)
+            btn_copy.clicked.connect(self.buttonClickBatonTxidCopy)
             self.tableWidget_4.setCellWidget(row_index, 1, btn_copy)
 
             btn_info = QPushButton('')
@@ -1147,7 +1147,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
         self.loading_screen.stop_animation()
 
-    def buttonClickBottonTxidCoppy(self):
+    def buttonClickBatonTxidCopy(self):
         button = self.sender()
         index = self.tableWidget_4.indexAt(button.pos())
         if index.isValid():
