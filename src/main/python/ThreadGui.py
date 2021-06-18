@@ -3,6 +3,7 @@ import time
 import paramiko
 from PyQt5.QtCore import QThread, pyqtSignal
 from Connection import ServerConnect
+import git_request
 
 
 class AutoInstall(QThread):
@@ -60,7 +61,11 @@ class AutoInstall(QThread):
         session = ssh.get_transport().open_session()
         session.set_combine_stderr(True)
         session.get_pty()
-        session.exec_command("wget https://github.com/marmarachain/marmara/releases/download/v1.1.2/MCL-linux.zip")
+        wget_command = "wget"
+        mcl_latest_release_url = git_request.latest_marmara_zip_url()
+        install_latest_mcl = wget_command + " " + mcl_latest_release_url
+        session.exec_command(install_latest_mcl)
+
         # stdin = session.makefile('wb', -1)
         stdout = session.makefile('rb', -1)
 
@@ -99,7 +104,10 @@ class AutoInstall(QThread):
         session = ssh.get_transport().open_session()
         session.set_combine_stderr(True)
         session.get_pty()
-        session.exec_command("unzip MCL-linux.zip")
+        unzip_command = "unzip"
+        mcl_zip_filename = "MCL-linux-" + git_request.git_request_tag() + ".zip"
+        unzip_mcl_zip = unzip_command + " " + mcl_zip_filename
+        session.exec_command(unzip_mcl_zip)
         stdin = session.makefile('wb', -1)
         stdout = session.makefile('rb', -1)
         stdin.write("A" + '\n')
@@ -112,9 +120,9 @@ class AutoInstall(QThread):
         self.change_value_text_edit.emit("Extracted Files.")
         self.change_value_progressbar.emit(22)
 
-        # Set sermission mcl files
-        print("İzinler Ayarlanılıyor...")
-        self.change_value_text_edit.emit("Setting permissions...")
+        # Set permission for mcl files
+        print("Setting permissions......")
+        self.change_value_text_edit.emit("Setting permissions on MCL files...")
 
         session = ssh.get_transport().open_session()
         session.set_combine_stderr(True)
@@ -132,7 +140,7 @@ class AutoInstall(QThread):
         self.change_value_progressbar.emit(25)
 
         # Run fetch parameters in remote server
-        print("Fetch Parametrs Çalıştırıldı...")
+        print("Running Fetch Parameters...")
         self.change_value_text_edit.emit("Running Fetch Parameters...")
 
         session = ssh.get_transport().open_session()
@@ -157,12 +165,12 @@ class AutoInstall(QThread):
 
         self.change_value_progressbar.emit(67)
 
-        print("Fetch Parametrs bitti...")
-        self.change_value_text_edit.emit("Finished Fetch Parameters.")
+        print("Completed fetch parameters...")
+        self.change_value_text_edit.emit("Completed fetch parameters.")
 
         stdin.flush()
 
-        print("DONE")
+        print("Complete")
 
         if self.withBootstrap:
             session = ssh.get_transport().open_session()
