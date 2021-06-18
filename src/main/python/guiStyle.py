@@ -3,7 +3,8 @@ from PyQt5.QtGui import QDoubleValidator, QIcon
 from guiDesign import Ui_MainWindow
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 
-class GuiStyle(Ui_MainWindow,ApplicationContext):
+
+class GuiStyle(Ui_MainWindow, ApplicationContext):
     def __init__(self):
         self.setupUi(self)
 
@@ -82,7 +83,7 @@ class GuiStyle(Ui_MainWindow,ApplicationContext):
         self.onlyDouble = QDoubleValidator()
         self.lineEdit_16.setValidator(self.onlyDouble)
 
-        # Tabwidget
+        # Tab widget
         self.tableWidget.setShowGrid(False)
         # self.tableWidget.verticalHeader().setVisible(False)
 
@@ -100,7 +101,8 @@ class GuiStyle(Ui_MainWindow,ApplicationContext):
 
         self.tableWidget_6.setShowGrid(False)
 
-        stylesheet = "QHeaderView::section{Background-color:#16A085;border-radius:5px;font: 13pt;color: beige; margin:5px}" \
+        stylesheet = "QHeaderView::section{Background-color:#16A085;border-radius:5px;font: 13pt;color: beige; " \
+                     "margin:5px}" \
                      "QTableWidget::QTableCornerButton::section {background: red;border: 2px outset red;border: 0;}" \
                      "QTableWidget::indicator:unchecked {background-color: #d7d6d5;border: 0;}" \
                      "QTableWidget {border: 0;}" \
@@ -109,7 +111,8 @@ class GuiStyle(Ui_MainWindow,ApplicationContext):
         self.tableWidget.setStyleSheet(stylesheet)
         self.tableWidget_6.setStyleSheet(stylesheet)
 
-        stylesheet_4 = "QHeaderView::section{Background-color:#16A085;border-radius:5px;font: 13pt;color: beige; margin:5px}" \
+        stylesheet_4 = "QHeaderView::section{Background-color:#16A085;border-radius:5px;font: 13pt;color: beige; " \
+                       "margin:5px}" \
                        "QTableWidget::QTableCornerButton::section {background: red;border: 2px outset red;border: 0;}" \
                        "QTableWidget::indicator:unchecked {background-color: #d7d6d5;border: 0;}" \
                        "QTableWidget {border: 0;}" \
@@ -117,7 +120,8 @@ class GuiStyle(Ui_MainWindow,ApplicationContext):
 
         self.tableWidget_4.setStyleSheet(stylesheet_4)
 
-        stylesheet_5 = "QHeaderView::section{Background-color:#16A085;border-radius:5px;font: 13pt;color: beige; margin:5px}" \
+        stylesheet_5 = "QHeaderView::section{Background-color:#16A085;border-radius:5px;font: 13pt;color: beige; " \
+                       "margin:5px}" \
                        "QTableWidget::QTableCornerButton::section {background: red;border: 2px outset red;border: 0;}" \
                        "QTableWidget::indicator:unchecked {background-color: #d7d6d5;border: 0;}" \
                        "QTableWidget {border: 0;}" \
@@ -125,7 +129,8 @@ class GuiStyle(Ui_MainWindow,ApplicationContext):
 
         self.tableWidget_5.setStyleSheet(stylesheet_5)
 
-        stylesheet = "QHeaderView::section{Background-color:#16A085;border-radius:5px;font: 13pt;color: beige; margin:5px}" \
+        stylesheet = "QHeaderView::section{Background-color:#16A085;border-radius:5px;font: 13pt;color: beige; " \
+                     "margin:5px}" \
                      "QTableWidget::QTableCornerButton::section {background: red;border: 2px outset red;border: 0;}" \
                      "QTableWidget::indicator:unchecked {background-color: #d7d6d5;border: 0;}" \
                      "QTableWidget {border: 0;}" \
@@ -133,7 +138,8 @@ class GuiStyle(Ui_MainWindow,ApplicationContext):
 
         self.tableWidget_3.setStyleSheet(stylesheet)
 
-        stylesheet_ = "QHeaderView::section{Background-color:#16A085;border-radius:5px;font: 13pt;color: beige; margin:5px}" \
+        stylesheet_ = "QHeaderView::section{Background-color:#16A085;border-radius:5px;font: 13pt;color: beige; " \
+                      "margin:5px}" \
                       "QTableWidget::QTableCornerButton::section {background: red;border: 2px outset red;border: 0;}" \
                       "QTableWidget::indicator:unchecked {background-color: #d7d6d5;border: 0;}" \
                       "QTableWidget {border: 0;}" \
@@ -196,39 +202,39 @@ class GuiStyle(Ui_MainWindow,ApplicationContext):
         self.pushButton_11.setIcon(QIcon(self.icon_path + "/stop_icon.png"))
         self.pushButton_11.setIconSize(QtCore.QSize(60, 60))
 
-
         self.icon_path = self.icon_path.replace("\\", "/")
 
-        self.pushButton_31.setStyleSheet("QPushButton          {image: url(" + self.icon_path + "/search_icon.png); border: 0; width: 40px; height: 40px;}"\
-                                        "QPushButton::hover   {image: url(" + self.icon_path + "/search_hover.png);border:0px}"\
-                                        "QPushButton::pressed {image: url(" + self.icon_path + "/search_press.png);border:0px}")
+        self.pushButton_31.setStyleSheet(
+            "QPushButton          {image: url(" + self.icon_path + "/search_icon.png); border: 0; width: 40px; height: 40px;}" \
+                                                                   "QPushButton::hover   {image: url(" + self.icon_path + "/search_hover.png);border:0px}" \
+                                                                                                                          "QPushButton::pressed {image: url(" + self.icon_path + "/search_press.png);border:0px}")
         self.pushButton_33.setStyleSheet(
             "QPushButton          {image: url(" + self.icon_path + "/search_icon.png); border: 0; width: 40px; height: 30px;}"
-                                                                    "QPushButton::hover   {image: url(" + self.icon_path + "/search_hover.png);border:0px}"
+                                                                   "QPushButton::hover   {image: url(" + self.icon_path + "/search_hover.png);border:0px}"
                                                                                                                           "QPushButton::pressed {image: url(" + self.icon_path + "/search_press.png);border:0px}")
         self.pushButton_43.setStyleSheet(
             "QPushButton          {image: url(" + self.icon_path + "/search_icon.png); border: 0; width: 40px; height: 30px;}"
-                                                                    "QPushButton::hover   {image: url(" + self.icon_path + "/search_hover.png);border:0px}"
+                                                                   "QPushButton::hover   {image: url(" + self.icon_path + "/search_hover.png);border:0px}"
                                                                                                                           "QPushButton::pressed {image: url(" + self.icon_path + "/search_press.png);border:0px}")
         self.pushButton_14.setStyleSheet(
             "QPushButton          {image: url(" + self.icon_path + "/copy_key_icon.png); border: 0; width: 20px; height: 20px;}"
-                                                                    "QPushButton::hover   {image: url(" + self.icon_path + "/copy_key_icon_hover.png);border:0px}"
+                                                                   "QPushButton::hover   {image: url(" + self.icon_path + "/copy_key_icon_hover.png);border:0px}"
                                                                                                                           "QPushButton::pressed {image: url(" + self.icon_path + "/copy_key_icon_press.png);border:0px}")
         self.pushButton_7.setStyleSheet(
             "QPushButton          {image: url(" + self.icon_path + "/copy_wallet_icon_.png); border: 0; width: 20px; height: 20px;}"
-                                                                    "QPushButton::hover   {image: url(" + self.icon_path + "/copy_wallet_icon_hover_.png);border:0px}"
+                                                                   "QPushButton::hover   {image: url(" + self.icon_path + "/copy_wallet_icon_hover_.png);border:0px}"
                                                                                                                           "QPushButton::pressed {image: url(" + self.icon_path + "/copy_wallet_icon_press_.png);border:0px}")
         self.pushButton_39.setStyleSheet(
             "QPushButton          {image: url(" + self.icon_path + "/copy_wallet_icon_.png); border: 0; width: 30px; height: 30px;}"
-                                                                    "QPushButton::hover   {image: url(" + self.icon_path + "/copy_wallet_icon_hover_.png);border:0px}"
+                                                                   "QPushButton::hover   {image: url(" + self.icon_path + "/copy_wallet_icon_hover_.png);border:0px}"
                                                                                                                           "QPushButton::pressed {image: url(" + self.icon_path + "/copy_wallet_icon_press_.png);border:0px}")
         self.pushButton_40.setStyleSheet(
             "QPushButton          {image: url(" + self.icon_path + "/copy_key_icon.png); border: 0; width: 30px; height: 30px;}"
-                                                                    "QPushButton::hover   {image: url(" + self.icon_path + "/copy_key_icon_hover.png);border:0px}"
+                                                                   "QPushButton::hover   {image: url(" + self.icon_path + "/copy_key_icon_hover.png);border:0px}"
                                                                                                                           "QPushButton::pressed {image: url(" + self.icon_path + "/copy_key_icon_press.png);border:0px}")
         self.pushButton_4.setStyleSheet(
             "QPushButton          {image: url(" + self.icon_path + "/exit_icon_reg.png);border:0px; width: 7px; height: 7px;border-radius: 200px;}"
-                                                                    "QPushButton::hover   {image: url(" + self.icon_path + "/exit_icon_hoever.png);border:0px}"
+                                                                   "QPushButton::hover   {image: url(" + self.icon_path + "/exit_icon_hoever.png);border:0px}"
                                                                                                                           "QPushButton::pressed {image: url(" + self.icon_path + "/exit_icon_press.png);border:0px}")
         self.pushButton_13.setStyleSheet(
             "QPushButton          {image: url(" + self.icon_path + "/coin_lock_icon.png); border: 0; width: 10px; height: 10px;}"
@@ -236,26 +242,26 @@ class GuiStyle(Ui_MainWindow,ApplicationContext):
                                                                                                                           "QPushButton::pressed {image: url(" + self.icon_path + "/coin_lock_icon_press.png);border:0px}")
         self.pushButton_20.setStyleSheet(
             "QPushButton          {image: url(" + self.icon_path + "/coin_unlock_icon.png); border: 0; width: 10px; height: 10px;}"
-                                                                    "QPushButton::hover   {image: url(" + self.icon_path + "/coin_unlock_icon_hover.png);border:0px}"
+                                                                   "QPushButton::hover   {image: url(" + self.icon_path + "/coin_unlock_icon_hover.png);border:0px}"
                                                                                                                           "QPushButton::pressed {image: url(" + self.icon_path + "/coin_unlock_icon_press.png);border:0px}")
         self.pushButton_18.setStyleSheet(
             "QPushButton          {image: url(" + self.icon_path + "/send_coin_icon.png); border: 0; width: 20px; height: 20px;}"
-                                                                    "QPushButton::hover   {image: url(" + self.icon_path + "/send_coin_hover.png);border:0px}"
+                                                                   "QPushButton::hover   {image: url(" + self.icon_path + "/send_coin_hover.png);border:0px}"
                                                                                                                           "QPushButton::pressed {image: url(" + self.icon_path + "/send_coin_press.png);border:0px}")
 
         self.pushButton_19.setStyleSheet(
             "QPushButton          {image: url(" + self.icon_path + "/copy_wallet_icon.png); border: 0; width: 30px; height: 30px;}"
-                                                                    "QPushButton::hover   {image: url(" + self.icon_path + "/copy_wallet_icon_hover.png);border:0px}"
+                                                                   "QPushButton::hover   {image: url(" + self.icon_path + "/copy_wallet_icon_hover.png);border:0px}"
                                                                                                                           "QPushButton::pressed {image: url(" + self.icon_path + "/copy_wallet_icon_press.png);border:0px}")
 
         self.pushButton_27.setStyleSheet(
             "QPushButton          {image: url(" + self.icon_path + "/request_credit.png); border: 0; width: 30px; height: 30px;}"
-                                                                    "QPushButton::hover   {image: url(" + self.icon_path + "/request_credit_hover.png);border:0px}"
+                                                                   "QPushButton::hover   {image: url(" + self.icon_path + "/request_credit_hover.png);border:0px}"
                                                                                                                           "QPushButton::pressed {image: url(" + self.icon_path + "/request_credit_press.png);border:0px}")
 
         self.pushButton_32.setStyleSheet(
             "QPushButton          {image: url(" + self.icon_path + "/request_credit.png); border: 0; width: 30px; height: 30px;}"
-                                                                    "QPushButton::hover   {image: url(" + self.icon_path + "/request_credit_hover.png);border:0px}"
+                                                                   "QPushButton::hover   {image: url(" + self.icon_path + "/request_credit_hover.png);border:0px}"
                                                                                                                           "QPushButton::pressed {image: url(" + self.icon_path + "/request_credit_press.png);border:0px}")
 
         self.pushButton_15.setIcon(QIcon(self.icon_path + "/circle-inactive.png"))
@@ -627,7 +633,7 @@ class GuiStyle(Ui_MainWindow,ApplicationContext):
         self.frame_38.setStyleSheet(
             "QFrame {border-style: outset;border-width: 0px;border-color: beige;border-radius: 10px; background-color: #021C1E; }")
 
-        #Here we hide the button with designer. Then we create our own button.
+        # Here we hide the button with designer. Then we create our own button.
         self.pushButton_6.setVisible(False)
         self.pushButton_9.setVisible(False)
 
