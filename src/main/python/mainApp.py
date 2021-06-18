@@ -1,30 +1,22 @@
 # -*- coding: utf-8 -*-
 import ast
 from builtins import type
-
-from fbs_runtime.application_context.PyQt5 import ApplicationContext
 from datetime import datetime, timedelta
-
 import paramiko
 import pyperclip
-
+import sys
+import json
+import os
+from functools import partial
+from fbs_runtime.application_context.PyQt5 import ApplicationContext
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow, QPushButton, QTableWidgetItem, QInputDialog, QRadioButton, \
     QButtonGroup, QFileDialog, QDialog
-import sys
-
 from PyQt5.QtWidgets import QMessageBox
-
-from functools import partial
-import os
-
 from customizedItem.Loading import LoadingScreen
-import git_request
 from guiStyle import GuiStyle
-import json
-
 from threadsMcl import ThreadActiveLoops
 from threadsMcl import ThreadAllWallet
 from threadsMcl import ThreadAutoInstall
@@ -48,6 +40,7 @@ from threadsMcl import ThreadStartChain
 from threadsMcl import ThreadStartChainWithoutPubkey
 from threadsMcl import ThreadStopChain
 from threadsMcl import ThreadUnlockCoin
+import git_request
 
 
 class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
