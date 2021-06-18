@@ -2,6 +2,7 @@ import paramiko
 
 
 class ServerConnect:
+
     def __init__(self, server_hostname, server_username, server_password):
         self.server_port = 22
 
