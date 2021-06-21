@@ -1,3 +1,5 @@
+import time
+
 import paramiko
 from PyQt5.QtCore import QThread, pyqtSignal
 
@@ -11,9 +13,15 @@ class AutoInstall(QThread):
     server_hostname = ""
     server_password = ""
     server_port = 22
+    mcl_linux_download_command = ""
 
     def run(self):
         self.mcl_install_connect_ssh()
+
+    def set_mcl_linux_download_command(self, value):
+        self.mcl_linux_download_command = value
+        # print(self.mcl_linux_download_command)
+
 
     def mcl_install_connect_ssh(self):
         print("Sunucya bağlanmak için bilgiler alindi.")
@@ -57,8 +65,13 @@ class AutoInstall(QThread):
         session = ssh.get_transport().open_session()
         session.set_combine_stderr(True)
         session.get_pty()
-        session.exec_command("wget https://github.com/marmarachain/marmara/releases/download/v1.1.2/MCL-linux.zip -O MCL-linux.zip")
-        # stdin = session.makefile('wb', -1)    
+        session.exec_command(self.mcl_linux_download_command)
+        """
+        TO-DO: A check needs to be added about whether the download is complete. 
+        The program tries to unzip a file that has not been downloaded yet. 
+        The progress of the download process has to be shown on the progress bar.
+        """
+        # stdin = session.makefile('wb', -1)
         stdout = session.makefile('rb', -1)
 
         for line in stdout:

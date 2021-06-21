@@ -147,14 +147,11 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
         # Install command parameters
         # --------------------------------------------------
-        self.wget_command = "wget"
-        self.overwrite_command = "-O"
-        self.unzip_command = "unzip"
-        self.mcl_zip_name = "MCL-linux-" + git_request.git_request_tag() + ".zip"
+        self.mcl_zip_name = "MCL-linux.zip"
         self.mcl_zip_url = git_request.latest_marmara_zip_url()
-        self.mcl_compiler_zip_command = self.wget_command + " " + self.mcl_zip_url + " " + self.overwrite_command + " " + self.mcl_zip_name
+        self.mcl_compiler_zip_command = "wget " + self.mcl_zip_url + " -O " + self.mcl_zip_name
         self.mcl_unzip_install_command = "sudo apt-get install unzip"
-        self.mcl_compiler_unzip_command = self.unzip_command + " " + self.mcl_zip_name
+        self.mcl_compiler_unzip_command = "unzip " + self.mcl_zip_name
         self.mcl_permission_command = "sudo chmod +x komodod komodo-cli fetch-params.sh"
         self.mcl_fetch_parameters_command = "./fetch-params.sh"
 
@@ -2392,6 +2389,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
     def buttonClickAutoInstaller(self):
         self.pushButton_5.setEnabled(False)
+        ThreadAutoInstall.AutoInstall().set_mcl_linux_download_command(self.mcl_compiler_zip_command)
         self.thread_auto_install = ThreadAutoInstall.AutoInstall()
         self.thread_auto_install.change_value_text_edit.connect(self.autoInstallLogSetTextEdit)
         self.thread_auto_install.change_value_progressbar.connect(self.autoInstallProgressbarSetValue)
