@@ -161,9 +161,9 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         # Komodo commands parameters
         # --------------------------------------------------
         self.command_start_mcl_mining_without_pubkey = "komodod -ac_name=MCL -ac_supply=2000000 -ac_cc=2 -addnode=37.148.210.158 -addnode=37.148.212.36 -addnode=46.4.238.65 -addressindex=1 -spentindex=1 -ac_marmara=1 -ac_staked=75 -ac_reward=3000000000"
-        self.command_get_adress = "komodo-cli -ac_name=MCL getnewaddress"
+        self.command_get_address = "komodo-cli -ac_name=MCL getnewaddress"
         self.command_get_pubkey = "komodo-cli -ac_name=MCL validateaddress"
-        self.command_get_adress_convertpassphrase = "komodo-cli -ac_name=MCL convertpassphrase "
+        self.command_get_address_convertpassphrase = "komodo-cli -ac_name=MCL convertpassphrase "
         self.command_get_privkey = "komodo-cli -ac_name=MCL dumpprivkey  "
 
         self.command_start_mcl_mining_with_pubkey = "komodod -ac_name=MCL -ac_supply=2000000 -ac_cc=2 " \
@@ -603,7 +603,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             self.changingInformationGetInfoPubkeyCheck)
 
         self.thread_create_wallet_after_install.command_mcl_start_chain_without_pubkey = "./" + self.mcl_install_file_path + self.command_start_mcl_mining_without_pubkey
-        self.thread_create_wallet_after_install.command_mcl_create_wallet_adress = "./" + self.mcl_install_file_path + self.command_get_adress
+        self.thread_create_wallet_after_install.command_mcl_create_wallet_adress = "./" + self.mcl_install_file_path + self.command_get_address
         self.thread_create_wallet_after_install.command_mcl_get_info = "./" + self.mcl_install_file_path + self.command_mcl_get_info
         self.thread_create_wallet_after_install.command_mcl_get_pubkey = "./" + self.mcl_install_file_path + self.command_get_pubkey
         self.thread_create_wallet_after_install.command_mcl_get_privkey = "./" + self.mcl_install_file_path + self.command_get_privkey
@@ -661,7 +661,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
                 self.changingInformationGetInfoPubkeyCheck)
 
             self.thread_create_wallet_click_button.command_mcl_start_chain_without_pubkey = "./" + self.mcl_install_file_path + self.command_start_mcl_mining_without_pubkey
-            self.thread_create_wallet_click_button.command_mcl_create_wallet_adress = "./" + self.mcl_install_file_path + self.command_get_adress
+            self.thread_create_wallet_click_button.command_mcl_create_wallet_adress = "./" + self.mcl_install_file_path + self.command_get_address
             self.thread_create_wallet_click_button.command_mcl_get_info = "./" + self.mcl_install_file_path + self.command_mcl_get_info
             self.thread_create_wallet_click_button.command_mcl_get_pubkey = "./" + self.mcl_install_file_path + self.command_get_pubkey
             self.thread_create_wallet_click_button.command_mcl_get_privkey = "./" + self.mcl_install_file_path + self.command_get_privkey
@@ -692,7 +692,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
                         self.changingInformationGetInfoPubkeyCheck)
 
                     self.thread_create_wallet_convertpassphrase.command_mcl_start_chain_without_pubkey = "./" + self.mcl_install_file_path + self.command_start_mcl_mining_without_pubkey
-                    self.thread_create_wallet_convertpassphrase.command_mcl_create_convertpassphrase = "./" + self.mcl_install_file_path + self.command_get_adress_convertpassphrase + "\"" + self.lineEdit_7.text() + "\""
+                    self.thread_create_wallet_convertpassphrase.command_mcl_create_convertpassphrase = "./" + self.mcl_install_file_path + self.command_get_address_convertpassphrase + "\"" + self.lineEdit_7.text() + "\""
                     self.thread_create_wallet_convertpassphrase.command_mcl_get_info = "./" + self.mcl_install_file_path + self.command_mcl_get_info
                     self.thread_create_wallet_convertpassphrase.command_mcl_import_private_Key = "./" + self.mcl_install_file_path + self.command_mcl_import_privkey
 
