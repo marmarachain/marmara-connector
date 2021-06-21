@@ -7,6 +7,7 @@ import configuration
 import marmarachain_rpc
 import remote_connection
 
+
 class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def __init__(self, parent=None):
@@ -52,7 +53,8 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
         server_list = configuration.ServerSettings().read_file()
         selected_server_info = server_list[self.server_comboBox.currentIndex()]
         selected_server_info = selected_server_info.split(",")
-        remote_connection.set_server_connection(ip=selected_server_info[2], username=selected_server_info[1], pw=self.serverpw_lineEdit.text())
+        remote_connection.set_server_connection(ip=selected_server_info[2], username=selected_server_info[1],
+                                                pw=self.serverpw_lineEdit.text())
         validate = remote_connection.check_server_connection()
         if validate:
             self.login_message_label.setText(str(validate))
@@ -61,24 +63,28 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
         self.chain_initilazation()
 
     def chain_initilazation(self):
+        self.get_chain()
+        self.get_getinfo()
+
+    def get_chain(self):
         self.bottom_message_label.setText('Checking marmarachain')
-        if not marmarachain_rpc.mcl_chain_status().read():
+        if not marmarachain_rpc.mcl_chain_status():
             marmarachain_rpc.start_chain()
         while True:
-            if marmarachain_rpc.mcl_chain_status().read():
+            if marmarachain_rpc.mcl_chain_status():
                 break
             time.sleep(2)
             self.bottom_message_label.setText('Chain is not started')
-        while True:
-            if marmarachain_rpc.mcl_chain_status().read():
-                break
-            print('Chain not started')
-            time.sleep(1)
 
+    def get_getinfo(self):
         while True:
             getinfo = marmarachain_rpc.getinfo()
-            getinfo_result = getinfo[0].read()  # getting result of stdout
+            getinfo_result = getinfo[0]  # getting result of stdout
             if getinfo_result:
+                print(getinfo_result)
+                getinfo_result = str(getinfo_result).replace("b'", ' ').replace("\\n'", " ").replace("[", "").replace(
+                    "]", "").replace(" ,", "").replace("\\n", "").replace("'", " ")
+                print(getinfo_result)
                 getinfo_result = json.loads(getinfo_result)
                 print(getinfo_result)
                 self.bottom_message_label.setText('loading values')
@@ -91,18 +97,14 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.bottom_message_label.setText('finished')
                 if getinfo_result.get('pubkey') is None:
                     self.bottom_message_label.setText('pubkey is not set')
-                marmarachain_rpc.rpc_close(getinfo)
                 break
-            getinfo_result = getinfo[1].read()   # getting result of stderr
+            getinfo_result = getinfo[1]  # getting result of stderr
             if getinfo_result:
-                getinfo_result = str(getinfo_result).replace("b'", ' ').replace("\\n", " ")
+                getinfo_result = str(getinfo_result).replace("b", '').replace("\\n", "")
                 print(getinfo_result)
                 self.bottom_message_label.setText(str(getinfo_result))
                 self.login_message_label.setText(str(getinfo_result))
-                marmarachain_rpc.rpc_close(getinfo)
                 time.sleep(2)
-
-
 
     def server_add_selected(self):
         self.login_stackedWidget.setCurrentIndex(2)
