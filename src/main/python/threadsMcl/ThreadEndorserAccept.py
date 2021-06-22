@@ -3,12 +3,12 @@ from PyQt5.QtCore import QThread, pyqtSignal
 from threadsMcl.Connection import ServerConnect
 
 
-class CirantaAccept(QThread):
+class EndorserAccept(QThread):
 
     change_value_information_accept = pyqtSignal(bool)
     change_value_information_get_transactionID = pyqtSignal(str)
 
-    command_mcl_ciranta_request_accept = ""
+    command_mcl_endorser_request_accept = ""
     command_mcl_credit_request_sendrawtransaction = ""
 
     server_username = ""
@@ -25,8 +25,8 @@ class CirantaAccept(QThread):
 
         ssh = ServerConnect(self.server_hostname, self.server_username, self.server_password)
 
-        print(self.command_mcl_ciranta_request_accept)
-        stdout = ssh.command(self.command_mcl_ciranta_request_accept)
+        print(self.command_mcl_endorser_request_accept)
+        stdout = ssh.command(self.command_mcl_endorser_request_accept)
         lines = stdout.readlines()
         out_ = ""
         for deger in lines:

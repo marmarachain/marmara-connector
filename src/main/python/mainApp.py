@@ -20,7 +20,7 @@ from guiStyle import GuiStyle
 from threadsMcl import ThreadActiveLoops
 from threadsMcl import ThreadAllWallet
 from threadsMcl import ThreadAutoInstall
-from threadsMcl import ThreadCirantaAccept
+from threadsMcl import ThreadEndorserAccept
 from threadsMcl import ThreadCreateWalletAddressAfterInstall
 from threadsMcl import ThreadCreateWalletAdressClickButton
 from threadsMcl import ThreadCreateWalletAdressConvertpassphrase
@@ -287,12 +287,12 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         self.thread_refresh_credit_request = ThreadRefreshCreditRequest.RefreshCreditRequest()
         self.thread_credit_request_accept = ThreadCreditAccept.CreditAccept()
         self.thread_credit_request = ThreadCreditRequest.CreditRequest()
-        self.thread_credit_request_ciranta = ThreadCreditRequest.CreditRequest()
+        self.thread_credit_request_endorser = ThreadCreditRequest.CreditRequest()
         self.thread_request_search = ThreadSearchRequest.SearchRequest()
         self.thread_holder_details_info = ThreadSearchRequest.SearchRequest()
         self.thread_list_holders = ThreadSearchHolders.SearchHolders()
         self.thread_active_list = ThreadActiveLoops.ActiveLoops()
-        self.thread_ciranta_request_accept = ThreadCirantaAccept.CirantaAccept()
+        self.thread_endorser_request_accept = ThreadEndorserAccept.EndorserAccept()
         self.thread_create_wallet_after_install = ThreadCreateWalletAddressAfterInstall.CreateWalletAddressAfterInstall()
         self.thread_create_wallet_click_button = ThreadCreateWalletAdressClickButton.CreateWalletAdressClickButton()
         self.thread_create_wallet_convertpassphrase = ThreadCreateWalletAdressConvertpassphrase.CreateWalletAdressConvertpassphrase()
@@ -1487,24 +1487,24 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
         if (not self.lineEdit_24.text() == "") and not self.lineEdit_25.text() == "":
             self.showDialogYesNo(self.msg_title_warning, self.msg_do_you_want_endorser, self.msg_yes, self.msg_no)
             if self.message_button_return_boolean:
-                self.thread_credit_request_ciranta = ThreadCreditRequest.CreditRequest()
+                self.thread_credit_request_endorser = ThreadCreditRequest.CreditRequest()
 
                 self.loading_screen.start_animation()
-                self.thread_credit_request_ciranta.change_value_information_credit_request.connect(
+                self.thread_credit_request_endorser.change_value_information_credit_request.connect(
                     self.changingInformationCreditRequest)
-                self.thread_credit_request_ciranta.change_value_information_get_transactionID.connect(
+                self.thread_credit_request_endorser.change_value_information_get_transactionID.connect(
                     self.changingInformationTransactionID)
 
-                self.thread_credit_request_ciranta.command_mcl_credit_request = "./" + self.mcl_install_file_path + self.command_mcl_credit_request + \
+                self.thread_credit_request_endorser.command_mcl_credit_request = "./" + self.mcl_install_file_path + self.command_mcl_credit_request + \
                                                                                 self.lineEdit_24.text() + " " + self.lineEdit_25.text() + " " + self.command_mcl_credit_request_countine
 
-                self.thread_credit_request_ciranta.command_mcl_credit_request_sendrawtransaction = "./" + self.mcl_install_file_path + self.command_mcl_coin_sendrawtransaction
+                self.thread_credit_request_endorser.command_mcl_credit_request_sendrawtransaction = "./" + self.mcl_install_file_path + self.command_mcl_coin_sendrawtransaction
 
-                self.thread_credit_request_ciranta.server_username = self.server_username
-                self.thread_credit_request_ciranta.server_hostname = self.server_hostname
-                self.thread_credit_request_ciranta.server_password = self.server_password
+                self.thread_credit_request_endorser.server_username = self.server_username
+                self.thread_credit_request_endorser.server_hostname = self.server_hostname
+                self.thread_credit_request_endorser.server_password = self.server_password
 
-                self.thread_credit_request_ciranta.start()
+                self.thread_credit_request_endorser.start()
 
         else:
             self.showDialogInfo(self.msg_title_warning, self.msg_missing_info, self.msg_fill_blank, self.msg_ok)
@@ -1561,25 +1561,25 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
                                          item['receivepk'] + "\n" +
                                          "\n" + self.msg_do_you_want_to_accept, self.msg_accept, self.msg_no)
                     if self.message_button_return_boolean:
-                        self.thread_ciranta_request_accept = ThreadCirantaAccept.CirantaAccept()
+                        self.thread_endorser_request_accept = ThreadEndorserAccept.EndorserAccept()
 
                         self.loading_screen.start_animation()
-                        self.thread_ciranta_request_accept.change_value_information_accept.connect(
+                        self.thread_endorser_request_accept.change_value_information_accept.connect(
                             self.changingInformationAcceptCreditRequest)
-                        self.thread_ciranta_request_accept.change_value_information_get_transactionID.connect(
+                        self.thread_endorser_request_accept.change_value_information_get_transactionID.connect(
                             self.changingInformationTransactionID)
 
-                        self.thread_ciranta_request_accept.command_mcl_ciranta_request_accept = "./" + self.mcl_install_file_path + self.command_mcl_marmaratransfer_accept + \
+                        self.thread_endorser_request_accept.command_mcl_endorser_request_accept = "./" + self.mcl_install_file_path + self.command_mcl_marmaratransfer_accept + \
                                                                                                 item[
                                                                                                     'receivepk'] + " " + self.command_mcl_marmaratransfer_accept_countine + " " + \
                                                                                                 item['txid']
-                        self.thread_ciranta_request_accept.command_mcl_credit_request_sendrawtransaction = "./" + self.mcl_install_file_path + self.command_mcl_coin_sendrawtransaction
+                        self.thread_endorser_request_accept.command_mcl_credit_request_sendrawtransaction = "./" + self.mcl_install_file_path + self.command_mcl_coin_sendrawtransaction
 
-                        self.thread_ciranta_request_accept.server_username = self.server_username
-                        self.thread_ciranta_request_accept.server_hostname = self.server_hostname
-                        self.thread_ciranta_request_accept.server_password = self.server_password
+                        self.thread_endorser_request_accept.server_username = self.server_username
+                        self.thread_endorser_request_accept.server_hostname = self.server_hostname
+                        self.thread_endorser_request_accept.server_password = self.server_password
 
-                        self.thread_ciranta_request_accept.start()
+                        self.thread_endorser_request_accept.start()
 
     def buttonClickSendCoin(self):
         if (not self.lineEdit_9.text() == "") and not self.lineEdit_15.text() == "":
