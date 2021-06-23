@@ -22,7 +22,6 @@ class AutoInstall(QThread):
         self.mcl_linux_download_command = value
         # print(self.mcl_linux_download_command)
 
-
     def mcl_install_connect_ssh(self):
         print("Sunucya bağlanmak için bilgiler alindi.")
         self.change_value_text_edit.emit(str("Get Info..."))
@@ -38,7 +37,7 @@ class AutoInstall(QThread):
         self.change_value_text_edit.emit(str("Connection ok."))
         self.change_value_progressbar.emit(2)
 
-        #Install Lib
+        # Install Lib
         self.change_value_text_edit.emit(str("Installing some libs..."))
 
         session = ssh.get_transport().open_session()
