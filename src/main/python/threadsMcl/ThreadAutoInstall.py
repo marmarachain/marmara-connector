@@ -8,201 +8,87 @@ class AutoInstall(QThread):
     change_value_text_edit = pyqtSignal(str)
     change_value_progressbar = pyqtSignal(int)
 
-    withBootstrap = True
+    withBootstrap = False
     server_username = ""
     server_hostname = ""
     server_password = ""
     server_port = 22
     mcl_linux_download_command = ""
 
+
     def run(self):
         self.mcl_install_connect_ssh()
 
-    def set_mcl_linux_download_command(self, value):
-        self.mcl_linux_download_command = value
-        # print(self.mcl_linux_download_command)
 
-    def mcl_install_connect_ssh(self):
-        print("Sunucya bağlanmak için bilgiler alindi.")
-        self.change_value_text_edit.emit(str("Get Info..."))
-
+    def remote_connect(self):
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(self.server_hostname, self.server_port, self.server_username, self.server_password)
-        session = ssh.get_transport().open_session()
-        session.set_combine_stderr(True)
-        session.get_pty()
+        ssh.connect(hostname=self.server_hostname, username=self.server_username, password=self.server_password, port=self.server_port)
+        return ssh
 
-        print("bağlantı tamam.")
-        self.change_value_text_edit.emit(str("Connection ok."))
+    def ssh_run_command(self, command, sudo=False):
+        client = self.remote_connect()
+        if sudo:
+            command = 'sudo -S -- ' + command + '\n'
+        stdin, stdout, stderr = client.exec_command(command)
+        if sudo:
+            stdin.write(self.server_password + '\n')
+            stdin.flush()
+            stdin.channel.shutdown_write()
+        exit_status = stdout.channel.recv_exit_status()  # wait for exec_command to finish
+        client.close()
+        return {'out': stdout.read().decode("utf8"), 'err': stderr.read().decode("utf8"), 'retval': exit_status}
+
+    def print_out_emit(self, result):
+        print(result.get('retval'))
+        if result.get('retval') == 0:
+            for item in result.get('out').splitlines():
+                self.change_value_text_edit.emit(str(item))
+        else:
+            for item in result.get('err').splitlines():
+                self.change_value_text_edit.emit(str(item))
+
+
+    def mcl_install_connect_ssh(self):
+        self.change_value_text_edit.emit(str("starting auto install"))
+        self.change_value_text_edit.emit(str("update Server"))
+        update = self.ssh_run_command('sudo apt-get update', sudo=True)
+        self.print_out_emit(update)
         self.change_value_progressbar.emit(2)
-
-        # Install Lib
-        self.change_value_text_edit.emit(str("Installing some libs..."))
-
-        session = ssh.get_transport().open_session()
-        session.set_combine_stderr(True)
-        session.get_pty()
-        session.exec_command("sudo apt-get install libgomp1")
-        stdin = session.makefile('wb', -1)
-        stdout = session.makefile('rb', -1)
-        stdin.write(self.server_password + '\n')
-        stdin.write("yes" + '\n')
-        stdin.write("yes" + '\n')
-
-        self.change_value_text_edit.emit("Install depends...")
-        for line in stdout:
-            print(line.rstrip())
-            # self.change_value_text_edit.emit(str(line.rstrip()))
-            # stdin.write("yes" + '\n')
-
-        print("Downloaded depends.")
-        self.change_value_text_edit.emit(str("*** Downloaded Depends. ***"))
+        self.change_value_text_edit.emit(str("installing dependency"))
+        depend = self.ssh_run_command('sudo apt-get install libgomp1 -y', sudo=True)
+        self.print_out_emit(depend)
         self.change_value_progressbar.emit(7)
-
-        # Install mcl zip in remote server
-        session = ssh.get_transport().open_session()
-        session.set_combine_stderr(True)
-        session.get_pty()
-        session.exec_command(self.mcl_linux_download_command)
-        """
-        TO-DO: A check needs to be added about whether the download is complete. 
-        The program tries to unzip a file that has not been downloaded yet. 
-        The progress of the download process has to be shown on the progress bar.
-        """
-        # stdin = session.makefile('wb', -1)
-        stdout = session.makefile('rb', -1)
-
-        for line in stdout:
-            print(line.rstrip())
-            self.change_value_text_edit.emit(str(line.rstrip()))
-
-        self.change_value_text_edit.emit(str("** Installed ZIP. ***"))
+        depend = self.ssh_run_command('sudo apt-get install unzip -y', sudo=True)
+        self.print_out_emit(depend)
         self.change_value_progressbar.emit(8)
-
-        # Install unzip in remote server
-        print("Installing Unzip...")
-        self.change_value_text_edit.emit(str("Installing Unzip..."))
-
-        session = ssh.get_transport().open_session()
-        session.set_combine_stderr(True)
-        session.get_pty()
-        session.exec_command("sudo apt install unzip")
-        stdin = session.makefile('wb', -1)
-        stdout = session.makefile('rb', -1)
-        stdin.write(self.server_password + '\n')
-        stdin.write("yes" + '\n')
-
-        for line in stdout:
-            print(line.rstrip())
-            self.change_value_text_edit.emit("Unzip ....")
-
-        print("Unzip İndirildi.")
-        self.change_value_text_edit.emit(str("*** Installed Unzip ***"))
+        self.change_value_text_edit.emit(str("Downloading latest MCL version"))
+        self.change_value_text_edit.emit(str("------------------------------"))
+        get_mcl_zip = self.ssh_run_command('wget ' + self.mcl_linux_download_command, sudo=True)
+        self.change_value_text_edit.emit(str('Download complete ...'))
         self.change_value_progressbar.emit(15)
-
-        # Unzip mcl zip file in remote server
-        print("İndirilen dosya zipten çıkartılıyor.")
         self.change_value_text_edit.emit(str("Extracting Files..."))
-
-        session = ssh.get_transport().open_session()
-        session.set_combine_stderr(True)
-        session.get_pty()
-        session.exec_command("unzip MCL-linux.zip")
-        stdin = session.makefile('wb', -1)
-        stdout = session.makefile('rb', -1)
-        stdin.write("A" + '\n')
-
-        for line in stdout:
-            print(line.rstrip())
-            self.change_value_text_edit.emit(str(line.rstrip()))
-
-        print("Zipten Çıkarıldı")
-        self.change_value_text_edit.emit("Extracted Files.")
+        unzip_mcl_zip = self.ssh_run_command('unzip MCL-linux.zip')
+        self.print_out_emit(unzip_mcl_zip)
         self.change_value_progressbar.emit(22)
-
-        # Set sermission mcl files
-        print("İzinler Ayarlanılıyor...")
         self.change_value_text_edit.emit("Setting permissions...")
-
-        session = ssh.get_transport().open_session()
-        session.set_combine_stderr(True)
-        session.get_pty()
-        session.exec_command("sudo chmod +x komodod komodo-cli fetch-params.sh")
-        stdin = session.makefile('wb', -1)
-        stdout = session.makefile('rb', -1)
-        stdin.write(self.server_password + '\n')
-        stdin.write("yes" + '\n')
-
-        for line in stdout:
-            print(line.rstrip())
-            self.change_value_text_edit.emit("setting permissions...")
-
+        allow_mcl = self.ssh_run_command('sudo chmod +x komodod komodo-cli fetch-params.sh', sudo=True)
+        self.print_out_emit(allow_mcl)
         self.change_value_progressbar.emit(25)
 
-        # Run fetch parameters in remote server
-        print("Fetch Parametrs Çalıştırıldı...")
         self.change_value_text_edit.emit("Running Fetch Parameters...")
-
-        session = ssh.get_transport().open_session()
-        session.set_combine_stderr(True)
-        session.get_pty()
-        session.exec_command("./fetch-params.sh")
-        stdin = session.makefile('wb', -1)
-        stdout = session.makefile('rb', -1)
-        stdin.write("yes" + '\n')
-
-        count_ = 0
-        for line in stdout:
-            count_ = count_ + 1
-            print(line.rstrip())
-            self.change_value_text_edit.emit(str(line.rstrip()))
-            if count_ == 20:
-                self.change_value_progressbar.emit(33)
-            elif count_ == 50:
-                self.change_value_progressbar.emit(47)
-            elif count_ == 65:
-                self.change_value_progressbar.emit(65)
-
+        zcash_get = self.ssh_run_command('./fetch-params.sh')
+        self.print_out_emit(zcash_get)
         self.change_value_progressbar.emit(67)
-
-        print("Fetch Parametrs bitti...")
         self.change_value_text_edit.emit("Finished Fetch Parameters.")
 
-        stdin.flush()
-
-        print("DONE")
-
         if self.withBootstrap:
-            session = ssh.get_transport().open_session()
-            session.set_combine_stderr(True)
-            session.get_pty()
-            session.exec_command("wget https://eu.bootstrap.dexstats.info/MCL-bootstrap.tar.gz -O MCL-bootstrap.tar.gz")
-            stdout = session.makefile('rb', -1)
-
-            for line in stdout:
-                print(line.rstrip())
-                self.change_value_text_edit.emit(str(line.rstrip()))
-
+            download_bootstrap = self.ssh_run_command('wget https://eu.bootstrap.dexstats.info/MCL-bootstrap.tar.gz -O MCL-bootstrap.tar.gz')
+            self.print_out_emit(download_bootstrap)
             self.change_value_progressbar.emit(78)
+            blocks = self.ssh_run_command('mkdir -p ~/.komodo/MCL')
+            self.print_out_emit(blocks)
+            extract_blocks = self.ssh_run_command('tar -xvf MCL-bootstrap.tar.gz -C .komodo/MCL')
+            self.print_out_emit(extract_blocks)
 
-            session = ssh.get_transport().open_session()
-            session.set_combine_stderr(True)
-            session.get_pty()
-            session.exec_command("mkdir -p ~/.komodo/MCL")
-            session.makefile('rb', -1)
-
-            session = ssh.get_transport().open_session()
-            session.set_combine_stderr(True)
-            session.get_pty()
-            session.exec_command("tar -xvf MCL-bootstrap.tar.gz -C .komodo/MCL")
-            stdout = session.makefile('rb', -1)
-
-            for line in stdout:
-                print(line.rstrip())
-                self.change_value_text_edit.emit(str(line.rstrip()))
-
-        self.change_value_text_edit.emit("**********")
-        self.change_value_text_edit.emit("**DONE**")
-        self.change_value_text_edit.emit("**********")
         self.change_value_progressbar.emit(100)

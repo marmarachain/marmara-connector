@@ -2389,11 +2389,11 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
 
     def buttonClickAutoInstaller(self):
         self.pushButton_5.setEnabled(False)
-        ThreadAutoInstall.AutoInstall().set_mcl_linux_download_command(self.mcl_compiler_zip_command)
         self.thread_auto_install = ThreadAutoInstall.AutoInstall()
         self.thread_auto_install.change_value_text_edit.connect(self.autoInstallLogSetTextEdit)
         self.thread_auto_install.change_value_progressbar.connect(self.autoInstallProgressbarSetValue)
 
+        self.thread_auto_install.mcl_linux_download_command = self.mcl_compiler_zip_command
         self.thread_auto_install.server_username = self.server_username
         self.thread_auto_install.server_hostname = self.server_hostname
         self.thread_auto_install.server_password = self.server_password
