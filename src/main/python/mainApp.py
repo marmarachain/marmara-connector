@@ -1240,7 +1240,7 @@ class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
             amount = QTableWidgetItem(str(item_json["myAmountLockedInLoop"]))
             self.tableWidget_3.setItem(row_index, 1, amount)
             row_index = row_index + 1
-
+        self.label_87.setText(str(json_array['TotalLockedInLoop']))
         self.loading_screen.stop_animation()
 
     def buttonClickActiveLoops(self):
