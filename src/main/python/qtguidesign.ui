@@ -31,7 +31,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="login_tab">
        <attribute name="title">
@@ -2195,7 +2195,7 @@
                  <enum>QFrame::Plain</enum>
                 </property>
                 <property name="text">
-                 <string>Activate Normal Amount</string>
+                 <string>Lock Normal Amount</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -2203,7 +2203,7 @@
                </widget>
               </item>
               <item row="1" column="2">
-               <widget class="QFrame" name="activeamount_deactivation_frame">
+               <widget class="QFrame" name="unlock_activeamount_frame">
                 <property name="frameShape">
                  <enum>QFrame::WinPanel</enum>
                 </property>
@@ -2212,20 +2212,20 @@
                 </property>
                 <layout class="QGridLayout" name="gridLayout_35">
                  <item row="0" column="2" colspan="2">
-                  <widget class="QLineEdit" name="deactivate_amount_value"/>
+                  <widget class="QLineEdit" name="unlock_amount_value"/>
                  </item>
                  <item row="0" column="0" colspan="2">
-                  <widget class="QLabel" name="deactivate_amount_label">
+                  <widget class="QLabel" name="unlock_amount_label">
                    <property name="text">
                     <string>Amount</string>
                    </property>
                    <property name="buddy">
-                    <cstring>deactivate_amount_value</cstring>
+                    <cstring>unlock_amount_value</cstring>
                    </property>
                   </widget>
                  </item>
                  <item row="1" column="2">
-                  <widget class="QPushButton" name="deactivate_pushButton">
+                  <widget class="QPushButton" name="unlock_pushButton">
                    <property name="minimumSize">
                     <size>
                      <width>60</width>
@@ -2233,7 +2233,7 @@
                     </size>
                    </property>
                    <property name="text">
-                    <string/>
+                    <string>Unlock</string>
                    </property>
                   </widget>
                  </item>
@@ -2300,7 +2300,7 @@
                     </size>
                    </property>
                    <property name="text">
-                    <string/>
+                    <string>Lock</string>
                    </property>
                   </widget>
                  </item>
@@ -2331,7 +2331,7 @@
                </widget>
               </item>
               <item row="0" column="2">
-               <widget class="QLabel" name="deactivate_activeamount_label">
+               <widget class="QLabel" name="unlock_activeamount_label">
                 <property name="frameShape">
                  <enum>QFrame::NoFrame</enum>
                 </property>
@@ -2339,7 +2339,7 @@
                  <enum>QFrame::Plain</enum>
                 </property>
                 <property name="text">
-                 <string>De-Activate Active Amount</string>
+                 <string>Unlock Active Amount</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -2415,16 +2415,6 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="0" column="0" colspan="2">
-                  <widget class="QLabel" name="receiver_address_label">
-                   <property name="text">
-                    <string>Receiver Address</string>
-                   </property>
-                   <property name="buddy">
-                    <cstring>receiver_address_lineEdit</cstring>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="5" column="0" colspan="2">
                   <widget class="QLineEdit" name="sending_amount_lineEdit">
                    <property name="placeholderText">
@@ -2437,6 +2427,35 @@
                    <property name="text">
                     <string>Send</string>
                    </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="receiver_address_label">
+                   <property name="text">
+                    <string>Receiver Address</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>receiver_address_lineEdit</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1" colspan="2">
+                  <widget class="QComboBox" name="comboBox_4">
+                   <item>
+                    <property name="text">
+                     <string>Select Contact Address</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>ahmet</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>mehmet</string>
+                    </property>
+                   </item>
                   </widget>
                  </item>
                 </layout>
@@ -2513,7 +2532,10 @@
                   <string/>
                  </property>
                  <property name="text">
-                  <string>23213321313</string>
+                  <string/>
+                 </property>
+                 <property name="dragEnabled">
+                  <bool>false</bool>
                  </property>
                  <property name="readOnly">
                   <bool>true</bool>
@@ -2529,7 +2551,7 @@
                   </size>
                  </property>
                  <property name="text">
-                  <string>gfrgweffsf</string>
+                  <string/>
                  </property>
                  <property name="readOnly">
                   <bool>true</bool>
@@ -2577,7 +2599,7 @@
                <enum>QTabWidget::North</enum>
               </property>
               <property name="currentIndex">
-               <number>2</number>
+               <number>3</number>
               </property>
               <widget class="QWidget" name="looprequests_tab">
                <attribute name="title">
@@ -4266,263 +4288,6 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="settings_tab">
-           <property name="font">
-            <font>
-             <pointsize>12</pointsize>
-            </font>
-           </property>
-           <attribute name="title">
-            <string>Settings</string>
-           </attribute>
-           <widget class="QFrame" name="frame_19">
-            <property name="geometry">
-             <rect>
-              <x>9</x>
-              <y>19</y>
-              <width>701</width>
-              <height>581</height>
-             </rect>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <widget class="QLabel" name="label_30">
-             <property name="geometry">
-              <rect>
-               <x>80</x>
-               <y>20</y>
-               <width>131</width>
-               <height>41</height>
-              </rect>
-             </property>
-             <property name="text">
-              <string>Choose language</string>
-             </property>
-             <property name="buddy">
-              <cstring>comboBox</cstring>
-             </property>
-            </widget>
-            <widget class="QLabel" name="label_32">
-             <property name="geometry">
-              <rect>
-               <x>80</x>
-               <y>80</y>
-               <width>111</width>
-               <height>17</height>
-              </rect>
-             </property>
-             <property name="text">
-              <string>see debug file</string>
-             </property>
-            </widget>
-            <widget class="QLabel" name="label_50">
-             <property name="geometry">
-              <rect>
-               <x>60</x>
-               <y>250</y>
-               <width>121</width>
-               <height>17</height>
-              </rect>
-             </property>
-             <property name="text">
-              <string>debug console</string>
-             </property>
-            </widget>
-            <widget class="QLineEdit" name="lineEdit_15">
-             <property name="geometry">
-              <rect>
-               <x>60</x>
-               <y>500</y>
-               <width>541</width>
-               <height>25</height>
-              </rect>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-            <widget class="QComboBox" name="comboBox">
-             <property name="geometry">
-              <rect>
-               <x>230</x>
-               <y>30</y>
-               <width>86</width>
-               <height>25</height>
-              </rect>
-             </property>
-            </widget>
-            <widget class="QPushButton" name="pushButton">
-             <property name="geometry">
-              <rect>
-               <x>190</x>
-               <y>80</y>
-               <width>89</width>
-               <height>25</height>
-              </rect>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-            <widget class="QTextEdit" name="textEdit">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="geometry">
-              <rect>
-               <x>60</x>
-               <y>270</y>
-               <width>541</width>
-               <height>221</height>
-              </rect>
-             </property>
-            </widget>
-           </widget>
-          </widget>
-          <widget class="QWidget" name="exit_tab">
-           <property name="font">
-            <font>
-             <pointsize>12</pointsize>
-            </font>
-           </property>
-           <attribute name="title">
-            <string>Exit</string>
-           </attribute>
-           <layout class="QGridLayout" name="gridLayout_25">
-            <item row="1" column="1">
-             <widget class="QFrame" name="frame_12">
-              <property name="frameShape">
-               <enum>QFrame::WinPanel</enum>
-              </property>
-              <property name="frameShadow">
-               <enum>QFrame::Raised</enum>
-              </property>
-              <layout class="QGridLayout" name="gridLayout_38">
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_23">
-                 <property name="font">
-                  <font>
-                   <pointsize>16</pointsize>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string>HOST INFORMATION</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="0">
-                <widget class="QLabel" name="label_27">
-                 <property name="font">
-                  <font>
-                   <pointsize>14</pointsize>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string>host_user_name</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignCenter</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="0">
-                <widget class="QLabel" name="label_28">
-                 <property name="font">
-                  <font>
-                   <pointsize>14</pointsize>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string>host_ipaddress</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignCenter</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="0">
-                <widget class="QLabel" name="label_26">
-                 <property name="font">
-                  <font>
-                   <pointsize>14</pointsize>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string>host_name</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignCenter</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="0">
-                <widget class="QPushButton" name="pushButton_14">
-                 <property name="text">
-                  <string>EXIT</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <spacer name="horizontalSpacer_17">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="2" column="1">
-             <spacer name="verticalSpacer_10">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="1" column="2">
-             <spacer name="horizontalSpacer_18">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="0" column="1">
-             <spacer name="verticalSpacer_12">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </widget>
          </widget>
         </item>
        </layout>
@@ -4642,7 +4407,157 @@
     </item>
    </layout>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1028</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+   <property name="defaultUp">
+    <bool>false</bool>
+   </property>
+   <widget class="QMenu" name="menuConfig">
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="title">
+     <string>Config</string>
+    </property>
+    <addaction name="actionLanguage_Selection"/>
+    <addaction name="actionConfigure_Paths"/>
+    <addaction name="actionLogout"/>
+    <addaction name="separator"/>
+    <addaction name="actionQuit"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <widget class="QMenu" name="menuDebug">
+     <property name="title">
+      <string>Debug</string>
+     </property>
+     <addaction name="actionConsole"/>
+     <addaction name="actionSee_Log_File"/>
+    </widget>
+    <addaction name="menuDebug"/>
+    <addaction name="actionAbout"/>
+   </widget>
+   <addaction name="menuConfig"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <action name="actionlogout">
+   <property name="text">
+    <string>Logout</string>
+   </property>
+  </action>
+  <action name="actionexit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionLanguage_Selection">
+   <property name="text">
+    <string>Language Selection</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::ApplicationSpecificRole</enum>
+   </property>
+  </action>
+  <action name="actionversion_no">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="actiondebug_file">
+   <property name="text">
+    <string>debug file</string>
+   </property>
+  </action>
+  <action name="actionconsole">
+   <property name="text">
+    <string>console</string>
+   </property>
+  </action>
+  <action name="actiondebug_file_2">
+   <property name="text">
+    <string>log file</string>
+   </property>
+  </action>
+  <action name="actionConsole">
+   <property name="text">
+    <string>Console</string>
+   </property>
+  </action>
+  <action name="actionlog_file">
+   <property name="text">
+    <string>See Log file</string>
+   </property>
+  </action>
+  <action name="actionConfigure_Paths">
+   <property name="text">
+    <string>Configure Paths</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::ApplicationSpecificRole</enum>
+   </property>
+  </action>
+  <action name="actionLogout">
+   <property name="text">
+    <string>Logout</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::ApplicationSpecificRole</enum>
+   </property>
+  </action>
+  <action name="actionSee_Log_File">
+   <property name="text">
+    <string>See Log File</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::AboutRole</enum>
+   </property>
+  </action>
+  <action name="actionQuit">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Quit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+   <property name="shortcutContext">
+    <enum>Qt::ApplicationShortcut</enum>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
+   </property>
+   <property name="priority">
+    <enum>QAction::NormalPriority</enum>
+   </property>
+  </action>
  </widget>
  <tabstops>
   <tabstop>server_comboBox</tabstop>
@@ -4675,8 +4590,8 @@
   <tabstop>coinsend_Button</tabstop>
   <tabstop>activate_amount_value</tabstop>
   <tabstop>activate_pushButton</tabstop>
-  <tabstop>deactivate_amount_value</tabstop>
-  <tabstop>deactivate_pushButton</tabstop>
+  <tabstop>unlock_amount_value</tabstop>
+  <tabstop>unlock_pushButton</tabstop>
   <tabstop>contacts_tableWidget</tabstop>
   <tabstop>contactname_lineEdit</tabstop>
   <tabstop>contactaddress_lineEdit</tabstop>
@@ -4691,7 +4606,6 @@
   <tabstop>copypubkey_Button</tabstop>
   <tabstop>chainsync_button</tabstop>
   <tabstop>chainstatus_button</tabstop>
-  <tabstop>pushButton_14</tabstop>
   <tabstop>addresspage_back_Button</tabstop>
   <tabstop>verify_passphrase_lineEdit</tabstop>
   <tabstop>passphrase_lineEdit</tabstop>
@@ -4713,7 +4627,6 @@
   <tabstop>tableWidget_7</tabstop>
   <tabstop>pushButton_20</tabstop>
   <tabstop>pushButton_21</tabstop>
-  <tabstop>lineEdit_15</tabstop>
   <tabstop>dateTimeEdit_5</tabstop>
   <tabstop>transferrequests_tableWidget</tabstop>
   <tabstop>create_loopamount_lineEdit</tabstop>
@@ -4733,34 +4646,18 @@
  <resources/>
  <connections>
   <connection>
-   <sender>copyaddress_Button</sender>
-   <signal>pressed()</signal>
-   <receiver>currentaddress_value</receiver>
-   <slot>selectAll()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>904</x>
-     <y>597</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>652</x>
-     <y>197</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>copyaddress_Button</sender>
+   <sender>copypubkey_Button</sender>
    <signal>released()</signal>
-   <receiver>currentaddress_value</receiver>
+   <receiver>current_pubkey_value</receiver>
    <slot>copy()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>948</x>
-     <y>593</y>
+     <x>989</x>
+     <y>663</y>
     </hint>
     <hint type="destinationlabel">
-     <x>584</x>
-     <y>196</y>
+     <x>597</x>
+     <y>145</y>
     </hint>
    </hints>
   </connection>
@@ -4771,28 +4668,60 @@
    <slot>selectAll()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>883</x>
-     <y>618</y>
+     <x>989</x>
+     <y>663</y>
     </hint>
     <hint type="destinationlabel">
-     <x>655</x>
-     <y>162</y>
+     <x>636</x>
+     <y>145</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>copypubkey_Button</sender>
+   <sender>copyaddress_Button</sender>
+   <signal>pressed()</signal>
+   <receiver>currentaddress_value</receiver>
+   <slot>selectAll()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>989</x>
+     <y>630</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>359</x>
+     <y>145</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>copyaddress_Button</sender>
    <signal>released()</signal>
-   <receiver>current_pubkey_value</receiver>
+   <receiver>currentaddress_value</receiver>
    <slot>copy()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>975</x>
-     <y>624</y>
+     <x>989</x>
+     <y>630</y>
     </hint>
     <hint type="destinationlabel">
-     <x>524</x>
-     <y>164</y>
+     <x>359</x>
+     <y>145</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionQuit</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>513</x>
+     <y>383</y>
     </hint>
    </hints>
   </connection>

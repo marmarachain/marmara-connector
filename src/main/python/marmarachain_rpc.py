@@ -1,8 +1,10 @@
 import subprocess, pathlib
 import time
+from PyQt5 import QtCore
+from PyQt5.QtCore import pyqtSignal, pyqtSlot
 
 import remote_connection
-import chain_rpc_const as cp
+import chain_args as cp
 
 marmara_path = str(pathlib.Path.home()) + '/komodo/src/'
 is_local = None
@@ -28,7 +30,6 @@ def mcl_chain_status():
                 marmarad_pid.terminate()
                 break
             result = result + str(line)
-        print(result)
     else:
         marmarad_pid = remote_connection.server_execute_command('pidof komodod')
         result = marmarad_pid[0]
@@ -39,12 +40,11 @@ def start_chain():
     if is_local:
         marmara_param = cp.start_param_local()
         marmara_param = marmara_param + ' &'
-        start = subprocess.Popen(marmara_param, cwd=marmara_path, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        start = subprocess.Popen(marmara_param, cwd=marmara_path, shell=True, stdout=subprocess.DEVNULL,
+                                 stderr=subprocess.DEVNULL)
         start.communicate()
         start.terminate()
         print('shell closed')
-
-
     else:
         marmara_param = cp.start_param_remote()
         marmara_param = marmara_path + marmara_param
@@ -53,51 +53,48 @@ def start_chain():
         print('shell closed')
 
 
-def execute_rpc(command):
+class RpcHandler(QtCore.QObject):
+    command_out = pyqtSignal(tuple)
+    finished = pyqtSignal()
+
+    def __init__(self):
+        super().__init__()
+        self.command = ""
+
+    @pyqtSlot(str)
+    def set_command(self, value):
+        self.command = value
+
+    @pyqtSlot()
+    def do_execute_rpc(self):
+        result_out = handle_rpc(self.command)
+        self.command_out.emit(result_out)
+        self.finished.emit()
+
+    @pyqtSlot()
+    def is_chain_ready(self):
+        while True:
+            result_out = handle_rpc(self.command)
+            if result_out[0]:
+                self.command_out.emit(result_out)
+                self.finished.emit()
+                print('chain ready')
+                break
+            elif result_out[1]:
+                self.command_out.emit(result_out)
+                time.sleep(2)
+                print('chain is not ready')
+
+
+def handle_rpc(command):
     if is_local:
         cmd = cp.set_local(command)
-        out = ""
-        err = ""
         proc = subprocess.Popen(cmd, cwd=marmara_path, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        while True:
-            line = proc.stdout.readlines()
-            if not line:
-                proc.terminate()
-                break
-            out = out + str(line)
-        while True:
-            line = proc.stderr.readlines()
-            if not line:
-                proc.terminate()
-                break
-            err = err + str(line)
+        proc.wait()
+        retvalue = proc.poll()
+        return proc.stdout.read().decode("utf8"), proc.stderr.read().decode("utf8"), retvalue
     else:
         cmd = cp.set_remote(command)
         cmd = marmara_path + cmd
         result = remote_connection.server_execute_command(cmd)
-        out = result[0]
-        err = result[1]
-    return out, err
-
-
-def getinfo():
-    output = execute_rpc(cp.getinfo)
-    stdout = output[0]
-    stderr = output[1]
-    return stdout, stderr
-
-
-def getaddresses():
-    output = execute_rpc(cp.getaddressesbyaccount)
-    stdout = output[0]
-    stderr = output[1]
-    return stdout, stderr
-
-
-def stop_chain():
-    output = execute_rpc(cp.stop)
-    stdout = output[0]
-    stderr = output[1]
-    result = output[2]
-    return stdout, stderr, result
-
+        return result

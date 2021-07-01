@@ -1,6 +1,7 @@
 import platform
 
 import configuration
+
 linux_d = './komodod -ac_name=MCL '
 windows_d = 'komodod.exe -ac_name=MCL '
 linux_cli = './komodo-cli -ac_name=MCL '
@@ -17,6 +18,7 @@ marmaraunlock = 'marmaraunlock'
 marmaralock = 'marmaralock'
 getbalance = 'getbalance'
 
+
 def start_param_local():
     global marmarad
     if platform.system() == 'Linux' or platform.system() == 'Darwin':
@@ -30,6 +32,7 @@ def start_param_remote():
     global marmarad
     marmarad = linux_d + marmarad
     return marmarad
+
 
 def set_remote(command):
     command = linux_cli + command
