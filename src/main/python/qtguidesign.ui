@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1024</width>
+    <width>1028</width>
     <height>768</height>
    </rect>
   </property>
@@ -23,7 +23,7 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
+    <item row="0" column="1">
      <widget class="QTabWidget" name="main_tab">
       <property name="font">
        <font>
@@ -31,7 +31,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="login_tab">
        <attribute name="title">
@@ -85,7 +85,7 @@
               <enum>QFrame::NoFrame</enum>
              </property>
              <property name="currentIndex">
-              <number>0</number>
+              <number>1</number>
              </property>
              <widget class="QWidget" name="hostselection_page">
               <layout class="QGridLayout" name="gridLayout_5">
@@ -448,90 +448,6 @@
              </widget>
              <widget class="QWidget" name="hostadd_page">
               <layout class="QGridLayout" name="gridLayout_13">
-               <item row="1" column="0" colspan="2">
-                <widget class="QFrame" name="add_serversettings_frame">
-                 <property name="frameShape">
-                  <enum>QFrame::NoFrame</enum>
-                 </property>
-                 <property name="frameShadow">
-                  <enum>QFrame::Raised</enum>
-                 </property>
-                 <layout class="QFormLayout" name="formLayout_3">
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="add_servername_label">
-                    <property name="font">
-                     <font>
-                      <pointsize>14</pointsize>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>Name</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="1">
-                   <widget class="QLineEdit" name="add_servername_lineEdit">
-                    <property name="font">
-                     <font>
-                      <pointsize>16</pointsize>
-                     </font>
-                    </property>
-                    <property name="placeholderText">
-                     <string>Name</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="add_serverusername_label">
-                    <property name="font">
-                     <font>
-                      <pointsize>14</pointsize>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>Username</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
-                   <widget class="QLineEdit" name="add_serverusername_lineEdit">
-                    <property name="font">
-                     <font>
-                      <pointsize>16</pointsize>
-                     </font>
-                    </property>
-                    <property name="placeholderText">
-                     <string>Server Username</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="add_serverip_label">
-                    <property name="font">
-                     <font>
-                      <pointsize>14</pointsize>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>IP Address</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="1">
-                   <widget class="QLineEdit" name="add_serverip_lineEdit">
-                    <property name="font">
-                     <font>
-                      <pointsize>16</pointsize>
-                     </font>
-                    </property>
-                    <property name="placeholderText">
-                     <string>000.000.000.000</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
                <item row="0" column="0">
                 <layout class="QGridLayout" name="add_remotehostlabel_Layout">
                  <item row="0" column="0">
@@ -604,95 +520,181 @@
                  </item>
                 </layout>
                </item>
+               <item row="1" column="0">
+                <layout class="QFormLayout" name="add_serversettings_Layout">
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="add_servername_label">
+                   <property name="font">
+                    <font>
+                     <pointsize>14</pointsize>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>Name</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>add_servername_lineEdit</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QLineEdit" name="add_servername_lineEdit">
+                   <property name="font">
+                    <font>
+                     <pointsize>16</pointsize>
+                    </font>
+                   </property>
+                   <property name="placeholderText">
+                    <string>Name</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="add_serverusername_label">
+                   <property name="font">
+                    <font>
+                     <pointsize>14</pointsize>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>Username</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>add_serverusername_lineEdit</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QLineEdit" name="add_serverusername_lineEdit">
+                   <property name="font">
+                    <font>
+                     <pointsize>16</pointsize>
+                    </font>
+                   </property>
+                   <property name="placeholderText">
+                    <string>Server Username</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="add_serverip_label">
+                   <property name="font">
+                    <font>
+                     <pointsize>14</pointsize>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>IP Address</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>add_serverip_lineEdit</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QLineEdit" name="add_serverip_lineEdit">
+                   <property name="font">
+                    <font>
+                     <pointsize>16</pointsize>
+                    </font>
+                   </property>
+                   <property name="placeholderText">
+                    <string>000.000.000.000</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
               </layout>
              </widget>
              <widget class="QWidget" name="hostedit_page">
               <layout class="QGridLayout" name="gridLayout_23">
-               <item row="2" column="0">
-                <widget class="QFrame" name="edit_serversettings_frame">
-                 <property name="frameShape">
-                  <enum>QFrame::NoFrame</enum>
-                 </property>
-                 <property name="frameShadow">
-                  <enum>QFrame::Raised</enum>
-                 </property>
-                 <layout class="QFormLayout" name="formLayout_2">
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="edit_servername_label">
-                    <property name="font">
-                     <font>
-                      <pointsize>14</pointsize>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>Name</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="1">
-                   <widget class="QLineEdit" name="edit_servername_lineEdit">
-                    <property name="font">
-                     <font>
-                      <pointsize>16</pointsize>
-                     </font>
-                    </property>
-                    <property name="placeholderText">
-                     <string>Name</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="edit_serverusername_label">
-                    <property name="font">
-                     <font>
-                      <pointsize>14</pointsize>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>Username</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
-                   <widget class="QLineEdit" name="edit_serverusername_lineEdit">
-                    <property name="font">
-                     <font>
-                      <pointsize>16</pointsize>
-                     </font>
-                    </property>
-                    <property name="placeholderText">
-                     <string>Server Username</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="edit_serverip_label">
-                    <property name="font">
-                     <font>
-                      <pointsize>14</pointsize>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>IP Address</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="1">
-                   <widget class="QLineEdit" name="edit_serverip_lineEdit">
-                    <property name="font">
-                     <font>
-                      <pointsize>16</pointsize>
-                     </font>
-                    </property>
-                    <property name="placeholderText">
-                     <string>000.000.000.000</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
+               <item row="1" column="0">
+                <layout class="QFormLayout" name="edit_serversettings_Layout">
+                 <item row="2" column="1">
+                  <widget class="QLineEdit" name="edit_serverip_lineEdit">
+                   <property name="font">
+                    <font>
+                     <pointsize>16</pointsize>
+                    </font>
+                   </property>
+                   <property name="placeholderText">
+                    <string>000.000.000.000</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="edit_serverip_label">
+                   <property name="font">
+                    <font>
+                     <pointsize>14</pointsize>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>IP Address</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>edit_serverip_lineEdit</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="edit_serverusername_label">
+                   <property name="font">
+                    <font>
+                     <pointsize>14</pointsize>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>Username</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>edit_serverusername_lineEdit</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="edit_servername_label">
+                   <property name="font">
+                    <font>
+                     <pointsize>14</pointsize>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>Name</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>edit_servername_lineEdit</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QLineEdit" name="edit_serverusername_lineEdit">
+                   <property name="font">
+                    <font>
+                     <pointsize>16</pointsize>
+                    </font>
+                   </property>
+                   <property name="placeholderText">
+                    <string>Server Username</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QLineEdit" name="edit_servername_lineEdit">
+                   <property name="font">
+                    <font>
+                     <pointsize>16</pointsize>
+                    </font>
+                   </property>
+                   <property name="placeholderText">
+                    <string>Name</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </item>
-               <item row="3" column="0">
+               <item row="2" column="0">
                 <layout class="QHBoxLayout" name="editsave_Layout">
                  <item>
                   <spacer name="horizontalSpacer_5">
@@ -1032,6 +1034,9 @@
                <property name="text">
                 <string>Copy Pubkey</string>
                </property>
+               <property name="buddy">
+                <cstring>copypubkey_Button</cstring>
+               </property>
               </widget>
              </item>
              <item row="0" column="0">
@@ -1043,6 +1048,9 @@
                </property>
                <property name="text">
                 <string>Copy Address</string>
+               </property>
+               <property name="buddy">
+                <cstring>copyaddress_Button</cstring>
                </property>
               </widget>
              </item>
@@ -1162,6 +1170,9 @@
                <property name="text">
                 <string>Chain Sync</string>
                </property>
+               <property name="buddy">
+                <cstring>chainsync_button</cstring>
+               </property>
               </widget>
              </item>
              <item row="6" column="0">
@@ -1258,6 +1269,9 @@
                <property name="text">
                 <string>Chain Status</string>
                </property>
+               <property name="buddy">
+                <cstring>chainstatus_button</cstring>
+               </property>
               </widget>
              </item>
              <item row="0" column="1">
@@ -1330,6 +1344,9 @@
                <property name="text">
                 <string>Mining</string>
                </property>
+               <property name="buddy">
+                <cstring>mining_Button</cstring>
+               </property>
               </widget>
              </item>
              <item row="0" column="1">
@@ -1365,6 +1382,9 @@
                </property>
                <property name="text">
                 <string>Staking</string>
+               </property>
+               <property name="buddy">
+                <cstring>staking_Button</cstring>
                </property>
               </widget>
              </item>
@@ -1435,7 +1455,7 @@
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>6</number>
+           <number>0</number>
           </property>
           <property name="elideMode">
            <enum>Qt::ElideNone</enum>
@@ -1488,205 +1508,193 @@
               <widget class="QWidget" name="chainaddresses_page">
                <layout class="QGridLayout" name="gridLayout_26">
                 <item row="0" column="0">
-                 <widget class="QFrame" name="frame_16">
-                  <property name="frameShape">
-                   <enum>QFrame::NoFrame</enum>
-                  </property>
-                  <property name="frameShadow">
-                   <enum>QFrame::Raised</enum>
-                  </property>
-                  <layout class="QGridLayout" name="gridLayout_44">
-                   <item row="0" column="0">
-                    <layout class="QGridLayout" name="gridLayout_42">
-                     <item row="4" column="0">
-                      <layout class="QGridLayout" name="gridLayout_27">
-                       <item row="0" column="0">
-                        <spacer name="horizontalSpacer_15">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>40</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                       <item row="0" column="1">
-                        <widget class="QPushButton" name="pushButton">
-                         <property name="text">
-                          <string>Stop Chain</string>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </item>
-                     <item row="2" column="0">
-                      <layout class="QGridLayout" name="gridLayout_22">
-                       <item row="1" column="1">
-                        <widget class="QPushButton" name="pushButton_3">
-                         <property name="text">
-                          <string>Create New Address</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="1">
-                        <widget class="QPushButton" name="pushButton_2">
-                         <property name="text">
-                          <string>Private key</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="1" column="0" rowspan="2">
-                        <spacer name="horizontalSpacer_11">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>40</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                      </layout>
-                     </item>
-                     <item row="1" column="0">
-                      <widget class="QTableWidget" name="tableWidget">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="minimumSize">
-                        <size>
-                         <width>0</width>
-                         <height>250</height>
-                        </size>
-                       </property>
-                       <property name="focusPolicy">
-                        <enum>Qt::WheelFocus</enum>
-                       </property>
-                       <property name="horizontalScrollBarPolicy">
-                        <enum>Qt::ScrollBarAsNeeded</enum>
-                       </property>
-                       <property name="sizeAdjustPolicy">
-                        <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
-                       </property>
-                       <property name="editTriggers">
-                        <set>QAbstractItemView::DoubleClicked|QAbstractItemView::SelectedClicked</set>
-                       </property>
-                       <property name="defaultDropAction">
-                        <enum>Qt::IgnoreAction</enum>
-                       </property>
-                       <property name="alternatingRowColors">
-                        <bool>true</bool>
-                       </property>
-                       <property name="selectionBehavior">
-                        <enum>QAbstractItemView::SelectItems</enum>
-                       </property>
-                       <property name="horizontalScrollMode">
-                        <enum>QAbstractItemView::ScrollPerPixel</enum>
-                       </property>
-                       <property name="gridStyle">
-                        <enum>Qt::SolidLine</enum>
-                       </property>
-                       <property name="wordWrap">
-                        <bool>true</bool>
-                       </property>
-                       <property name="rowCount">
-                        <number>0</number>
-                       </property>
-                       <property name="columnCount">
-                        <number>4</number>
-                       </property>
-                       <attribute name="horizontalHeaderDefaultSectionSize">
-                        <number>170</number>
-                       </attribute>
-                       <attribute name="horizontalHeaderHighlightSections">
-                        <bool>true</bool>
-                       </attribute>
-                       <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-                        <bool>true</bool>
-                       </attribute>
-                       <attribute name="horizontalHeaderStretchLastSection">
-                        <bool>false</bool>
-                       </attribute>
-                       <column>
-                        <property name="text">
-                         <string>Address</string>
-                        </property>
-                       </column>
-                       <column>
-                        <property name="text">
-                         <string>Pubkey</string>
-                        </property>
-                       </column>
-                       <column>
-                        <property name="text">
-                         <string>Amount</string>
-                        </property>
-                       </column>
-                       <column>
-                        <property name="text">
-                         <string/>
-                        </property>
-                       </column>
-                      </widget>
-                     </item>
-                     <item row="3" column="0">
-                      <spacer name="verticalSpacer_33">
-                       <property name="orientation">
-                        <enum>Qt::Vertical</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>20</width>
-                         <height>40</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                     <item row="0" column="0">
-                      <spacer name="verticalSpacer_16">
-                       <property name="orientation">
-                        <enum>Qt::Vertical</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>20</width>
-                         <height>40</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                     <item row="5" column="0">
-                      <spacer name="verticalSpacer_15">
-                       <property name="orientation">
-                        <enum>Qt::Vertical</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>20</width>
-                         <height>40</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                    </layout>
-                   </item>
-                  </layout>
-                 </widget>
+                 <layout class="QGridLayout" name="chainaddresses_Layout">
+                  <item row="4" column="0">
+                   <layout class="QGridLayout" name="chain_stop_Layout">
+                    <item row="0" column="0">
+                     <spacer name="horizontalSpacer_15">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item row="0" column="1">
+                     <widget class="QPushButton" name="stopchain_Button">
+                      <property name="text">
+                       <string>Stop Chain</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item row="2" column="0">
+                   <layout class="QGridLayout" name="create_privkey_buttons_Layout">
+                    <item row="1" column="1">
+                     <widget class="QPushButton" name="addaddress_page_Button">
+                      <property name="text">
+                       <string>Create New Address</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="2" column="1">
+                     <widget class="QPushButton" name="privkey_page_Button">
+                      <property name="text">
+                       <string>Private key</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="0" rowspan="2">
+                     <spacer name="horizontalSpacer_11">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QTableWidget" name="addresses_tableWidget">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>250</height>
+                     </size>
+                    </property>
+                    <property name="focusPolicy">
+                     <enum>Qt::WheelFocus</enum>
+                    </property>
+                    <property name="horizontalScrollBarPolicy">
+                     <enum>Qt::ScrollBarAsNeeded</enum>
+                    </property>
+                    <property name="sizeAdjustPolicy">
+                     <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
+                    </property>
+                    <property name="editTriggers">
+                     <set>QAbstractItemView::DoubleClicked|QAbstractItemView::SelectedClicked</set>
+                    </property>
+                    <property name="defaultDropAction">
+                     <enum>Qt::IgnoreAction</enum>
+                    </property>
+                    <property name="alternatingRowColors">
+                     <bool>true</bool>
+                    </property>
+                    <property name="selectionBehavior">
+                     <enum>QAbstractItemView::SelectItems</enum>
+                    </property>
+                    <property name="horizontalScrollMode">
+                     <enum>QAbstractItemView::ScrollPerPixel</enum>
+                    </property>
+                    <property name="gridStyle">
+                     <enum>Qt::SolidLine</enum>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
+                    </property>
+                    <property name="rowCount">
+                     <number>0</number>
+                    </property>
+                    <property name="columnCount">
+                     <number>4</number>
+                    </property>
+                    <attribute name="horizontalHeaderDefaultSectionSize">
+                     <number>170</number>
+                    </attribute>
+                    <attribute name="horizontalHeaderHighlightSections">
+                     <bool>true</bool>
+                    </attribute>
+                    <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+                     <bool>true</bool>
+                    </attribute>
+                    <attribute name="horizontalHeaderStretchLastSection">
+                     <bool>false</bool>
+                    </attribute>
+                    <column>
+                     <property name="text">
+                      <string>Address</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Pubkey</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Amount</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </column>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <spacer name="verticalSpacer_33">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="0" column="0">
+                   <spacer name="verticalSpacer_16">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="5" column="0">
+                   <spacer name="verticalSpacer_15">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
                 </item>
                </layout>
               </widget>
-              <widget class="QWidget" name="addaddress_page">
+              <widget class="QWidget" name="add_address_page">
                <layout class="QGridLayout" name="gridLayout_39">
                 <item row="1" column="1">
-                 <layout class="QGridLayout" name="gridLayout_43">
+                 <layout class="QGridLayout" name="addaddress_page_Layout">
                   <item row="0" column="0" colspan="2">
                    <spacer name="verticalSpacer_13">
                     <property name="orientation">
@@ -1701,7 +1709,7 @@
                    </spacer>
                   </item>
                   <item row="5" column="0" colspan="2">
-                   <widget class="QLineEdit" name="lineEdit_3">
+                   <widget class="QLineEdit" name="passphrase_lineEdit">
                     <property name="minimumSize">
                      <size>
                       <width>660</width>
@@ -1711,7 +1719,7 @@
                    </widget>
                   </item>
                   <item row="6" column="0" colspan="2">
-                   <widget class="QLineEdit" name="lineEdit_2">
+                   <widget class="QLineEdit" name="verify_passphrase_lineEdit">
                     <property name="minimumSize">
                      <size>
                       <width>660</width>
@@ -1721,18 +1729,31 @@
                    </widget>
                   </item>
                   <item row="8" column="1">
-                   <widget class="QPushButton" name="pushButton_5">
+                   <widget class="QPushButton" name="address_seed_Button">
                     <property name="text">
                      <string>Create Address</string>
                     </property>
                    </widget>
                   </item>
                   <item row="4" column="0" colspan="2">
-                   <widget class="QLabel" name="label_3">
+                   <widget class="QLabel" name="create_seed_label">
                     <property name="text">
                      <string>Create Address with Passphrase (seed)</string>
                     </property>
                    </widget>
+                  </item>
+                  <item row="3" column="0" colspan="2">
+                   <spacer name="verticalSpacer_14">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                   </spacer>
                   </item>
                   <item row="10" column="0" colspan="2">
                    <spacer name="verticalSpacer_20">
@@ -1761,63 +1782,42 @@
                    </spacer>
                   </item>
                   <item row="1" column="0" colspan="2">
-                   <widget class="QFrame" name="frame_18">
-                    <property name="frameShape">
-                     <enum>QFrame::StyledPanel</enum>
-                    </property>
-                    <property name="frameShadow">
-                     <enum>QFrame::Raised</enum>
-                    </property>
-                    <layout class="QGridLayout" name="gridLayout_46">
-                     <item row="1" column="0" colspan="3">
-                      <widget class="QLabel" name="label_4">
-                       <property name="text">
-                        <string>simply creates new address</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="0" rowspan="2" colspan="2">
-                      <widget class="QPushButton" name="pushButton_4">
-                       <property name="text">
-                        <string>New Address</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="2" rowspan="2">
-                      <spacer name="horizontalSpacer_28">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>40</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                  <item row="3" column="0">
-                   <spacer name="verticalSpacer_14">
-                    <property name="orientation">
-                     <enum>Qt::Vertical</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>20</width>
-                      <height>40</height>
-                     </size>
-                    </property>
-                   </spacer>
+                   <layout class="QGridLayout" name="new_address_Layout">
+                    <item row="0" column="0">
+                     <widget class="QLabel" name="create_address_label">
+                      <property name="text">
+                       <string>simply creates new address</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="0">
+                     <widget class="QPushButton" name="newaddress_Button">
+                      <property name="text">
+                       <string>New Address</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="1" rowspan="2">
+                     <spacer name="horizontalSpacer_28">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
                   </item>
                  </layout>
                 </item>
                 <item row="2" column="1">
-                 <layout class="QHBoxLayout" name="horizontalLayout_4">
+                 <layout class="QHBoxLayout" name="address_backbutton_Layout">
                   <item>
-                   <widget class="QPushButton" name="pushButton_15">
+                   <widget class="QPushButton" name="addresspage_back_Button">
                     <property name="text">
                      <string>Back</string>
                     </property>
@@ -1866,7 +1866,7 @@
                 </item>
                </layout>
               </widget>
-              <widget class="QWidget" name="page">
+              <widget class="QWidget" name="privatekey_page">
                <layout class="QGridLayout" name="gridLayout_40">
                 <item row="0" column="0" rowspan="2">
                  <spacer name="horizontalSpacer_26">
@@ -1882,9 +1882,9 @@
                  </spacer>
                 </item>
                 <item row="1" column="2">
-                 <layout class="QHBoxLayout" name="horizontalLayout_3">
+                 <layout class="QHBoxLayout" name="privkey_backbutton_Layout">
                   <item>
-                   <widget class="QPushButton" name="pushButton_16">
+                   <widget class="QPushButton" name="privatekeypage_back_Button">
                     <property name="text">
                      <string>Back</string>
                     </property>
@@ -1906,7 +1906,7 @@
                  </layout>
                 </item>
                 <item row="0" column="2">
-                 <layout class="QGridLayout" name="gridLayout_58">
+                 <layout class="QGridLayout" name="privkey_page_Layout">
                   <item row="4" column="0" colspan="3">
                    <spacer name="verticalSpacer_18">
                     <property name="orientation">
@@ -1947,7 +1947,7 @@
                    </spacer>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QLineEdit" name="lineEdit">
+                   <widget class="QLineEdit" name="privkey_lineEdit">
                     <property name="minimumSize">
                      <size>
                       <width>0</width>
@@ -1963,21 +1963,21 @@
                    </widget>
                   </item>
                   <item row="2" column="2">
-                   <widget class="QPushButton" name="pushButton_17">
+                   <widget class="QPushButton" name="importprivkey_Button">
                     <property name="text">
                      <string>import</string>
                     </property>
                    </widget>
                   </item>
                   <item row="2" column="0">
-                   <widget class="QLabel" name="label">
+                   <widget class="QLabel" name="importprivkey_label">
                     <property name="text">
                      <string>Import Private key</string>
                     </property>
                    </widget>
                   </item>
                   <item row="6" column="0" colspan="3">
-                   <widget class="QTableWidget" name="tableWidget_8">
+                   <widget class="QTableWidget" name="addresses_privkey_tableWidget">
                     <column>
                      <property name="text">
                       <string>Address</string>
@@ -1991,7 +1991,7 @@
                    </widget>
                   </item>
                   <item row="5" column="0" colspan="3">
-                   <widget class="QLabel" name="label_2">
+                   <widget class="QLabel" name="see_address_privkeys_label">
                     <property name="text">
                      <string>See current address private key</string>
                     </property>
@@ -2029,7 +2029,7 @@
            </attribute>
            <layout class="QGridLayout" name="gridLayout_33">
             <item row="2" column="1">
-             <widget class="QFrame" name="frame_4">
+             <widget class="QFrame" name="addressamount_info_frame">
               <property name="minimumSize">
                <size>
                 <width>0</width>
@@ -2043,6 +2043,19 @@
                <enum>QFrame::Raised</enum>
               </property>
               <layout class="QGridLayout" name="gridLayout_36">
+               <item row="3" column="0">
+                <widget class="QLabel" name="normalamount_value">
+                 <property name="frameShape">
+                  <enum>QFrame::WinPanel</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Sunken</enum>
+                 </property>
+                 <property name="text">
+                  <string>0</string>
+                 </property>
+                </widget>
+               </item>
                <item row="5" column="2">
                 <spacer name="horizontalSpacer_25">
                  <property name="orientation">
@@ -2057,14 +2070,14 @@
                 </spacer>
                </item>
                <item row="2" column="2">
-                <widget class="QLabel" name="label_14">
+                <widget class="QLabel" name="activatedamount_label">
                  <property name="text">
                   <string>Activated Amount</string>
                  </property>
                 </widget>
                </item>
                <item row="3" column="2">
-                <widget class="QLabel" name="label_15">
+                <widget class="QLabel" name="activatedamount_value">
                  <property name="frameShape">
                   <enum>QFrame::WinPanel</enum>
                  </property>
@@ -2077,7 +2090,7 @@
                 </widget>
                </item>
                <item row="5" column="1">
-                <widget class="QPushButton" name="pushButton_11">
+                <widget class="QPushButton" name="addressamount_refresh_pushButton">
                  <property name="text">
                   <string>Refresh</string>
                  </property>
@@ -2097,22 +2110,9 @@
                 </spacer>
                </item>
                <item row="2" column="0">
-                <widget class="QLabel" name="label_12">
+                <widget class="QLabel" name="normalamount_label">
                  <property name="text">
                   <string>Nomal Amount</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="0">
-                <widget class="QLabel" name="label_13">
-                 <property name="frameShape">
-                  <enum>QFrame::WinPanel</enum>
-                 </property>
-                 <property name="frameShadow">
-                  <enum>QFrame::Sunken</enum>
-                 </property>
-                 <property name="text">
-                  <string>0</string>
                  </property>
                 </widget>
                </item>
@@ -2131,98 +2131,6 @@
                </size>
               </property>
              </spacer>
-            </item>
-            <item row="1" column="1">
-             <widget class="QFrame" name="frame_11">
-              <property name="frameShape">
-               <enum>QFrame::StyledPanel</enum>
-              </property>
-              <property name="frameShadow">
-               <enum>QFrame::Raised</enum>
-              </property>
-              <layout class="QGridLayout" name="gridLayout_37">
-               <item row="5" column="0" colspan="4">
-                <widget class="QLabel" name="label_11">
-                 <property name="minimumSize">
-                  <size>
-                   <width>600</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>600</width>
-                   <height>16777215</height>
-                  </size>
-                 </property>
-                 <property name="frameShape">
-                  <enum>QFrame::WinPanel</enum>
-                 </property>
-                 <property name="frameShadow">
-                  <enum>QFrame::Sunken</enum>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::TextBrowserInteraction</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="0">
-                <widget class="QLabel" name="label_10">
-                 <property name="text">
-                  <string>Current  Pubkey</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="6" column="0">
-                <widget class="QLabel" name="label_8">
-                 <property name="text">
-                  <string>Current Address </string>
-                 </property>
-                </widget>
-               </item>
-               <item row="6" column="1">
-                <spacer name="horizontalSpacer_13">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item row="6" column="3">
-                <widget class="QLabel" name="label_9">
-                 <property name="minimumSize">
-                  <size>
-                   <width>323</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>323</width>
-                   <height>16777215</height>
-                  </size>
-                 </property>
-                 <property name="frameShape">
-                  <enum>QFrame::WinPanel</enum>
-                 </property>
-                 <property name="frameShadow">
-                  <enum>QFrame::Sunken</enum>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
             </item>
             <item row="1" column="0" rowspan="7">
              <spacer name="horizontalSpacer_14">
@@ -2277,9 +2185,9 @@
              </spacer>
             </item>
             <item row="4" column="1">
-             <layout class="QGridLayout" name="gridLayout_45">
+             <layout class="QGridLayout" name="activate_deactivate_Layout">
               <item row="0" column="0">
-               <widget class="QLabel" name="label_16">
+               <widget class="QLabel" name="normalamount_activation_label">
                 <property name="frameShape">
                  <enum>QFrame::NoFrame</enum>
                 </property>
@@ -2287,7 +2195,7 @@
                  <enum>QFrame::Plain</enum>
                 </property>
                 <property name="text">
-                 <string>Activate Normal Amount</string>
+                 <string>Lock Normal Amount</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -2295,7 +2203,7 @@
                </widget>
               </item>
               <item row="1" column="2">
-               <widget class="QFrame" name="frame_8">
+               <widget class="QFrame" name="unlock_activeamount_frame">
                 <property name="frameShape">
                  <enum>QFrame::WinPanel</enum>
                 </property>
@@ -2304,17 +2212,20 @@
                 </property>
                 <layout class="QGridLayout" name="gridLayout_35">
                  <item row="0" column="2" colspan="2">
-                  <widget class="QLineEdit" name="lineEdit_8"/>
+                  <widget class="QLineEdit" name="unlock_amount_value"/>
                  </item>
                  <item row="0" column="0" colspan="2">
-                  <widget class="QLabel" name="label_20">
+                  <widget class="QLabel" name="unlock_amount_label">
                    <property name="text">
                     <string>Amount</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>unlock_amount_value</cstring>
                    </property>
                   </widget>
                  </item>
                  <item row="1" column="2">
-                  <widget class="QPushButton" name="pushButton_10">
+                  <widget class="QPushButton" name="unlock_pushButton">
                    <property name="minimumSize">
                     <size>
                      <width>60</width>
@@ -2322,7 +2233,7 @@
                     </size>
                    </property>
                    <property name="text">
-                    <string/>
+                    <string>Unlock</string>
                    </property>
                   </widget>
                  </item>
@@ -2356,7 +2267,7 @@
                </widget>
               </item>
               <item row="1" column="0">
-               <widget class="QFrame" name="frame_7">
+               <widget class="QFrame" name="normalamount_activation_frame">
                 <property name="frameShape">
                  <enum>QFrame::WinPanel</enum>
                 </property>
@@ -2365,7 +2276,7 @@
                 </property>
                 <layout class="QGridLayout" name="gridLayout_34">
                  <item row="0" column="1" colspan="2">
-                  <widget class="QLineEdit" name="lineEdit_7"/>
+                  <widget class="QLineEdit" name="activate_amount_value"/>
                  </item>
                  <item row="1" column="0">
                   <spacer name="horizontalSpacer_19">
@@ -2381,7 +2292,7 @@
                   </spacer>
                  </item>
                  <item row="1" column="1">
-                  <widget class="QPushButton" name="pushButton_9">
+                  <widget class="QPushButton" name="activate_pushButton">
                    <property name="minimumSize">
                     <size>
                      <width>60</width>
@@ -2389,14 +2300,17 @@
                     </size>
                    </property>
                    <property name="text">
-                    <string/>
+                    <string>Lock</string>
                    </property>
                   </widget>
                  </item>
                  <item row="0" column="0">
-                  <widget class="QLabel" name="label_19">
+                  <widget class="QLabel" name="activate_amount_label">
                    <property name="text">
                     <string>Amount</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>activate_amount_value</cstring>
                    </property>
                   </widget>
                  </item>
@@ -2417,7 +2331,7 @@
                </widget>
               </item>
               <item row="0" column="2">
-               <widget class="QLabel" name="label_17">
+               <widget class="QLabel" name="unlock_activeamount_label">
                 <property name="frameShape">
                  <enum>QFrame::NoFrame</enum>
                 </property>
@@ -2425,7 +2339,7 @@
                  <enum>QFrame::Plain</enum>
                 </property>
                 <property name="text">
-                 <string>De-Activate Active Amount</string>
+                 <string>Unlock Active Amount</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -2448,23 +2362,23 @@
              </layout>
             </item>
             <item row="6" column="1">
-             <layout class="QGridLayout" name="gridLayout_29">
+             <layout class="QGridLayout" name="send_receive_Layout">
               <item row="0" column="0">
-               <widget class="QLabel" name="label_21">
+               <widget class="QLabel" name="coinsend_label">
                 <property name="text">
                  <string>Send </string>
                 </property>
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QLabel" name="label_22">
+               <widget class="QLabel" name="coinreceive_label">
                 <property name="text">
                  <string>Receive</string>
                 </property>
                </widget>
               </item>
               <item row="1" column="0">
-               <widget class="QFrame" name="frame_9">
+               <widget class="QFrame" name="coinsend_frame">
                 <property name="frameShape">
                  <enum>QFrame::WinPanel</enum>
                 </property>
@@ -2473,7 +2387,7 @@
                 </property>
                 <layout class="QGridLayout" name="gridLayout_32">
                  <item row="1" column="0" colspan="3">
-                  <widget class="QLineEdit" name="lineEdit_9">
+                  <widget class="QLineEdit" name="receiver_address_lineEdit">
                    <property name="minimumSize">
                     <size>
                      <width>323</width>
@@ -2492,38 +2406,63 @@
                   </widget>
                  </item>
                  <item row="2" column="0" colspan="2">
-                  <widget class="QLabel" name="label_25">
+                  <widget class="QLabel" name="sending_amount_label">
                    <property name="text">
                     <string>Amount </string>
                    </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="0" colspan="2">
-                  <widget class="QLabel" name="label_24">
-                   <property name="text">
-                    <string>Receiver Address</string>
+                   <property name="buddy">
+                    <cstring>sending_amount_lineEdit</cstring>
                    </property>
                   </widget>
                  </item>
                  <item row="5" column="0" colspan="2">
-                  <widget class="QLineEdit" name="lineEdit_10">
+                  <widget class="QLineEdit" name="sending_amount_lineEdit">
                    <property name="placeholderText">
                     <string>Amount to Send</string>
                    </property>
                   </widget>
                  </item>
                  <item row="5" column="2">
-                  <widget class="QPushButton" name="pushButton_13">
+                  <widget class="QPushButton" name="coinsend_Button">
                    <property name="text">
                     <string>Send</string>
                    </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="receiver_address_label">
+                   <property name="text">
+                    <string>Receiver Address</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>receiver_address_lineEdit</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1" colspan="2">
+                  <widget class="QComboBox" name="comboBox_4">
+                   <item>
+                    <property name="text">
+                     <string>Select Contact Address</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>ahmet</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>mehmet</string>
+                    </property>
+                   </item>
                   </widget>
                  </item>
                 </layout>
                </widget>
               </item>
               <item row="1" column="1">
-               <widget class="QFrame" name="frame_10">
+               <widget class="QFrame" name="coinreceive_lframe">
                 <property name="frameShape">
                  <enum>QFrame::WinPanel</enum>
                 </property>
@@ -2532,7 +2471,7 @@
                 </property>
                 <layout class="QGridLayout" name="gridLayout_31">
                  <item row="0" column="1">
-                  <widget class="QPushButton" name="pushButton_12">
+                  <widget class="QPushButton" name="qrcode_Button">
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
@@ -2562,6 +2501,86 @@
               </property>
              </spacer>
             </item>
+            <item row="1" column="1">
+             <widget class="QFrame" name="currentaddres_frame">
+              <property name="frameShape">
+               <enum>QFrame::StyledPanel</enum>
+              </property>
+              <property name="frameShadow">
+               <enum>QFrame::Raised</enum>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_37">
+               <item row="4" column="0">
+                <widget class="QLabel" name="currentpubkey_label">
+                 <property name="text">
+                  <string>Current  Pubkey</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="0" colspan="3">
+                <widget class="QLineEdit" name="current_pubkey_value">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>600</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="inputMask">
+                  <string/>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="dragEnabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="6" column="2">
+                <widget class="QLineEdit" name="currentaddress_value">
+                 <property name="minimumSize">
+                  <size>
+                   <width>323</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="6" column="1">
+                <spacer name="horizontalSpacer_13">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="6" column="0">
+                <widget class="QLabel" name="currentaddress_label">
+                 <property name="text">
+                  <string>Current Address </string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
            </layout>
           </widget>
           <widget class="QWidget" name="credit_tab">
@@ -2575,14 +2594,14 @@
            </attribute>
            <layout class="QGridLayout" name="gridLayout_57">
             <item row="1" column="0">
-             <widget class="QTabWidget" name="tabWidget_4">
+             <widget class="QTabWidget" name="creditloop_tabWidget">
               <property name="tabPosition">
                <enum>QTabWidget::North</enum>
               </property>
               <property name="currentIndex">
-               <number>1</number>
+               <number>3</number>
               </property>
-              <widget class="QWidget" name="tab_12">
+              <widget class="QWidget" name="looprequests_tab">
                <attribute name="title">
                 <string>Received Loop Requests </string>
                </attribute>
@@ -2601,16 +2620,16 @@
                  </spacer>
                 </item>
                 <item>
-                 <layout class="QGridLayout" name="gridLayout_28">
+                 <layout class="QGridLayout" name="receivedloop_searchlimit_Layout">
                   <item row="1" column="2">
-                   <widget class="QDateTimeEdit" name="dateTimeEdit">
+                   <widget class="QDateTimeEdit" name="request_dateTimeEdit">
                     <property name="enabled">
                      <bool>false</bool>
                     </property>
                    </widget>
                   </item>
                   <item row="1" column="3">
-                   <widget class="QPushButton" name="pushButton_29">
+                   <widget class="QPushButton" name="looprequest_search_Button">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
                       <horstretch>0</horstretch>
@@ -2623,7 +2642,7 @@
                    </widget>
                   </item>
                   <item row="0" column="1" colspan="3">
-                   <widget class="QLabel" name="label_33">
+                   <widget class="QLabel" name="requestdate_label">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                       <horstretch>0</horstretch>
@@ -2636,7 +2655,10 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QCheckBox" name="checkBox_2">
+                   <widget class="QCheckBox" name="request_date_checkBox">
+                    <property name="enabled">
+                     <bool>true</bool>
+                    </property>
                     <property name="styleSheet">
                      <string notr="true"/>
                     </property>
@@ -2690,33 +2712,19 @@
                  </spacer>
                 </item>
                 <item>
-                 <layout class="QGridLayout" name="gridLayout_6">
-                  <item row="2" column="0">
-                   <widget class="QFrame" name="frame_20">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="frameShape">
-                     <enum>QFrame::StyledPanel</enum>
-                    </property>
-                    <property name="frameShadow">
-                     <enum>QFrame::Raised</enum>
-                    </property>
-                    <layout class="QHBoxLayout" name="horizontalLayout_53"/>
-                   </widget>
-                  </item>
+                 <layout class="QGridLayout" name="received_looprequests_Layout">
                   <item row="0" column="0">
-                   <widget class="QLabel" name="label_59">
+                   <widget class="QLabel" name="loop_request_label">
                     <property name="text">
                      <string>Credit Loop Requests  </string>
+                    </property>
+                    <property name="buddy">
+                     <cstring>loop_request_tableWidget</cstring>
                     </property>
                    </widget>
                   </item>
                   <item row="1" column="0">
-                   <widget class="QTableWidget" name="tableWidget_2">
+                   <widget class="QTableWidget" name="loop_request_tableWidget">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                       <horstretch>0</horstretch>
@@ -2779,16 +2787,19 @@
                  </spacer>
                 </item>
                 <item>
-                 <layout class="QGridLayout" name="gridLayout_2">
+                 <layout class="QGridLayout" name="received_transferrequests_Layout">
                   <item row="1" column="1">
-                   <widget class="QLabel" name="label_58">
+                   <widget class="QLabel" name="transferrequests_label">
                     <property name="text">
                      <string>Credit Loop transfer Requests </string>
+                    </property>
+                    <property name="buddy">
+                     <cstring>transferrequests_tableWidget</cstring>
                     </property>
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QTableWidget" name="tableWidget_4">
+                   <widget class="QTableWidget" name="transferrequests_tableWidget">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                       <horstretch>0</horstretch>
@@ -2852,7 +2863,7 @@
                 </item>
                </layout>
               </widget>
-              <widget class="QWidget" name="tab_13">
+              <widget class="QWidget" name="createloop_tab">
                <attribute name="title">
                 <string>Create Loop Request</string>
                </attribute>
@@ -2871,9 +2882,16 @@
                  </spacer>
                 </item>
                 <item>
-                 <layout class="QGridLayout" name="gridLayout_20">
+                 <layout class="QGridLayout" name="create_looprequest_Layout">
+                  <item row="0" column="1">
+                   <widget class="QLabel" name="create_looprequest_label">
+                    <property name="text">
+                     <string>Create Credit Loop Request </string>
+                    </property>
+                   </widget>
+                  </item>
                   <item row="1" column="1">
-                   <widget class="QFrame" name="frame_10">
+                   <widget class="QFrame" name="create_looprequest_frame">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
                       <horstretch>0</horstretch>
@@ -2888,120 +2906,126 @@
                     </property>
                     <property name="maximumSize">
                      <size>
-                      <width>600</width>
+                      <width>650</width>
                       <height>280</height>
                      </size>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_49">
+                     <item row="6" column="2">
+                      <widget class="QPushButton" name="create_looprequest_pushButton">
+                       <property name="text">
+                        <string>Create</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="create_loopamount_label">
+                       <property name="text">
+                        <string>Amount :</string>
+                       </property>
+                       <property name="buddy">
+                        <cstring>create_loopamount_lineEdit</cstring>
+                       </property>
+                      </widget>
+                     </item>
                      <item row="3" column="0">
-                      <widget class="QLabel" name="label_41">
+                      <widget class="QLabel" name="create_loopmatures_label">
                        <property name="text">
                         <string>Matures : </string>
+                       </property>
+                       <property name="buddy">
+                        <cstring>create_loopmatures_dateTimeEdit</cstring>
                        </property>
                       </widget>
                      </item>
                      <item row="4" column="0">
-                      <widget class="QLabel" name="label_42">
+                      <widget class="QLabel" name="create_loopmatures_label_2">
                        <property name="text">
                         <string>Currency : </string>
                        </property>
                       </widget>
                      </item>
-                     <item row="5" column="0" colspan="2">
-                      <widget class="QFrame" name="frame_46">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="frameShape">
-                        <enum>QFrame::NoFrame</enum>
-                       </property>
-                       <property name="frameShadow">
-                        <enum>QFrame::Raised</enum>
-                       </property>
-                       <layout class="QHBoxLayout" name="horizontalLayout_8">
-                        <item>
-                         <spacer name="horizontalSpacer_36">
-                          <property name="orientation">
-                           <enum>Qt::Horizontal</enum>
-                          </property>
-                          <property name="sizeHint" stdset="0">
-                           <size>
-                            <width>40</width>
-                            <height>20</height>
-                           </size>
-                          </property>
-                         </spacer>
-                        </item>
-                        <item>
-                         <widget class="QPushButton" name="pushButton_25">
-                          <property name="text">
-                           <string>Create</string>
-                          </property>
-                         </widget>
-                        </item>
-                       </layout>
-                      </widget>
-                     </item>
-                     <item row="1" column="0">
-                      <widget class="QLabel" name="label_34">
-                       <property name="text">
-                        <string>Amount :</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="0">
-                      <widget class="QLabel" name="label_35">
-                       <property name="text">
-                        <string>Receiver Pubkey</string>
-                       </property>
-                      </widget>
-                     </item>
                      <item row="1" column="1">
-                      <widget class="QLineEdit" name="lineEdit_11"/>
+                      <widget class="QLineEdit" name="create_loopamount_lineEdit"/>
                      </item>
                      <item row="2" column="1">
-                      <widget class="QLineEdit" name="lineEdit_16"/>
+                      <widget class="QLineEdit" name="create_receiverpubkey_lineEdit"/>
                      </item>
                      <item row="3" column="1">
-                      <widget class="QDateTimeEdit" name="dateTimeEdit_2">
+                      <widget class="QDateTimeEdit" name="create_loopmatures_dateTimeEdit">
                        <property name="calendarPopup">
                         <bool>true</bool>
                        </property>
                       </widget>
                      </item>
                      <item row="4" column="1">
-                      <widget class="QLabel" name="label_43">
+                      <widget class="QLabel" name="create_loopmatures_value">
                        <property name="text">
                         <string>MARMARA</string>
                        </property>
                       </widget>
                      </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="create_receiverpubkey_label">
+                       <property name="text">
+                        <string>Receiver Pubkey</string>
+                       </property>
+                       <property name="buddy">
+                        <cstring>create_receiverpubkey_lineEdit</cstring>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="6" column="0" colspan="2">
+                      <spacer name="horizontalSpacer_36">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                     <item row="2" column="2">
+                      <widget class="QComboBox" name="comboBox_2">
+                       <item>
+                        <property name="text">
+                         <string>Contacts</string>
+                        </property>
+                       </item>
+                      </widget>
+                     </item>
                     </layout>
-                   </widget>
-                  </item>
-                  <item row="0" column="1">
-                   <widget class="QLabel" name="label_62">
-                    <property name="text">
-                     <string>Create Credit Loop Request </string>
-                    </property>
                    </widget>
                   </item>
                  </layout>
                 </item>
                 <item>
-                 <layout class="QGridLayout" name="gridLayout_21">
+                 <spacer name="verticalSpacer_38">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <layout class="QGridLayout" name="create_transferrequest_Layout">
                   <item row="0" column="1">
-                   <widget class="QLabel" name="label_63">
+                   <widget class="QLabel" name="create_transferrequest_label">
                     <property name="text">
                      <string>Create Transfer Request </string>
                     </property>
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QFrame" name="frame_11">
+                   <widget class="QFrame" name="create_transferrequest_frame">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
                       <horstretch>0</horstretch>
@@ -3016,68 +3040,65 @@
                     </property>
                     <property name="maximumSize">
                      <size>
-                      <width>600</width>
+                      <width>650</width>
                       <height>250</height>
                      </size>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_50">
-                     <item row="1" column="0">
-                      <widget class="QLabel" name="label_49">
-                       <property name="text">
-                        <string>Baton TXID </string>
-                       </property>
-                      </widget>
-                     </item>
                      <item row="0" column="0">
-                      <widget class="QLabel" name="label_51">
+                      <widget class="QLabel" name="transfer_receiverpubkey_label">
                        <property name="text">
                         <string>Receiver Pubkey</string>
                        </property>
+                       <property name="buddy">
+                        <cstring>transfer_receiverpubkey_lineEdit</cstring>
+                       </property>
                       </widget>
                      </item>
-                     <item row="2" column="0" colspan="2">
-                      <widget class="QFrame" name="frame_48">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
+                     <item row="3" column="2">
+                      <widget class="QPushButton" name="create_transferrequest_pushButton">
+                       <property name="text">
+                        <string>Create</string>
                        </property>
-                       <property name="frameShape">
-                        <enum>QFrame::NoFrame</enum>
-                       </property>
-                       <property name="frameShadow">
-                        <enum>QFrame::Raised</enum>
-                       </property>
-                       <layout class="QHBoxLayout" name="horizontalLayout_38">
-                        <item>
-                         <spacer name="horizontalSpacer_38">
-                          <property name="orientation">
-                           <enum>Qt::Horizontal</enum>
-                          </property>
-                          <property name="sizeHint" stdset="0">
-                           <size>
-                            <width>40</width>
-                            <height>20</height>
-                           </size>
-                          </property>
-                         </spacer>
-                        </item>
-                        <item>
-                         <widget class="QPushButton" name="pushButton_23">
-                          <property name="text">
-                           <string>Create</string>
-                          </property>
-                         </widget>
-                        </item>
-                       </layout>
                       </widget>
                      </item>
                      <item row="0" column="1">
-                      <widget class="QLineEdit" name="lineEdit_12"/>
+                      <widget class="QLineEdit" name="transfer_receiverpubkey_lineEdit"/>
                      </item>
                      <item row="1" column="1">
-                      <widget class="QLineEdit" name="lineEdit_17"/>
+                      <widget class="QLineEdit" name="baton_lineEdit"/>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="baton_label">
+                       <property name="text">
+                        <string>Baton (txid) </string>
+                       </property>
+                       <property name="buddy">
+                        <cstring>baton_lineEdit</cstring>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="2">
+                      <widget class="QComboBox" name="comboBox_3">
+                       <item>
+                        <property name="text">
+                         <string>Contacts</string>
+                        </property>
+                       </item>
+                      </widget>
+                     </item>
+                     <item row="3" column="1">
+                      <spacer name="horizontalSpacer_38">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
                      </item>
                     </layout>
                    </widget>
@@ -3099,11 +3120,201 @@
                 </item>
                </layout>
               </widget>
-              <widget class="QWidget" name="tab_11">
+              <widget class="QWidget" name="loopqueries_tab">
                <attribute name="title">
                 <string>Loop Queries</string>
                </attribute>
                <layout class="QVBoxLayout" name="verticalLayout_17">
+                <item>
+                 <spacer name="verticalSpacer_30">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <layout class="QGridLayout" name="gridLayout_15">
+                  <item row="0" column="1">
+                   <widget class="QFrame" name="frame_3">
+                    <property name="maximumSize">
+                     <size>
+                      <width>700</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="frameShape">
+                     <enum>QFrame::NoFrame</enum>
+                    </property>
+                    <property name="frameShadow">
+                     <enum>QFrame::Raised</enum>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_21">
+                     <item row="0" column="1">
+                      <widget class="QLineEdit" name="lineEdit"/>
+                     </item>
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="label">
+                       <property name="text">
+                        <string>Pubkey</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="2">
+                      <widget class="QPushButton" name="pushButton_2">
+                       <property name="text">
+                        <string>Search</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QFrame" name="frame">
+                    <property name="maximumSize">
+                     <size>
+                      <width>815</width>
+                      <height>200</height>
+                     </size>
+                    </property>
+                    <property name="frameShape">
+                     <enum>QFrame::NoFrame</enum>
+                    </property>
+                    <property name="frameShadow">
+                     <enum>QFrame::Raised</enum>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_19">
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="label_8">
+                       <property name="text">
+                        <string>Total Amount in Closed loops </string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="2">
+                      <widget class="QLabel" name="label_10">
+                       <property name="text">
+                        <string>Number of  Active Loops </string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QLabel" name="label_9">
+                       <property name="frameShape">
+                        <enum>QFrame::WinPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Sunken</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="label_6">
+                       <property name="text">
+                        <string>Total Amount in Active Loops </string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="2">
+                      <widget class="QLabel" name="label_12">
+                       <property name="text">
+                        <string>Number of Closed Loops</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QLabel" name="label_3">
+                       <property name="frameShape">
+                        <enum>QFrame::WinPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Sunken</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="label_2">
+                       <property name="text">
+                        <string>Total Normal amount</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="3">
+                      <widget class="QLabel" name="label_13">
+                       <property name="frameShape">
+                        <enum>QFrame::WinPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Sunken</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="3">
+                      <widget class="QLabel" name="label_5">
+                       <property name="frameShape">
+                        <enum>QFrame::WinPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Sunken</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="2">
+                      <widget class="QLabel" name="label_4">
+                       <property name="text">
+                        <string>Total Activated Amount</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="3">
+                      <widget class="QLabel" name="label_11">
+                       <property name="frameShape">
+                        <enum>QFrame::WinPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Sunken</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QLabel" name="label_7">
+                       <property name="frameShape">
+                        <enum>QFrame::WinPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Sunken</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
                 <item>
                  <spacer name="verticalSpacer_29">
                   <property name="orientation">
@@ -3118,57 +3329,9 @@
                  </spacer>
                 </item>
                 <item>
-                 <layout class="QGridLayout" name="gridLayout_19">
-                  <item row="1" column="0">
-                   <widget class="QFrame" name="frame_23">
-                    <property name="frameShape">
-                     <enum>QFrame::NoFrame</enum>
-                    </property>
-                    <property name="frameShadow">
-                     <enum>QFrame::Raised</enum>
-                    </property>
-                    <layout class="QHBoxLayout" name="horizontalLayout_9">
-                     <item>
-                      <widget class="QLabel" name="label_44">
-                       <property name="text">
-                        <string>Txid : </string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLineEdit" name="lineEdit_13">
-                       <property name="font">
-                        <font>
-                         <pointsize>12</pointsize>
-                        </font>
-                       </property>
-                       <property name="text">
-                        <string>input tx id </string>
-                       </property>
-                       <property name="placeholderText">
-                        <string>TXID</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
-                   <widget class="QPushButton" name="pushButton_22">
-                    <property name="text">
-                     <string>Search</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0" colspan="2">
-                   <widget class="QLabel" name="label_61">
-                    <property name="text">
-                     <string>Detailed Information About Loop</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="0" colspan="2">
-                   <widget class="QFrame" name="frame_12">
+                 <layout class="QGridLayout" name="loopqueries_Layout">
+                  <item row="3" column="0">
+                   <widget class="QFrame" name="loopquery_info_frame">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
                       <horstretch>0</horstretch>
@@ -3187,111 +3350,161 @@
                       <height>200</height>
                      </size>
                     </property>
-                    <layout class="QGridLayout" name="gridLayout_55">
-                     <item row="4" column="0">
-                      <widget class="QLabel" name="label_36">
-                       <property name="text">
-                        <string>MATURES</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="5" column="1">
-                      <widget class="QLineEdit" name="lineEdit_27"/>
-                     </item>
-                     <item row="5" column="0">
-                      <widget class="QLabel" name="label_37">
-                       <property name="text">
-                        <string>ISSUER PK</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="1">
-                      <widget class="QLineEdit" name="lineEdit_22">
-                       <property name="font">
-                        <font>
-                         <pointsize>11</pointsize>
-                        </font>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                       <property name="readOnly">
-                        <bool>true</bool>
-                       </property>
-                       <property name="placeholderText">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="4" column="1">
-                      <widget class="QLineEdit" name="lineEdit_26"/>
-                     </item>
-                     <item row="2" column="0">
-                      <widget class="QLabel" name="label_46">
-                       <property name="text">
-                        <string>Amount : </string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="3" column="0">
-                      <widget class="QLabel" name="label_48">
-                       <property name="text">
-                        <string>Currency : </string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="1">
-                      <widget class="QLineEdit" name="lineEdit_14">
-                       <property name="enabled">
-                        <bool>true</bool>
-                       </property>
-                       <property name="font">
-                        <font>
-                         <pointsize>16</pointsize>
-                        </font>
-                       </property>
-                       <property name="layoutDirection">
-                        <enum>Qt::LeftToRight</enum>
-                       </property>
-                       <property name="inputMethodHints">
-                        <set>Qt::ImhLatinOnly</set>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                       <property name="alignment">
-                        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                       </property>
-                       <property name="readOnly">
-                        <bool>true</bool>
-                       </property>
-                       <property name="placeholderText">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="0">
-                      <widget class="QLabel" name="label_47">
+                    <layout class="QFormLayout" name="formLayout_2">
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="loopquery_txid_label">
                        <property name="text">
                         <string>Txid</string>
                        </property>
                       </widget>
                      </item>
-                     <item row="3" column="1">
-                      <widget class="QLineEdit" name="lineEdit_23">
-                       <property name="enabled">
-                        <bool>true</bool>
+                     <item row="0" column="1">
+                      <widget class="QLabel" name="loopquery_txid_value">
+                       <property name="frameShape">
+                        <enum>QFrame::WinPanel</enum>
                        </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Sunken</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="loopquery_amount_label">
+                       <property name="text">
+                        <string>Amount</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QLabel" name="loopquery_amount_value">
+                       <property name="frameShape">
+                        <enum>QFrame::WinPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Sunken</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="loopquery_currency_label">
+                       <property name="text">
+                        <string>Currency </string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QLabel" name="loopquery_currency_value">
+                       <property name="frameShape">
+                        <enum>QFrame::WinPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Sunken</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="0">
+                      <widget class="QLabel" name="loopquery_matures_label">
+                       <property name="text">
+                        <string>Matures</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="1">
+                      <widget class="QLabel" name="loopquery_matures_value">
+                       <property name="frameShape">
+                        <enum>QFrame::WinPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Sunken</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="0">
+                      <widget class="QLabel" name="loopquery_issuer_label">
+                       <property name="text">
+                        <string>Issuer pubkey</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="1">
+                      <widget class="QLabel" name="loopquery_issuer_value">
+                       <property name="frameShape">
+                        <enum>QFrame::WinPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Sunken</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="loopquery_info_label">
+                    <property name="text">
+                     <string>Detailed Information About Loop</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0" rowspan="2">
+                   <widget class="QFrame" name="loopquery_seach_frame">
+                    <property name="maximumSize">
+                     <size>
+                      <width>700</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="frameShape">
+                     <enum>QFrame::NoFrame</enum>
+                    </property>
+                    <property name="frameShadow">
+                     <enum>QFrame::Raised</enum>
+                    </property>
+                    <layout class="QHBoxLayout" name="horizontalLayout_9">
+                     <item>
+                      <widget class="QLabel" name="loopsearch_txid_label">
+                       <property name="text">
+                        <string>Txid </string>
+                       </property>
+                       <property name="buddy">
+                        <cstring>loopsearch_txid_lineEdit</cstring>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLineEdit" name="loopsearch_txid_lineEdit">
                        <property name="font">
                         <font>
-                         <pointsize>16</pointsize>
+                         <pointsize>12</pointsize>
                         </font>
                        </property>
                        <property name="text">
                         <string/>
                        </property>
-                       <property name="readOnly">
-                        <bool>true</bool>
+                       <property name="placeholderText">
+                        <string>txid</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="loopsearch_Button">
+                       <property name="text">
+                        <string>Search</string>
                        </property>
                       </widget>
                      </item>
@@ -3301,7 +3514,7 @@
                  </layout>
                 </item>
                 <item>
-                 <spacer name="verticalSpacer_30">
+                 <spacer name="verticalSpacer_39">
                   <property name="orientation">
                    <enum>Qt::Vertical</enum>
                   </property>
@@ -3315,7 +3528,7 @@
                 </item>
                </layout>
               </widget>
-              <widget class="QWidget" name="tab_6">
+              <widget class="QWidget" name="totalloops_tab">
                <attribute name="title">
                 <string>Total Credit Loops</string>
                </attribute>
@@ -3334,16 +3547,16 @@
                  </spacer>
                 </item>
                 <item>
-                 <layout class="QGridLayout" name="gridLayout_30">
+                 <layout class="QGridLayout" name="activeloops_Layout">
                   <item row="2" column="1">
-                   <widget class="QLabel" name="label_40">
+                   <widget class="QLabel" name="loopamount_total_label">
                     <property name="text">
-                     <string>Total Amount in Loops  </string>
+                     <string>Total Amount in Active Loops  </string>
                     </property>
                    </widget>
                   </item>
                   <item row="3" column="2">
-                   <widget class="QLabel" name="label_52">
+                   <widget class="QLabel" name="closedloopamount_total_value">
                     <property name="minimumSize">
                      <size>
                       <width>120</width>
@@ -3362,7 +3575,7 @@
                    </widget>
                   </item>
                   <item row="3" column="4">
-                   <widget class="QLabel" name="label_57">
+                   <widget class="QLabel" name="total_closedloops_no_value">
                     <property name="minimumSize">
                      <size>
                       <width>120</width>
@@ -3381,14 +3594,14 @@
                    </widget>
                   </item>
                   <item row="3" column="3">
-                   <widget class="QLabel" name="label_56">
+                   <widget class="QLabel" name="total_closedloops_no_label">
                     <property name="text">
                      <string>Number of Closed loops</string>
                     </property>
                    </widget>
                   </item>
                   <item row="2" column="2">
-                   <widget class="QLabel" name="label_39">
+                   <widget class="QLabel" name="loopamount_total__value">
                     <property name="minimumSize">
                      <size>
                       <width>120</width>
@@ -3407,7 +3620,7 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QLabel" name="label_31">
+                   <widget class="QLabel" name="closedloopamount_total_label">
                     <property name="text">
                      <string>Total Amount in Closed Loops</string>
                     </property>
@@ -3439,21 +3652,8 @@
                     </property>
                    </spacer>
                   </item>
-                  <item row="2" column="3" colspan="3">
-                   <spacer name="horizontalSpacer_30">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
                   <item row="1" column="0" colspan="6">
-                   <widget class="QTableWidget" name="tableWidget_6">
+                   <widget class="QTableWidget" name="activeloops_tableWidget">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                       <horstretch>0</horstretch>
@@ -3496,18 +3696,54 @@
                    </widget>
                   </item>
                   <item row="0" column="0" colspan="6">
-                   <widget class="QLabel" name="label_38">
+                   <widget class="QLabel" name="activeloops_label">
                     <property name="text">
                      <string>Active Loops</string>
                     </property>
+                    <property name="buddy">
+                     <cstring>activeloops_tableWidget</cstring>
+                    </property>
                    </widget>
+                  </item>
+                  <item row="2" column="3">
+                   <widget class="QLabel" name="label_14">
+                    <property name="text">
+                     <string>Number of Active loops</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="4">
+                   <widget class="QLabel" name="label_15">
+                    <property name="frameShape">
+                     <enum>QFrame::WinPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                     <enum>QFrame::Sunken</enum>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="5">
+                   <spacer name="horizontalSpacer_30">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
                   </item>
                  </layout>
                 </item>
                 <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_48">
+                 <layout class="QHBoxLayout" name="activeloops_search_Layout">
                   <item>
-                   <widget class="QPushButton" name="pushButton_34">
+                   <widget class="QPushButton" name="activeloops_search_Button">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
                       <horstretch>0</horstretch>
@@ -3515,16 +3751,16 @@
                      </sizepolicy>
                     </property>
                     <property name="text">
-                     <string>Refresh</string>
+                     <string>Search</string>
                     </property>
                    </widget>
                   </item>
                  </layout>
                 </item>
                 <item>
-                 <layout class="QGridLayout" name="gridLayout_15">
+                 <layout class="QGridLayout" name="transferable_loops_Layout">
                   <item row="2" column="0">
-                   <widget class="QFrame" name="frame_49">
+                   <widget class="QFrame" name="transferable_serchlimit_frame">
                     <property name="frameShape">
                      <enum>QFrame::StyledPanel</enum>
                     </property>
@@ -3533,7 +3769,7 @@
                     </property>
                     <layout class="QGridLayout" name="gridLayout_52">
                      <item row="0" column="3">
-                      <widget class="QCheckBox" name="checkBox_5">
+                      <widget class="QCheckBox" name="transferable_amount_checkBox">
                        <property name="styleSheet">
                         <string notr="true"/>
                        </property>
@@ -3546,7 +3782,7 @@
                       </widget>
                      </item>
                      <item row="0" column="1">
-                      <widget class="QCheckBox" name="checkBox_4">
+                      <widget class="QCheckBox" name="transferable_matures_checkBox">
                        <property name="styleSheet">
                         <string notr="true"/>
                        </property>
@@ -3564,21 +3800,8 @@
                         <string>Matures</string>
                        </property>
                        <layout class="QGridLayout" name="gridLayout_53">
-                        <item row="0" column="0" colspan="2">
-                         <widget class="QLabel" name="label_65">
-                          <property name="sizePolicy">
-                           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                           </sizepolicy>
-                          </property>
-                          <property name="text">
-                           <string>From</string>
-                          </property>
-                         </widget>
-                        </item>
                         <item row="3" column="0">
-                         <widget class="QLabel" name="label_66">
+                         <widget class="QLabel" name="transferable_maturesto_label">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                             <horstretch>0</horstretch>
@@ -3590,71 +3813,30 @@
                           </property>
                          </widget>
                         </item>
-                        <item row="0" column="2">
-                         <widget class="QDateTimeEdit" name="dateTimeEdit_3">
-                          <property name="enabled">
-                           <bool>false</bool>
+                        <item row="0" column="0" colspan="2">
+                         <widget class="QLabel" name="transferable_maturesfrom_label">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
                           </property>
-                          <property name="styleSheet">
-                           <string notr="true">background-color: rgb(186, 189, 182);
-color: rgb(0, 0, 0);</string>
-                          </property>
-                          <property name="readOnly">
-                           <bool>false</bool>
-                          </property>
-                          <property name="showGroupSeparator" stdset="0">
-                           <bool>true</bool>
-                          </property>
-                          <property name="maximumDate">
-                           <date>
-                            <year>2025</year>
-                            <month>12</month>
-                            <day>31</day>
-                           </date>
-                          </property>
-                          <property name="minimumDate">
-                           <date>
-                            <year>2000</year>
-                            <month>9</month>
-                            <day>14</day>
-                           </date>
-                          </property>
-                          <property name="calendarPopup">
-                           <bool>true</bool>
+                          <property name="text">
+                           <string>From</string>
                           </property>
                          </widget>
                         </item>
-                        <item row="3" column="2">
-                         <widget class="QDateTimeEdit" name="dateTimeEdit_4">
+                        <item row="0" column="3">
+                         <widget class="QDateTimeEdit" name="transferable_maturesfrom_dateTimeEdit">
                           <property name="enabled">
                            <bool>false</bool>
                           </property>
-                          <property name="styleSheet">
-                           <string notr="true">background-color: rgb(186, 189, 182);
-color: rgb(0, 0, 0);</string>
-                          </property>
-                          <property name="readOnly">
+                         </widget>
+                        </item>
+                        <item row="3" column="3">
+                         <widget class="QDateTimeEdit" name="transferable_maturesto_dateTimeEdit">
+                          <property name="enabled">
                            <bool>false</bool>
-                          </property>
-                          <property name="showGroupSeparator" stdset="0">
-                           <bool>true</bool>
-                          </property>
-                          <property name="maximumDate">
-                           <date>
-                            <year>2025</year>
-                            <month>12</month>
-                            <day>31</day>
-                           </date>
-                          </property>
-                          <property name="minimumDate">
-                           <date>
-                            <year>2000</year>
-                            <month>9</month>
-                            <day>14</day>
-                           </date>
-                          </property>
-                          <property name="calendarPopup">
-                           <bool>true</bool>
                           </property>
                          </widget>
                         </item>
@@ -3664,11 +3846,47 @@ color: rgb(0, 0, 0);</string>
                      <item row="0" column="2">
                       <widget class="QGroupBox" name="groupBox_18">
                        <property name="title">
-                        <string>Amaunt</string>
+                        <string>Amount</string>
                        </property>
                        <layout class="QGridLayout" name="gridLayout_54">
-                        <item row="0" column="0" rowspan="2" colspan="2">
-                         <widget class="QLabel" name="label_54">
+                        <item row="3" column="1">
+                         <widget class="QLineEdit" name="transferable_maxamount_lineEdit">
+                          <property name="enabled">
+                           <bool>false</bool>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>70</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="text">
+                           <string/>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="3" column="0">
+                         <widget class="QLabel" name="transferable_maxamount_label">
+                          <property name="text">
+                           <string>Max Amount : </string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="2" column="1">
+                         <widget class="QLineEdit" name="transferable_minamount_lineEdit">
+                          <property name="enabled">
+                           <bool>false</bool>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>70</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="2" column="0">
+                         <widget class="QLabel" name="transferable_minamount_label">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                             <horstretch>0</horstretch>
@@ -3680,54 +3898,14 @@ color: rgb(0, 0, 0);</string>
                           </property>
                          </widget>
                         </item>
-                        <item row="1" column="1">
-                         <widget class="QLineEdit" name="lineEdit_29">
-                          <property name="enabled">
-                           <bool>false</bool>
-                          </property>
-                          <property name="text">
-                           <string>0</string>
-                          </property>
-                          <property name="frame">
-                           <bool>true</bool>
-                          </property>
-                         </widget>
-                        </item>
-                        <item row="2" column="0">
-                         <widget class="QLabel" name="label_55">
-                          <property name="text">
-                           <string>Max Amount : </string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item row="2" column="1">
-                         <widget class="QLineEdit" name="lineEdit_30">
-                          <property name="enabled">
-                           <bool>false</bool>
-                          </property>
-                          <property name="text">
-                           <string>0</string>
-                          </property>
-                          <property name="placeholderText">
-                           <string/>
-                          </property>
-                         </widget>
-                        </item>
                        </layout>
-                      </widget>
-                     </item>
-                     <item row="0" column="4">
-                      <widget class="QPushButton" name="pushButton_43">
-                       <property name="text">
-                        <string/>
-                       </property>
                       </widget>
                      </item>
                     </layout>
                    </widget>
                   </item>
                   <item row="1" column="0">
-                   <widget class="QTableWidget" name="tableWidget_5">
+                   <widget class="QTableWidget" name="transferableloops_tableWidget">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                       <horstretch>0</horstretch>
@@ -3775,18 +3953,21 @@ color: rgb(0, 0, 0);</string>
                    </widget>
                   </item>
                   <item row="0" column="0">
-                   <widget class="QLabel" name="label_60">
+                   <widget class="QLabel" name="transferableloops_label">
                     <property name="text">
                      <string>Transferrable Loops</string>
+                    </property>
+                    <property name="buddy">
+                     <cstring>transferableloops_tableWidget</cstring>
                     </property>
                    </widget>
                   </item>
                  </layout>
                 </item>
                 <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_49">
+                 <layout class="QHBoxLayout" name="transferableloops_search_Layout">
                   <item>
-                   <widget class="QPushButton" name="pushButton_35">
+                   <widget class="QPushButton" name="transferableloops_search_Button">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
                       <horstretch>0</horstretch>
@@ -3794,7 +3975,7 @@ color: rgb(0, 0, 0);</string>
                      </sizepolicy>
                     </property>
                     <property name="text">
-                     <string>Refresh</string>
+                     <string>Search</string>
                     </property>
                    </widget>
                   </item>
@@ -3819,103 +4000,101 @@ color: rgb(0, 0, 0);</string>
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="tab">
+          <widget class="QWidget" name="transactions_tab">
            <attribute name="title">
             <string>Transactions</string>
            </attribute>
-           <widget class="QTableWidget" name="tableWidget_7">
-            <property name="geometry">
-             <rect>
-              <x>50</x>
-              <y>261</y>
-              <width>621</width>
-              <height>271</height>
-             </rect>
-            </property>
-           </widget>
-           <widget class="QLabel" name="label_45">
-            <property name="geometry">
-             <rect>
-              <x>50</x>
-              <y>240</y>
-              <width>151</width>
-              <height>17</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string>Transactions</string>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="pushButton_20">
-            <property name="geometry">
-             <rect>
-              <x>490</x>
-              <y>60</y>
-              <width>89</width>
-              <height>25</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string>Search</string>
-            </property>
-           </widget>
-           <widget class="QDateTimeEdit" name="dateTimeEdit_5">
-            <property name="geometry">
-             <rect>
-              <x>270</x>
-              <y>30</y>
-              <width>194</width>
-              <height>26</height>
-             </rect>
-            </property>
-            <property name="calendarPopup">
-             <bool>true</bool>
-            </property>
-           </widget>
-           <widget class="QLabel" name="label_29">
-            <property name="geometry">
-             <rect>
-              <x>96</x>
-              <y>40</y>
-              <width>111</width>
-              <height>20</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string>Start Date</string>
-            </property>
-           </widget>
-           <widget class="QDateEdit" name="dateEdit">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="geometry">
-             <rect>
-              <x>270</x>
-              <y>70</y>
-              <width>191</width>
-              <height>31</height>
-             </rect>
-            </property>
-            <property name="calendarPopup">
-             <bool>true</bool>
-            </property>
-           </widget>
-           <widget class="QLabel" name="label_53">
-            <property name="geometry">
-             <rect>
-              <x>100</x>
-              <y>80</y>
-              <width>91</width>
-              <height>17</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string>Stop Date</string>
-            </property>
-           </widget>
+           <layout class="QGridLayout" name="gridLayout_22">
+            <item row="0" column="1">
+             <layout class="QGridLayout" name="gridLayout_2">
+              <item row="0" column="1">
+               <widget class="QDateTimeEdit" name="dateTimeEdit_5">
+                <property name="calendarPopup">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QDateEdit" name="dateEdit">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="calendarPopup">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_29">
+                <property name="text">
+                 <string>Start Date</string>
+                </property>
+                <property name="buddy">
+                 <cstring>dateTimeEdit_5</cstring>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_53">
+                <property name="text">
+                 <string>Stop Date</string>
+                </property>
+                <property name="buddy">
+                 <cstring>dateEdit</cstring>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2" rowspan="2">
+               <widget class="QPushButton" name="pushButton_20">
+                <property name="text">
+                 <string>Search</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="0" column="0">
+             <spacer name="horizontalSpacer_43">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="0" column="2">
+             <spacer name="horizontalSpacer_44">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="2" column="0" colspan="3">
+             <widget class="QTableWidget" name="tableWidget_7"/>
+            </item>
+            <item row="1" column="0" colspan="3">
+             <widget class="QLabel" name="label_45">
+              <property name="text">
+               <string>Transactions</string>
+              </property>
+              <property name="buddy">
+               <cstring>tableWidget_7</cstring>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </widget>
-          <widget class="QWidget" name="person_tab">
+          <widget class="QWidget" name="contacts_tab">
            <property name="font">
             <font>
              <pointsize>12</pointsize>
@@ -3925,14 +4104,14 @@ color: rgb(0, 0, 0);</string>
             <string>Contacts</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_47">
-            <item row="3" column="3">
-             <widget class="QPushButton" name="pushButton_8">
+            <item row="4" column="3">
+             <widget class="QPushButton" name="updatecontact_Button">
               <property name="text">
                <string>Update</string>
               </property>
              </widget>
             </item>
-            <item row="3" column="1">
+            <item row="4" column="1">
              <spacer name="horizontalSpacer_35">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -3945,14 +4124,14 @@ color: rgb(0, 0, 0);</string>
               </property>
              </spacer>
             </item>
-            <item row="3" column="2">
-             <widget class="QPushButton" name="pushButton_6">
+            <item row="4" column="2">
+             <widget class="QPushButton" name="addcontact_Button">
               <property name="text">
                <string>Add</string>
               </property>
              </widget>
             </item>
-            <item row="7" column="0" colspan="6">
+            <item row="8" column="0" colspan="6">
              <spacer name="verticalSpacer_22">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
@@ -3965,8 +4144,8 @@ color: rgb(0, 0, 0);</string>
               </property>
              </spacer>
             </item>
-            <item row="0" column="1" rowspan="3" colspan="4">
-             <widget class="QFrame" name="frame_3">
+            <item row="1" column="1" rowspan="3" colspan="4">
+             <widget class="QFrame" name="contact_frame">
               <property name="frameShape">
                <enum>QFrame::StyledPanel</enum>
               </property>
@@ -3975,34 +4154,43 @@ color: rgb(0, 0, 0);</string>
               </property>
               <layout class="QFormLayout" name="formLayout">
                <item row="0" column="0">
-                <widget class="QLabel" name="label_5">
+                <widget class="QLabel" name="contactname_label">
                  <property name="text">
                   <string>Name</string>
+                 </property>
+                 <property name="buddy">
+                  <cstring>contactname_lineEdit</cstring>
                  </property>
                 </widget>
                </item>
                <item row="0" column="1">
-                <widget class="QLineEdit" name="lineEdit_4"/>
+                <widget class="QLineEdit" name="contactname_lineEdit"/>
                </item>
                <item row="1" column="0">
-                <widget class="QLabel" name="label_6">
+                <widget class="QLabel" name="contactaddress_label">
                  <property name="text">
                   <string>Address</string>
+                 </property>
+                 <property name="buddy">
+                  <cstring>contactaddress_lineEdit</cstring>
                  </property>
                 </widget>
                </item>
                <item row="1" column="1">
-                <widget class="QLineEdit" name="lineEdit_5"/>
+                <widget class="QLineEdit" name="contactaddress_lineEdit"/>
                </item>
                <item row="2" column="0">
-                <widget class="QLabel" name="label_7">
+                <widget class="QLabel" name="contactpubkey_label">
                  <property name="text">
                   <string>Pubkey</string>
+                 </property>
+                 <property name="buddy">
+                  <cstring>contactpubkey_lineEdit</cstring>
                  </property>
                 </widget>
                </item>
                <item row="2" column="1">
-                <widget class="QLineEdit" name="lineEdit_6">
+                <widget class="QLineEdit" name="contactpubkey_lineEdit">
                  <property name="minimumSize">
                   <size>
                    <width>600</width>
@@ -4014,14 +4202,14 @@ color: rgb(0, 0, 0);</string>
               </layout>
              </widget>
             </item>
-            <item row="3" column="4">
-             <widget class="QPushButton" name="pushButton_7">
+            <item row="4" column="4">
+             <widget class="QPushButton" name="deletecontact_Button">
               <property name="text">
                <string>Delete</string>
               </property>
              </widget>
             </item>
-            <item row="0" column="0" rowspan="4">
+            <item row="1" column="0" rowspan="4">
              <spacer name="horizontalSpacer_23">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -4034,7 +4222,7 @@ color: rgb(0, 0, 0);</string>
               </property>
              </spacer>
             </item>
-            <item row="4" column="1" colspan="4">
+            <item row="5" column="1" colspan="4">
              <spacer name="verticalSpacer_21">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
@@ -4047,8 +4235,8 @@ color: rgb(0, 0, 0);</string>
               </property>
              </spacer>
             </item>
-            <item row="6" column="0" colspan="6">
-             <widget class="QTableWidget" name="tableWidget_3">
+            <item row="7" column="0" colspan="6">
+             <widget class="QTableWidget" name="contacts_tableWidget">
               <property name="minimumSize">
                <size>
                 <width>0</width>
@@ -4072,7 +4260,7 @@ color: rgb(0, 0, 0);</string>
               </column>
              </widget>
             </item>
-            <item row="0" column="5" rowspan="4">
+            <item row="1" column="5" rowspan="4">
              <spacer name="horizontalSpacer_34">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -4085,223 +4273,8 @@ color: rgb(0, 0, 0);</string>
               </property>
              </spacer>
             </item>
-           </layout>
-          </widget>
-          <widget class="QWidget" name="settings_tab">
-           <property name="font">
-            <font>
-             <pointsize>12</pointsize>
-            </font>
-           </property>
-           <attribute name="title">
-            <string>Settings</string>
-           </attribute>
-           <widget class="QFrame" name="frame_19">
-            <property name="geometry">
-             <rect>
-              <x>9</x>
-              <y>19</y>
-              <width>701</width>
-              <height>581</height>
-             </rect>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <widget class="QLabel" name="label_30">
-             <property name="geometry">
-              <rect>
-               <x>90</x>
-               <y>60</y>
-               <width>131</width>
-               <height>41</height>
-              </rect>
-             </property>
-             <property name="text">
-              <string>Choose language</string>
-             </property>
-            </widget>
-            <widget class="QLabel" name="label_32">
-             <property name="geometry">
-              <rect>
-               <x>100</x>
-               <y>220</y>
-               <width>151</width>
-               <height>17</height>
-              </rect>
-             </property>
-             <property name="text">
-              <string>see debug file</string>
-             </property>
-            </widget>
-            <widget class="QLabel" name="label_50">
-             <property name="geometry">
-              <rect>
-               <x>100</x>
-               <y>270</y>
-               <width>121</width>
-               <height>17</height>
-              </rect>
-             </property>
-             <property name="text">
-              <string>debug console</string>
-             </property>
-            </widget>
-            <widget class="QOpenGLWidget" name="openGLWidget">
-             <property name="geometry">
-              <rect>
-               <x>110</x>
-               <y>290</y>
-               <width>551</width>
-               <height>221</height>
-              </rect>
-             </property>
-            </widget>
-            <widget class="QLineEdit" name="lineEdit_15">
-             <property name="geometry">
-              <rect>
-               <x>110</x>
-               <y>520</y>
-               <width>541</width>
-               <height>25</height>
-              </rect>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </widget>
-          </widget>
-          <widget class="QWidget" name="exit_tab">
-           <property name="font">
-            <font>
-             <pointsize>12</pointsize>
-            </font>
-           </property>
-           <attribute name="title">
-            <string>Exit</string>
-           </attribute>
-           <layout class="QGridLayout" name="gridLayout_25">
-            <item row="1" column="1">
-             <widget class="QFrame" name="frame_12">
-              <property name="frameShape">
-               <enum>QFrame::WinPanel</enum>
-              </property>
-              <property name="frameShadow">
-               <enum>QFrame::Raised</enum>
-              </property>
-              <layout class="QGridLayout" name="gridLayout_38">
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_23">
-                 <property name="font">
-                  <font>
-                   <pointsize>16</pointsize>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string>HOST INFORMATION</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="0">
-                <widget class="QLabel" name="label_27">
-                 <property name="font">
-                  <font>
-                   <pointsize>14</pointsize>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string>administrator</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignCenter</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="0">
-                <widget class="QLabel" name="label_28">
-                 <property name="font">
-                  <font>
-                   <pointsize>14</pointsize>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string>127.0.0.1</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignCenter</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="0">
-                <widget class="QLabel" name="label_26">
-                 <property name="font">
-                  <font>
-                   <pointsize>14</pointsize>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string>local_host</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignCenter</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="0">
-                <widget class="QPushButton" name="pushButton_14">
-                 <property name="text">
-                  <string>EXIT</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <spacer name="horizontalSpacer_17">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="2" column="1">
-             <spacer name="verticalSpacer_10">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="1" column="2">
-             <spacer name="horizontalSpacer_18">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="0" column="1">
-             <spacer name="verticalSpacer_12">
+            <item row="0" column="1" colspan="4">
+             <spacer name="verticalSpacer_35">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
               </property>
@@ -4323,49 +4296,434 @@ color: rgb(0, 0, 0);</string>
        <attribute name="title">
         <string>Install</string>
        </attribute>
-       <widget class="QPushButton" name="pushButton_21">
-        <property name="geometry">
-         <rect>
-          <x>430</x>
-          <y>50</y>
-          <width>121</width>
-          <height>81</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>PushButton</string>
-        </property>
-       </widget>
-       <widget class="QProgressBar" name="progressBar">
-        <property name="geometry">
-         <rect>
-          <x>230</x>
-          <y>380</y>
-          <width>531</width>
-          <height>71</height>
-         </rect>
-        </property>
-        <property name="value">
-         <number>24</number>
-        </property>
-       </widget>
-       <widget class="QOpenGLWidget" name="openGLWidget_2">
-        <property name="geometry">
-         <rect>
-          <x>230</x>
-          <y>150</y>
-          <width>511</width>
-          <height>200</height>
-         </rect>
-        </property>
-       </widget>
+       <layout class="QGridLayout" name="gridLayout_27">
+        <item row="1" column="0">
+         <spacer name="horizontalSpacer_45">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="1" column="1">
+         <widget class="QFrame" name="install_frame">
+          <property name="minimumSize">
+           <size>
+            <width>900</width>
+            <height>600</height>
+           </size>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <widget class="QPushButton" name="pushButton_21">
+           <property name="geometry">
+            <rect>
+             <x>370</x>
+             <y>60</y>
+             <width>121</width>
+             <height>81</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Start Install</string>
+           </property>
+          </widget>
+          <widget class="QProgressBar" name="progressBar">
+           <property name="geometry">
+            <rect>
+             <x>150</x>
+             <y>440</y>
+             <width>551</width>
+             <height>71</height>
+            </rect>
+           </property>
+           <property name="value">
+            <number>24</number>
+           </property>
+          </widget>
+          <widget class="QTextBrowser" name="textBrowser">
+           <property name="geometry">
+            <rect>
+             <x>150</x>
+             <y>170</y>
+             <width>551</width>
+             <height>261</height>
+            </rect>
+           </property>
+          </widget>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <spacer name="verticalSpacer_36">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="1" column="2">
+         <spacer name="horizontalSpacer_46">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="2" column="1">
+         <spacer name="verticalSpacer_37">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>
    </layout>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1028</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+   <property name="defaultUp">
+    <bool>false</bool>
+   </property>
+   <widget class="QMenu" name="menuConfig">
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="title">
+     <string>Config</string>
+    </property>
+    <addaction name="actionLanguage_Selection"/>
+    <addaction name="actionConfigure_Paths"/>
+    <addaction name="actionLogout"/>
+    <addaction name="separator"/>
+    <addaction name="actionQuit"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <widget class="QMenu" name="menuDebug">
+     <property name="title">
+      <string>Debug</string>
+     </property>
+     <addaction name="actionConsole"/>
+     <addaction name="actionSee_Log_File"/>
+    </widget>
+    <addaction name="menuDebug"/>
+    <addaction name="actionAbout"/>
+   </widget>
+   <addaction name="menuConfig"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <action name="actionlogout">
+   <property name="text">
+    <string>Logout</string>
+   </property>
+  </action>
+  <action name="actionexit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionLanguage_Selection">
+   <property name="text">
+    <string>Language Selection</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::ApplicationSpecificRole</enum>
+   </property>
+  </action>
+  <action name="actionversion_no">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="actiondebug_file">
+   <property name="text">
+    <string>debug file</string>
+   </property>
+  </action>
+  <action name="actionconsole">
+   <property name="text">
+    <string>console</string>
+   </property>
+  </action>
+  <action name="actiondebug_file_2">
+   <property name="text">
+    <string>log file</string>
+   </property>
+  </action>
+  <action name="actionConsole">
+   <property name="text">
+    <string>Console</string>
+   </property>
+  </action>
+  <action name="actionlog_file">
+   <property name="text">
+    <string>See Log file</string>
+   </property>
+  </action>
+  <action name="actionConfigure_Paths">
+   <property name="text">
+    <string>Configure Paths</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::ApplicationSpecificRole</enum>
+   </property>
+  </action>
+  <action name="actionLogout">
+   <property name="text">
+    <string>Logout</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::ApplicationSpecificRole</enum>
+   </property>
+  </action>
+  <action name="actionSee_Log_File">
+   <property name="text">
+    <string>See Log File</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::AboutRole</enum>
+   </property>
+  </action>
+  <action name="actionQuit">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Quit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+   <property name="shortcutContext">
+    <enum>Qt::ApplicationShortcut</enum>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
+   </property>
+   <property name="priority">
+    <enum>QAction::NormalPriority</enum>
+   </property>
+  </action>
  </widget>
+ <tabstops>
+  <tabstop>server_comboBox</tabstop>
+  <tabstop>serveradd_button</tabstop>
+  <tabstop>serveredit_button</tabstop>
+  <tabstop>serverpw_lineEdit</tabstop>
+  <tabstop>connect_button</tabstop>
+  <tabstop>add_servername_lineEdit</tabstop>
+  <tabstop>add_serverusername_lineEdit</tabstop>
+  <tabstop>add_serverip_lineEdit</tabstop>
+  <tabstop>add_serversave_button</tabstop>
+  <tabstop>servercancel_button</tabstop>
+  <tabstop>edit_servername_lineEdit</tabstop>
+  <tabstop>edit_serverusername_lineEdit</tabstop>
+  <tabstop>edit_serverip_lineEdit</tabstop>
+  <tabstop>edit_serversave_button</tabstop>
+  <tabstop>serverdelete_button</tabstop>
+  <tabstop>lang_comboBox</tabstop>
+  <tabstop>home_button</tabstop>
+  <tabstop>remote_button</tabstop>
+  <tabstop>local_button</tabstop>
+  <tabstop>newaddress_Button</tabstop>
+  <tabstop>address_seed_Button</tabstop>
+  <tabstop>mcl_tab</tabstop>
+  <tabstop>addresses_tableWidget</tabstop>
+  <tabstop>addressamount_refresh_pushButton</tabstop>
+  <tabstop>qrcode_Button</tabstop>
+  <tabstop>receiver_address_lineEdit</tabstop>
+  <tabstop>sending_amount_lineEdit</tabstop>
+  <tabstop>coinsend_Button</tabstop>
+  <tabstop>activate_amount_value</tabstop>
+  <tabstop>activate_pushButton</tabstop>
+  <tabstop>unlock_amount_value</tabstop>
+  <tabstop>unlock_pushButton</tabstop>
+  <tabstop>contacts_tableWidget</tabstop>
+  <tabstop>contactname_lineEdit</tabstop>
+  <tabstop>contactaddress_lineEdit</tabstop>
+  <tabstop>contactpubkey_lineEdit</tabstop>
+  <tabstop>addcontact_Button</tabstop>
+  <tabstop>deletecontact_Button</tabstop>
+  <tabstop>updatecontact_Button</tabstop>
+  <tabstop>getinfo_refresh_Button</tabstop>
+  <tabstop>staking_Button</tabstop>
+  <tabstop>mining_Button</tabstop>
+  <tabstop>copyaddress_Button</tabstop>
+  <tabstop>copypubkey_Button</tabstop>
+  <tabstop>chainsync_button</tabstop>
+  <tabstop>chainstatus_button</tabstop>
+  <tabstop>addresspage_back_Button</tabstop>
+  <tabstop>verify_passphrase_lineEdit</tabstop>
+  <tabstop>passphrase_lineEdit</tabstop>
+  <tabstop>addaddress_page_Button</tabstop>
+  <tabstop>privkey_page_Button</tabstop>
+  <tabstop>creditloop_tabWidget</tabstop>
+  <tabstop>request_date_checkBox</tabstop>
+  <tabstop>loop_request_tableWidget</tabstop>
+  <tabstop>looprequest_search_Button</tabstop>
+  <tabstop>transferableloops_tableWidget</tabstop>
+  <tabstop>transferable_matures_checkBox</tabstop>
+  <tabstop>transferable_amount_checkBox</tabstop>
+  <tabstop>transferableloops_search_Button</tabstop>
+  <tabstop>activeloops_tableWidget</tabstop>
+  <tabstop>activeloops_search_Button</tabstop>
+  <tabstop>privatekeypage_back_Button</tabstop>
+  <tabstop>privkey_lineEdit</tabstop>
+  <tabstop>importprivkey_Button</tabstop>
+  <tabstop>tableWidget_7</tabstop>
+  <tabstop>pushButton_20</tabstop>
+  <tabstop>pushButton_21</tabstop>
+  <tabstop>dateTimeEdit_5</tabstop>
+  <tabstop>transferrequests_tableWidget</tabstop>
+  <tabstop>create_loopamount_lineEdit</tabstop>
+  <tabstop>create_receiverpubkey_lineEdit</tabstop>
+  <tabstop>create_loopmatures_dateTimeEdit</tabstop>
+  <tabstop>transfer_receiverpubkey_lineEdit</tabstop>
+  <tabstop>baton_lineEdit</tabstop>
+  <tabstop>addresses_privkey_tableWidget</tabstop>
+  <tabstop>stopchain_Button</tabstop>
+  <tabstop>dateEdit</tabstop>
+  <tabstop>request_dateTimeEdit</tabstop>
+  <tabstop>transferable_maturesfrom_dateTimeEdit</tabstop>
+  <tabstop>transferable_maturesto_dateTimeEdit</tabstop>
+  <tabstop>transferable_maxamount_lineEdit</tabstop>
+  <tabstop>transferable_minamount_lineEdit</tabstop>
+ </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>copypubkey_Button</sender>
+   <signal>released()</signal>
+   <receiver>current_pubkey_value</receiver>
+   <slot>copy()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>989</x>
+     <y>663</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>597</x>
+     <y>145</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>copypubkey_Button</sender>
+   <signal>pressed()</signal>
+   <receiver>current_pubkey_value</receiver>
+   <slot>selectAll()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>989</x>
+     <y>663</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>636</x>
+     <y>145</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>copyaddress_Button</sender>
+   <signal>pressed()</signal>
+   <receiver>currentaddress_value</receiver>
+   <slot>selectAll()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>989</x>
+     <y>630</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>359</x>
+     <y>145</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>copyaddress_Button</sender>
+   <signal>released()</signal>
+   <receiver>currentaddress_value</receiver>
+   <slot>copy()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>989</x>
+     <y>630</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>359</x>
+     <y>145</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionQuit</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>513</x>
+     <y>383</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

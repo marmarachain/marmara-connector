@@ -1,11 +1,15 @@
 import json
 import time
 
+from PyQt5.QtCore import QThread, pyqtSlot
+
 from qtguidesign import Ui_MainWindow
 from PyQt5 import QtWidgets
 import configuration
 import marmarachain_rpc
 import remote_connection
+import chain_args as cp
+
 
 class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
 
@@ -17,6 +21,7 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
         self.main_tab.tabBar().setVisible(False)
         self.login_stackedWidget.setCurrentIndex(0)
         self.home_button.setVisible(False)
+        self.chain_status= False
         #   Login page Host Selection
         self.local_button.clicked.connect(self.local_selection)
         self.remote_button.clicked.connect(self.remote_selection)
@@ -25,6 +30,7 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
         self.home_button.clicked.connect(self.host_selection)
         self.serveradd_button.clicked.connect(self.server_add_selected)
         self.connect_button.clicked.connect(self.server_connect)
+        self.serverpw_lineEdit.editingFinished.connect(self.server_connect)
         self.serveredit_button.clicked.connect(self.server_edit_selected)
         #  Add Server Settings page
         self.add_serversave_button.clicked.connect(self.save_server_settings)
@@ -33,6 +39,11 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
         self.edit_serversave_button.clicked.connect(self.edit_server_settings)
         self.serverdelete_button.clicked.connect(self.delete_server_setting)
 
+        # Tread setup
+        self.thread_getinfo = QThread()
+        self.thread_getchain = QThread()
+
+
     def host_selection(self):
         self.login_stackedWidget.setCurrentIndex(0)
         self.home_button.setVisible(False)
@@ -40,7 +51,7 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
     def local_selection(self):
         self.main_tab.setCurrentIndex(1)
         marmarachain_rpc.set_connection_local()
-        self.chain_initilazation()
+        self.chain_init()
 
     def remote_selection(self):
         self.login_stackedWidget.setCurrentIndex(1)
@@ -52,57 +63,97 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
         server_list = configuration.ServerSettings().read_file()
         selected_server_info = server_list[self.server_comboBox.currentIndex()]
         selected_server_info = selected_server_info.split(",")
-        remote_connection.set_server_connection(ip=selected_server_info[2], username=selected_server_info[1], pw=self.serverpw_lineEdit.text())
+        remote_connection.set_server_connection(ip=selected_server_info[2], username=selected_server_info[1],
+                                                pw=self.serverpw_lineEdit.text())
         validate = remote_connection.check_server_connection()
         if validate:
             self.login_message_label.setText(str(validate))
         else:
             self.main_tab.setCurrentIndex(1)
-        self.chain_initilazation()
+        self.chain_init()
 
-    def chain_initilazation(self):
+    def worker_thread(self, thread, worker, command):
+        worker.set_command(command)
+        worker.moveToThread(thread)
+        worker.finished.connect(thread.quit)
+        thread.started.connect(worker.do_execute_rpc)
+        thread.start()
+        return worker.command_out
+
+    def chain_init(self):
+        if not self.chain_status:
+            self.check_chain()
+        if self.chain_status:
+            self.get_getinfo()
+
+    def check_chain(self):
         self.bottom_message_label.setText('Checking marmarachain')
-        if not marmarachain_rpc.mcl_chain_status().read():
+        if not marmarachain_rpc.mcl_chain_status():
             marmarachain_rpc.start_chain()
         while True:
-            if marmarachain_rpc.mcl_chain_status().read():
+            if marmarachain_rpc.mcl_chain_status():
                 break
             time.sleep(2)
             self.bottom_message_label.setText('Chain is not started')
-        while True:
-            if marmarachain_rpc.mcl_chain_status().read():
-                break
-            print('Chain not started')
-            time.sleep(1)
+        self.is_chain_ready()
 
-        while True:
-            getinfo = marmarachain_rpc.getinfo()
-            getinfo_result = getinfo[0].read()  # getting result of stdout
-            if getinfo_result:
-                getinfo_result = json.loads(getinfo_result)
-                print(getinfo_result)
-                self.bottom_message_label.setText('loading values')
+    @pyqtSlot()
+    def is_chain_ready(self):
+        self.worker_getchain = marmarachain_rpc.RpcHandler()
+        command = cp.getinfo
+        self.worker_getchain.set_command(command)
+        self.worker_getchain.moveToThread(self.thread_getchain)
+        self.worker_getchain.finished.connect(self.thread_getchain.quit)
 
-                self.difficulty_value_label.setText(str(getinfo_result['difficulty']))
-                self.currentblock_value_label.setText(str(getinfo_result['blocks']))
-                self.longestchain_value_label.setText(str(getinfo_result['longestchain']))
-                self.connections_value_label.setText(str(getinfo_result['connections']))
+        self.thread_getchain.started.connect(self.worker_getchain.is_chain_ready)
+        self.thread_getchain.start()
+        self.worker_getchain.command_out.connect(self.chain_ready_result)
+        self.worker_getchain.finished.connect(self.chain_init)
 
-                self.bottom_message_label.setText('finished')
-                if getinfo_result.get('pubkey') is None:
-                    self.bottom_message_label.setText('pubkey is not set')
-                marmarachain_rpc.rpc_close(getinfo)
-                break
-            getinfo_result = getinfo[1].read()   # getting result of stderr
-            if getinfo_result:
-                getinfo_result = str(getinfo_result).replace("b'", ' ').replace("\\n", " ")
-                print(getinfo_result)
-                self.bottom_message_label.setText(str(getinfo_result))
-                self.login_message_label.setText(str(getinfo_result))
-                marmarachain_rpc.rpc_close(getinfo)
-                time.sleep(2)
+    @pyqtSlot(tuple)
+    def chain_ready_result(self, result_out):
+        if result_out[0]:
+            print('chain ready finished')
+            self.chain_status = True
+        elif result_out[1]:
+            time.sleep(2)
+            print_result = ""
+            for line in str(result_out[1]).splitlines():
+                print_result = print_result + ' ' + str(line)
+            self.bottom_message_label.setText(print_result)
 
+    @pyqtSlot()
+    def get_getinfo(self):
+        self.worker_getinfo = marmarachain_rpc.RpcHandler()
+        command = cp.getinfo
+        getinfo_thread = self.worker_thread(self.thread_getinfo, self.worker_getinfo, command)
+        getinfo_thread.connect(self.set_getinfo_result)
 
+    @pyqtSlot(tuple)
+    def set_getinfo_result(self, result_out):
+        if result_out[0]:
+            getinfo_result = result_out[0]
+            getinfo_result = json.loads(getinfo_result)
+            self.bottom_message_label.setText('loading values')
+
+            self.difficulty_value_label.setText(str(getinfo_result['difficulty']))
+            self.currentblock_value_label.setText(str(getinfo_result['blocks']))
+            self.longestchain_value_label.setText(str(getinfo_result['longestchain']))
+            self.connections_value_label.setText(str(getinfo_result['connections']))
+
+            self.bottom_message_label.setText('finished')
+            if getinfo_result.get('pubkey') is None:
+                self.bottom_message_label.setText('pubkey is not set')
+        elif result_out[1]:
+            getinfo_result = str(result_out[1]).splitlines()
+            print_result = ""
+            for line in getinfo_result:
+                print_result = print_result + ' ' + str(line)
+            print(print_result)
+            self.bottom_message_label.setText(print_result)
+    # -------------------------------------------------------------------
+    # Remote Host adding , editing, deleting and  saving in conf file
+    # --------------------------------------------------------------------
 
     def server_add_selected(self):
         self.login_stackedWidget.setCurrentIndex(2)
@@ -166,6 +217,7 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
         configuration.ServerSettings().delete_record(server_list)
         self.remote_selection()
 
+    #----------------------------------------------------------------------------
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])
