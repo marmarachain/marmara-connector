@@ -30,7 +30,7 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
         self.home_button.clicked.connect(self.host_selection)
         self.serveradd_button.clicked.connect(self.server_add_selected)
         self.connect_button.clicked.connect(self.server_connect)
-        self.serverpw_lineEdit.editingFinished.connect(self.server_connect)
+        self.serverpw_lineEdit.returnPressed.connect(self.server_connect)
         self.serveredit_button.clicked.connect(self.server_edit_selected)
         #  Add Server Settings page
         self.add_serversave_button.clicked.connect(self.save_server_settings)
@@ -38,11 +38,15 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
         # Edit Server Settings page
         self.edit_serversave_button.clicked.connect(self.edit_server_settings)
         self.serverdelete_button.clicked.connect(self.delete_server_setting)
-
+        # System page
+        self.stopchain_Button.clicked.connect(self.stop_chain)
         # Tread setup
         self.thread_getinfo = QThread()
         self.thread_getchain = QThread()
-
+        self.thread_chainpid = QThread()
+        self.thread_stopchain = QThread()
+        self.thread_getaddresses = QThread()
+        self.thread_getbalance = QThread()
 
     def host_selection(self):
         self.login_stackedWidget.setCurrentIndex(0)
@@ -59,6 +63,7 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
         self.home_button.setVisible(True)
         marmarachain_rpc.set_connection_remote()
 
+    @pyqtSlot()
     def server_connect(self):
         server_list = configuration.ServerSettings().read_file()
         selected_server_info = server_list[self.server_comboBox.currentIndex()]
@@ -72,42 +77,50 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
             self.main_tab.setCurrentIndex(1)
         self.chain_init()
 
-    def worker_thread(self, thread, worker, command):
-        worker.set_command(command)
+    def worker_thread(self, thread, worker, command=None):
+        if command:
+            worker.set_command(command)
         worker.moveToThread(thread)
         worker.finished.connect(thread.quit)
-        thread.started.connect(worker.do_execute_rpc)
+        # thread.started.connect(worker.do_execute_rpc)
         thread.start()
-        return worker.command_out
+        return worker
 
     def chain_init(self):
+        print('chain_status ' + str(self.chain_status))
         if not self.chain_status:
             self.check_chain()
         if self.chain_status:
             self.get_getinfo()
+            self.getaddresses()
+
 
     def check_chain(self):
         self.bottom_message_label.setText('Checking marmarachain')
-        if not marmarachain_rpc.mcl_chain_status():
+        marmara_pid = marmarachain_rpc.handle_rpc(cp.marmara_pid)
+        print(len(marmara_pid[0]))
+        if len(marmara_pid[0]) == 0:
+            print('chain is start command')
             marmarachain_rpc.start_chain()
-        while True:
-            if marmarachain_rpc.mcl_chain_status():
-                break
-            time.sleep(2)
-            self.bottom_message_label.setText('Chain is not started')
-        self.is_chain_ready()
+        self.worker_chain_pid = marmarachain_rpc.RpcHandler()
+        check_pid_thread = self.worker_thread(self.thread_chainpid, self.worker_chain_pid)
+        self.thread_chainpid.started.connect(self.worker_chain_pid.chain_pid)
+        check_pid_thread.daemon_pid.connect(self.chain_check_finished)
+
+    def chain_check_finished(self, result_out):
+        if not result_out:
+            self.bottom_message_label.setText('Chain start error: No pid')
+        if result_out:
+            print('pid is ' + result_out)
+            self.is_chain_ready()
 
     @pyqtSlot()
     def is_chain_ready(self):
         self.worker_getchain = marmarachain_rpc.RpcHandler()
         command = cp.getinfo
-        self.worker_getchain.set_command(command)
-        self.worker_getchain.moveToThread(self.thread_getchain)
-        self.worker_getchain.finished.connect(self.thread_getchain.quit)
-
+        chain_ready_thread = self.worker_thread(self.thread_getchain, self.worker_getchain, command)
         self.thread_getchain.started.connect(self.worker_getchain.is_chain_ready)
-        self.thread_getchain.start()
-        self.worker_getchain.command_out.connect(self.chain_ready_result)
+        chain_ready_thread.command_out.connect(self.chain_ready_result)
         self.worker_getchain.finished.connect(self.chain_init)
 
     @pyqtSlot(tuple)
@@ -123,11 +136,40 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
             self.bottom_message_label.setText(print_result)
 
     @pyqtSlot()
+    def stop_chain(self):
+        if self.chain_status:
+            self.worker_stopchain = marmarachain_rpc.RpcHandler()
+            command = cp.stop
+            stop_chain_thread = self.worker_thread(self.thread_stopchain, self.worker_stopchain, command)
+            self.thread_stopchain.started.connect(self.worker_stopchain.stopping_chain)
+            stop_chain_thread.command_out.connect(self.result_stopchain)
+        else:
+            self.bottom_message_label.setText('chain is not ready')
+
+    @pyqtSlot(tuple)
+    def result_stopchain(self, result_out):
+        if result_out[0]:
+            print_result = ""
+            for line in str(result_out[0]).splitlines():
+                print_result = print_result + ' ' + str(line)
+            print(print_result)
+            self.bottom_message_label.setText(print_result)
+        if len(result_out[0]) == 0:
+            self.bottom_message_label.setText('chain stopped')
+        elif result_out[1]:
+            print_result = ""
+            for line in str(result_out[1]).splitlines():
+                print_result = print_result + ' ' + str(line)
+            print(print_result)
+            self.bottom_message_label.setText(print_result)
+
+    @pyqtSlot()
     def get_getinfo(self):
         self.worker_getinfo = marmarachain_rpc.RpcHandler()
         command = cp.getinfo
         getinfo_thread = self.worker_thread(self.thread_getinfo, self.worker_getinfo, command)
-        getinfo_thread.connect(self.set_getinfo_result)
+        self.thread_getinfo.started.connect(self.worker_getinfo.do_execute_rpc)
+        getinfo_thread.command_out.connect(self.set_getinfo_result)
 
     @pyqtSlot(tuple)
     def set_getinfo_result(self, result_out):
@@ -151,6 +193,45 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
                 print_result = print_result + ' ' + str(line)
             print(print_result)
             self.bottom_message_label.setText(print_result)
+
+    @pyqtSlot()
+    def getaddresses(self):
+        self.worker_getaddresses = marmarachain_rpc.RpcHandler()
+        command = cp.getaddressesbyaccount
+        getaddresses_thread = self.worker_thread(self.thread_getaddresses, self.worker_getaddresses, command)
+        self.thread_getaddresses.started.connect(self.worker_getaddresses.do_execute_rpc)
+        getaddresses_thread.command_out.connect(self.set_getaddresses_result)
+
+    @pyqtSlot(tuple)
+    def set_getaddresses_result(self, result_out):
+        if result_out[0]:
+            print(result_out[0])
+            addresses = json.loads(result_out[0])
+            for address in addresses:
+                print(address)
+                self.getbalance(address)
+            # self.getlistaddresgroup(result_out[0])
+        elif result_out[1]:
+            print(result_out[1])
+
+    @pyqtSlot()
+    def getbalance(self, address):
+        self.worker_getbalance = marmarachain_rpc.RpcHandler()
+        command = cp.getbalance + ' ' + address
+        getbalance_thread = self.worker_thread(self.thread_getbalance, self.worker_getbalance, command)
+        self.thread_getbalance.started.connect(self.worker_getbalance.do_execute_rpc)
+        getbalance_thread.command_out.connect(self.set_getbalance_result)
+
+    @pyqtSlot(tuple)
+    def set_getbalance_result(self, result_out):
+        print(result_out)
+        print(result_out[0])
+        print(json.loads(result_out[0]))
+        if json.loads(result_out[0]) == 0.0:
+            print('no balance')
+        elif result_out[1]:
+            print(result_out[1])
+
     # -------------------------------------------------------------------
     # Remote Host adding , editing, deleting and  saving in conf file
     # --------------------------------------------------------------------

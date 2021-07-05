@@ -20,22 +20,6 @@ def set_connection_remote():
     is_local = False
 
 
-def mcl_chain_status():
-    if is_local:
-        result = ""
-        marmarad_pid = subprocess.Popen('pidof komodod', shell=True, stdout=subprocess.PIPE)
-        while True:
-            line = marmarad_pid.stdout.readlines()
-            if not line:
-                marmarad_pid.terminate()
-                break
-            result = result + str(line)
-    else:
-        marmarad_pid = remote_connection.server_execute_command('pidof komodod')
-        result = marmarad_pid[0]
-    return result
-
-
 def start_chain():
     if is_local:
         marmara_param = cp.start_param_local()
@@ -53,8 +37,35 @@ def start_chain():
         print('shell closed')
 
 
+def mcl_chain_status():
+    if is_local:
+        marmara_pid = cp.set_pid_local(cp.marmara_pid)
+        marmarad_pid = subprocess.Popen(marmara_pid, shell=True, stdout=subprocess.PIPE)
+        marmarad_pid.wait()
+        marmarad_pid.terminate()
+        return marmarad_pid.stdout.read().decode("utf8"), marmarad_pid.stdout.read().decode("utf8")
+    else:
+        marmarad_pid = remote_connection.server_execute_command(cp.marmara_pid)
+    return marmarad_pid
+
+
+def handle_rpc(command):
+    if is_local:
+        cmd = cp.set_local(command)
+        proc = subprocess.Popen(cmd, cwd=marmara_path, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        proc.wait()
+        retvalue = proc.poll()
+        return proc.stdout.read().decode("utf8"), proc.stderr.read().decode("utf8"), retvalue
+    else:
+        cmd = cp.set_remote(command)
+        cmd = marmara_path + cmd
+        result = remote_connection.server_execute_command(cmd)
+        return result
+
+
 class RpcHandler(QtCore.QObject):
     command_out = pyqtSignal(tuple)
+    daemon_pid = pyqtSignal(str)
     finished = pyqtSignal()
 
     def __init__(self):
@@ -72,6 +83,28 @@ class RpcHandler(QtCore.QObject):
         self.finished.emit()
 
     @pyqtSlot()
+    def chain_pid(self):
+        i = 10
+        while True:
+            result_out = mcl_chain_status()
+            if len(result_out[0]) > 0:
+                self.daemon_pid.emit(str(result_out[0]))
+                self.finished.emit()
+                print('chain has pid')
+                break
+            time.sleep(1)
+            i = i - 1
+            if i == 0:
+                print('tried still no pid')
+                self.daemon_pid.emit(str(result_out[0]))
+                self.finished.emit()
+                break
+            elif result_out[1]:
+                print('error')
+                self.daemon_pid.emitstr(str(result_out[1]))
+                break
+
+    @pyqtSlot()
     def is_chain_ready(self):
         while True:
             result_out = handle_rpc(self.command)
@@ -85,16 +118,20 @@ class RpcHandler(QtCore.QObject):
                 time.sleep(2)
                 print('chain is not ready')
 
-
-def handle_rpc(command):
-    if is_local:
-        cmd = cp.set_local(command)
-        proc = subprocess.Popen(cmd, cwd=marmara_path, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        proc.wait()
-        retvalue = proc.poll()
-        return proc.stdout.read().decode("utf8"), proc.stderr.read().decode("utf8"), retvalue
-    else:
-        cmd = cp.set_remote(command)
-        cmd = marmara_path + cmd
-        result = remote_connection.server_execute_command(cmd)
-        return result
+    @pyqtSlot()
+    def stopping_chain(self):
+        result_out = handle_rpc(self.command)
+        self.command_out.emit(result_out)
+        print(result_out[0])
+        if result_out[0]:
+            while True:
+                pid = mcl_chain_status()
+                if len(pid[0]) == 0:
+                    self.finished.emit()
+                    self.command_out.emit(pid)
+                    print('chain stopped')
+                    break
+                time.sleep(1)
+        elif result_out[1]:
+            self.command_out.emit(result_out)
+            self.finished.emit()
