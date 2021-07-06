@@ -121,7 +121,7 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
         chain_ready_thread = self.worker_thread(self.thread_getchain, self.worker_getchain, command)
         self.thread_getchain.started.connect(self.worker_getchain.is_chain_ready)
         chain_ready_thread.command_out.connect(self.chain_ready_result)
-        self.worker_getchain.finished.connect(self.chain_init)
+        chain_ready_thread.finished.connect(self.chain_init)
 
     @pyqtSlot(tuple)
     def chain_ready_result(self, result_out):
@@ -156,6 +156,7 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
             self.bottom_message_label.setText(print_result)
         if len(result_out[0]) == 0:
             self.bottom_message_label.setText('chain stopped')
+            self.chain_status = False
         elif result_out[1]:
             print_result = ""
             for line in str(result_out[1]).splitlines():
@@ -165,11 +166,11 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
 
     @pyqtSlot()
     def get_getinfo(self):
-        self.worker_getinfo = marmarachain_rpc.RpcHandler()
-        command = cp.getinfo
-        getinfo_thread = self.worker_thread(self.thread_getinfo, self.worker_getinfo, command)
-        self.thread_getinfo.started.connect(self.worker_getinfo.do_execute_rpc)
-        getinfo_thread.command_out.connect(self.set_getinfo_result)
+        self.worker_getinfo = marmarachain_rpc.RpcHandler()  # worker setting
+        command = cp.getinfo                                 # setting command
+        getinfo_thread = self.worker_thread(self.thread_getinfo, self.worker_getinfo, command)  # putting in to thread
+        self.thread_getinfo.started.connect(self.worker_getinfo.do_execute_rpc)      # executing respective worker class function
+        getinfo_thread.command_out.connect(self.set_getinfo_result)            # getting results from socket
 
     @pyqtSlot(tuple)
     def set_getinfo_result(self, result_out):
