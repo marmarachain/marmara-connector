@@ -1,8 +1,8 @@
+import json
 import subprocess, pathlib
 import time
 from PyQt5 import QtCore
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
-
 import remote_connection
 import chain_args as cp
 
@@ -66,6 +66,7 @@ def handle_rpc(command):
 class RpcHandler(QtCore.QObject):
     command_out = pyqtSignal(tuple)
     daemon_pid = pyqtSignal(str)
+    walletlist_out = pyqtSignal(list)
     finished = pyqtSignal()
 
     def __init__(self):
@@ -78,6 +79,7 @@ class RpcHandler(QtCore.QObject):
 
     @pyqtSlot()
     def do_execute_rpc(self):
+
         result_out = handle_rpc(self.command)
         self.command_out.emit(result_out)
         self.finished.emit()
@@ -120,7 +122,7 @@ class RpcHandler(QtCore.QObject):
 
     @pyqtSlot()
     def stopping_chain(self):
-        result_out = handle_rpc(self.command)
+        result_out = handle_rpc(cp.stop)
         self.command_out.emit(result_out)
         print(result_out[0])
         if result_out[0]:
@@ -134,4 +136,32 @@ class RpcHandler(QtCore.QObject):
                 time.sleep(1)
         elif result_out[1]:
             self.command_out.emit(result_out)
+            self.finished.emit()
+
+    @pyqtSlot()
+    def get_addresses(self):
+        addresses = handle_rpc(cp.getaddressesbyaccount)
+        if addresses[0]:
+            addresses = json.loads(addresses[0])
+            wallet_list = []
+            for address in addresses:
+                validation = handle_rpc(cp.validateaddress + ' ' + address)
+                if validation[0]:
+                    if json.loads(validation[0])['ismine']:
+                        pubkey = json.loads(validation[0])['pubkey']
+                elif validation[1]:
+                    print(validation[1])
+                address_js = {'addresses': [address]}
+                command = cp.getaddressbalance + "'" + json.dumps(address_js) + "'"
+                amounts = handle_rpc(command)
+                if amounts[0]:
+                    amount = json.loads(amounts[0])['balance']
+                elif amounts[1]:
+                    print(amounts[1])
+                address_list = [address, pubkey, amount]
+                wallet_list.append(address_list)
+            self.walletlist_out.emit(wallet_list)
+            self.finished.emit()
+        elif addresses[1]:
+            print(addresses[1])
             self.finished.emit()

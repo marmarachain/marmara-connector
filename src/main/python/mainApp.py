@@ -1,8 +1,7 @@
 import json
 import time
-
 from PyQt5.QtCore import QThread, pyqtSlot
-
+from PyQt5.QtWidgets import QTableWidgetItem
 from qtguidesign import Ui_MainWindow
 from PyQt5 import QtWidgets
 import configuration
@@ -21,7 +20,7 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
         self.main_tab.tabBar().setVisible(False)
         self.login_stackedWidget.setCurrentIndex(0)
         self.home_button.setVisible(False)
-        self.chain_status= False
+        self.chain_status = False
         #   Login page Host Selection
         self.local_button.clicked.connect(self.local_selection)
         self.remote_button.clicked.connect(self.remote_selection)
@@ -40,13 +39,22 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
         self.serverdelete_button.clicked.connect(self.delete_server_setting)
         # System page
         self.stopchain_Button.clicked.connect(self.stop_chain)
+        self.addaddress_page_Button.clicked.connect(self.add_address)
+        self.addresspage_back_Button.clicked.connect(self.back_chain_widget_index)
+        self.privkey_page_Button.clicked.connect(self.see_privkey_page)
+        self.privatekeypage_back_Button.clicked.connect(self.back_chain_widget_index)
         # Tread setup
         self.thread_getinfo = QThread()
         self.thread_getchain = QThread()
         self.thread_chainpid = QThread()
         self.thread_stopchain = QThread()
         self.thread_getaddresses = QThread()
-        self.thread_getbalance = QThread()
+        # self.thread_validateddresses = QThread()
+        # self.thread_getbalance = QThread()
+
+        # Loading Gif
+        # --------------------------------------------------
+        # --------------------------------------------------
 
     def host_selection(self):
         self.login_stackedWidget.setCurrentIndex(0)
@@ -82,7 +90,8 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
             worker.set_command(command)
         worker.moveToThread(thread)
         worker.finished.connect(thread.quit)
-        # thread.started.connect(worker.do_execute_rpc)
+        if command:
+            thread.started.connect(worker.do_execute_rpc)
         thread.start()
         return worker
 
@@ -92,15 +101,17 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
             self.check_chain()
         if self.chain_status:
             self.get_getinfo()
+            time.sleep(0.3)
             self.getaddresses()
+
 
 
     def check_chain(self):
         self.bottom_message_label.setText('Checking marmarachain')
-        marmara_pid = marmarachain_rpc.handle_rpc(cp.marmara_pid)
+        marmara_pid = marmarachain_rpc.mcl_chain_status()
         print(len(marmara_pid[0]))
         if len(marmara_pid[0]) == 0:
-            print('chain is start command')
+            print('sending chain start command')
             marmarachain_rpc.start_chain()
         self.worker_chain_pid = marmarachain_rpc.RpcHandler()
         check_pid_thread = self.worker_thread(self.thread_chainpid, self.worker_chain_pid)
@@ -118,7 +129,8 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
     def is_chain_ready(self):
         self.worker_getchain = marmarachain_rpc.RpcHandler()
         command = cp.getinfo
-        chain_ready_thread = self.worker_thread(self.thread_getchain, self.worker_getchain, command)
+        self.worker_getchain.set_command(command)
+        chain_ready_thread = self.worker_thread(self.thread_getchain, self.worker_getchain)
         self.thread_getchain.started.connect(self.worker_getchain.is_chain_ready)
         chain_ready_thread.command_out.connect(self.chain_ready_result)
         chain_ready_thread.finished.connect(self.chain_init)
@@ -139,8 +151,7 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
     def stop_chain(self):
         if self.chain_status:
             self.worker_stopchain = marmarachain_rpc.RpcHandler()
-            command = cp.stop
-            stop_chain_thread = self.worker_thread(self.thread_stopchain, self.worker_stopchain, command)
+            stop_chain_thread = self.worker_thread(self.thread_stopchain, self.worker_stopchain)
             self.thread_stopchain.started.connect(self.worker_stopchain.stopping_chain)
             stop_chain_thread.command_out.connect(self.result_stopchain)
         else:
@@ -167,10 +178,10 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
     @pyqtSlot()
     def get_getinfo(self):
         self.worker_getinfo = marmarachain_rpc.RpcHandler()  # worker setting
-        command = cp.getinfo                                 # setting command
+        command = cp.getinfo  # setting command
         getinfo_thread = self.worker_thread(self.thread_getinfo, self.worker_getinfo, command)  # putting in to thread
-        self.thread_getinfo.started.connect(self.worker_getinfo.do_execute_rpc)      # executing respective worker class function
-        getinfo_thread.command_out.connect(self.set_getinfo_result)            # getting results from socket
+        # self.thread_getinfo.started.connect(self.worker_getinfo.do_execute_rpc)  # executing respective worker class function
+        getinfo_thread.command_out.connect(self.set_getinfo_result)  # getting results from socket
 
     @pyqtSlot(tuple)
     def set_getinfo_result(self, result_out):
@@ -198,41 +209,29 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
     @pyqtSlot()
     def getaddresses(self):
         self.worker_getaddresses = marmarachain_rpc.RpcHandler()
-        command = cp.getaddressesbyaccount
-        getaddresses_thread = self.worker_thread(self.thread_getaddresses, self.worker_getaddresses, command)
-        self.thread_getaddresses.started.connect(self.worker_getaddresses.do_execute_rpc)
-        getaddresses_thread.command_out.connect(self.set_getaddresses_result)
+        getaddresses_thread = self.worker_thread(self.thread_getaddresses, self.worker_getaddresses)
+        self.thread_getaddresses.started.connect(self.worker_getaddresses.get_addresses)
+        getaddresses_thread.walletlist_out.connect(self.set_getaddresses_result)
 
-    @pyqtSlot(tuple)
+    @pyqtSlot(list)
     def set_getaddresses_result(self, result_out):
-        if result_out[0]:
-            print(result_out[0])
-            addresses = json.loads(result_out[0])
-            for address in addresses:
-                print(address)
-                self.getbalance(address)
-            # self.getlistaddresgroup(result_out[0])
-        elif result_out[1]:
-            print(result_out[1])
+        for row in result_out:
+            row_number = result_out.index(row)
+            self.addresses_tableWidget.setRowCount(len(result_out))
+            self.addresses_tableWidget.autoScrollMargin()
+            for item in row:
+                print(item)
+                print(row.index(item))
+                self.addresses_tableWidget.setItem(row_number, row.index(item), QTableWidgetItem(str(item)))
 
-    @pyqtSlot()
-    def getbalance(self, address):
-        self.worker_getbalance = marmarachain_rpc.RpcHandler()
-        command = cp.getbalance + ' ' + address
-        getbalance_thread = self.worker_thread(self.thread_getbalance, self.worker_getbalance, command)
-        self.thread_getbalance.started.connect(self.worker_getbalance.do_execute_rpc)
-        getbalance_thread.command_out.connect(self.set_getbalance_result)
+    def add_address(self):
+        self.chain_stackedWidget.setCurrentIndex(1)
 
-    @pyqtSlot(tuple)
-    def set_getbalance_result(self, result_out):
-        print(result_out)
-        print(result_out[0])
-        print(json.loads(result_out[0]))
-        if json.loads(result_out[0]) == 0.0:
-            print('no balance')
-        elif result_out[1]:
-            print(result_out[1])
+    def back_chain_widget_index(self):
+        self.chain_stackedWidget.setCurrentIndex(0)
 
+    def see_privkey_page(self):
+        self.chain_stackedWidget.setCurrentIndex(2)
     # -------------------------------------------------------------------
     # Remote Host adding , editing, deleting and  saving in conf file
     # --------------------------------------------------------------------
@@ -299,7 +298,8 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
         configuration.ServerSettings().delete_record(server_list)
         self.remote_selection()
 
-    #----------------------------------------------------------------------------
+    # ----------------------------------------------------------------------------
+
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])

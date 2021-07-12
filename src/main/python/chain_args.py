@@ -18,6 +18,7 @@ stop = 'stop'
 marmaraunlock = 'marmaraunlock'
 marmaralock = 'marmaralock'
 getbalance = 'getbalance'
+getaddressbalance = 'getaddressbalance '  # +  '{"addresses": ["address"]}'
 
 
 def start_param_local():
@@ -44,6 +45,8 @@ def set_local(command):
     if platform.system() == 'Linux' or platform.system() == 'Darwin':
         command = linux_cli + command
     if platform.system() == 'Windows':
+        if command.find("{"):
+            command = command.replace("'{", '{').replace("}'", '}').replace('"', '\\"')
         command = windows_cli + command
     return command
 
