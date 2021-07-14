@@ -20,10 +20,14 @@ def set_connection_remote():
     is_local = False
 
 
-def start_chain():
+def start_chain(pubkey=None):
     if is_local:
-        marmara_param = cp.start_param_local()
-        marmara_param = marmara_param + ' &'
+        marmara_param = cp.start_param_local(cp.marmarad)
+        if pubkey is None:
+            marmara_param = marmara_param + ' &'
+        if pubkey is not None:
+            marmara_param = marmara_param + ' -pubkey=' + str(pubkey) + ' &'
+        print(marmara_param)
         start = subprocess.Popen(marmara_param, cwd=marmara_path, shell=True, stdout=subprocess.DEVNULL,
                                  stderr=subprocess.DEVNULL)
         start.communicate()
@@ -31,7 +35,10 @@ def start_chain():
         print('shell closed')
     else:
         marmara_param = cp.start_param_remote()
-        marmara_param = marmara_path + marmara_param
+        if not pubkey:
+            marmara_param = marmara_path + marmara_param
+        if pubkey:
+            marmara_param = marmara_param + ' -pubkey=' + str(pubkey)
         start = remote_connection.server_start_chain(marmara_param)
         start.close()
         print('shell closed')
@@ -158,7 +165,7 @@ class RpcHandler(QtCore.QObject):
                     amount = json.loads(amounts[0])['balance']
                 elif amounts[1]:
                     print(amounts[1])
-                address_list = [address, pubkey, amount]
+                address_list = [amount, address, pubkey]
                 wallet_list.append(address_list)
             self.walletlist_out.emit(wallet_list)
             self.finished.emit()

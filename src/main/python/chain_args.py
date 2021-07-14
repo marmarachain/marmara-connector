@@ -21,8 +21,7 @@ getbalance = 'getbalance'
 getaddressbalance = 'getaddressbalance '  # +  '{"addresses": ["address"]}'
 
 
-def start_param_local():
-    global marmarad
+def start_param_local(marmarad):
     if platform.system() == 'Linux' or platform.system() == 'Darwin':
         marmarad = linux_d + marmarad
     if platform.system() == 'Windows':

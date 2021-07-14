@@ -1,16 +1,17 @@
 import json
 import time
-from PyQt5.QtCore import QThread, pyqtSlot
-from PyQt5.QtWidgets import QTableWidgetItem
-from qtguidesign import Ui_MainWindow
-from PyQt5 import QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import QThread, pyqtSlot, QSize
+from PyQt5.QtWidgets import QMainWindow, QPushButton, QTableWidgetItem
 import configuration
 import marmarachain_rpc
 import remote_connection
 import chain_args as cp
+from fbs_runtime.application_context.PyQt5 import ApplicationContext
+from qtguidesign import Ui_MainWindow
 
-
-class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
+class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
 
     def __init__(self, parent=None):
         super(MarmaraMain, self).__init__(parent)
@@ -21,6 +22,10 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
         self.login_stackedWidget.setCurrentIndex(0)
         self.home_button.setVisible(False)
         self.chain_status = False
+        self.pubkey_status = False
+        # paths settings
+        self.icon_path = self.get_resource("images")
+
         #   Login page Host Selection
         self.local_button.clicked.connect(self.local_selection)
         self.remote_button.clicked.connect(self.remote_selection)
@@ -39,6 +44,8 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
         self.serverdelete_button.clicked.connect(self.delete_server_setting)
         # System page
         self.stopchain_Button.clicked.connect(self.stop_chain)
+        self.stopchain_Button.setIcon(QIcon(self.icon_path + "/stop_icon.png"))
+        self.stopchain_Button.setIconSize(QSize(32, 32))
         self.addaddress_page_Button.clicked.connect(self.add_address)
         self.addresspage_back_Button.clicked.connect(self.back_chain_widget_index)
         self.privkey_page_Button.clicked.connect(self.see_privkey_page)
@@ -49,6 +56,7 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
         self.thread_chainpid = QThread()
         self.thread_stopchain = QThread()
         self.thread_getaddresses = QThread()
+        self.thread_setpubkey = QThread()
         # self.thread_validateddresses = QThread()
         # self.thread_getbalance = QThread()
 
@@ -104,8 +112,6 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
             time.sleep(0.3)
             self.getaddresses()
 
-
-
     def check_chain(self):
         self.bottom_message_label.setText('Checking marmarachain')
         marmara_pid = marmarachain_rpc.mcl_chain_status()
@@ -113,6 +119,9 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
         if len(marmara_pid[0]) == 0:
             print('sending chain start command')
             marmarachain_rpc.start_chain()
+        self.check_chain_pid()
+
+    def check_chain_pid(self):
         self.worker_chain_pid = marmarachain_rpc.RpcHandler()
         check_pid_thread = self.worker_thread(self.thread_chainpid, self.worker_chain_pid)
         self.thread_chainpid.started.connect(self.worker_chain_pid.chain_pid)
@@ -168,6 +177,7 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
         if len(result_out[0]) == 0:
             self.bottom_message_label.setText('chain stopped')
             self.chain_status = False
+            self.update_addresses_table()
         elif result_out[1]:
             print_result = ""
             for line in str(result_out[1]).splitlines():
@@ -196,8 +206,11 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
             self.connections_value_label.setText(str(getinfo_result['connections']))
 
             self.bottom_message_label.setText('finished')
+            if getinfo_result.get('pubkey'):
+                self.pubkey_status = True
             if getinfo_result.get('pubkey') is None:
                 self.bottom_message_label.setText('pubkey is not set')
+                self.pubkey_status = False
         elif result_out[1]:
             getinfo_result = str(result_out[1]).splitlines()
             print_result = ""
@@ -219,16 +232,90 @@ class MarmaraMain(QtWidgets.QMainWindow, Ui_MainWindow):
             row_number = result_out.index(row)
             self.addresses_tableWidget.setRowCount(len(result_out))
             self.addresses_tableWidget.autoScrollMargin()
+
+            if self.pubkey_status:
+                self.addresses_tableWidget.setColumnHidden(0, True)
             for item in row:
+                btn_setpubkey = QPushButton('Set pubkey')
                 print(item)
-                print(row.index(item))
-                self.addresses_tableWidget.setItem(row_number, row.index(item), QTableWidgetItem(str(item)))
+                self.addresses_tableWidget.setCellWidget(row_number, 0, btn_setpubkey)
+                self.addresses_tableWidget.horizontalHeader().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
+                self.addresses_tableWidget.setItem(row_number, (row.index(item) + 1), QTableWidgetItem(str(item)))
+                self.addresses_tableWidget.horizontalHeader().setSectionResizeMode(row.index(item) + 1, QtWidgets.QHeaderView.ResizeToContents)
+                btn_setpubkey.clicked.connect(self.set_pubkey)
+
+
+    def update_addresses_table(self):
+        if self.pubkey_status:
+            self.addresses_tableWidget.setColumnHidden(0, True)
+        if not self.chain_status:
+            self.addresses_tableWidget.setColumnHidden(0, False)
+            rowcount = self.addresses_tableWidget.rowCount()
+            self.addresses_tableWidget.setRowCount(rowcount)
+            while True:
+                btn_start = QPushButton('Start')
+                btn_start.setIcon(QIcon(self.icon_path + "/start_icon.png"))
+                # btn_start.setStyleSheet(
+                #     "QPushButton {image: url(" + self.icon_path + "/start_icon.png); border: 0; width: 30px; height: 30px;}"
+                #     "QPushButton::hover   {image: url(" + self.icon_path + "/start_icon_hover.png);border:0px}"
+                #     "QPushButton::pressed {image: url(" + self.icon_path + "/start_icon_press.png);border:0px}"
+                #    )
+                self.addresses_tableWidget.setCellWidget(rowcount-1, 0, btn_start)
+                if rowcount == 0:
+                    break
+                rowcount = rowcount - 1
+                btn_start.clicked.connect(self.start_chain)
+
+    @pyqtSlot()
+    def set_pubkey(self):
+        button = self.sender()
+        index = self.addresses_tableWidget.indexAt(button.pos())
+        if index.isValid():
+            print(self.addresses_tableWidget.item(index.row(), 3).text())
+            self.worker_setpubkey = marmarachain_rpc.RpcHandler()
+            command = cp.setpubkey + ' ' + self.addresses_tableWidget.item(index.row(), 3).text()
+            print(command)
+            setpubkey_thread = self.worker_thread(self.thread_setpubkey, self.worker_setpubkey, command)
+            setpubkey_thread.command_out.connect(self.set_pubkey_result)
+
+    @pyqtSlot(tuple)
+    def set_pubkey_result(self, result_out):
+        if result_out[0]:
+            print(result_out[0])
+            self.pubkey_status = True
+            if str(json.loads(result_out[0])).rfind('error') > -1:
+                pubkey = json.loads(result_out[0])['pubkey']
+                print('this pubkey: ' + pubkey + ' already set')
+                self.bottom_message_label.setText(result_out[0])
+            self.bottom_message_label.setText('this pubkey set ' + str(json.loads(result_out[0])['pubkey']))
+            self.update_addresses_table()
+        elif result_out[1]:
+            print(result_out[1])
+            self.bottom_message_label.setText(result_out[1])
+
+    @pyqtSlot()
+    def start_chain(self):
+        button = self.sender()
+        index = self.addresses_tableWidget.indexAt(button.pos())
+        if index.isValid():
+            pubkey = self.addresses_tableWidget.item(index.row(), 3).text()
+            marmarachain_rpc.start_chain(pubkey)
+            time.sleep(0.5)
+            self.addresses_tableWidget.setColumnHidden(0, True)
+            self.check_chain_pid()
+
+
+
+
 
     def add_address(self):
         self.chain_stackedWidget.setCurrentIndex(1)
 
     def back_chain_widget_index(self):
         self.chain_stackedWidget.setCurrentIndex(0)
+        self.update_addresses_table()
+
+
 
     def see_privkey_page(self):
         self.chain_stackedWidget.setCurrentIndex(2)
