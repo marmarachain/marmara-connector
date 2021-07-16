@@ -27,7 +27,6 @@ def start_chain(pubkey=None):
             marmara_param = marmara_param + ' &'
         if pubkey is not None:
             marmara_param = marmara_param + ' -pubkey=' + str(pubkey) + ' &'
-        print(marmara_param)
         start = subprocess.Popen(marmara_param, cwd=marmara_path, shell=True, stdout=subprocess.DEVNULL,
                                  stderr=subprocess.DEVNULL)
         start.communicate()

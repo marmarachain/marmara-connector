@@ -1,3 +1,4 @@
+import csv
 import os
 
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
@@ -43,3 +44,41 @@ class ServerSettings:
             print("Exception error when reading server file!")
         finally:
             file.close()
+
+class ContacsSettings:
+    contacts_file = resource_path + '/contacts.csv'
+    header = ['Name', 'Address', 'Pubkey']
+
+    def read_csv_file(self):
+        contactdata = open(self.contacts_file, 'r')
+        contactdatadata_reader = csv.reader(contactdata)
+        contactdatadata_list = []
+        for row in contactdatadata_reader:
+            contactdatadata_list.append(row)
+        contactdata.close()
+        return contactdatadata_list
+
+    def create_csv_file(self):
+        contacts_csv = open(self.contacts_file, 'w', newline='')
+        create = csv.writer(contacts_csv)
+        create.writerow(self.header)
+
+    def add_csv_file(self, row):
+        if not os.path.isfile(self.contacts_file):
+            self.create_csv_file()
+        contacts_csv = open(self.contacts_file, 'a', newline='')
+        contacts_csv_writer = csv.writer(contacts_csv)
+        contacts_csv_writer.writerow(row)
+        contacts_csv.close()
+
+    def update_csv_file(self, contact_csv_list):
+        contacts_csv = open(self.contacts_file, 'w', newline='')
+        create = csv.writer(contacts_csv)
+        create.writerows(contact_csv_list)
+
+    # def delete_contact(self, index):
+    #     stat_list = read_csv_file()
+    #     stat_list.remove(stat_list[index])
+    #     stats_csv = open(csvfile, 'w', newline='')
+    #     create = csv.writer(stats_csv)
+    #     create.writerows(stat_list)

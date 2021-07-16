@@ -956,6 +956,9 @@
                <property name="text">
                 <string>0</string>
                </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+               </property>
               </widget>
              </item>
              <item row="2" column="0">
@@ -991,6 +994,9 @@
                </property>
                <property name="text">
                 <string>0</string>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
                </property>
               </widget>
              </item>
@@ -1197,6 +1203,9 @@
                <property name="text">
                 <string>0</string>
                </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+               </property>
               </widget>
              </item>
              <item row="6" column="1">
@@ -1208,6 +1217,9 @@
                </property>
                <property name="text">
                 <string>0</string>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
                </property>
               </widget>
              </item>
@@ -1244,6 +1256,9 @@
                </property>
                <property name="text">
                 <string>0</string>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
                </property>
               </widget>
              </item>
@@ -1455,7 +1470,7 @@
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>4</number>
           </property>
           <property name="elideMode">
            <enum>Qt::ElideNone</enum>
@@ -1616,6 +1631,9 @@
                       <width>0</width>
                       <height>250</height>
                      </size>
+                    </property>
+                    <property name="mouseTracking">
+                     <bool>false</bool>
                     </property>
                     <property name="focusPolicy">
                      <enum>Qt::WheelFocus</enum>
@@ -2623,7 +2641,7 @@
                <enum>QTabWidget::North</enum>
               </property>
               <property name="currentIndex">
-               <number>3</number>
+               <number>2</number>
               </property>
               <widget class="QWidget" name="looprequests_tab">
                <attribute name="title">
@@ -3239,6 +3257,9 @@
                        <property name="text">
                         <string/>
                        </property>
+                       <property name="textInteractionFlags">
+                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                       </property>
                       </widget>
                      </item>
                      <item row="1" column="0">
@@ -3266,6 +3287,9 @@
                        <property name="text">
                         <string/>
                        </property>
+                       <property name="textInteractionFlags">
+                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                       </property>
                       </widget>
                      </item>
                      <item row="0" column="0">
@@ -3286,6 +3310,9 @@
                        <property name="text">
                         <string/>
                        </property>
+                       <property name="textInteractionFlags">
+                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                       </property>
                       </widget>
                      </item>
                      <item row="0" column="3">
@@ -3298,6 +3325,9 @@
                        </property>
                        <property name="text">
                         <string/>
+                       </property>
+                       <property name="textInteractionFlags">
+                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
                        </property>
                       </widget>
                      </item>
@@ -3319,6 +3349,9 @@
                        <property name="text">
                         <string/>
                        </property>
+                       <property name="textInteractionFlags">
+                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                       </property>
                       </widget>
                      </item>
                      <item row="1" column="1">
@@ -3331,6 +3364,9 @@
                        </property>
                        <property name="text">
                         <string/>
+                       </property>
+                       <property name="textInteractionFlags">
+                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
                        </property>
                       </widget>
                      </item>
@@ -3393,6 +3429,9 @@
                        <property name="text">
                         <string/>
                        </property>
+                       <property name="textInteractionFlags">
+                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                       </property>
                       </widget>
                      </item>
                      <item row="1" column="0">
@@ -3412,6 +3451,9 @@
                        </property>
                        <property name="text">
                         <string/>
+                       </property>
+                       <property name="textInteractionFlags">
+                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
                        </property>
                       </widget>
                      </item>
@@ -3433,6 +3475,9 @@
                        <property name="text">
                         <string/>
                        </property>
+                       <property name="textInteractionFlags">
+                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                       </property>
                       </widget>
                      </item>
                      <item row="3" column="0">
@@ -3453,6 +3498,9 @@
                        <property name="text">
                         <string/>
                        </property>
+                       <property name="textInteractionFlags">
+                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                       </property>
                       </widget>
                      </item>
                      <item row="4" column="0">
@@ -3472,6 +3520,9 @@
                        </property>
                        <property name="text">
                         <string/>
+                       </property>
+                       <property name="textInteractionFlags">
+                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
                        </property>
                       </widget>
                      </item>
@@ -3596,6 +3647,9 @@
                     <property name="text">
                      <string>0</string>
                     </property>
+                    <property name="textInteractionFlags">
+                     <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                    </property>
                    </widget>
                   </item>
                   <item row="3" column="4">
@@ -3614,6 +3668,9 @@
                     </property>
                     <property name="text">
                      <string/>
+                    </property>
+                    <property name="textInteractionFlags">
+                     <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
                     </property>
                    </widget>
                   </item>
@@ -3640,6 +3697,9 @@
                     </property>
                     <property name="text">
                      <string>0</string>
+                    </property>
+                    <property name="textInteractionFlags">
+                     <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
                     </property>
                    </widget>
                   </item>
@@ -3746,6 +3806,9 @@
                     </property>
                     <property name="text">
                      <string/>
+                    </property>
+                    <property name="textInteractionFlags">
+                     <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
                     </property>
                    </widget>
                   </item>
@@ -4267,14 +4330,20 @@
                 <height>300</height>
                </size>
               </property>
+              <property name="mouseTracking">
+               <bool>false</bool>
+              </property>
               <property name="editTriggers">
                <set>QAbstractItemView::NoEditTriggers</set>
               </property>
               <property name="dragDropOverwriteMode">
                <bool>false</bool>
               </property>
+              <property name="alternatingRowColors">
+               <bool>true</bool>
+              </property>
               <property name="selectionMode">
-               <enum>QAbstractItemView::ExtendedSelection</enum>
+               <enum>QAbstractItemView::SingleSelection</enum>
               </property>
               <property name="selectionBehavior">
                <enum>QAbstractItemView::SelectRows</enum>
@@ -4285,11 +4354,6 @@
               <property name="showGrid">
                <bool>true</bool>
               </property>
-              <row>
-               <property name="text">
-                <string>1</string>
-               </property>
-              </row>
               <column>
                <property name="text">
                 <string>Name</string>
@@ -4305,21 +4369,6 @@
                 <string>Pubkey</string>
                </property>
               </column>
-              <item row="0" column="0">
-               <property name="text">
-                <string>dsa</string>
-               </property>
-              </item>
-              <item row="0" column="1">
-               <property name="text">
-                <string>sadd</string>
-               </property>
-              </item>
-              <item row="0" column="2">
-               <property name="text">
-                <string>asdad</string>
-               </property>
-              </item>
              </widget>
             </item>
             <item row="1" column="5" rowspan="4">

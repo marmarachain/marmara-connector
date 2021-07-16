@@ -10,6 +10,7 @@ import remote_connection
 import chain_args as cp
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 from qtguidesign import Ui_MainWindow
+from qtguistyle import GuiStyle
 
 class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
 
@@ -50,6 +51,14 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
         self.addresspage_back_Button.clicked.connect(self.back_chain_widget_index)
         self.privkey_page_Button.clicked.connect(self.see_privkey_page)
         self.privatekeypage_back_Button.clicked.connect(self.back_chain_widget_index)
+        self.addresses_tableWidget.cellClicked.connect(self.itemcontext)
+
+        # Contacs Page
+        self.addcontact_Button.clicked.connect(self.add_contact)
+        self.updatecontact_Button.clicked.connect(self.update_contact)
+        self.deletecontact_Button.clicked.connect(self.delete_contact)
+        self.contacts_tableWidget.cellClicked.connect(self.get_contact_info)
+
         # Tread setup
         self.thread_getinfo = QThread()
         self.thread_getchain = QThread()
@@ -208,6 +217,7 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
             self.bottom_message_label.setText('finished')
             if getinfo_result.get('pubkey'):
                 self.pubkey_status = True
+                self.current_pubkey_value.setText(str(getinfo_result['pubkey']))
             if getinfo_result.get('pubkey') is None:
                 self.bottom_message_label.setText('pubkey is not set')
                 self.pubkey_status = False
@@ -237,17 +247,30 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
                 self.addresses_tableWidget.setColumnHidden(0, True)
             for item in row:
                 btn_setpubkey = QPushButton('Set pubkey')
-                print(item)
                 self.addresses_tableWidget.setCellWidget(row_number, 0, btn_setpubkey)
                 self.addresses_tableWidget.horizontalHeader().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
                 self.addresses_tableWidget.setItem(row_number, (row.index(item) + 1), QTableWidgetItem(str(item)))
                 self.addresses_tableWidget.horizontalHeader().setSectionResizeMode(row.index(item) + 1, QtWidgets.QHeaderView.ResizeToContents)
                 btn_setpubkey.clicked.connect(self.set_pubkey)
+        self.update_addresses_table()
 
+    @pyqtSlot(int, int)
+    def itemcontext(self, row, column):
+        item = self.addresses_tableWidget.item(row, column).text()
+        QtWidgets.QApplication.clipboard().setText(item)
+        self.bottom_message_label.setText("Copied  " + str(item))
 
     def update_addresses_table(self):
         if self.pubkey_status:
             self.addresses_tableWidget.setColumnHidden(0, True)
+            current_pubkey = self.current_pubkey_value.text()
+            rowcount = self.addresses_tableWidget.rowCount()
+            while True:
+                rowcount = rowcount -1
+                if current_pubkey == self.addresses_tableWidget.item(rowcount, 3).text():
+                    self.currentaddress_value.setText(self.addresses_tableWidget.item(rowcount, 2).text())
+                if rowcount == 0:
+                    break
         if not self.chain_status:
             self.addresses_tableWidget.setColumnHidden(0, False)
             rowcount = self.addresses_tableWidget.rowCount()
@@ -260,10 +283,10 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
                 #     "QPushButton::hover   {image: url(" + self.icon_path + "/start_icon_hover.png);border:0px}"
                 #     "QPushButton::pressed {image: url(" + self.icon_path + "/start_icon_press.png);border:0px}"
                 #    )
-                self.addresses_tableWidget.setCellWidget(rowcount-1, 0, btn_start)
+                rowcount = rowcount - 1
+                self.addresses_tableWidget.setCellWidget(rowcount, 0, btn_start)
                 if rowcount == 0:
                     break
-                rowcount = rowcount - 1
                 btn_start.clicked.connect(self.start_chain)
 
     @pyqtSlot()
@@ -271,17 +294,14 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
         button = self.sender()
         index = self.addresses_tableWidget.indexAt(button.pos())
         if index.isValid():
-            print(self.addresses_tableWidget.item(index.row(), 3).text())
             self.worker_setpubkey = marmarachain_rpc.RpcHandler()
             command = cp.setpubkey + ' ' + self.addresses_tableWidget.item(index.row(), 3).text()
-            print(command)
             setpubkey_thread = self.worker_thread(self.thread_setpubkey, self.worker_setpubkey, command)
             setpubkey_thread.command_out.connect(self.set_pubkey_result)
 
     @pyqtSlot(tuple)
     def set_pubkey_result(self, result_out):
         if result_out[0]:
-            print(result_out[0])
             self.pubkey_status = True
             if str(json.loads(result_out[0])).rfind('error') > -1:
                 pubkey = json.loads(result_out[0])['pubkey']
@@ -304,10 +324,6 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
             self.addresses_tableWidget.setColumnHidden(0, True)
             self.check_chain_pid()
 
-
-
-
-
     def add_address(self):
         self.chain_stackedWidget.setCurrentIndex(1)
 
@@ -315,10 +331,49 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
         self.chain_stackedWidget.setCurrentIndex(0)
         self.update_addresses_table()
 
-
-
     def see_privkey_page(self):
         self.chain_stackedWidget.setCurrentIndex(2)
+
+    # -------------------------------------------------------------------
+    # Adding contacts editing and  deleting
+    # --------------------------------------------------------------------
+    def add_contact(self):
+        contact_name = self.contactname_lineEdit.text()
+        contact_address = self.contactaddress_lineEdit.text()
+        contact_pubkey = self.contactpubkey_lineEdit.text()
+        row = [contact_name, contact_address, contact_pubkey]
+        configuration.ContacsSettings().add_csv_file(row)
+        read_contacts_data = configuration.ContacsSettings().read_csv_file()
+        self.update_contact_tablewidget(read_contacts_data)
+
+    def update_contact_tablewidget(self, contacts_data):
+        print(contacts_data)
+        pass
+        # self.contacts_tableWidget.setRowCount(len(read_contacts_data)-1)
+        # self.contacts_tableWidget.autoScrollMargin()
+        # for row in read_contacts_data:
+        #     print(row)
+        #     if not row[0] == 'Name':
+        #         self.contacts_tableWidget.horizontalHeader().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
+        #         self.contacts_tableWidget.setItem(row_number, (row.index(item) + 1), QTableWidgetItem(str(item)))
+        #         self.contacts_tableWidget.horizontalHeader().setSectionResizeMode(row.index(item) + 1, QtWidgets.QHeaderView.ResizeToContents)
+
+
+    def get_contact_info(self, row, column):
+        contact_name = self.addresses_tableWidget.item(row, 0).text()
+        contact_address = self.addresses_tableWidget.item(row, 1).text()
+        contact_pubkey = self.addresses_tableWidget.item(row, 2).text()
+        self.contactname_lineEdit.setText(contact_name)
+        self.contactaddress_lineEdit.setText(contact_address)
+        self.contactpubkey_lineEdit.setText(contact_pubkey)
+
+    def update_contact(self):
+        pass
+
+    def delete_contact(self):
+        pass
+
+
     # -------------------------------------------------------------------
     # Remote Host adding , editing, deleting and  saving in conf file
     # --------------------------------------------------------------------
