@@ -1470,7 +1470,7 @@
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>4</number>
+           <number>2</number>
           </property>
           <property name="elideMode">
            <enum>Qt::ElideNone</enum>
@@ -2468,7 +2468,16 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="0" column="0">
+                 <item row="0" column="2">
+                  <widget class="QComboBox" name="contacts_address_comboBox">
+                   <item>
+                    <property name="text">
+                     <string>Contacts</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item row="0" column="0" colspan="2">
                   <widget class="QLabel" name="receiver_address_label">
                    <property name="text">
                     <string>Receiver Address</string>
@@ -2476,25 +2485,6 @@
                    <property name="buddy">
                     <cstring>receiver_address_lineEdit</cstring>
                    </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="1" colspan="2">
-                  <widget class="QComboBox" name="comboBox_4">
-                   <item>
-                    <property name="text">
-                     <string>Select Contact Address</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>ahmet</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>mehmet</string>
-                    </property>
-                   </item>
                   </widget>
                  </item>
                 </layout>
@@ -2641,7 +2631,7 @@
                <enum>QTabWidget::North</enum>
               </property>
               <property name="currentIndex">
-               <number>2</number>
+               <number>1</number>
               </property>
               <widget class="QWidget" name="looprequests_tab">
                <attribute name="title">
@@ -2988,7 +2978,20 @@
                       </widget>
                      </item>
                      <item row="1" column="1">
-                      <widget class="QLineEdit" name="create_loopamount_lineEdit"/>
+                      <widget class="QLineEdit" name="create_loopamount_lineEdit">
+                       <property name="focusPolicy">
+                        <enum>Qt::ClickFocus</enum>
+                       </property>
+                       <property name="autoFillBackground">
+                        <bool>true</bool>
+                       </property>
+                       <property name="cursorMoveStyle">
+                        <enum>Qt::LogicalMoveStyle</enum>
+                       </property>
+                       <property name="clearButtonEnabled">
+                        <bool>false</bool>
+                       </property>
+                      </widget>
                      </item>
                      <item row="2" column="1">
                       <widget class="QLineEdit" name="create_receiverpubkey_lineEdit"/>
@@ -3031,7 +3034,7 @@
                       </spacer>
                      </item>
                      <item row="2" column="2">
-                      <widget class="QComboBox" name="comboBox_2">
+                      <widget class="QComboBox" name="contactpubkey_loop_comboBox">
                        <item>
                         <property name="text">
                          <string>Contacts</string>
@@ -3121,7 +3124,7 @@
                       </widget>
                      </item>
                      <item row="0" column="2">
-                      <widget class="QComboBox" name="comboBox_3">
+                      <widget class="QComboBox" name="contactpubkey_transfer_comboBox">
                        <item>
                         <property name="text">
                          <string>Contacts</string>
@@ -4191,34 +4194,21 @@
             <string>Contacts</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_47">
-            <item row="4" column="3">
+            <item row="4" column="5">
              <widget class="QPushButton" name="updatecontact_Button">
               <property name="text">
                <string>Update</string>
               </property>
              </widget>
             </item>
-            <item row="4" column="1">
-             <spacer name="horizontalSpacer_35">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="4" column="2">
+            <item row="4" column="4">
              <widget class="QPushButton" name="addcontact_Button">
               <property name="text">
                <string>Add</string>
               </property>
              </widget>
             </item>
-            <item row="8" column="0" colspan="6">
+            <item row="8" column="0" colspan="8">
              <spacer name="verticalSpacer_22">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
@@ -4231,7 +4221,7 @@
               </property>
              </spacer>
             </item>
-            <item row="1" column="1" rowspan="3" colspan="4">
+            <item row="1" column="1" rowspan="3" colspan="6">
              <widget class="QFrame" name="contact_frame">
               <property name="frameShape">
                <enum>QFrame::StyledPanel</enum>
@@ -4289,7 +4279,7 @@
               </layout>
              </widget>
             </item>
-            <item row="4" column="4">
+            <item row="4" column="6">
              <widget class="QPushButton" name="deletecontact_Button">
               <property name="text">
                <string>Delete</string>
@@ -4309,7 +4299,7 @@
               </property>
              </spacer>
             </item>
-            <item row="5" column="1" colspan="4">
+            <item row="5" column="1" colspan="6">
              <spacer name="verticalSpacer_21">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
@@ -4322,7 +4312,7 @@
               </property>
              </spacer>
             </item>
-            <item row="7" column="0" colspan="6">
+            <item row="7" column="0" colspan="8">
              <widget class="QTableWidget" name="contacts_tableWidget">
               <property name="minimumSize">
                <size>
@@ -4358,20 +4348,29 @@
                <property name="text">
                 <string>Name</string>
                </property>
+               <property name="textAlignment">
+                <set>AlignLeading|AlignTop</set>
+               </property>
               </column>
               <column>
                <property name="text">
                 <string>Address</string>
+               </property>
+               <property name="textAlignment">
+                <set>AlignLeading|AlignTop</set>
                </property>
               </column>
               <column>
                <property name="text">
                 <string>Pubkey</string>
                </property>
+               <property name="textAlignment">
+                <set>AlignLeading|AlignTop</set>
+               </property>
               </column>
              </widget>
             </item>
-            <item row="1" column="5" rowspan="4">
+            <item row="1" column="7" rowspan="4">
              <spacer name="horizontalSpacer_34">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -4384,7 +4383,7 @@
               </property>
              </spacer>
             </item>
-            <item row="0" column="1" colspan="4">
+            <item row="0" column="1" colspan="6">
              <spacer name="verticalSpacer_35">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
@@ -4393,6 +4392,26 @@
                <size>
                 <width>20</width>
                 <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="4" column="2">
+             <widget class="QPushButton" name="clear_contact_Button">
+              <property name="text">
+               <string>Clear</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="3">
+             <spacer name="horizontalSpacer_35">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
                </size>
               </property>
              </spacer>

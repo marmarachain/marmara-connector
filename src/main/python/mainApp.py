@@ -12,6 +12,7 @@ from fbs_runtime.application_context.PyQt5 import ApplicationContext
 from qtguidesign import Ui_MainWindow
 from qtguistyle import GuiStyle
 
+
 class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
 
     def __init__(self, parent=None):
@@ -43,6 +44,8 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
         # Edit Server Settings page
         self.edit_serversave_button.clicked.connect(self.edit_server_settings)
         self.serverdelete_button.clicked.connect(self.delete_server_setting)
+        # MCL tabwidget
+        self.mcl_tab.currentChanged.connect(self.mcl_tab_changed)
         # System page
         self.stopchain_Button.clicked.connect(self.stop_chain)
         self.stopchain_Button.setIcon(QIcon(self.icon_path + "/stop_icon.png"))
@@ -52,12 +55,20 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
         self.privkey_page_Button.clicked.connect(self.see_privkey_page)
         self.privatekeypage_back_Button.clicked.connect(self.back_chain_widget_index)
         self.addresses_tableWidget.cellClicked.connect(self.itemcontext)
-
+        # Wallet page
+        self.contacts_address_comboBox.currentTextChanged.connect(self.get_selected_contact_address)
+        # Credit Loops page-----------------
+        self.creditloop_tabWidget.currentChanged.connect(self.credit_tab_changed)
+        # -----Create credit Loop Request
+        self.contactpubkey_loop_comboBox.currentTextChanged.connect(self.get_selected_contact_loop_pubkey)
+        self.contactpubkey_transfer_comboBox.currentTextChanged.connect(self.get_selected_contact_transfer_pubkey)
         # Contacs Page
         self.addcontact_Button.clicked.connect(self.add_contact)
         self.updatecontact_Button.clicked.connect(self.update_contact)
         self.deletecontact_Button.clicked.connect(self.delete_contact)
         self.contacts_tableWidget.cellClicked.connect(self.get_contact_info)
+        self.clear_contact_Button.clicked.connect(self.clear_contacts_line_edit)
+        self.contact_editing_row = ""
 
         # Tread setup
         self.thread_getinfo = QThread()
@@ -80,6 +91,7 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
     def local_selection(self):
         self.main_tab.setCurrentIndex(1)
         marmarachain_rpc.set_connection_local()
+        self.mcl_tab.setCurrentIndex(0)
         self.chain_init()
 
     def remote_selection(self):
@@ -87,6 +99,21 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
         self.get_server_combobox_names()
         self.home_button.setVisible(True)
         marmarachain_rpc.set_connection_remote()
+
+    @pyqtSlot(int)
+    def mcl_tab_changed(self, index):
+        if self.mcl_tab.tabText(index) == 'Contacts':
+            print('update contacts table')
+            self.update_contact_tablewidget()
+        if self.mcl_tab.tabText(index) == 'Wallet':
+            self.get_contact_names_addresses()
+        if self.mcl_tab.tabText(index) == 'Credit Loops':
+            self.creditloop_tabWidget.setCurrentIndex(0)
+
+    @pyqtSlot(int)
+    def credit_tab_changed(self, index):
+        if self.creditloop_tabWidget.tabText(index) == 'Create Loop Request':
+            self.get_contact_names_pubkeys()
 
     @pyqtSlot()
     def server_connect(self):
@@ -100,7 +127,8 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
             self.login_message_label.setText(str(validate))
         else:
             self.main_tab.setCurrentIndex(1)
-        self.chain_init()
+            self.chain_init()
+            self.mcl_tab.setCurrentIndex(0)
 
     def worker_thread(self, thread, worker, command=None):
         if command:
@@ -248,9 +276,11 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
             for item in row:
                 btn_setpubkey = QPushButton('Set pubkey')
                 self.addresses_tableWidget.setCellWidget(row_number, 0, btn_setpubkey)
-                self.addresses_tableWidget.horizontalHeader().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
+                self.addresses_tableWidget.horizontalHeader().setSectionResizeMode(0,
+                                                                                   QtWidgets.QHeaderView.ResizeToContents)
                 self.addresses_tableWidget.setItem(row_number, (row.index(item) + 1), QTableWidgetItem(str(item)))
-                self.addresses_tableWidget.horizontalHeader().setSectionResizeMode(row.index(item) + 1, QtWidgets.QHeaderView.ResizeToContents)
+                self.addresses_tableWidget.horizontalHeader().setSectionResizeMode(row.index(item) + 1,
+                                                                                   QtWidgets.QHeaderView.ResizeToContents)
                 btn_setpubkey.clicked.connect(self.set_pubkey)
         self.update_addresses_table()
 
@@ -266,7 +296,7 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
             current_pubkey = self.current_pubkey_value.text()
             rowcount = self.addresses_tableWidget.rowCount()
             while True:
-                rowcount = rowcount -1
+                rowcount = rowcount - 1
                 if current_pubkey == self.addresses_tableWidget.item(rowcount, 3).text():
                     self.currentaddress_value.setText(self.addresses_tableWidget.item(rowcount, 2).text())
                 if rowcount == 0:
@@ -335,6 +365,56 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
         self.chain_stackedWidget.setCurrentIndex(2)
 
     # -------------------------------------------------------------------
+    # Getting Contacts in to comboboxes
+    # --------------------------------------------------------------------
+    def get_contact_names_addresses(self):
+        self.contacts_address_comboBox.clear()
+        self.receiver_address_lineEdit.clear()
+        self.contacts_address_comboBox.addItem('Contacts')
+        contacts_data = configuration.ContacsSettings().read_csv_file()
+        for name in contacts_data:
+            if name[0] != 'Name':
+                self.contacts_address_comboBox.addItem(name[0])
+
+    def get_selected_contact_address(self):
+        contacts_data = configuration.ContacsSettings().read_csv_file()
+        selected_contact_address = contacts_data[self.contacts_address_comboBox.currentIndex()]
+        if selected_contact_address[1] != 'Address':
+            self.receiver_address_lineEdit.setText(selected_contact_address[1])
+        if selected_contact_address[1] == 'Address':
+            self.receiver_address_lineEdit.clear()
+
+    def get_contact_names_pubkeys(self):
+        self.contactpubkey_loop_comboBox.clear()
+        self.contactpubkey_transfer_comboBox.clear()
+        self.create_receiverpubkey_lineEdit.clear()
+        self.transfer_receiverpubkey_lineEdit.clear()
+        self.contactpubkey_loop_comboBox.addItem('Contacts')
+        self.contactpubkey_transfer_comboBox.addItem('Contacts')
+        contacts_data = configuration.ContacsSettings().read_csv_file()
+        for name in contacts_data:
+            if name[0] != 'Name':
+                self.contactpubkey_loop_comboBox.addItem(name[0])
+                self.contactpubkey_transfer_comboBox.addItem(name[0])
+
+    def get_selected_contact_loop_pubkey(self):
+        contacts_data = configuration.ContacsSettings().read_csv_file()
+        selected_contactpubkey_loop = contacts_data[self.contactpubkey_loop_comboBox.currentIndex()]
+        if selected_contactpubkey_loop[2] != 'Pubkey':
+            self.create_receiverpubkey_lineEdit.setText(selected_contactpubkey_loop[2])
+        if selected_contactpubkey_loop[2] == 'Pubkey':
+            self.create_receiverpubkey_lineEdit.clear()
+
+
+    def get_selected_contact_transfer_pubkey(self):
+        contacts_data = configuration.ContacsSettings().read_csv_file()
+        selected_contactpubkey_tranfer = contacts_data[self.contactpubkey_transfer_comboBox.currentIndex()]
+        if selected_contactpubkey_tranfer[2] != 'Pubkey':
+            self.transfer_receiverpubkey_lineEdit.setText(selected_contactpubkey_tranfer[2])
+        if selected_contactpubkey_tranfer[2] == 'Pubkey':
+            self.transfer_receiverpubkey_lineEdit.clear()
+
+    # -------------------------------------------------------------------
     # Adding contacts editing and  deleting
     # --------------------------------------------------------------------
     def add_contact(self):
@@ -342,37 +422,93 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
         contact_address = self.contactaddress_lineEdit.text()
         contact_pubkey = self.contactpubkey_lineEdit.text()
         row = [contact_name, contact_address, contact_pubkey]
-        configuration.ContacsSettings().add_csv_file(row)
-        read_contacts_data = configuration.ContacsSettings().read_csv_file()
-        self.update_contact_tablewidget(read_contacts_data)
+        unique_record = self.unique_contacts(contact_name, contact_address, contact_pubkey)
+        if unique_record:
+            self.bottom_message_label.setText(unique_record.get('error'))
+        if not unique_record:
+            configuration.ContacsSettings().add_csv_file(row)
+            read_contacts_data = configuration.ContacsSettings().read_csv_file()
+            self.update_contact_tablewidget(read_contacts_data)
+            self.clear_contacts_line_edit()
 
-    def update_contact_tablewidget(self, contacts_data):
-        print(contacts_data)
-        pass
-        # self.contacts_tableWidget.setRowCount(len(read_contacts_data)-1)
-        # self.contacts_tableWidget.autoScrollMargin()
-        # for row in read_contacts_data:
-        #     print(row)
-        #     if not row[0] == 'Name':
-        #         self.contacts_tableWidget.horizontalHeader().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
-        #         self.contacts_tableWidget.setItem(row_number, (row.index(item) + 1), QTableWidgetItem(str(item)))
-        #         self.contacts_tableWidget.horizontalHeader().setSectionResizeMode(row.index(item) + 1, QtWidgets.QHeaderView.ResizeToContents)
+    def unique_contacts(self, name, address, pubkey, contacts_data=None):
+        if contacts_data:
+            pass
+        elif not contacts_data:
+            contacts_data = configuration.ContacsSettings().read_csv_file()
+        for row in contacts_data:
+            if row[0] == name:
+                print('same name')
+                return {'error': 'same name exist'}
+            if row[1] == address:
+                print('same address')
+                return {'error': 'same address exist'}
+            if row[2] == pubkey:
+                print('same pubkey')
+                return {'error': 'same pubkey exist'}
+            if not name or not address or not pubkey:
+                print('empty record')
+                return {'error': 'cannot be empty record'}
+            # is_valid_address = row[1] # check if address is valid
+            # if is_valid_address == False:
+            #     return {'error': 'address is not valid'}
+            # is_valid_pubkey = row[2] #  check if pubkey is valid
+            # if is_valid_pubkey == False:
+            #     return {'error': 'pubkey is not valid'}
 
+    def clear_contacts_line_edit(self):
+        self.contactname_lineEdit.clear()
+        self.contactaddress_lineEdit.clear()
+        self.contactpubkey_lineEdit.clear()
+
+    def update_contact_tablewidget(self, contacts_data=None):
+        if contacts_data:
+            pass
+        elif not contacts_data:
+            contacts_data = configuration.ContacsSettings().read_csv_file()
+        self.contacts_tableWidget.setRowCount(len(contacts_data) - 1)  # -1 for exclude header
+        self.contacts_tableWidget.autoScrollMargin()
+        for row in contacts_data:
+            if not row[0] == 'Name':
+                row_number = contacts_data.index(row) - 1  # -1 for exclude header
+                for item in row:
+                    self.contacts_tableWidget.setItem(row_number, row.index(item), QTableWidgetItem(str(item)))
+                    self.contacts_tableWidget.horizontalHeader().setSectionResizeMode(row.index(item),
+                                                                                      QtWidgets.QHeaderView.ResizeToContents)
 
     def get_contact_info(self, row, column):
-        contact_name = self.addresses_tableWidget.item(row, 0).text()
-        contact_address = self.addresses_tableWidget.item(row, 1).text()
-        contact_pubkey = self.addresses_tableWidget.item(row, 2).text()
+        contact_name = self.contacts_tableWidget.item(row, 0).text()
+        contact_address = self.contacts_tableWidget.item(row, 1).text()
+        contact_pubkey = self.contacts_tableWidget.item(row, 2).text()
         self.contactname_lineEdit.setText(contact_name)
         self.contactaddress_lineEdit.setText(contact_address)
         self.contactpubkey_lineEdit.setText(contact_pubkey)
+        self.contact_editing_row = row
 
     def update_contact(self):
-        pass
+        read_contacts_data = configuration.ContacsSettings().read_csv_file()
+        contact_name = self.contactname_lineEdit.text()
+        contact_address = self.contactaddress_lineEdit.text()
+        contact_pubkey = self.contactpubkey_lineEdit.text()
+        contact_data = configuration.ContacsSettings().read_csv_file()
+        del contact_data[self.contact_editing_row + 1]  # removing editing record to don't check same record
+        unique_record = self.unique_contacts(contact_name, contact_address, contact_pubkey, contact_data)
+        if unique_record:
+            self.bottom_message_label.setText(unique_record.get('error'))
+        if not unique_record:
+            read_contacts_data[self.contact_editing_row + 1][0] = contact_name  # +1 for exclude header
+            read_contacts_data[self.contact_editing_row + 1][1] = contact_address  # +1 for exclude header
+            read_contacts_data[self.contact_editing_row + 1][2] = contact_pubkey  # +1 for exclude header
+            configuration.ContacsSettings().update_csv_file(read_contacts_data)
+            self.update_contact_tablewidget()
+            self.clear_contacts_line_edit()
 
     def delete_contact(self):
-        pass
-
+        read_contacts_data = configuration.ContacsSettings().read_csv_file()
+        del read_contacts_data[self.contact_editing_row + 1]  # +1 for exclude header
+        configuration.ContacsSettings().update_csv_file(read_contacts_data)
+        self.update_contact_tablewidget()
+        self.clear_contacts_line_edit()
 
     # -------------------------------------------------------------------
     # Remote Host adding , editing, deleting and  saving in conf file

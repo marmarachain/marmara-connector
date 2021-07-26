@@ -49,7 +49,16 @@ class ContacsSettings:
     contacts_file = resource_path + '/contacts.csv'
     header = ['Name', 'Address', 'Pubkey']
 
+    def is_file_exist(self):
+        if os.path.isfile(self.contacts_file):
+            return
+        else:
+            print('no file')
+            self.create_csv_file()
+            print('file created')
+            return
     def read_csv_file(self):
+        self.is_file_exist()
         contactdata = open(self.contacts_file, 'r')
         contactdatadata_reader = csv.reader(contactdata)
         contactdatadata_list = []
