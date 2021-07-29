@@ -19,7 +19,10 @@ marmaraunlock = 'marmaraunlock'
 marmaralock = 'marmaralock'
 getbalance = 'getbalance'
 getaddressbalance = 'getaddressbalance '  # +  '{"addresses": ["address"]}'
-
+convertpassphrase = 'convertpassphrase'  # + "agamapassphrase"
+importprivkey = 'importprivkey'  # + "wifkey"
+dumpprivkey = 'dumpprivkey'  # + "address"
+marmarainfo = 'marmarainfo' # 0 0 0 pubkey
 
 def start_param_local(marmarad):
     if platform.system() == 'Linux' or platform.system() == 'Darwin':

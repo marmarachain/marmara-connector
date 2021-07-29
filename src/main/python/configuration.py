@@ -33,7 +33,6 @@ class ServerSettings:
                     file.close()
         return server_list
 
-
     def delete_record(self, server_list):
         print(server_list)
         try:
@@ -45,7 +44,8 @@ class ServerSettings:
         finally:
             file.close()
 
-class ContacsSettings:
+
+class ContacstSettings:
     contacts_file = resource_path + '/contacts.csv'
     header = ['Name', 'Address', 'Pubkey']
 
@@ -57,6 +57,7 @@ class ContacsSettings:
             self.create_csv_file()
             print('file created')
             return
+
     def read_csv_file(self):
         self.is_file_exist()
         contactdata = open(self.contacts_file, 'r')
@@ -85,9 +86,3 @@ class ContacsSettings:
         create = csv.writer(contacts_csv)
         create.writerows(contact_csv_list)
 
-    # def delete_contact(self, index):
-    #     stat_list = read_csv_file()
-    #     stat_list.remove(stat_list[index])
-    #     stats_csv = open(csvfile, 'w', newline='')
-    #     create = csv.writer(stats_csv)
-    #     create.writerows(stat_list)

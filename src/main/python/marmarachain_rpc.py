@@ -78,10 +78,21 @@ class RpcHandler(QtCore.QObject):
     def __init__(self):
         super().__init__()
         self.command = ""
+        self.bottom_info_obj = object
 
     @pyqtSlot(str)
     def set_command(self, value):
         self.command = value
+
+    @pyqtSlot(object, str)
+    def set_bottom_info(self, info_obj, value):
+        self.bottom_info_obj = info_obj
+        self.info_value = value
+
+    @pyqtSlot()
+    def write_bottom_info(self):
+        self.bottom_info_obj.setText(self.info_value)
+        self.finished.emit()
 
     @pyqtSlot()
     def do_execute_rpc(self):
@@ -90,32 +101,11 @@ class RpcHandler(QtCore.QObject):
         self.command_out.emit(result_out)
         self.finished.emit()
 
-    @pyqtSlot()
-    def chain_pid(self):
-        i = 10
-        while True:
-            result_out = mcl_chain_status()
-            if len(result_out[0]) > 0:
-                self.daemon_pid.emit(str(result_out[0]))
-                self.finished.emit()
-                print('chain has pid')
-                break
-            time.sleep(1)
-            i = i - 1
-            if i == 0:
-                print('tried still no pid')
-                self.daemon_pid.emit(str(result_out[0]))
-                self.finished.emit()
-                break
-            elif result_out[1]:
-                print('error')
-                self.daemon_pid.emitstr(str(result_out[1]))
-                break
 
     @pyqtSlot()
     def is_chain_ready(self):
         while True:
-            result_out = handle_rpc(self.command)
+            result_out = handle_rpc(cp.getinfo)
             if result_out[0]:
                 self.command_out.emit(result_out)
                 self.finished.emit()
@@ -123,14 +113,13 @@ class RpcHandler(QtCore.QObject):
                 break
             elif result_out[1]:
                 self.command_out.emit(result_out)
-                time.sleep(2)
-                print('chain is not ready')
+                # print('chain is not ready')
+            time.sleep(2)
 
     @pyqtSlot()
     def stopping_chain(self):
         result_out = handle_rpc(cp.stop)
         self.command_out.emit(result_out)
-        print(result_out[0])
         if result_out[0]:
             while True:
                 pid = mcl_chain_status()
@@ -171,3 +160,25 @@ class RpcHandler(QtCore.QObject):
         elif addresses[1]:
             print(addresses[1])
             self.finished.emit()
+# @pyqtSlot()
+    # def chain_pid(self):
+    #     i = 10
+    #     while True:
+    #         result_out = mcl_chain_status()
+    #         if len(result_out[0]) > 0:
+    #             self.daemon_pid.emit(str(result_out[0]))
+    #             self.finished.emit()
+    #             print('chain has pid')
+    #             break
+    #         time.sleep(1)
+    #         i = i - 1
+    #         if i == 0:
+    #             print('tried still no pid')
+    #             self.daemon_pid.emit(str(result_out[0]))
+    #             self.finished.emit()
+    #             break
+    #         elif result_out[1]:
+    #             print('error ??')
+    #             self.daemon_pid.emitstr(str(result_out[1]))
+    #             self.finished.emit()
+    #             break

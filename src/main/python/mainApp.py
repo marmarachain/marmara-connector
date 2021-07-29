@@ -8,16 +8,14 @@ import configuration
 import marmarachain_rpc
 import remote_connection
 import chain_args as cp
-from fbs_runtime.application_context.PyQt5 import ApplicationContext
-from qtguidesign import Ui_MainWindow
 from qtguistyle import GuiStyle
+from Loading import LoadingScreen
 
 
-class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
+class MarmaraMain(QMainWindow, GuiStyle):
 
     def __init__(self, parent=None):
         super(MarmaraMain, self).__init__(parent)
-        self.setupUi(self)
         #   Default Settings
         self.main_tab.setCurrentIndex(0)
         self.main_tab.tabBar().setVisible(False)
@@ -26,7 +24,6 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
         self.chain_status = False
         self.pubkey_status = False
         # paths settings
-        self.icon_path = self.get_resource("images")
 
         #   Login page Host Selection
         self.local_button.clicked.connect(self.local_selection)
@@ -47,14 +44,20 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
         # MCL tabwidget
         self.mcl_tab.currentChanged.connect(self.mcl_tab_changed)
         # System page
-        self.stopchain_Button.clicked.connect(self.stop_chain)
-        self.stopchain_Button.setIcon(QIcon(self.icon_path + "/stop_icon.png"))
-        self.stopchain_Button.setIconSize(QSize(32, 32))
-        self.addaddress_page_Button.clicked.connect(self.add_address)
-        self.addresspage_back_Button.clicked.connect(self.back_chain_widget_index)
-        self.privkey_page_Button.clicked.connect(self.see_privkey_page)
-        self.privatekeypage_back_Button.clicked.connect(self.back_chain_widget_index)
+        self.stopchain_button.clicked.connect(self.stop_chain)
+        # self.stopchain_button.setIcon(QIcon(self.icon_path + "/stop_icon.png"))
+        # self.stopchain_button.setIconSize(QSize(32, 32))
+        self.addaddress_page_button.clicked.connect(self.get_address_page)
         self.addresses_tableWidget.cellClicked.connect(self.itemcontext)
+        self.privkey_page_button.clicked.connect(self.see_privkey_page)
+        # add address page ----
+        self.newaddress_button.clicked.connect(self.get_new_address)
+        self.address_seed_button.clicked.connect(self.convertpassphrase)
+        self.addresspage_back_button.clicked.connect(self.back_chain_widget_index)
+        # private key page ----
+        self.importprivkey_button.clicked.connect(self.importprivkey)
+        self.privatekeypage_back_button.clicked.connect(self.back_chain_widget_index)
+
         # Wallet page
         self.contacts_address_comboBox.currentTextChanged.connect(self.get_selected_contact_address)
         # Credit Loops page-----------------
@@ -62,26 +65,36 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
         # -----Create credit Loop Request
         self.contactpubkey_loop_comboBox.currentTextChanged.connect(self.get_selected_contact_loop_pubkey)
         self.contactpubkey_transfer_comboBox.currentTextChanged.connect(self.get_selected_contact_transfer_pubkey)
-        # Contacs Page
-        self.addcontact_Button.clicked.connect(self.add_contact)
-        self.updatecontact_Button.clicked.connect(self.update_contact)
-        self.deletecontact_Button.clicked.connect(self.delete_contact)
+        # ---- Loop Queries page --
+        self.loopqueries_pubkey_search_button.clicked.connect(self.search_pubkeyloops)
+        # Contacst Page
+        self.addcontact_button.clicked.connect(self.add_contact)
+        self.updatecontact_button.clicked.connect(self.update_contact)
+        self.deletecontact_button.clicked.connect(self.delete_contact)
         self.contacts_tableWidget.cellClicked.connect(self.get_contact_info)
-        self.clear_contact_Button.clicked.connect(self.clear_contacts_line_edit)
+        self.clear_contact_button.clicked.connect(self.clear_contacts_line_edit)
         self.contact_editing_row = ""
 
         # Tread setup
+        self.thread_bottom_info = QThread()
         self.thread_getinfo = QThread()
         self.thread_getchain = QThread()
         self.thread_chainpid = QThread()
         self.thread_stopchain = QThread()
         self.thread_getaddresses = QThread()
         self.thread_setpubkey = QThread()
+        self.thread_getnewaddress = QThread()
+        self.thread_convertpassphrase = QThread()
+        self.thread_importprivkey = QThread()
+        self.thread_address_privkey = QThread()
+        self.thread_seeprivkey = QThread()
+        self.thread_pubkeyloopsearch = QThread()
         # self.thread_validateddresses = QThread()
         # self.thread_getbalance = QThread()
 
         # Loading Gif
         # --------------------------------------------------
+        self.loading = LoadingScreen()
         # --------------------------------------------------
 
     def host_selection(self):
@@ -92,6 +105,7 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
         self.main_tab.setCurrentIndex(1)
         marmarachain_rpc.set_connection_local()
         self.mcl_tab.setCurrentIndex(0)
+        self.chain_stackedWidget.setCurrentIndex(0)
         self.chain_init()
 
     def remote_selection(self):
@@ -131,14 +145,27 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
             self.mcl_tab.setCurrentIndex(0)
 
     def worker_thread(self, thread, worker, command=None):
+        self.loading.startAnimation()
         if command:
             worker.set_command(command)
         worker.moveToThread(thread)
         worker.finished.connect(thread.quit)
+        worker.finished.connect(self.stop_animation)
         if command:
             thread.started.connect(worker.do_execute_rpc)
         thread.start()
         return worker
+
+    def stop_animation(self):
+        self.loading.stopAnimation()
+
+    def bottom_info(self, info):
+        self.worker_bottom_info = marmarachain_rpc.RpcHandler()
+        self.worker_bottom_info.set_bottom_info(self.bottom_message_label, info)
+        self.worker_bottom_info.moveToThread(self.thread_bottom_info)
+        self.worker_bottom_info.finished.connect(self.thread_bottom_info.quit)
+        self.thread_bottom_info.started.connect(self.worker_bottom_info.write_bottom_info)
+        self.thread_bottom_info.start()
 
     def chain_init(self):
         print('chain_status ' + str(self.chain_status))
@@ -155,27 +182,41 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
         print(len(marmara_pid[0]))
         if len(marmara_pid[0]) == 0:
             print('sending chain start command')
+            self.bottom_info('sending chain start command')
             marmarachain_rpc.start_chain()
         self.check_chain_pid()
 
     def check_chain_pid(self):
-        self.worker_chain_pid = marmarachain_rpc.RpcHandler()
-        check_pid_thread = self.worker_thread(self.thread_chainpid, self.worker_chain_pid)
-        self.thread_chainpid.started.connect(self.worker_chain_pid.chain_pid)
-        check_pid_thread.daemon_pid.connect(self.chain_check_finished)
+        # self.worker_chain_pid = marmarachain_rpc.RpcHandler()
+        # check_pid_thread = self.worker_thread(self.thread_chainpid, self.worker_chain_pid)
+        # self.thread_chainpid.started.connect(self.worker_chain_pid.chain_pid)
+        # check_pid_thread.daemon_pid.connect(self.chain_check_finished)
 
-    def chain_check_finished(self, result_out):
-        if not result_out:
-            self.bottom_message_label.setText('Chain start error: No pid')
-        if result_out:
-            print('pid is ' + result_out)
-            self.is_chain_ready()
+        # def chain_check_finished(self, result_out):
+        #     if not result_out:
+        #         self.bottom_message_label.setText('Chain start error: No pid')
+        #     if result_out:
+        #         print('pid is ' + result_out)
+        while True:
+            marmara_pid = marmarachain_rpc.mcl_chain_status()
+            if len(marmara_pid[0]) > 0:
+                print('chain has pid')
+                break
+            time.sleep(1)
+            i = i - 1
+            if i == 0:
+                self.bottom_info('Chain did not start')
+                print('tried still no pid')
+                break
+            elif marmara_pid[1]:
+                print('error ??')
+                print(marmara_pid[1])
+                break
+        self.is_chain_ready()
 
     @pyqtSlot()
     def is_chain_ready(self):
         self.worker_getchain = marmarachain_rpc.RpcHandler()
-        command = cp.getinfo
-        self.worker_getchain.set_command(command)
         chain_ready_thread = self.worker_thread(self.thread_getchain, self.worker_getchain)
         self.thread_getchain.started.connect(self.worker_getchain.is_chain_ready)
         chain_ready_thread.command_out.connect(self.chain_ready_result)
@@ -185,13 +226,13 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
     def chain_ready_result(self, result_out):
         if result_out[0]:
             print('chain ready finished')
+            self.bottom_info('chain ready finished')
             self.chain_status = True
         elif result_out[1]:
-            time.sleep(2)
-            print_result = ""
-            for line in str(result_out[1]).splitlines():
-                print_result = print_result + ' ' + str(line)
-            self.bottom_message_label.setText(print_result)
+            print_result = str(result_out[1]).splitlines()
+            if str(result_out[1]).find('error message:') != -1:
+                index = print_result.index('error message:') + 1
+                self.bottom_info(print_result[index])
 
     @pyqtSlot()
     def stop_chain(self):
@@ -242,7 +283,7 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
             self.longestchain_value_label.setText(str(getinfo_result['longestchain']))
             self.connections_value_label.setText(str(getinfo_result['connections']))
 
-            self.bottom_message_label.setText('finished')
+            self.bottom_message_label.setText('initialization finished')
             if getinfo_result.get('pubkey'):
                 self.pubkey_status = True
                 self.current_pubkey_value.setText(str(getinfo_result['pubkey']))
@@ -269,8 +310,7 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
         for row in result_out:
             row_number = result_out.index(row)
             self.addresses_tableWidget.setRowCount(len(result_out))
-            self.addresses_tableWidget.autoScrollMargin()
-
+            # self.addresses_tableWidget.autoScrollMargin()
             if self.pubkey_status:
                 self.addresses_tableWidget.setColumnHidden(0, True)
             for item in row:
@@ -315,9 +355,9 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
                 #    )
                 rowcount = rowcount - 1
                 self.addresses_tableWidget.setCellWidget(rowcount, 0, btn_start)
+                btn_start.clicked.connect(self.start_chain)
                 if rowcount == 0:
                     break
-                btn_start.clicked.connect(self.start_chain)
 
     @pyqtSlot()
     def set_pubkey(self):
@@ -347,22 +387,196 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
     def start_chain(self):
         button = self.sender()
         index = self.addresses_tableWidget.indexAt(button.pos())
+        print(index.row())
+        print(index.column())
         if index.isValid():
             pubkey = self.addresses_tableWidget.item(index.row(), 3).text()
+            print(pubkey)
             marmarachain_rpc.start_chain(pubkey)
             time.sleep(0.5)
             self.addresses_tableWidget.setColumnHidden(0, True)
             self.check_chain_pid()
 
-    def add_address(self):
+    def search_pubkeyloops(self):
+        pubkey = self.loopqueries_pubkey_lineEdit.text()
+        if pubkey:
+            self.worker_pubkeyloopsearch = marmarachain_rpc.RpcHandler()
+            command = cp.marmarainfo + ' 0 0 0 0 ' + pubkey
+            pubkeyloopsearch_thread = self.worker_thread(self.thread_pubkeyloopsearch, self.worker_pubkeyloopsearch,
+                                                         command)
+            pubkeyloopsearch_thread.command_out.connect(self.get_search_pubkeyloops_result)
+        else:
+            self.bottom_message_label.setText('write pubkey to search !')
+
+    def get_search_pubkeyloops_result(self, result_out):
+        if result_out[0]:
+            print(result_out[0])
+        elif result_out[1]:
+            print(result_out[1])
+
+    # ------------------
+    # wallet Address Add, import
+    # -------------------
+    @pyqtSlot()
+    def get_address_page(self):
         self.chain_stackedWidget.setCurrentIndex(1)
 
+    @pyqtSlot()
+    def get_new_address(self):
+        self.worker_get_newaddress = marmarachain_rpc.RpcHandler()
+        command = cp.getnewaddress
+        getnewaddress_thread = self.worker_thread(self.thread_getnewaddress, self.worker_get_newaddress, command)
+        getnewaddress_thread.command_out.connect(self.set_getnewaddress_result)
+
+    @pyqtSlot(tuple)
+    def set_getnewaddress_result(self, result_out):
+        if result_out[0]:
+            self.bottom_message_label.setText('new address = ' + str(result_out[0]))
+        elif result_out[1]:
+            result = str(result_out[1]).splitlines()
+            print_result = ""
+            for line in result:
+                print_result = print_result + ' ' + str(line)
+            print(print_result)
+            self.bottom_message_label.setText(print_result)
+
+    @pyqtSlot()
+    def convertpassphrase(self):
+        verified = False
+        seed = self.plainTextEdit.toPlainText()
+        print(seed)
+        verify = self.plainTextEdit_2.toPlainText()
+        print(verify)
+        if seed:
+            if seed == verify:
+                verified = True
+            else:
+                self.bottom_message_label.setText('seed words does not match')
+        if verified:
+            self.worker_convert_passphrase = marmarachain_rpc.RpcHandler()
+            command = cp.convertpassphrase + ' "' + seed + '"'
+            convert_passphrase_thread = self.worker_thread(self.thread_convertpassphrase,
+                                                           self.worker_convert_passphrase, command)
+            convert_passphrase_thread.command_out.connect(self.converpasspgrase_result)
+        else:
+            self.bottom_message_label.setText('write some seed words !')
+
+    @pyqtSlot(tuple)
+    def converpasspgrase_result(self, result_out):
+        if result_out[0]:
+            result = json.loads(result_out[0])
+            wif = result['wif']
+            address = result['address']
+            self.bottom_message_label.setText('new address = ' + address + ' private key = ' + wif)
+            # self.get_importprivkey(wif)
+        elif result_out[1]:
+            result = str(result_out[1]).splitlines()
+            print_result = ""
+            for line in result:
+                print_result = print_result + ' ' + str(line)
+            print(print_result)
+            self.bottom_message_label.setText(print_result)
+
+    @pyqtSlot()
+    def importprivkey(self):
+        privkey = self.privkey_lineEdit.text()
+        if privkey:
+            self.get_importprivkey(privkey)
+        else:
+            self.bottom_message_label.setText('write private key first')
+
+    def get_importprivkey(self, wif):
+        self.worker_importprivkey = marmarachain_rpc.RpcHandler()
+        command = cp.importprivkey + ' ' + wif
+        importprivkey_thread = self.worker_thread(self.thread_importprivkey, self.worker_importprivkey, command)
+        importprivkey_thread.command_out.connect(self.set_importprivkey_result)
+
+    @pyqtSlot(tuple)
+    def set_importprivkey_result(self, result_out):
+        if result_out[0]:
+            self.bottom_message_label.setText(str(result_out[0]))
+            print(result_out[0])
+        elif result_out[1]:
+            result = str(result_out[1]).splitlines()
+            print_result = ""
+            for line in result:
+                print_result = print_result + ' ' + str(line)
+            print(print_result)
+            self.bottom_message_label.setText(print_result)
+
+    @pyqtSlot()
     def back_chain_widget_index(self):
         self.chain_stackedWidget.setCurrentIndex(0)
-        self.update_addresses_table()
+        if self.chain_status:
+            self.getaddresses()
+        else:
+            self.update_addresses_table()
 
+    @pyqtSlot()
     def see_privkey_page(self):
         self.chain_stackedWidget.setCurrentIndex(2)
+        self.get_privkey_table()
+
+    def get_privkey_table(self):
+        self.worker_getaddress_privkey = marmarachain_rpc.RpcHandler()
+        command = cp.getaddressesbyaccount
+        address_privkey_thread = self.worker_thread(self.thread_address_privkey, self.worker_getaddress_privkey,
+                                                    command)
+        address_privkey_thread.command_out.connect(self.set_privkey_table_result)
+
+    @pyqtSlot(tuple)
+    def set_privkey_table_result(self, result_out):
+        if result_out[0]:
+            result = json.loads(result_out[0])
+            print(len(result))
+            self.addresses_privkey_tableWidget.setRowCount(len(result))
+            # self.addresses_privkey_tableWidget.autoScrollMargin()
+            for address in result:
+                row_number = result.index(address)
+                btn_seeprivkey = QPushButton('')
+                btn_seeprivkey.setIcon(QIcon(self.icon_path + "/details.png"))
+                self.addresses_privkey_tableWidget.setCellWidget(row_number, 1, btn_seeprivkey)
+                self.addresses_privkey_tableWidget.setItem(row_number, 0, QTableWidgetItem(address))
+                self.addresses_privkey_tableWidget.horizontalHeader().setSectionResizeMode(0,
+                                                                                           QtWidgets.QHeaderView.ResizeToContents)
+                self.addresses_privkey_tableWidget.horizontalHeader().setSectionResizeMode(1,
+                                                                                           QtWidgets.QHeaderView.ResizeToContents)
+                btn_seeprivkey.clicked.connect(self.set_seeprivkey)
+
+        elif result_out[1]:
+            result = str(result_out[1]).splitlines()
+            print_result = ""
+            for line in result:
+                print_result = print_result + ' ' + str(line)
+            print(print_result)
+            self.bottom_message_label.setText(print_result)
+
+    @pyqtSlot()
+    def set_seeprivkey(self):
+        button = self.sender()
+        print(button.pos())
+        index = self.addresses_privkey_tableWidget.indexAt(button.pos())
+        print(index.row())
+        if index.isValid():
+            address = self.addresses_privkey_tableWidget.item(index.row(), 0).text()
+            self.worker_see_privkey = marmarachain_rpc.RpcHandler()
+            command = cp.dumpprivkey + ' ' + address
+            print(command)
+            see_privkey_thread = self.worker_thread(self.thread_seeprivkey, self.worker_see_privkey, command)
+            see_privkey_thread.command_out.connect(self.get_seeprivkey_result)
+
+    @pyqtSlot(tuple)
+    def get_seeprivkey_result(self, result_out):
+        if result_out[0]:
+            print(result_out[0])
+            self.bottom_message_label.setText('private key = ' + result_out[0])
+        elif result_out[1]:
+            result = str(result_out[1]).splitlines()
+            print_result = ""
+            for line in result:
+                print_result = print_result + ' ' + str(line)
+            print(print_result)
+            self.bottom_message_label.setText(print_result)
 
     # -------------------------------------------------------------------
     # Getting Contacts in to comboboxes
@@ -371,13 +585,13 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
         self.contacts_address_comboBox.clear()
         self.receiver_address_lineEdit.clear()
         self.contacts_address_comboBox.addItem('Contacts')
-        contacts_data = configuration.ContacsSettings().read_csv_file()
+        contacts_data = configuration.ContacstSettings().read_csv_file()
         for name in contacts_data:
             if name[0] != 'Name':
                 self.contacts_address_comboBox.addItem(name[0])
 
     def get_selected_contact_address(self):
-        contacts_data = configuration.ContacsSettings().read_csv_file()
+        contacts_data = configuration.ContacstSettings().read_csv_file()
         selected_contact_address = contacts_data[self.contacts_address_comboBox.currentIndex()]
         if selected_contact_address[1] != 'Address':
             self.receiver_address_lineEdit.setText(selected_contact_address[1])
@@ -391,23 +605,22 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
         self.transfer_receiverpubkey_lineEdit.clear()
         self.contactpubkey_loop_comboBox.addItem('Contacts')
         self.contactpubkey_transfer_comboBox.addItem('Contacts')
-        contacts_data = configuration.ContacsSettings().read_csv_file()
+        contacts_data = configuration.ContacstSettings().read_csv_file()
         for name in contacts_data:
             if name[0] != 'Name':
                 self.contactpubkey_loop_comboBox.addItem(name[0])
                 self.contactpubkey_transfer_comboBox.addItem(name[0])
 
     def get_selected_contact_loop_pubkey(self):
-        contacts_data = configuration.ContacsSettings().read_csv_file()
+        contacts_data = configuration.ContacstSettings().read_csv_file()
         selected_contactpubkey_loop = contacts_data[self.contactpubkey_loop_comboBox.currentIndex()]
         if selected_contactpubkey_loop[2] != 'Pubkey':
             self.create_receiverpubkey_lineEdit.setText(selected_contactpubkey_loop[2])
         if selected_contactpubkey_loop[2] == 'Pubkey':
             self.create_receiverpubkey_lineEdit.clear()
 
-
     def get_selected_contact_transfer_pubkey(self):
-        contacts_data = configuration.ContacsSettings().read_csv_file()
+        contacts_data = configuration.ContacstSettings().read_csv_file()
         selected_contactpubkey_tranfer = contacts_data[self.contactpubkey_transfer_comboBox.currentIndex()]
         if selected_contactpubkey_tranfer[2] != 'Pubkey':
             self.transfer_receiverpubkey_lineEdit.setText(selected_contactpubkey_tranfer[2])
@@ -421,13 +634,13 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
         contact_name = self.contactname_lineEdit.text()
         contact_address = self.contactaddress_lineEdit.text()
         contact_pubkey = self.contactpubkey_lineEdit.text()
-        row = [contact_name, contact_address, contact_pubkey]
+        new_record = [contact_name, contact_address, contact_pubkey]
         unique_record = self.unique_contacts(contact_name, contact_address, contact_pubkey)
         if unique_record:
             self.bottom_message_label.setText(unique_record.get('error'))
         if not unique_record:
-            configuration.ContacsSettings().add_csv_file(row)
-            read_contacts_data = configuration.ContacsSettings().read_csv_file()
+            configuration.ContacstSettings().add_csv_file(new_record)
+            read_contacts_data = configuration.ContacstSettings().read_csv_file()
             self.update_contact_tablewidget(read_contacts_data)
             self.clear_contacts_line_edit()
 
@@ -435,7 +648,7 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
         if contacts_data:
             pass
         elif not contacts_data:
-            contacts_data = configuration.ContacsSettings().read_csv_file()
+            contacts_data = configuration.ContacstSettings().read_csv_file()
         for row in contacts_data:
             if row[0] == name:
                 print('same name')
@@ -465,7 +678,7 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
         if contacts_data:
             pass
         elif not contacts_data:
-            contacts_data = configuration.ContacsSettings().read_csv_file()
+            contacts_data = configuration.ContacstSettings().read_csv_file()
         self.contacts_tableWidget.setRowCount(len(contacts_data) - 1)  # -1 for exclude header
         self.contacts_tableWidget.autoScrollMargin()
         for row in contacts_data:
@@ -486,11 +699,11 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
         self.contact_editing_row = row
 
     def update_contact(self):
-        read_contacts_data = configuration.ContacsSettings().read_csv_file()
+        read_contacts_data = configuration.ContacstSettings().read_csv_file()
         contact_name = self.contactname_lineEdit.text()
         contact_address = self.contactaddress_lineEdit.text()
         contact_pubkey = self.contactpubkey_lineEdit.text()
-        contact_data = configuration.ContacsSettings().read_csv_file()
+        contact_data = configuration.ContacstSettings().read_csv_file()
         del contact_data[self.contact_editing_row + 1]  # removing editing record to don't check same record
         unique_record = self.unique_contacts(contact_name, contact_address, contact_pubkey, contact_data)
         if unique_record:
@@ -499,14 +712,14 @@ class MarmaraMain(QMainWindow, Ui_MainWindow, ApplicationContext):
             read_contacts_data[self.contact_editing_row + 1][0] = contact_name  # +1 for exclude header
             read_contacts_data[self.contact_editing_row + 1][1] = contact_address  # +1 for exclude header
             read_contacts_data[self.contact_editing_row + 1][2] = contact_pubkey  # +1 for exclude header
-            configuration.ContacsSettings().update_csv_file(read_contacts_data)
+            configuration.ContacstSettings().update_csv_file(read_contacts_data)
             self.update_contact_tablewidget()
             self.clear_contacts_line_edit()
 
     def delete_contact(self):
-        read_contacts_data = configuration.ContacsSettings().read_csv_file()
+        read_contacts_data = configuration.ContacstSettings().read_csv_file()
         del read_contacts_data[self.contact_editing_row + 1]  # +1 for exclude header
-        configuration.ContacsSettings().update_csv_file(read_contacts_data)
+        configuration.ContacstSettings().update_csv_file(read_contacts_data)
         self.update_contact_tablewidget()
         self.clear_contacts_line_edit()
 
