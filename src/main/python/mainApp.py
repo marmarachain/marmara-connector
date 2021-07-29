@@ -636,7 +636,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             self.transfer_receiverpubkey_lineEdit.clear()
 
     # -------------------------------------------------------------------
-    # Adding contacts editing and  deleting
+    # Adding contacts editing and deleting
     # --------------------------------------------------------------------
     def add_contact(self):
         contact_name = self.contactname_lineEdit.text()
@@ -645,31 +645,39 @@ class MarmaraMain(QMainWindow, GuiStyle):
         new_record = [contact_name, contact_address, contact_pubkey]
         unique_record = self.unique_contacts(contact_name, contact_address, contact_pubkey)
         if unique_record:
-            self.bottom_message_label.setText(unique_record.get('error'))
+            QtWidgets.QMessageBox.information(self, "Error Adding Contact", unique_record.get('error'))
         if not unique_record:
             configuration.ContacstSettings().add_csv_file(new_record)
             read_contacts_data = configuration.ContacstSettings().read_csv_file()
             self.update_contact_tablewidget(read_contacts_data)
             self.clear_contacts_line_edit()
+            QtWidgets.QMessageBox.information(self, "Added Contact", "It is your responsibility that the information "
+                                                                     "you have entered are correct and valid.")
 
     def unique_contacts(self, name, address, pubkey, contacts_data=None):
         if contacts_data:
             pass
         elif not contacts_data:
             contacts_data = configuration.ContacstSettings().read_csv_file()
+        if name == address:
+            return {'error': 'name and address cannot be the same!'}
+        if name == pubkey:
+            return {'error': 'name and pubkey cannot be the same!'}
+        if pubkey == address:
+            return {'error': 'pubkey and address cannot be the same!'}
         for row in contacts_data:
             if row[0] == name:
                 print('same name')
-                return {'error': 'same name exist'}
+                return {'error': 'Same name exists'}
             if row[1] == address:
                 print('same address')
-                return {'error': 'same address exist'}
+                return {'error': 'Same address exists'}
             if row[2] == pubkey:
                 print('same pubkey')
-                return {'error': 'same pubkey exist'}
+                return {'error': 'Same pubkey exists'}
             if not name or not address or not pubkey:
                 print('empty record')
-                return {'error': 'cannot be empty record'}
+                return {'error': 'cannot be an empty record'}
             # is_valid_address = row[1] # check if address is valid
             # if is_valid_address == False:
             #     return {'error': 'address is not valid'}
@@ -681,6 +689,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.contactname_lineEdit.clear()
         self.contactaddress_lineEdit.clear()
         self.contactpubkey_lineEdit.clear()
+        self.contact_editing_row = None
 
     def update_contact_tablewidget(self, contacts_data=None):
         if contacts_data:
@@ -698,39 +707,59 @@ class MarmaraMain(QMainWindow, GuiStyle):
                                                                                       QtWidgets.QHeaderView.ResizeToContents)
 
     def get_contact_info(self, row, column):
-        contact_name = self.contacts_tableWidget.item(row, 0).text()
-        contact_address = self.contacts_tableWidget.item(row, 1).text()
-        contact_pubkey = self.contacts_tableWidget.item(row, 2).text()
+        contact_name = ""
+        contact_address = ""
+        contact_pubkey = ""
+        if self.contacts_tableWidget.item(row, 0):
+            contact_name = self.contacts_tableWidget.item(row, 0).text()
+        if self.contacts_tableWidget.item(row, 1):
+            contact_address = self.contacts_tableWidget.item(row, 1).text()
+        if self.contacts_tableWidget.item(row, 2):
+            contact_pubkey = self.contacts_tableWidget.item(row, 2).text()
         self.contactname_lineEdit.setText(contact_name)
         self.contactaddress_lineEdit.setText(contact_address)
         self.contactpubkey_lineEdit.setText(contact_pubkey)
         self.contact_editing_row = row
 
     def update_contact(self):
-        read_contacts_data = configuration.ContacstSettings().read_csv_file()
-        contact_name = self.contactname_lineEdit.text()
-        contact_address = self.contactaddress_lineEdit.text()
-        contact_pubkey = self.contactpubkey_lineEdit.text()
-        contact_data = configuration.ContacstSettings().read_csv_file()
-        del contact_data[self.contact_editing_row + 1]  # removing editing record to don't check same record
-        unique_record = self.unique_contacts(contact_name, contact_address, contact_pubkey, contact_data)
-        if unique_record:
-            self.bottom_message_label.setText(unique_record.get('error'))
-        if not unique_record:
-            read_contacts_data[self.contact_editing_row + 1][0] = contact_name  # +1 for exclude header
-            read_contacts_data[self.contact_editing_row + 1][1] = contact_address  # +1 for exclude header
-            read_contacts_data[self.contact_editing_row + 1][2] = contact_pubkey  # +1 for exclude header
-            configuration.ContacstSettings().update_csv_file(read_contacts_data)
-            self.update_contact_tablewidget()
-            self.clear_contacts_line_edit()
+        if self.contact_editing_row is not None:
+            read_contacts_data = configuration.ContacstSettings().read_csv_file()
+            contact_name = self.contactname_lineEdit.text()
+            contact_address = self.contactaddress_lineEdit.text()
+            contact_pubkey = self.contactpubkey_lineEdit.text()
+            contact_data = configuration.ContacstSettings().read_csv_file()
+            del contact_data[self.contact_editing_row + 1]  # removing editing record to don't check same record
+            unique_record = self.unique_contacts(contact_name, contact_address, contact_pubkey, contact_data)
+            if unique_record:
+                self.bottom_message_label.setText(unique_record.get('error'))
+            if not unique_record:
+                read_contacts_data[self.contact_editing_row + 1][0] = contact_name  # +1 for exclude header
+                read_contacts_data[self.contact_editing_row + 1][1] = contact_address  # +1 for exclude header
+                read_contacts_data[self.contact_editing_row + 1][2] = contact_pubkey  # +1 for exclude header
+                configuration.ContacstSettings().update_csv_file(read_contacts_data)
+                self.update_contact_tablewidget()
+                self.clear_contacts_line_edit()
+        else:
+            QtWidgets.QMessageBox.information(self, "Error Updating Contact", "You didn't select a contact from table.")
+
 
     def delete_contact(self):
-        read_contacts_data = configuration.ContacstSettings().read_csv_file()
-        del read_contacts_data[self.contact_editing_row + 1]  # +1 for exclude header
-        configuration.ContacstSettings().update_csv_file(read_contacts_data)
-        self.update_contact_tablewidget()
-        self.clear_contacts_line_edit()
-
+        print(self.contact_editing_row)
+        if self.contact_editing_row is not None:
+            response = QtWidgets.QMessageBox.question(self,
+                                                      "Deleting Contact",
+                                                      "Are you sure to delete the contact from the list?",
+                                                      )
+            if response == QtWidgets.QMessageBox.Yes:
+                read_contacts_data = configuration.ContacstSettings().read_csv_file()
+                del read_contacts_data[self.contact_editing_row + 1]  # +1 for exclude header
+                configuration.ContacstSettings().update_csv_file(read_contacts_data)
+                self.update_contact_tablewidget()
+                self.clear_contacts_line_edit()
+            else:
+                self.clear_contacts_line_edit()
+        else:
+            QtWidgets.QMessageBox.information(self, "Error Deleting Contact", "You didn't select a contact from table.")
     # -------------------------------------------------------------------
     # Remote Host adding , editing, deleting and  saving in conf file
     # --------------------------------------------------------------------
