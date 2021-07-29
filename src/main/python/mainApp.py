@@ -24,7 +24,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.chain_status = False
         self.pubkey_status = False
         # paths settings
-
+        # Menu Actions
+        self.actionAbout.triggered.connect(self.show_about)
         #   Login page Host Selection
         self.local_button.clicked.connect(self.local_selection)
         self.remote_button.clicked.connect(self.remote_selection)
@@ -96,6 +97,13 @@ class MarmaraMain(QMainWindow, GuiStyle):
         # --------------------------------------------------
         self.loading = LoadingScreen()
         # --------------------------------------------------
+
+    def show_about(self):
+        QtWidgets.QMessageBox.about(
+            self,
+            "About Marmara Connector",
+            "This is a software written to carry out Marmarachain node operations on a local or remote machine."
+        )
 
     def host_selection(self):
         self.login_stackedWidget.setCurrentIndex(0)
