@@ -465,18 +465,26 @@ class MarmaraMain(QMainWindow, GuiStyle):
             command = cp.convertpassphrase + ' "' + seed + '"'
             convert_passphrase_thread = self.worker_thread(self.thread_convertpassphrase,
                                                            self.worker_convert_passphrase, command)
-            convert_passphrase_thread.command_out.connect(self.converpasspgrase_result)
+            convert_passphrase_thread.command_out.connect(self.converpassphrase_result)
         else:
             self.bottom_message_label.setText('write some seed words !')
 
     @pyqtSlot(tuple)
-    def converpasspgrase_result(self, result_out):
+    def converpassphrase_result(self, result_out):
         if result_out[0]:
             result = json.loads(result_out[0])
             wif = result['wif']
-            address = result['address']
-            self.bottom_message_label.setText('new address = ' + address + ' private key = ' + wif)
-            # self.get_importprivkey(wif)
+            response = QtWidgets.QMessageBox.question(self, "Creating an Address",
+                                                      "An address has been created with details below. Do you want to "
+                                                      "import this address to the wallet?" +
+                                                      "<br><b>Seed = </b><br>" + result['agamapassphrase'] +
+                                                      "<br><b>Private Key = </b><br>" + wif +
+                                                      "<br><b>Address = </b><br>" + result['address'] +
+                                                      "<br><b>Pubkey = </b><br>" + result['pubkey'])
+            if response == QtWidgets.QMessageBox.Yes:
+                self.get_importprivkey(wif)
+
+        # for error handling of convertpassphrase method
         elif result_out[1]:
             result = str(result_out[1]).splitlines()
             print_result = ""
@@ -660,11 +668,11 @@ class MarmaraMain(QMainWindow, GuiStyle):
         elif not contacts_data:
             contacts_data = configuration.ContacstSettings().read_csv_file()
         if name == address:
-            return {'error': 'name and address cannot be the same!'}
+            return {'error': 'Name and Address cannot be the same!'}
         if name == pubkey:
-            return {'error': 'name and pubkey cannot be the same!'}
+            return {'error': 'Name and Pubkey cannot be the same!'}
         if pubkey == address:
-            return {'error': 'pubkey and address cannot be the same!'}
+            return {'error': 'Pubkey and Address cannot be the same!'}
         for row in contacts_data:
             if row[0] == name:
                 print('same name')
@@ -742,7 +750,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
         else:
             QtWidgets.QMessageBox.information(self, "Error Updating Contact", "You didn't select a contact from table.")
 
-
     def delete_contact(self):
         print(self.contact_editing_row)
         if self.contact_editing_row is not None:
@@ -760,6 +767,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 self.clear_contacts_line_edit()
         else:
             QtWidgets.QMessageBox.information(self, "Error Deleting Contact", "You didn't select a contact from table.")
+
     # -------------------------------------------------------------------
     # Remote Host adding , editing, deleting and  saving in conf file
     # --------------------------------------------------------------------
