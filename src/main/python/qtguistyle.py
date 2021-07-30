@@ -13,4 +13,10 @@ class GuiStyle(ApplicationContext ,Ui_MainWindow):
         # stop button style
         self.stopchain_button.setIcon(QtGui.QIcon(self.icon_path + "/stop_icon.png"))
         self.stopchain_button.setIconSize(QtCore.QSize(32, 32))
+        # Wallet page button icons
+        self.lock_button.setIcon(QtGui.QIcon(self.icon_path + "/coin_lock_icon.png"))
+        self.lock_button.setIconSize(QtCore.QSize(32, 32))
+        self.unlock_button.setIcon(QtGui.QIcon(self.icon_path + "/coin_unlock_icon.png"))
+        self.unlock_button.setIconSize(QtCore.QSize(32, 32))
+
 

@@ -1473,7 +1473,7 @@
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>2</number>
+           <number>1</number>
           </property>
           <property name="elideMode">
            <enum>Qt::ElideNone</enum>
@@ -1521,7 +1521,7 @@
                <enum>QFrame::Raised</enum>
               </property>
               <property name="currentIndex">
-               <number>0</number>
+               <number>1</number>
               </property>
               <widget class="QWidget" name="chainaddresses_page">
                <layout class="QGridLayout" name="gridLayout_26">
@@ -1553,28 +1553,7 @@
                   </item>
                   <item row="3" column="1">
                    <layout class="QGridLayout" name="create_privkey_buttons_Layout">
-                    <item row="1" column="2">
-                     <widget class="QPushButton" name="addaddress_page_button">
-                      <property name="text">
-                       <string>Create New Address</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="2" column="2">
-                     <widget class="QPushButton" name="privkey_page_button">
-                      <property name="text">
-                       <string>Private key</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="0">
-                     <widget class="QCheckBox" name="checkBox">
-                      <property name="text">
-                       <string>Hide zero amount addresses</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="1" rowspan="2">
+                    <item row="1" column="1">
                      <spacer name="horizontalSpacer_11">
                       <property name="orientation">
                        <enum>Qt::Horizontal</enum>
@@ -1586,6 +1565,20 @@
                        </size>
                       </property>
                      </spacer>
+                    </item>
+                    <item row="1" column="0">
+                     <widget class="QCheckBox" name="checkBox">
+                      <property name="text">
+                       <string>Hide zero amount addresses</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="2">
+                     <widget class="QPushButton" name="privkey_page_button">
+                      <property name="text">
+                       <string>Private Key</string>
+                      </property>
+                     </widget>
                     </item>
                    </layout>
                   </item>
@@ -1732,7 +1725,14 @@
                   </item>
                   <item row="1" column="1">
                    <layout class="QGridLayout" name="gridLayout_29">
-                    <item row="1" column="0" colspan="2">
+                    <item row="1" column="2">
+                     <widget class="QPushButton" name="addaddress_page_button">
+                      <property name="text">
+                       <string>Add New Address</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="0">
                      <widget class="QLabel" name="label_16">
                       <property name="font">
                        <font>
@@ -1746,6 +1746,19 @@
                        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                       </property>
                      </widget>
+                    </item>
+                    <item row="1" column="1">
+                     <spacer name="horizontalSpacer_17">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
                     </item>
                    </layout>
                   </item>
@@ -1848,7 +1861,7 @@
                    </widget>
                   </item>
                   <item row="6" column="0" colspan="3">
-                   <widget class="QPlainTextEdit" name="plainTextEdit_2">
+                   <widget class="QPlainTextEdit" name="verify_passphrase_TextEdit">
                     <property name="minimumSize">
                      <size>
                       <width>600</width>
@@ -1865,7 +1878,7 @@
                      <number>1</number>
                     </property>
                     <property name="placeholderText">
-                     <string> Verify Seed</string>
+                     <string> Verify Passphrase</string>
                     </property>
                    </widget>
                   </item>
@@ -1877,7 +1890,7 @@
                    </widget>
                   </item>
                   <item row="5" column="0" colspan="3">
-                   <widget class="QPlainTextEdit" name="plainTextEdit">
+                   <widget class="QPlainTextEdit" name="passphrase_TextEdit">
                     <property name="minimumSize">
                      <size>
                       <width>600</width>
@@ -1900,7 +1913,7 @@
                      <bool>false</bool>
                     </property>
                     <property name="placeholderText">
-                     <string>Enter words with spaces between them. Do not input an special character. </string>
+                     <string>Enter 12 words with spaces between them. Do not input any special character. </string>
                     </property>
                    </widget>
                   </item>
@@ -2299,23 +2312,7 @@
             </item>
             <item row="4" column="1">
              <layout class="QGridLayout" name="activate_deactivate_Layout">
-              <item row="0" column="0">
-               <widget class="QLabel" name="normalamount_activation_label">
-                <property name="frameShape">
-                 <enum>QFrame::NoFrame</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Plain</enum>
-                </property>
-                <property name="text">
-                 <string>Lock Normal Amount</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="2">
+              <item row="1" column="3">
                <widget class="QFrame" name="unlock_activeamount_frame">
                 <property name="frameShape">
                  <enum>QFrame::WinPanel</enum>
@@ -2336,6 +2333,19 @@
                     <cstring>unlock_amount_value</cstring>
                    </property>
                   </widget>
+                 </item>
+                 <item row="1" column="0" colspan="2">
+                  <spacer name="horizontalSpacer_21">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
                  </item>
                  <item row="1" column="2">
                   <widget class="QPushButton" name="unlock_button">
@@ -2363,23 +2373,10 @@
                    </property>
                   </spacer>
                  </item>
-                 <item row="1" column="0" colspan="2">
-                  <spacer name="horizontalSpacer_21">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
                 </layout>
                </widget>
               </item>
-              <item row="1" column="0">
+              <item row="1" column="1">
                <widget class="QFrame" name="normalamount_activation_frame">
                 <property name="frameShape">
                  <enum>QFrame::WinPanel</enum>
@@ -2389,7 +2386,30 @@
                 </property>
                 <layout class="QGridLayout" name="gridLayout_34">
                  <item row="0" column="1" colspan="2">
-                  <widget class="QLineEdit" name="activate_amount_value"/>
+                  <widget class="QLineEdit" name="lock_amount_value"/>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="lock_amount_label">
+                   <property name="text">
+                    <string>Amount</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>lock_amount_value</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QPushButton" name="lock_button">
+                   <property name="minimumSize">
+                    <size>
+                     <width>60</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>Lock</string>
+                   </property>
+                  </widget>
                  </item>
                  <item row="1" column="0">
                   <spacer name="horizontalSpacer_19">
@@ -2403,29 +2423,6 @@
                     </size>
                    </property>
                   </spacer>
-                 </item>
-                 <item row="1" column="1">
-                  <widget class="QPushButton" name="activate_button">
-                   <property name="minimumSize">
-                    <size>
-                     <width>60</width>
-                     <height>40</height>
-                    </size>
-                   </property>
-                   <property name="text">
-                    <string>Lock</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="activate_amount_label">
-                   <property name="text">
-                    <string>Amount</string>
-                   </property>
-                   <property name="buddy">
-                    <cstring>activate_amount_value</cstring>
-                   </property>
-                  </widget>
                  </item>
                  <item row="1" column="2">
                   <spacer name="horizontalSpacer_20">
@@ -2443,7 +2440,7 @@
                 </layout>
                </widget>
               </item>
-              <item row="0" column="2">
+              <item row="0" column="3">
                <widget class="QLabel" name="unlock_activeamount_label">
                 <property name="frameShape">
                  <enum>QFrame::NoFrame</enum>
@@ -2459,7 +2456,49 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="1" rowspan="2">
+              <item row="0" column="1">
+               <widget class="QLabel" name="lock_normal_amount_label">
+                <property name="frameShape">
+                 <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Plain</enum>
+                </property>
+                <property name="text">
+                 <string>Lock Normal Amount</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0" rowspan="2">
+               <spacer name="horizontalSpacer_18">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="0" column="4" rowspan="2">
+               <spacer name="horizontalSpacer_47">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="0" column="2" rowspan="2">
                <spacer name="horizontalSpacer_12">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
@@ -2483,7 +2522,7 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="1">
+              <item row="0" column="2">
                <widget class="QLabel" name="coinreceive_label">
                 <property name="text">
                  <string>Receive</string>
@@ -2565,7 +2604,26 @@
                </widget>
               </item>
               <item row="1" column="1">
+               <spacer name="horizontalSpacer_48">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="1" column="2">
                <widget class="QFrame" name="coinreceive_lframe">
+                <property name="minimumSize">
+                 <size>
+                  <width>230</width>
+                  <height>0</height>
+                 </size>
+                </property>
                 <property name="frameShape">
                  <enum>QFrame::WinPanel</enum>
                 </property>
@@ -2578,7 +2636,13 @@
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
-                     <height>0</height>
+                     <height>60</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>100</width>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="text">
@@ -2588,6 +2652,19 @@
                  </item>
                 </layout>
                </widget>
+              </item>
+              <item row="1" column="3">
+               <spacer name="horizontalSpacer_49">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
               </item>
              </layout>
             </item>
@@ -4791,8 +4868,8 @@
   <tabstop>receiver_address_lineEdit</tabstop>
   <tabstop>sending_amount_lineEdit</tabstop>
   <tabstop>coinsend_button</tabstop>
-  <tabstop>activate_amount_value</tabstop>
-  <tabstop>activate_button</tabstop>
+  <tabstop>lock_amount_value</tabstop>
+  <tabstop>lock_button</tabstop>
   <tabstop>unlock_amount_value</tabstop>
   <tabstop>unlock_button</tabstop>
   <tabstop>contacts_tableWidget</tabstop>
@@ -4810,8 +4887,6 @@
   <tabstop>chainsync_button</tabstop>
   <tabstop>chainstatus_button</tabstop>
   <tabstop>addresspage_back_button</tabstop>
-  <tabstop>addaddress_page_button</tabstop>
-  <tabstop>privkey_page_button</tabstop>
   <tabstop>creditloop_tabWidget</tabstop>
   <tabstop>request_date_checkBox</tabstop>
   <tabstop>loop_request_tableWidget</tabstop>

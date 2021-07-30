@@ -1,7 +1,10 @@
 import json
 import time
+
+import qrcode
+from qr_code_gen import Image
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QImage, QPixmap, QPainter
 from PyQt5.QtCore import QThread, pyqtSlot, QSize
 from PyQt5.QtWidgets import QMainWindow, QPushButton, QTableWidgetItem
 import configuration
@@ -61,6 +64,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
 
         # Wallet page
         self.contacts_address_comboBox.currentTextChanged.connect(self.get_selected_contact_address)
+        self.qrcode_button.clicked.connect(self.create_currentaddress_qrcode)
+        self.lock_button.clicked.connect(self.marmaralock_amount)
         # Credit Loops page-----------------
         self.creditloop_tabWidget.currentChanged.connect(self.credit_tab_changed)
         # -----Create credit Loop Request
@@ -90,6 +95,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.thread_address_privkey = QThread()
         self.thread_seeprivkey = QThread()
         self.thread_pubkeyloopsearch = QThread()
+        self.thread_marmaralock = QThread()
+        self.thread_sendrawtransaction = QThread()
         # self.thread_validateddresses = QThread()
         # self.thread_getbalance = QThread()
 
@@ -285,19 +292,19 @@ class MarmaraMain(QMainWindow, GuiStyle):
             getinfo_result = result_out[0]
             getinfo_result = json.loads(getinfo_result)
             self.bottom_message_label.setText('loading values')
-
-            self.difficulty_value_label.setText(str(getinfo_result['difficulty']))
+            self.difficulty_value_label.setText(str(int(getinfo_result['difficulty'])))
             self.currentblock_value_label.setText(str(getinfo_result['blocks']))
             self.longestchain_value_label.setText(str(getinfo_result['longestchain']))
             self.connections_value_label.setText(str(getinfo_result['connections']))
-
-            self.bottom_message_label.setText('initialization finished')
+            print('getinfo finished')
+            self.bottom_info('initialization finished')
             if getinfo_result.get('pubkey'):
                 self.pubkey_status = True
                 self.current_pubkey_value.setText(str(getinfo_result['pubkey']))
             if getinfo_result.get('pubkey') is None:
-                self.bottom_message_label.setText('pubkey is not set')
+                self.bottom_info('pubkey is not set')
                 self.pubkey_status = False
+                self.current_pubkey_value.setText("")
         elif result_out[1]:
             getinfo_result = str(result_out[1]).splitlines()
             print_result = ""
@@ -341,6 +348,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def update_addresses_table(self):
         if self.pubkey_status:
             self.addresses_tableWidget.setColumnHidden(0, True)
+            if self.current_pubkey_value.text() == "":
+                self.get_getinfo()
             current_pubkey = self.current_pubkey_value.text()
             rowcount = self.addresses_tableWidget.rowCount()
             while True:
@@ -380,13 +389,14 @@ class MarmaraMain(QMainWindow, GuiStyle):
     @pyqtSlot(tuple)
     def set_pubkey_result(self, result_out):
         if result_out[0]:
-            self.pubkey_status = True
+            self.get_getinfo()
             if str(json.loads(result_out[0])).rfind('error') > -1:
                 pubkey = json.loads(result_out[0])['pubkey']
                 print('this pubkey: ' + pubkey + ' already set')
                 self.bottom_message_label.setText(result_out[0])
-            self.bottom_message_label.setText('this pubkey set ' + str(json.loads(result_out[0])['pubkey']))
-            self.update_addresses_table()
+            QtWidgets.QMessageBox.information(self, 'Pubkey set', str(json.loads(result_out[0])['pubkey']))
+            if QtWidgets.QMessageBox.Ok:
+                self.update_addresses_table()
         elif result_out[1]:
             print(result_out[1])
             self.bottom_message_label.setText(result_out[1])
@@ -428,6 +438,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
     @pyqtSlot()
     def get_address_page(self):
         self.chain_stackedWidget.setCurrentIndex(1)
+        self.passphrase_TextEdit.clear()
+        self.verify_passphrase_TextEdit.clear()
 
     @pyqtSlot()
     def get_new_address(self):
@@ -451,9 +463,9 @@ class MarmaraMain(QMainWindow, GuiStyle):
     @pyqtSlot()
     def convertpassphrase(self):
         verified = False
-        seed = self.plainTextEdit.toPlainText()
+        seed = self.passphrase_TextEdit.toPlainText()
         print(seed)
-        verify = self.plainTextEdit_2.toPlainText()
+        verify = self.verify_passphrase_TextEdit.toPlainText()
         print(verify)
         if seed:
             if seed == verify:
@@ -491,7 +503,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             for line in result:
                 print_result = print_result + ' ' + str(line)
             print(print_result)
-            self.bottom_message_label.setText(print_result)
+            self.bottom_info(print_result)
 
     @pyqtSlot()
     def importprivkey(self):
@@ -553,10 +565,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 btn_seeprivkey.setIcon(QIcon(self.icon_path + "/details.png"))
                 self.addresses_privkey_tableWidget.setCellWidget(row_number, 1, btn_seeprivkey)
                 self.addresses_privkey_tableWidget.setItem(row_number, 0, QTableWidgetItem(address))
-                self.addresses_privkey_tableWidget.horizontalHeader().setSectionResizeMode(0,
-                                                                                           QtWidgets.QHeaderView.ResizeToContents)
-                self.addresses_privkey_tableWidget.horizontalHeader().setSectionResizeMode(1,
-                                                                                           QtWidgets.QHeaderView.ResizeToContents)
+                self.addresses_privkey_tableWidget.horizontalHeader().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
+                self.addresses_privkey_tableWidget.horizontalHeader().setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
                 btn_seeprivkey.clicked.connect(self.set_seeprivkey)
 
         elif result_out[1]:
@@ -594,6 +604,63 @@ class MarmaraMain(QMainWindow, GuiStyle):
             print(print_result)
             self.bottom_message_label.setText(print_result)
 
+    # --------------------------------------------------------------------
+    # Wallet page functions
+    # --------------------------------------------------------------------
+    @pyqtSlot()
+    def create_currentaddress_qrcode(self):
+        # creating a pix map of qr code
+        # qr_image = qrcode.make(self.currentaddress_value.text(), image_factory=Image).pixmap()
+        # set image to the Icon
+        qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_H, box_size=7, border=1)
+        qr.add_data(self.currentaddress_value.text())
+        qr_image = qr.make_image(image_factory=Image).pixmap()
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Information)
+        msg.setIconPixmap(qr_image)
+        msg.setWindowTitle('Qr Code')
+        msg.exec_()
+
+    @pyqtSlot()
+    def marmaralock_amount(self):
+        if not self.lock_amount_value.text() == "":
+            self.worker_marmaralock = marmarachain_rpc.RpcHandler()
+            command = cp.marmaralock + ' ' + self.lock_amount_value.text()
+            marmarlock_thread = self.worker_thread(self.thread_marmaralock, self.worker_marmaralock, command)
+            marmarlock_thread.command_out.connect(self.marmaralock_amount_result)
+
+    @pyqtSlot(tuple)
+    def marmaralock_amount_result(self, result_out):
+        if result_out[0]:
+            result = json.loads(result_out[0])
+            print(json.loads(result_out[0]))
+            if result['result'] == 'success':
+                QtWidgets.QMessageBox.question(self, 'Confirm Transaction' f'You are about to activate {self.lock_amount_value.text()}')
+                if QtWidgets.QMessageBox.Yes:
+                    self.sendrawtransaction(result['hex'])
+                if QtWidgets.QMessageBox.No:
+                    self.bottom_info('Transaction aborted')
+            if result.get('error'):
+                self.bottom_info(str(result['error']))
+        elif result_out[1]:
+            print_result = str(result_out[1]).splitlines()
+            if str(result_out[1]).find('error message:') != -1:
+                index = print_result.index('error message:') + 1
+                self.bottom_info(print_result[index])
+
+    def sendrawtransaction(self, hex):
+        self.worker_sendrawtransaction = marmarachain_rpc.RpcHandler()
+        command = cp.sendrawtransaction + ' ' + hex
+        sendrawtransaction_thread = self.worker_thread(self.thread_sendrawtransaction, self.worker_sendrawtransaction, command)
+        sendrawtransaction_thread.command_out.connect(self.sendrawtransaction_result)
+
+    @pyqtSlot(tuple)
+    def sendrawtransaction_result(self, result_out):
+        if result_out[0]:
+           print(result_out[0])
+        elif result_out[1]:
+            print(result_out[1])
+
     # -------------------------------------------------------------------
     # Getting Contacts in to comboboxes
     # --------------------------------------------------------------------
@@ -606,6 +673,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             if name[0] != 'Name':
                 self.contacts_address_comboBox.addItem(name[0])
 
+    @pyqtSlot()
     def get_selected_contact_address(self):
         contacts_data = configuration.ContacstSettings().read_csv_file()
         selected_contact_address = contacts_data[self.contacts_address_comboBox.currentIndex()]
@@ -627,6 +695,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 self.contactpubkey_loop_comboBox.addItem(name[0])
                 self.contactpubkey_transfer_comboBox.addItem(name[0])
 
+    @pyqtSlot()
     def get_selected_contact_loop_pubkey(self):
         contacts_data = configuration.ContacstSettings().read_csv_file()
         selected_contactpubkey_loop = contacts_data[self.contactpubkey_loop_comboBox.currentIndex()]
@@ -635,6 +704,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         if selected_contactpubkey_loop[2] == 'Pubkey':
             self.create_receiverpubkey_lineEdit.clear()
 
+    @pyqtSlot()
     def get_selected_contact_transfer_pubkey(self):
         contacts_data = configuration.ContacstSettings().read_csv_file()
         selected_contactpubkey_tranfer = contacts_data[self.contactpubkey_transfer_comboBox.currentIndex()]
@@ -646,6 +716,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
     # -------------------------------------------------------------------
     # Adding contacts editing and deleting
     # --------------------------------------------------------------------
+    @pyqtSlot()
     def add_contact(self):
         contact_name = self.contactname_lineEdit.text()
         contact_address = self.contactaddress_lineEdit.text()
@@ -693,6 +764,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             # if is_valid_pubkey == False:
             #     return {'error': 'pubkey is not valid'}
 
+    @pyqtSlot()
     def clear_contacts_line_edit(self):
         self.contactname_lineEdit.clear()
         self.contactaddress_lineEdit.clear()
@@ -714,6 +786,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                     self.contacts_tableWidget.horizontalHeader().setSectionResizeMode(row.index(item),
                                                                                       QtWidgets.QHeaderView.ResizeToContents)
 
+    @pyqtSlot()
     def get_contact_info(self, row, column):
         contact_name = ""
         contact_address = ""
@@ -729,6 +802,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.contactpubkey_lineEdit.setText(contact_pubkey)
         self.contact_editing_row = row
 
+    @pyqtSlot()
     def update_contact(self):
         if self.contact_editing_row is not None:
             read_contacts_data = configuration.ContacstSettings().read_csv_file()
@@ -750,6 +824,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         else:
             QtWidgets.QMessageBox.information(self, "Error Updating Contact", "You didn't select a contact from table.")
 
+    @pyqtSlot()
     def delete_contact(self):
         print(self.contact_editing_row)
         if self.contact_editing_row is not None:
@@ -771,16 +846,18 @@ class MarmaraMain(QMainWindow, GuiStyle):
     # -------------------------------------------------------------------
     # Remote Host adding , editing, deleting and  saving in conf file
     # --------------------------------------------------------------------
-
+    @pyqtSlot()
     def server_add_selected(self):
         self.login_stackedWidget.setCurrentIndex(2)
 
+    @pyqtSlot()
     def add_cancel_selected(self):
         self.add_servername_lineEdit.setText("")
         self.add_serverusername_lineEdit.setText("")
         self.add_serverip_lineEdit.setText("")
         self.remote_selection()
 
+    @pyqtSlot()
     def server_edit_selected(self):
         self.login_stackedWidget.setCurrentIndex(3)
         server_list = configuration.ServerSettings().read_file()
@@ -790,6 +867,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.edit_serverusername_lineEdit.setText(selected_server_info[1])
         self.edit_serverip_lineEdit.setText(selected_server_info[2])
 
+    @pyqtSlot()
     def save_server_settings(self):
         if self.add_servername_lineEdit.text() != "" and self.add_serverusername_lineEdit.text() != "" and self.add_serverip_lineEdit.text() != "":
             configuration.ServerSettings().save_file(server_name=self.add_servername_lineEdit.text(),
@@ -811,6 +889,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             server_name_list.append(setting_list.split(",")[0])
         self.server_comboBox.addItems(server_name_list)
 
+    @pyqtSlot()
     def edit_server_settings(self):
         if self.edit_servername_lineEdit.text() != "" and self.edit_serverusername_lineEdit.text() != "" and self.edit_serverip_lineEdit.text() != "":
             server_list = configuration.ServerSettings().read_file()
@@ -828,6 +907,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         else:
             print('write all values')
 
+    @pyqtSlot()
     def delete_server_setting(self):
         server_list = configuration.ServerSettings().read_file()
         del server_list[self.server_comboBox.currentIndex()]
