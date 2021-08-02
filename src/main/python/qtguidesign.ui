@@ -85,7 +85,7 @@
               <enum>QFrame::NoFrame</enum>
              </property>
              <property name="currentIndex">
-              <number>2</number>
+              <number>3</number>
              </property>
              <widget class="QWidget" name="hostselection_page">
               <layout class="QGridLayout" name="gridLayout_5">
@@ -1022,7 +1022,7 @@
             </property>
             <layout class="QGridLayout" name="gridLayout_14">
              <item row="0" column="1">
-              <widget class="QPushButton" name="copyaddress_Button">
+              <widget class="QPushButton" name="copyaddress_button">
                <property name="font">
                 <font>
                  <pointsize>12</pointsize>
@@ -1044,7 +1044,7 @@
                 <string>Copy Pubkey</string>
                </property>
                <property name="buddy">
-                <cstring>copypubkey_Button</cstring>
+                <cstring>copypubkey_button</cstring>
                </property>
               </widget>
              </item>
@@ -1059,12 +1059,12 @@
                 <string>Copy Address</string>
                </property>
                <property name="buddy">
-                <cstring>copyaddress_Button</cstring>
+                <cstring>copyaddress_button</cstring>
                </property>
               </widget>
              </item>
              <item row="1" column="1">
-              <widget class="QPushButton" name="copypubkey_Button">
+              <widget class="QPushButton" name="copypubkey_button">
                <property name="font">
                 <font>
                  <pointsize>12</pointsize>
@@ -1094,7 +1094,7 @@
             </property>
             <layout class="QGridLayout" name="gridLayout_16">
              <item row="0" column="0" colspan="2">
-              <widget class="QPushButton" name="getinfo_refresh_Button">
+              <widget class="QPushButton" name="getinfo_refresh_button">
                <property name="minimumSize">
                 <size>
                  <width>0</width>
@@ -1363,7 +1363,7 @@
                 <string>Mining</string>
                </property>
                <property name="buddy">
-                <cstring>mining_Button</cstring>
+                <cstring>mining_button</cstring>
                </property>
               </widget>
              </item>
@@ -1380,7 +1380,7 @@
               </widget>
              </item>
              <item row="1" column="1">
-              <widget class="QPushButton" name="staking_Button">
+              <widget class="QPushButton" name="staking_button">
                <property name="font">
                 <font>
                  <pointsize>12</pointsize>
@@ -1402,12 +1402,12 @@
                 <string>Staking</string>
                </property>
                <property name="buddy">
-                <cstring>staking_Button</cstring>
+                <cstring>staking_button</cstring>
                </property>
               </widget>
              </item>
              <item row="5" column="1">
-              <widget class="QLabel" name="label_18">
+              <widget class="QLabel" name="cpu_core_label">
                <property name="font">
                 <font>
                  <pointsize>12</pointsize>
@@ -1431,7 +1431,7 @@
               </widget>
              </item>
              <item row="3" column="1">
-              <widget class="QPushButton" name="mining_Button">
+              <widget class="QPushButton" name="mining_button">
                <property name="font">
                 <font>
                  <pointsize>12</pointsize>
@@ -1473,7 +1473,7 @@
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <property name="elideMode">
            <enum>Qt::ElideNone</enum>
@@ -1521,7 +1521,7 @@
                <enum>QFrame::Raised</enum>
               </property>
               <property name="currentIndex">
-               <number>1</number>
+               <number>0</number>
               </property>
               <widget class="QWidget" name="chainaddresses_page">
                <layout class="QGridLayout" name="gridLayout_26">
@@ -1567,7 +1567,7 @@
                      </spacer>
                     </item>
                     <item row="1" column="0">
-                     <widget class="QCheckBox" name="checkBox">
+                     <widget class="QCheckBox" name="hide_address_checkBox">
                       <property name="text">
                        <string>Hide zero amount addresses</string>
                       </property>
@@ -2782,7 +2782,7 @@
                <enum>QTabWidget::North</enum>
               </property>
               <property name="currentIndex">
-               <number>2</number>
+               <number>0</number>
               </property>
               <widget class="QWidget" name="looprequests_tab">
                <attribute name="title">
@@ -2812,7 +2812,7 @@
                    </widget>
                   </item>
                   <item row="1" column="3">
-                   <widget class="QPushButton" name="looprequest_search_Button">
+                   <widget class="QPushButton" name="looprequest_search_button">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
                       <horstretch>0</horstretch>
@@ -4879,18 +4879,18 @@
   <tabstop>addcontact_button</tabstop>
   <tabstop>deletecontact_button</tabstop>
   <tabstop>updatecontact_button</tabstop>
-  <tabstop>getinfo_refresh_Button</tabstop>
-  <tabstop>staking_Button</tabstop>
-  <tabstop>mining_Button</tabstop>
-  <tabstop>copyaddress_Button</tabstop>
-  <tabstop>copypubkey_Button</tabstop>
+  <tabstop>getinfo_refresh_button</tabstop>
+  <tabstop>staking_button</tabstop>
+  <tabstop>mining_button</tabstop>
+  <tabstop>copyaddress_button</tabstop>
+  <tabstop>copypubkey_button</tabstop>
   <tabstop>chainsync_button</tabstop>
   <tabstop>chainstatus_button</tabstop>
   <tabstop>addresspage_back_button</tabstop>
   <tabstop>creditloop_tabWidget</tabstop>
   <tabstop>request_date_checkBox</tabstop>
   <tabstop>loop_request_tableWidget</tabstop>
-  <tabstop>looprequest_search_Button</tabstop>
+  <tabstop>looprequest_search_button</tabstop>
   <tabstop>transferableloops_tableWidget</tabstop>
   <tabstop>transferable_matures_checkBox</tabstop>
   <tabstop>transferable_amount_checkBox</tabstop>
@@ -4920,22 +4920,5 @@
   <tabstop>transferable_minamount_lineEdit</tabstop>
  </tabstops>
  <resources/>
- <connections>
-  <connection>
-   <sender>actionQuit</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>close()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>513</x>
-     <y>383</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

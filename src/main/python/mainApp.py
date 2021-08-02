@@ -6,7 +6,7 @@ from qr_code_gen import Image
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QIcon, QImage, QPixmap, QPainter
 from PyQt5.QtCore import QThread, pyqtSlot, QSize
-from PyQt5.QtWidgets import QMainWindow, QPushButton, QTableWidgetItem
+from PyQt5.QtWidgets import QMainWindow, QPushButton, QTableWidgetItem, QMessageBox
 import configuration
 import marmarachain_rpc
 import remote_connection
@@ -47,13 +47,12 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.serverdelete_button.clicked.connect(self.delete_server_setting)
         # MCL tabwidget
         self.mcl_tab.currentChanged.connect(self.mcl_tab_changed)
-        # System page
+        # Chain page
         self.stopchain_button.clicked.connect(self.stop_chain)
-        # self.stopchain_button.setIcon(QIcon(self.icon_path + "/stop_icon.png"))
-        # self.stopchain_button.setIconSize(QSize(32, 32))
         self.addaddress_page_button.clicked.connect(self.get_address_page)
         self.addresses_tableWidget.cellClicked.connect(self.itemcontext)
         self.privkey_page_button.clicked.connect(self.see_privkey_page)
+        self.hide_address_checkBox.clicked.connect(self.hide_addresses)
         # add address page ----
         self.newaddress_button.clicked.connect(self.get_new_address)
         self.address_seed_button.clicked.connect(self.convertpassphrase)
@@ -66,6 +65,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.contacts_address_comboBox.currentTextChanged.connect(self.get_selected_contact_address)
         self.qrcode_button.clicked.connect(self.create_currentaddress_qrcode)
         self.lock_button.clicked.connect(self.marmaralock_amount)
+        self.unlock_button.clicked.connect(self.marmaraunlock_amount)
         # Credit Loops page-----------------
         self.creditloop_tabWidget.currentChanged.connect(self.credit_tab_changed)
         # -----Create credit Loop Request
@@ -96,9 +96,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.thread_seeprivkey = QThread()
         self.thread_pubkeyloopsearch = QThread()
         self.thread_marmaralock = QThread()
+        self.thread_marmaraunlock = QThread()
         self.thread_sendrawtransaction = QThread()
-        # self.thread_validateddresses = QThread()
-        # self.thread_getbalance = QThread()
 
         # Loading Gif
         # --------------------------------------------------
@@ -106,7 +105,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         # --------------------------------------------------
 
     def show_about(self):
-        QtWidgets.QMessageBox.about(
+        QMessageBox.about(
             self,
             "About Marmara Connector",
             "This is a software written to carry out Marmarachain node operations on a local or remote machine."
@@ -182,6 +181,10 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.thread_bottom_info.started.connect(self.worker_bottom_info.write_bottom_info)
         self.thread_bottom_info.start()
 
+    # ---------------------------------------
+    #  Chain initialization
+    # ---------------------------------------
+
     def chain_init(self):
         print('chain_status ' + str(self.chain_status))
         if not self.chain_status:
@@ -202,16 +205,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.check_chain_pid()
 
     def check_chain_pid(self):
-        # self.worker_chain_pid = marmarachain_rpc.RpcHandler()
-        # check_pid_thread = self.worker_thread(self.thread_chainpid, self.worker_chain_pid)
-        # self.thread_chainpid.started.connect(self.worker_chain_pid.chain_pid)
-        # check_pid_thread.daemon_pid.connect(self.chain_check_finished)
-
-        # def chain_check_finished(self, result_out):
-        #     if not result_out:
-        #         self.bottom_message_label.setText('Chain start error: No pid')
-        #     if result_out:
-        #         print('pid is ' + result_out)
         while True:
             marmara_pid = marmarachain_rpc.mcl_chain_status()
             if len(marmara_pid[0]) > 0:
@@ -231,11 +224,12 @@ class MarmaraMain(QMainWindow, GuiStyle):
 
     @pyqtSlot()
     def is_chain_ready(self):
-        self.worker_getchain = marmarachain_rpc.RpcHandler()
-        chain_ready_thread = self.worker_thread(self.thread_getchain, self.worker_getchain)
-        self.thread_getchain.started.connect(self.worker_getchain.is_chain_ready)
-        chain_ready_thread.command_out.connect(self.chain_ready_result)
-        chain_ready_thread.finished.connect(self.chain_init)
+        self.worker_getchain = marmarachain_rpc.RpcHandler()  # worker setting
+        chain_ready_thread = self.worker_thread(self.thread_getchain, self.worker_getchain)  # putting in to thread
+        self.thread_getchain.started.connect(
+            self.worker_getchain.is_chain_ready)  # executing respective worker class function
+        chain_ready_thread.command_out.connect(self.chain_ready_result)  # getting results and connecting to socket
+        chain_ready_thread.finished.connect(self.chain_init)  # chain_status is True go back continue to init
 
     @pyqtSlot(tuple)
     def chain_ready_result(self, result_out):
@@ -243,19 +237,25 @@ class MarmaraMain(QMainWindow, GuiStyle):
             print('chain ready finished')
             self.bottom_info('chain ready finished')
             self.chain_status = True
+            self.chainstatus_button.setStyleSheet(
+                "QPushButton {image: url(" + self.icon_path + "/circle-active.png); border: 0; width: 30px; height: 30px;}")
         elif result_out[1]:
             print_result = str(result_out[1]).splitlines()
             if str(result_out[1]).find('error message:') != -1:
                 index = print_result.index('error message:') + 1
                 self.bottom_info(print_result[index])
 
+    # --------------------------------------
+    # Stopping Chain
+    # --------------------------------------
     @pyqtSlot()
     def stop_chain(self):
         if self.chain_status:
-            self.worker_stopchain = marmarachain_rpc.RpcHandler()
-            stop_chain_thread = self.worker_thread(self.thread_stopchain, self.worker_stopchain)
-            self.thread_stopchain.started.connect(self.worker_stopchain.stopping_chain)
-            stop_chain_thread.command_out.connect(self.result_stopchain)
+            self.worker_stopchain = marmarachain_rpc.RpcHandler()  # worker setting
+            stop_chain_thread = self.worker_thread(self.thread_stopchain, self.worker_stopchain)  # putting in to thread
+            self.thread_stopchain.started.connect(
+                self.worker_stopchain.stopping_chain)  # executing respective worker class function
+            stop_chain_thread.command_out.connect(self.result_stopchain)  # getting results and connecting to socket
         else:
             self.bottom_message_label.setText('chain is not ready')
 
@@ -270,6 +270,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
         if len(result_out[0]) == 0:
             self.bottom_message_label.setText('chain stopped')
             self.chain_status = False
+            self.chainstatus_button.setStyleSheet(
+                "QPushButton {image: url(" + self.icon_path + "/circle-inactive.png); border: 0; width: 30px; height: 30px;}")
             self.update_addresses_table()
         elif result_out[1]:
             print_result = ""
@@ -277,14 +279,15 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 print_result = print_result + ' ' + str(line)
             print(print_result)
             self.bottom_message_label.setText(print_result)
-
+    # -------------------------------------------------------
+    # Getting getinfo command
+    # -------------------------------------------------------
     @pyqtSlot()
     def get_getinfo(self):
         self.worker_getinfo = marmarachain_rpc.RpcHandler()  # worker setting
         command = cp.getinfo  # setting command
         getinfo_thread = self.worker_thread(self.thread_getinfo, self.worker_getinfo, command)  # putting in to thread
-        # self.thread_getinfo.started.connect(self.worker_getinfo.do_execute_rpc)  # executing respective worker class function
-        getinfo_thread.command_out.connect(self.set_getinfo_result)  # getting results from socket
+        getinfo_thread.command_out.connect(self.set_getinfo_result)  # getting results and connecting to socket
 
     @pyqtSlot(tuple)
     def set_getinfo_result(self, result_out):
@@ -298,6 +301,12 @@ class MarmaraMain(QMainWindow, GuiStyle):
             self.connections_value_label.setText(str(getinfo_result['connections']))
             print('getinfo finished')
             self.bottom_info('initialization finished')
+            if getinfo_result.get('synced'):
+                self.chainsync_button.setStyleSheet(
+                    "QPushButton {image: url(" + self.icon_path + "/circle-active.png); border: 0; width: 30px; height: 30px;}")
+            elif not getinfo_result.get('synced'):
+                self.chainsync_button.setStyleSheet(
+                    "QPushButton {image: url(" + self.icon_path + "/circle-inactive.png); border: 0; width: 30px; height: 30px;}")
             if getinfo_result.get('pubkey'):
                 self.pubkey_status = True
                 self.current_pubkey_value.setText(str(getinfo_result['pubkey']))
@@ -312,7 +321,11 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 print_result = print_result + ' ' + str(line)
             print(print_result)
             self.bottom_message_label.setText(print_result)
+    # -----------------------------------------------------------
+    # Chian page functions
+    # -----------------------------------------------------------
 
+    # getting addresses for address table widget
     @pyqtSlot()
     def getaddresses(self):
         self.worker_getaddresses = marmarachain_rpc.RpcHandler()
@@ -338,6 +351,26 @@ class MarmaraMain(QMainWindow, GuiStyle):
                                                                                    QtWidgets.QHeaderView.ResizeToContents)
                 btn_setpubkey.clicked.connect(self.set_pubkey)
         self.update_addresses_table()
+
+    @pyqtSlot()
+    def hide_addresses(self):
+        if self.hide_address_checkBox.checkState():
+            rowcount = self.addresses_tableWidget.rowCount()
+            while True:
+                rowcount = rowcount - 1
+                if self.addresses_tableWidget.item(rowcount, 1).text() == "0":
+                    self.addresses_tableWidget.setRowHidden(rowcount, True)
+                if rowcount == 0:
+                    break
+
+        else:
+            rowcount = self.addresses_tableWidget.rowCount()
+            while True:
+                rowcount = rowcount - 1
+                if self.addresses_tableWidget.item(rowcount, 1).text() == "0":
+                    self.addresses_tableWidget.setRowHidden(rowcount, False)
+                if rowcount == 0:
+                    break
 
     @pyqtSlot(int, int)
     def itemcontext(self, row, column):
@@ -365,11 +398,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
             while True:
                 btn_start = QPushButton('Start')
                 btn_start.setIcon(QIcon(self.icon_path + "/start_icon.png"))
-                # btn_start.setStyleSheet(
-                #     "QPushButton {image: url(" + self.icon_path + "/start_icon.png); border: 0; width: 30px; height: 30px;}"
-                #     "QPushButton::hover   {image: url(" + self.icon_path + "/start_icon_hover.png);border:0px}"
-                #     "QPushButton::pressed {image: url(" + self.icon_path + "/start_icon_press.png);border:0px}"
-                #    )
                 rowcount = rowcount - 1
                 self.addresses_tableWidget.setCellWidget(rowcount, 0, btn_start)
                 btn_start.clicked.connect(self.start_chain)
@@ -415,23 +443,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
             self.addresses_tableWidget.setColumnHidden(0, True)
             self.check_chain_pid()
 
-    def search_pubkeyloops(self):
-        pubkey = self.loopqueries_pubkey_lineEdit.text()
-        if pubkey:
-            self.worker_pubkeyloopsearch = marmarachain_rpc.RpcHandler()
-            command = cp.marmarainfo + ' 0 0 0 0 ' + pubkey
-            pubkeyloopsearch_thread = self.worker_thread(self.thread_pubkeyloopsearch, self.worker_pubkeyloopsearch,
-                                                         command)
-            pubkeyloopsearch_thread.command_out.connect(self.get_search_pubkeyloops_result)
-        else:
-            self.bottom_message_label.setText('write pubkey to search !')
-
-    def get_search_pubkeyloops_result(self, result_out):
-        if result_out[0]:
-            print(result_out[0])
-        elif result_out[1]:
-            print(result_out[1])
-
     # ------------------
     # wallet Address Add, import
     # -------------------
@@ -443,10 +454,13 @@ class MarmaraMain(QMainWindow, GuiStyle):
 
     @pyqtSlot()
     def get_new_address(self):
-        self.worker_get_newaddress = marmarachain_rpc.RpcHandler()
-        command = cp.getnewaddress
-        getnewaddress_thread = self.worker_thread(self.thread_getnewaddress, self.worker_get_newaddress, command)
-        getnewaddress_thread.command_out.connect(self.set_getnewaddress_result)
+        pop_up = QMessageBox.question(self, "Creating New Address",
+                                      "You are about to create a new address. Are you sure?")
+        if pop_up == QMessageBox.Yes:
+            self.worker_get_newaddress = marmarachain_rpc.RpcHandler()
+            command = cp.getnewaddress
+            getnewaddress_thread = self.worker_thread(self.thread_getnewaddress, self.worker_get_newaddress, command)
+            getnewaddress_thread.command_out.connect(self.set_getnewaddress_result)
 
     @pyqtSlot(tuple)
     def set_getnewaddress_result(self, result_out):
@@ -486,14 +500,14 @@ class MarmaraMain(QMainWindow, GuiStyle):
         if result_out[0]:
             result = json.loads(result_out[0])
             wif = result['wif']
-            response = QtWidgets.QMessageBox.question(self, "Creating an Address",
-                                                      "An address has been created with details below. Do you want to "
-                                                      "import this address to the wallet?" +
-                                                      "<br><b>Seed = </b><br>" + result['agamapassphrase'] +
-                                                      "<br><b>Private Key = </b><br>" + wif +
-                                                      "<br><b>Address = </b><br>" + result['address'] +
-                                                      "<br><b>Pubkey = </b><br>" + result['pubkey'])
-            if response == QtWidgets.QMessageBox.Yes:
+            response = QMessageBox.question(self, "Creating an Address",
+                                            "An address has been created with details below. Do you want to "
+                                            "import this address to the wallet?" +
+                                            "<br><b>Seed = </b><br>" + result['agamapassphrase'] +
+                                            "<br><b>Private Key = </b><br>" + wif +
+                                            "<br><b>Address = </b><br>" + result['address'] +
+                                            "<br><b>Pubkey = </b><br>" + result['pubkey'])
+            if response == QMessageBox.Yes:
                 self.get_importprivkey(wif)
 
         # for error handling of convertpassphrase method
@@ -565,8 +579,10 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 btn_seeprivkey.setIcon(QIcon(self.icon_path + "/details.png"))
                 self.addresses_privkey_tableWidget.setCellWidget(row_number, 1, btn_seeprivkey)
                 self.addresses_privkey_tableWidget.setItem(row_number, 0, QTableWidgetItem(address))
-                self.addresses_privkey_tableWidget.horizontalHeader().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
-                self.addresses_privkey_tableWidget.horizontalHeader().setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+                self.addresses_privkey_tableWidget.horizontalHeader().setSectionResizeMode(0,
+                                                                                           QtWidgets.QHeaderView.ResizeToContents)
+                self.addresses_privkey_tableWidget.horizontalHeader().setSectionResizeMode(1,
+                                                                                           QtWidgets.QHeaderView.ResizeToContents)
                 btn_seeprivkey.clicked.connect(self.set_seeprivkey)
 
         elif result_out[1]:
@@ -587,15 +603,14 @@ class MarmaraMain(QMainWindow, GuiStyle):
             address = self.addresses_privkey_tableWidget.item(index.row(), 0).text()
             self.worker_see_privkey = marmarachain_rpc.RpcHandler()
             command = cp.dumpprivkey + ' ' + address
-            print(command)
             see_privkey_thread = self.worker_thread(self.thread_seeprivkey, self.worker_see_privkey, command)
             see_privkey_thread.command_out.connect(self.get_seeprivkey_result)
 
     @pyqtSlot(tuple)
     def get_seeprivkey_result(self, result_out):
         if result_out[0]:
-            print(result_out[0])
-            self.bottom_message_label.setText('private key = ' + result_out[0])
+            # self.bottom_message_label.setText('private key = ' + result_out[0])
+            QMessageBox.information(self, 'Private key', result_out[0])
         elif result_out[1]:
             result = str(result_out[1]).splitlines()
             print_result = ""
@@ -615,8 +630,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
         qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_H, box_size=7, border=1)
         qr.add_data(self.currentaddress_value.text())
         qr_image = qr.make_image(image_factory=Image).pixmap()
-        msg = QtWidgets.QMessageBox()
-        msg.setIcon(QtWidgets.QMessageBox.Information)
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Information)
         msg.setIconPixmap(qr_image)
         msg.setWindowTitle('Qr Code')
         msg.exec_()
@@ -635,10 +650,11 @@ class MarmaraMain(QMainWindow, GuiStyle):
             result = json.loads(result_out[0])
             print(json.loads(result_out[0]))
             if result['result'] == 'success':
-                QtWidgets.QMessageBox.question(self, 'Confirm Transaction' f'You are about to activate {self.lock_amount_value.text()}')
-                if QtWidgets.QMessageBox.Yes:
+                QMessageBox.question(self,
+                                     'Confirm Transaction' f'You are about to activate {self.lock_amount_value.text()}')
+                if QMessageBox.Yes:
                     self.sendrawtransaction(result['hex'])
-                if QtWidgets.QMessageBox.No:
+                if QMessageBox.No:
                     self.bottom_info('Transaction aborted')
             if result.get('error'):
                 self.bottom_info(str(result['error']))
@@ -648,16 +664,55 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 index = print_result.index('error message:') + 1
                 self.bottom_info(print_result[index])
 
+    @pyqtSlot()
+    def marmaraunlock_amount(self):
+        print(type(self.unlock_amount_value.text()))
+        if not self.unlock_amount_value.text() == "":
+            self.worker_marmaraunlock = marmarachain_rpc.RpcHandler()
+            command = cp.marmaraunlock + ' ' + self.lock_amount_value.text()
+            marmarunlock_thread = self.worker_thread(self.thread_marmaraunlock, self.worker_marmaraunlock, command)
+            marmarunlock_thread.command_out.connect(self.marmaralock_amount_result)
+
+    @pyqtSlot(tuple)
+    def marmaralock_amount_result(self, result_out):
+        if result_out[0]:
+            print(result_out[0])
+        elif result_out[1]:
+            print(result_out[1])
+
     def sendrawtransaction(self, hex):
         self.worker_sendrawtransaction = marmarachain_rpc.RpcHandler()
         command = cp.sendrawtransaction + ' ' + hex
-        sendrawtransaction_thread = self.worker_thread(self.thread_sendrawtransaction, self.worker_sendrawtransaction, command)
+        sendrawtransaction_thread = self.worker_thread(self.thread_sendrawtransaction, self.worker_sendrawtransaction,
+                                                       command)
         sendrawtransaction_thread.command_out.connect(self.sendrawtransaction_result)
 
     @pyqtSlot(tuple)
     def sendrawtransaction_result(self, result_out):
         if result_out[0]:
-           print(result_out[0])
+            print(result_out[0])
+        elif result_out[1]:
+            print(result_out[1])
+
+    # -------------------------------------------------------------------
+    # Credit transaction functions
+    # --------------------------------------------------------------------
+
+    @pyqtSlot()
+    def search_pubkeyloops(self):
+        pubkey = self.loopqueries_pubkey_lineEdit.text()
+        if pubkey:
+            self.worker_pubkeyloopsearch = marmarachain_rpc.RpcHandler()
+            command = cp.marmarainfo + ' 0 0 0 0 ' + pubkey
+            pubkeyloopsearch_thread = self.worker_thread(self.thread_pubkeyloopsearch, self.worker_pubkeyloopsearch,
+                                                         command)
+            pubkeyloopsearch_thread.command_out.connect(self.get_search_pubkeyloops_result)
+        else:
+            self.bottom_message_label.setText('write pubkey to search !')
+
+    def get_search_pubkeyloops_result(self, result_out):
+        if result_out[0]:
+            print(result_out[0])
         elif result_out[1]:
             print(result_out[1])
 
@@ -724,14 +779,14 @@ class MarmaraMain(QMainWindow, GuiStyle):
         new_record = [contact_name, contact_address, contact_pubkey]
         unique_record = self.unique_contacts(contact_name, contact_address, contact_pubkey)
         if unique_record:
-            QtWidgets.QMessageBox.information(self, "Error Adding Contact", unique_record.get('error'))
+            QMessageBox.information(self, "Error Adding Contact", unique_record.get('error'))
         if not unique_record:
             configuration.ContacstSettings().add_csv_file(new_record)
             read_contacts_data = configuration.ContacstSettings().read_csv_file()
             self.update_contact_tablewidget(read_contacts_data)
             self.clear_contacts_line_edit()
-            QtWidgets.QMessageBox.information(self, "Added Contact", "It is your responsibility that the information "
-                                                                     "you have entered are correct and valid.")
+            QMessageBox.information(self, "Added Contact", "It is your responsibility that the information "
+                                                           "you have entered are correct and valid.")
 
     def unique_contacts(self, name, address, pubkey, contacts_data=None):
         if contacts_data:
@@ -822,17 +877,17 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 self.update_contact_tablewidget()
                 self.clear_contacts_line_edit()
         else:
-            QtWidgets.QMessageBox.information(self, "Error Updating Contact", "You didn't select a contact from table.")
+            QMessageBox.information(self, "Error Updating Contact", "You didn't select a contact from table.")
 
     @pyqtSlot()
     def delete_contact(self):
         print(self.contact_editing_row)
         if self.contact_editing_row is not None:
-            response = QtWidgets.QMessageBox.question(self,
-                                                      "Deleting Contact",
-                                                      "Are you sure to delete the contact from the list?",
-                                                      )
-            if response == QtWidgets.QMessageBox.Yes:
+            response = QMessageBox.question(self,
+                                            "Deleting Contact",
+                                            "Are you sure to delete the contact from the list?",
+                                            )
+            if response == QMessageBox.Yes:
                 read_contacts_data = configuration.ContacstSettings().read_csv_file()
                 del read_contacts_data[self.contact_editing_row + 1]  # +1 for exclude header
                 configuration.ContacstSettings().update_csv_file(read_contacts_data)
@@ -841,7 +896,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             else:
                 self.clear_contacts_line_edit()
         else:
-            QtWidgets.QMessageBox.information(self, "Error Deleting Contact", "You didn't select a contact from table.")
+            QMessageBox.information(self, "Error Deleting Contact", "You didn't select a contact from table.")
 
     # -------------------------------------------------------------------
     # Remote Host adding , editing, deleting and  saving in conf file
