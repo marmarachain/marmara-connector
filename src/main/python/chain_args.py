@@ -22,8 +22,9 @@ getaddressbalance = 'getaddressbalance '  # +  '{"addresses": ["address"]}'
 convertpassphrase = 'convertpassphrase'  # + "agamapassphrase"
 importprivkey = 'importprivkey'  # + "wifkey"
 dumpprivkey = 'dumpprivkey'  # + "address"
-marmarainfo = 'marmarainfo' # 0 0 0 pubkey
+marmarainfo = 'marmarainfo'  # firstheight lastheight  minamount maxamount pubkey
 sendrawtransaction = 'sendrawtransaction'  # + hex
+marmararecievelist = 'marmarareceivelist'  # + pubkey + maxage
 
 def start_param_local(marmarad):
     if platform.system() == 'Linux' or platform.system() == 'Darwin':

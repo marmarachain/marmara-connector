@@ -68,12 +68,17 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.unlock_button.clicked.connect(self.marmaraunlock_amount)
         # Credit Loops page-----------------
         self.creditloop_tabWidget.currentChanged.connect(self.credit_tab_changed)
+        # ---- Received Loop Requests page ----
+        self.looprequest_search_button.clicked.connect(self.search_marmarareceivelist)
+        self.request_date_checkBox.clicked.connect(self.set_request_date_state)
         # -----Create credit Loop Request
         self.contactpubkey_loop_comboBox.currentTextChanged.connect(self.get_selected_contact_loop_pubkey)
         self.contactpubkey_transfer_comboBox.currentTextChanged.connect(self.get_selected_contact_transfer_pubkey)
         # ---- Loop Queries page --
         self.loopqueries_pubkey_search_button.clicked.connect(self.search_pubkeyloops)
-        # Contacst Page
+
+
+        # Contacts Page
         self.addcontact_button.clicked.connect(self.add_contact)
         self.updatecontact_button.clicked.connect(self.update_contact)
         self.deletecontact_button.clicked.connect(self.delete_contact)
@@ -81,7 +86,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.clear_contact_button.clicked.connect(self.clear_contacts_line_edit)
         self.contact_editing_row = ""
 
-        # Tread setup
+        # Thread setup
         self.thread_bottom_info = QThread()
         self.thread_getinfo = QThread()
         self.thread_getchain = QThread()
@@ -98,6 +103,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.thread_marmaralock = QThread()
         self.thread_marmaraunlock = QThread()
         self.thread_sendrawtransaction = QThread()
+        self.thread_marmarareceivelist = QThread()
 
         # Loading Gif
         # --------------------------------------------------
@@ -689,6 +695,33 @@ class MarmaraMain(QMainWindow, GuiStyle):
 
     @pyqtSlot(tuple)
     def sendrawtransaction_result(self, result_out):
+        if result_out[0]:
+            print(result_out[0])
+        elif result_out[1]:
+            print(result_out[1])
+
+    # -------------------------------------------------------------------
+    # Credit loops functions
+    # --------------------------------------------------------------------
+    @pyqtSlot()
+    def set_request_date_state(self):
+        if self.request_date_checkBox.checkState():
+            self.request_dateTimeEdit.setEnabled(False)
+        else:
+            self.request_dateTimeEdit.setEnabled(True)
+    @pyqtSlot()
+    def search_marmarareceivelist(self):
+        if self.request_date_checkBox.checkState():
+            maxage = '1440'
+        else:
+            maxage = '1440' # get the maxage from date field (block to date conversion)
+            #
+        self.worker_marmarareceivelist = marmarachain_rpc.RpcHandler()
+        command = cp.marmararecievelist + ' ' + self.current_pubkey_value.text() + ' ' + maxage
+        marmarareceivelist_thread = self.worker_thread(self.thread_marmarareceivelist, self.worker_marmarareceivelist, command)
+        marmarareceivelist_thread.command_out.connect(self.search_marmarareceivelist_result)
+    @pyqtSlot(tuple)
+    def search_marmarareceivelist_result(self, result_out):
         if result_out[0]:
             print(result_out[0])
         elif result_out[1]:
