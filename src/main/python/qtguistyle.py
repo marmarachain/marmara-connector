@@ -14,7 +14,17 @@ class GuiStyle(ApplicationContext ,Ui_MainWindow):
         # stop button style
         self.stopchain_button.setIcon(QtGui.QIcon(self.icon_path + "/stop_icon.png"))
         self.stopchain_button.setIconSize(QtCore.QSize(32, 32))
+        # menubar
+        self.actionQuit.setIcon(QtGui.QIcon(self.icon_path + '/exit_icon.png'))
+        # mcl tab
+        self.mcl_tab.setTabIcon(0, QtGui.QIcon(self.icon_path + '/chain_icon.png'))
+        self.mcl_tab.setTabIcon(1, QtGui.QIcon(self.icon_path + '/wallet_icon.png'))
+        self.mcl_tab.setTabIcon(2, QtGui.QIcon(self.icon_path + '/credit.png'))
+        self.mcl_tab.setTabIcon(3, QtGui.QIcon(self.icon_path + '/loop_icon.png'))
+        self.mcl_tab.setTabIcon(4, QtGui.QIcon(self.icon_path + '/persons.png'))
         # Side panel
+        self.getinfo_refresh_button.setIcon(QtGui.QIcon(self.icon_path + '/refresh_icon.png'))
+        self.getinfo_refresh_button.setIconSize(QtCore.QSize(32, 32))
         self.chainstatus_button.setStyleSheet("QPushButton {image: url("+self.icon_path+"/circle-inactive.png); border: 0; width: 30px; height: 30px;}")
         self.chainsync_button.setStyleSheet("QPushButton {image: url("+self.icon_path+"/circle-inactive.png); border: 0; width: 30px; height: 30px;}")
         self.staking_button.setVisible(False)
@@ -30,7 +40,25 @@ class GuiStyle(ApplicationContext ,Ui_MainWindow):
         self.lock_button.setIconSize(QtCore.QSize(32, 32))
         self.unlock_button.setIcon(QtGui.QIcon(self.icon_path + "/coin_unlock_icon.png"))
         self.unlock_button.setIconSize(QtCore.QSize(32, 32))
+        self.addressamount_refresh_button.setIcon(QtGui.QIcon(self.icon_path + '/refresh_icon.png'))
+        self.addressamount_refresh_button.setIconSize(QtCore.QSize(24, 24))
+        # Coin Send-Receive page
+        self.coinsend_button.setIcon(QtGui.QIcon(self.icon_path + '/send_coin_icon.png'))
+        self.coinsend_button.setIconSize(QtCore.QSize(24, 24))
+        # Credit loops page
+        self.looprequest_search_button.setIcon(QtGui.QIcon(self.icon_path + '/search_icon.png'))
+        self.looprequest_search_button.setIconSize(QtCore.QSize(24, 24))
 
+        self.loopsearch_button.setIcon(QtGui.QIcon(self.icon_path + '/search_icon.png'))
+        self.loopsearch_button.setIconSize(QtCore.QSize(24, 24))
+
+        self.loopqueries_pubkey_search_button.setIcon(QtGui.QIcon(self.icon_path + '/search_icon.png'))
+        self.loopqueries_pubkey_search_button.setIconSize(QtCore.QSize(24, 24))
+
+        self.activeloops_search_button.setIcon(QtGui.QIcon(self.icon_path + '/search_icon.png'))
+        self.activeloops_search_button.setIconSize(QtCore.QSize(24, 24))
+        self.transferableloops_search_button.setIcon(QtGui.QIcon(self.icon_path + '/search_icon.png'))
+        self.transferableloops_search_button.setIconSize(QtCore.QSize(24, 24))
 
 class ToggleSwitch(QtWidgets.QPushButton):
     def __init__(self, parent = None):
