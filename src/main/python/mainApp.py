@@ -2,10 +2,11 @@ import json
 import time
 
 import qrcode
+from datetime import datetime
 from qr_code_gen import Image
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QIcon, QImage, QPixmap, QPainter
-from PyQt5.QtCore import QThread, pyqtSlot, QSize
+from PyQt5.QtCore import QThread, pyqtSlot, QSize, QDateTime
 from PyQt5.QtWidgets import QMainWindow, QPushButton, QTableWidgetItem, QMessageBox
 import configuration
 import marmarachain_rpc
@@ -71,9 +72,11 @@ class MarmaraMain(QMainWindow, GuiStyle):
         # ---- Received Loop Requests page ----
         self.looprequest_search_button.clicked.connect(self.search_marmarareceivelist)
         self.request_date_checkBox.clicked.connect(self.set_request_date_state)
+
         # -----Create credit Loop Request
         self.contactpubkey_loop_comboBox.currentTextChanged.connect(self.get_selected_contact_loop_pubkey)
         self.contactpubkey_transfer_comboBox.currentTextChanged.connect(self.get_selected_contact_transfer_pubkey)
+        self.create_loopmatures_dateTimeEdit.setMinimumDateTime(QDateTime.currentDateTime())
         # ---- Loop Queries page --
         self.loopqueries_pubkey_search_button.clicked.connect(self.search_pubkeyloops)
 
@@ -726,6 +729,30 @@ class MarmaraMain(QMainWindow, GuiStyle):
             print(result_out[0])
         elif result_out[1]:
             print(result_out[1])
+
+    # changes datetime to block age with args date and begin_height=False as default
+    # calling function without specifying begin_height calculates the block_age between current datetime and date arg
+    # calling function with begin_Height=True calculates the block_age from start of Marmarachain to the date arg
+    # returns absolute value of block_age
+    def change_datetime_to_block_age(self, date, begin_height=False):
+        minute_ = date.toPyDateTime().minute
+        hour_ = date.toPyDateTime().hour
+        day_ = date.toPyDateTime().day
+        month_ = date.toPyDateTime().month
+        year_ = date.toPyDateTime().year
+        if begin_height:
+           now = datetime.fromtimestamp(1579278200)
+        else:
+            now = datetime.now()
+        minute_ = now.minute - minute_
+        hour_ = now.hour - hour_
+        day_ = now.day - day_
+        month_ = now.month - month_
+        year_ = now.year - year_
+
+        block_age = minute_ + (hour_ * 60) + (day_ * 1440) + (month_ * 30 * 1440) + (year_ * 365 * 1440)
+        return abs(block_age)
+
 
     # -------------------------------------------------------------------
     # Credit transaction functions
