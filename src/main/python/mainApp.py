@@ -763,6 +763,17 @@ class MarmaraMain(QMainWindow, GuiStyle):
         elif result_out[1]:
             print(result_out[1])
 
+    @pyqtSlot(list)
+    def set_transfer_request_result(self, transfer_result):
+        for row in transfer_result:
+            row_number = transfer_result.index(row)
+            self.transferrequests_tableWidget.setRowCount(len(transfer_result))
+
+    @pyqtSlot(list)
+    def set_credit_request_result(self, credit_request_result):
+        for row in credit_request_result:
+            row_number = credit_request_result.index(row)
+            self.loop_request_tableWidget.setRowCount(len(credit_request_result))
     # -------------------------------------------------------------------
     # Credit transaction functions
     # --------------------------------------------------------------------
