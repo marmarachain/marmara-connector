@@ -45,7 +45,7 @@ class ServerSettings:
             file.close()
 
 
-class ContacstSettings:
+class ContactsSettings:
     contacts_file = resource_path + '/contacts.csv'
     header = ['Name', 'Address', 'Pubkey']
 

@@ -31,7 +31,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="login_tab">
        <attribute name="title">
@@ -1041,7 +1041,7 @@
                 </font>
                </property>
                <property name="text">
-                <string>Copy Pubkey</string>
+                <string>Cop&amp;y Pubkey</string>
                </property>
                <property name="buddy">
                 <cstring>copypubkey_button</cstring>
@@ -1399,7 +1399,7 @@
                 </font>
                </property>
                <property name="text">
-                <string>Staking</string>
+                <string>Sta&amp;king</string>
                </property>
                <property name="buddy">
                 <cstring>staking_button</cstring>
@@ -1473,7 +1473,7 @@
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>3</number>
           </property>
           <property name="iconSize">
            <size>
@@ -3006,7 +3006,7 @@
                <enum>QTabWidget::Rounded</enum>
               </property>
               <property name="currentIndex">
-               <number>3</number>
+               <number>1</number>
               </property>
               <widget class="QWidget" name="looprequests_tab">
                <attribute name="title">
@@ -3301,7 +3301,7 @@
                 <item>
                  <layout class="QGridLayout" name="create_looprequest_Layout">
                   <item row="0" column="1">
-                   <widget class="QLabel" name="create_looprequest_label">
+                   <widget class="QLabel" name="create_loop_request_label">
                     <property name="text">
                      <string>Create Credit Loop Request </string>
                     </property>
@@ -3329,41 +3329,41 @@
                     </property>
                     <layout class="QGridLayout" name="gridLayout_49">
                      <item row="6" column="2">
-                      <widget class="QPushButton" name="create_looprequest_button">
+                      <widget class="QPushButton" name="create_loop_request_button">
                        <property name="text">
                         <string>Create</string>
                        </property>
                       </widget>
                      </item>
                      <item row="1" column="0">
-                      <widget class="QLabel" name="create_loopamount_label">
+                      <widget class="QLabel" name="create_credit_loop_amount_label">
                        <property name="text">
-                        <string>Amount :</string>
+                        <string>Amo&amp;unt :</string>
                        </property>
                        <property name="buddy">
-                        <cstring>create_loopamount_lineEdit</cstring>
+                        <cstring>create_credit_loop_amount_lineEdit</cstring>
                        </property>
                       </widget>
                      </item>
                      <item row="3" column="0">
-                      <widget class="QLabel" name="create_loopmatures_label">
+                      <widget class="QLabel" name="create_credit_loop_matures_label">
                        <property name="text">
                         <string>Matures : </string>
                        </property>
                        <property name="buddy">
-                        <cstring>create_loopmatures_dateTimeEdit</cstring>
+                        <cstring>create_credit_loop_matures_dateTimeEdit</cstring>
                        </property>
                       </widget>
                      </item>
                      <item row="4" column="0">
-                      <widget class="QLabel" name="create_loopmatures_label_2">
+                      <widget class="QLabel" name="create_credit_loop_currency_label">
                        <property name="text">
                         <string>Currency : </string>
                        </property>
                       </widget>
                      </item>
                      <item row="1" column="1">
-                      <widget class="QLineEdit" name="create_loopamount_lineEdit">
+                      <widget class="QLineEdit" name="create_credit_loop_amount_lineEdit">
                        <property name="focusPolicy">
                         <enum>Qt::StrongFocus</enum>
                        </property>
@@ -3379,10 +3379,10 @@
                       </widget>
                      </item>
                      <item row="2" column="1">
-                      <widget class="QLineEdit" name="create_receiverpubkey_lineEdit"/>
+                      <widget class="QLineEdit" name="create_credit_loop_receiverpubkey_lineEdit"/>
                      </item>
                      <item row="3" column="1">
-                      <widget class="QDateTimeEdit" name="create_loopmatures_dateTimeEdit">
+                      <widget class="QDateTimeEdit" name="create_credit_loop_matures_dateTimeEdit">
                        <property name="date">
                         <date>
                          <year>2021</year>
@@ -3403,19 +3403,19 @@
                       </widget>
                      </item>
                      <item row="4" column="1">
-                      <widget class="QLabel" name="create_loopmatures_value">
+                      <widget class="QLabel" name="create_credit_loop_currency_value_label">
                        <property name="text">
                         <string>MARMARA</string>
                        </property>
                       </widget>
                      </item>
                      <item row="2" column="0">
-                      <widget class="QLabel" name="create_receiverpubkey_label">
+                      <widget class="QLabel" name="create_credit_loop_receiverpubkey_label">
                        <property name="text">
                         <string>Receiver Pubkey</string>
                        </property>
                        <property name="buddy">
-                        <cstring>create_receiverpubkey_lineEdit</cstring>
+                        <cstring>create_credit_loop_receiverpubkey_lineEdit</cstring>
                        </property>
                       </widget>
                      </item>
@@ -3433,7 +3433,7 @@
                       </spacer>
                      </item>
                      <item row="2" column="2">
-                      <widget class="QComboBox" name="contactpubkey_loop_comboBox">
+                      <widget class="QComboBox" name="contactpubkey_createloop_comboBox">
                        <item>
                         <property name="text">
                          <string>Contacts</string>
@@ -3462,7 +3462,7 @@
                 <item>
                  <layout class="QGridLayout" name="create_transferrequest_Layout">
                   <item row="0" column="1">
-                   <widget class="QLabel" name="create_transferrequest_label">
+                   <widget class="QLabel" name="create_transfer_request_label">
                     <property name="text">
                      <string>Create Transfer Request </string>
                     </property>
@@ -3500,7 +3500,7 @@
                       </widget>
                      </item>
                      <item row="3" column="2">
-                      <widget class="QPushButton" name="create_transferrequest_button">
+                      <widget class="QPushButton" name="create_transfer_request_button">
                        <property name="text">
                         <string>Create</string>
                        </property>
@@ -3510,20 +3510,20 @@
                       <widget class="QLineEdit" name="transfer_receiverpubkey_lineEdit"/>
                      </item>
                      <item row="1" column="1">
-                      <widget class="QLineEdit" name="baton_lineEdit"/>
+                      <widget class="QLineEdit" name="transfer_baton_lineEdit"/>
                      </item>
                      <item row="1" column="0">
-                      <widget class="QLabel" name="baton_label">
+                      <widget class="QLabel" name="transfer_baton_label">
                        <property name="text">
-                        <string>Baton (txid) </string>
+                        <string>Baton (t&amp;xid) </string>
                        </property>
                        <property name="buddy">
-                        <cstring>baton_lineEdit</cstring>
+                        <cstring>transfer_baton_lineEdit</cstring>
                        </property>
                       </widget>
                      </item>
                      <item row="0" column="2">
-                      <widget class="QComboBox" name="contactpubkey_transfer_comboBox">
+                      <widget class="QComboBox" name="contactpubkey_transferrequest_comboBox">
                        <item>
                         <property name="text">
                          <string>Contacts</string>
@@ -4457,7 +4457,7 @@
                      <item>
                       <widget class="QLabel" name="loopsearch_txid_label">
                        <property name="text">
-                        <string>Txid </string>
+                        <string>T&amp;xid </string>
                        </property>
                        <property name="buddy">
                         <cstring>loopsearch_txid_lineEdit</cstring>
@@ -4887,7 +4887,7 @@
      </font>
     </property>
     <property name="title">
-     <string>Config</string>
+     <string>&amp;Config</string>
     </property>
     <addaction name="actionLanguage_Selection"/>
     <addaction name="actionConfigure_Paths"/>
@@ -4902,11 +4902,11 @@
      </font>
     </property>
     <property name="title">
-     <string>Help</string>
+     <string>He&amp;lp</string>
     </property>
     <widget class="QMenu" name="menuDebug">
      <property name="title">
-      <string>Debug</string>
+      <string>&amp;Debug</string>
      </property>
      <addaction name="actionConsole"/>
      <addaction name="actionSee_Log_File"/>
@@ -4919,7 +4919,7 @@
   </widget>
   <action name="actionLanguage_Selection">
    <property name="text">
-    <string>Language Selection</string>
+    <string>&amp;Language Selection</string>
    </property>
    <property name="menuRole">
     <enum>QAction::ApplicationSpecificRole</enum>
@@ -4927,12 +4927,12 @@
   </action>
   <action name="actionConsole">
    <property name="text">
-    <string>Console</string>
+    <string>&amp;Console</string>
    </property>
   </action>
   <action name="actionConfigure_Paths">
    <property name="text">
-    <string>Configure Paths</string>
+    <string>&amp;Configure Paths</string>
    </property>
    <property name="menuRole">
     <enum>QAction::ApplicationSpecificRole</enum>
@@ -4940,7 +4940,7 @@
   </action>
   <action name="actionLogout">
    <property name="text">
-    <string>Logout</string>
+    <string>L&amp;ogout</string>
    </property>
    <property name="menuRole">
     <enum>QAction::ApplicationSpecificRole</enum>
@@ -4948,35 +4948,23 @@
   </action>
   <action name="actionSee_Log_File">
    <property name="text">
-    <string>See Log File</string>
+    <string>&amp;See Log File</string>
    </property>
   </action>
   <action name="actionAbout">
    <property name="text">
-    <string>About</string>
+    <string>&amp;About</string>
    </property>
    <property name="menuRole">
     <enum>QAction::AboutRole</enum>
    </property>
   </action>
   <action name="actionQuit">
-   <property name="checkable">
-    <bool>false</bool>
-   </property>
    <property name="text">
     <string>&amp;Quit</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
-   </property>
-   <property name="shortcutContext">
-    <enum>Qt::ApplicationShortcut</enum>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::QuitRole</enum>
-   </property>
-   <property name="priority">
-    <enum>QAction::NormalPriority</enum>
    </property>
   </action>
  </widget>
@@ -5038,11 +5026,11 @@
   <tabstop>importprivkey_button</tabstop>
   <tabstop>pushButton_21</tabstop>
   <tabstop>transferrequests_tableWidget</tabstop>
-  <tabstop>create_loopamount_lineEdit</tabstop>
-  <tabstop>create_receiverpubkey_lineEdit</tabstop>
-  <tabstop>create_loopmatures_dateTimeEdit</tabstop>
+  <tabstop>create_credit_loop_amount_lineEdit</tabstop>
+  <tabstop>create_credit_loop_receiverpubkey_lineEdit</tabstop>
+  <tabstop>create_credit_loop_matures_dateTimeEdit</tabstop>
   <tabstop>transfer_receiverpubkey_lineEdit</tabstop>
-  <tabstop>baton_lineEdit</tabstop>
+  <tabstop>transfer_baton_lineEdit</tabstop>
   <tabstop>addresses_privkey_tableWidget</tabstop>
   <tabstop>stopchain_button</tabstop>
   <tabstop>request_dateTimeEdit</tabstop>

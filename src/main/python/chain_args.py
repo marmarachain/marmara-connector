@@ -24,10 +24,10 @@ importprivkey = 'importprivkey'  # + "wifkey"
 dumpprivkey = 'dumpprivkey'  # + "address"
 marmarainfo = 'marmarainfo'  # firstheight lastheight  minamount maxamount pubkey
 sendrawtransaction = 'sendrawtransaction'  # + hex
-marmararecievelist = 'marmarareceivelist'  # + pubkey + maxage
+marmarareceivelist = 'marmarareceivelist'  # + pubkey + maxage
 sendtoaddress = 'sendtoaddress'  # + amount
 marmaracreditloop = 'marmaracreditloop'  # + txid
-marmararecieve = 'marmararecieve'  # + senderpk + amount + currency + matures + avalcount : n
+marmarareceive = 'marmarareceive'  # + senderpk + amount + currency + matures + '{"avalcount":"n"}'
 
 
 def start_param_local(marmarad):

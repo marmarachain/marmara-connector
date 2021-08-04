@@ -77,9 +77,10 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.request_dateTimeEdit.setDateTime(QDateTime.currentDateTime())
 
         # -----Create credit Loop Request
-        self.contactpubkey_loop_comboBox.currentTextChanged.connect(self.get_selected_contact_loop_pubkey)
-        self.contactpubkey_transfer_comboBox.currentTextChanged.connect(self.get_selected_contact_transfer_pubkey)
-        self.create_loopmatures_dateTimeEdit.setMinimumDateTime(QDateTime.currentDateTime())
+        self.contactpubkey_createloop_comboBox.currentTextChanged.connect(self.get_selected_contact_loop_pubkey)
+        self.contactpubkey_transferrequest_comboBox.currentTextChanged.connect(self.get_selected_contact_transfer_pubkey)
+        self.create_credit_loop_matures_dateTimeEdit.setMinimumDateTime(QDateTime.currentDateTime())
+        self.create_loop_request_button.clicked.connect(self.marmarareceive)
         # ---- Loop Queries page --
         self.lq_pubkey_search_button.clicked.connect(self.search_pubkeyloops)
         self.lq_txid_search_button.clicked.connect(self.marmaracreditloop)
@@ -111,6 +112,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.thread_marmarareceivelist = QThread()
         self.thread_sendtoaddress = QThread()
         self.thread_marmaracreditloop = QThread()
+        self.thread_marmarareceive = QThread()
 
         # Loading Gif
         # --------------------------------------------------
@@ -793,7 +795,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             maxage = self.change_datetime_to_block_age(date)
             print('maxage ' + str(maxage))
         self.worker_marmarareceivelist = marmarachain_rpc.RpcHandler()
-        command = cp.marmararecievelist + ' ' + self.current_pubkey_value.text() + ' ' + str(maxage)
+        command = cp.marmarareceivelist + ' ' + self.current_pubkey_value.text() + ' ' + str(maxage)
         marmarareceivelist_thread = self.worker_thread(self.thread_marmarareceivelist, self.worker_marmarareceivelist,
                                                        command)
         marmarareceivelist_thread.command_out.connect(self.search_marmarareceivelist_result)
@@ -816,8 +818,42 @@ class MarmaraMain(QMainWindow, GuiStyle):
         for row in credit_request_result:
             row_number = credit_request_result.index(row)
             self.loop_request_tableWidget.setRowCount(len(credit_request_result))
+
+    # --- Create Loop Request page ----
+
+    @pyqtSlot()
+    def marmarareceive(self):
+        amount = self.create_credit_loop_amount_lineEdit.text()
+        senderpk = self.create_credit_loop_receiverpubkey_lineEdit.text()
+        matures_date = self.create_credit_loop_matures_dateTimeEdit.dateTime()
+        matures = self.change_datetime_to_block_age(matures_date)
+        if amount and senderpk and matures:
+            self.worker_marmarareceive = marmarachain_rpc.RpcHandler()
+            command = cp.marmarareceive + ' ' + senderpk + ' ' + amount + ' MARMARA ' + str(matures) + " '" + '{"avalcount":"0"}' + "'"
+            print(command)
+            marmarareceive_thread = self.worker_thread(self.thread_marmarareceive, self.worker_marmarareceive,  command)
+            marmarareceive_thread.command_out.connect(self.marmarareceive_result)
+        else:
+            self.bottom_info('cannot make a credit loop request with empty fields')
+
+    @pyqtSlot(tuple)
+    def marmarareceive_result(self, result_out):
+        if result_out[0]:
+            print(result_out[0])
+            result = json.loads(result_out[0])
+            # if result.get('result') == "success":
+            #     print(result)
+            #     response = QMessageBox.question(self, 'Confirm Transaction' 'You are about to activate')
+            #     if response == QMessageBox.Yes:
+            #         self.sendrawtransaction(result.get('hex'))
+            #     if response == QMessageBox.No:
+            #         self.bottom_info('Transaction aborted')
+            if result.get('result') == "error":
+                self.bottom_info(result.get('error'))
+        elif result_out[1]:
+            print(result_out[1])
     # -------------------------------------------------------------------
-    # Credit transaction functions
+    # Credit Loop Queries functions
     # --------------------------------------------------------------------
 
     @pyqtSlot()
@@ -904,14 +940,14 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.contacts_address_comboBox.clear()
         self.receiver_address_lineEdit.clear()
         self.contacts_address_comboBox.addItem('Contacts')
-        contacts_data = configuration.ContacstSettings().read_csv_file()
+        contacts_data = configuration.ContactsSettings().read_csv_file()
         for name in contacts_data:
             if name[0] != 'Name':
                 self.contacts_address_comboBox.addItem(name[0])
 
     @pyqtSlot()
     def get_selected_contact_address(self):
-        contacts_data = configuration.ContacstSettings().read_csv_file()
+        contacts_data = configuration.ContactsSettings().read_csv_file()
         selected_contact_address = contacts_data[self.contacts_address_comboBox.currentIndex()]
         if selected_contact_address[1] != 'Address':
             self.receiver_address_lineEdit.setText(selected_contact_address[1])
@@ -919,34 +955,34 @@ class MarmaraMain(QMainWindow, GuiStyle):
             self.receiver_address_lineEdit.clear()
 
     def get_contact_names_pubkeys(self):
-        self.contactpubkey_loop_comboBox.clear()
-        self.contactpubkey_transfer_comboBox.clear()
-        self.create_receiverpubkey_lineEdit.clear()
+        self.contactpubkey_createloop_comboBox.clear()
+        self.contactpubkey_transferrequest_comboBox.clear()
+        self.create_credit_loop_receiverpubkey_lineEdit.clear()
         self.transfer_receiverpubkey_lineEdit.clear()
-        self.contactpubkey_loop_comboBox.addItem('Contacts')
-        self.contactpubkey_transfer_comboBox.addItem('Contacts')
-        contacts_data = configuration.ContacstSettings().read_csv_file()
+        self.contactpubkey_createloop_comboBox.addItem('Contacts')
+        self.contactpubkey_transferrequest_comboBox.addItem('Contacts')
+        contacts_data = configuration.ContactsSettings().read_csv_file()
         for name in contacts_data:
             if name[0] != 'Name':
-                self.contactpubkey_loop_comboBox.addItem(name[0])
-                self.contactpubkey_transfer_comboBox.addItem(name[0])
+                self.contactpubkey_createloop_comboBox.addItem(name[0])
+                self.contactpubkey_transferrequest_comboBox.addItem(name[0])
 
     @pyqtSlot()
     def get_selected_contact_loop_pubkey(self):
-        contacts_data = configuration.ContacstSettings().read_csv_file()
-        selected_contactpubkey_loop = contacts_data[self.contactpubkey_loop_comboBox.currentIndex()]
+        contacts_data = configuration.ContactsSettings().read_csv_file()
+        selected_contactpubkey_loop = contacts_data[self.contactpubkey_createloop_comboBox.currentIndex()]
         if selected_contactpubkey_loop[2] != 'Pubkey':
-            self.create_receiverpubkey_lineEdit.setText(selected_contactpubkey_loop[2])
+            self.create_credit_loop_receiverpubkey_lineEdit.setText(selected_contactpubkey_loop[2])
         if selected_contactpubkey_loop[2] == 'Pubkey':
-            self.create_receiverpubkey_lineEdit.clear()
+            self.create_credit_loop_receiverpubkey_lineEdit.clear()
 
     @pyqtSlot()
     def get_selected_contact_transfer_pubkey(self):
-        contacts_data = configuration.ContacstSettings().read_csv_file()
-        selected_contactpubkey_tranfer = contacts_data[self.contactpubkey_transfer_comboBox.currentIndex()]
-        if selected_contactpubkey_tranfer[2] != 'Pubkey':
-            self.transfer_receiverpubkey_lineEdit.setText(selected_contactpubkey_tranfer[2])
-        if selected_contactpubkey_tranfer[2] == 'Pubkey':
+        contacts_data = configuration.ContactsSettings().read_csv_file()
+        selected_contactpubkey_transfer = contacts_data[self.contactpubkey_transferrequest_comboBox.currentIndex()]
+        if selected_contactpubkey_transfer[2] != 'Pubkey':
+            self.transfer_receiverpubkey_lineEdit.setText(selected_contactpubkey_transfer[2])
+        if selected_contactpubkey_transfer[2] == 'Pubkey':
             self.transfer_receiverpubkey_lineEdit.clear()
 
     # -------------------------------------------------------------------
@@ -962,8 +998,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
         if unique_record:
             QMessageBox.information(self, "Error Adding Contact", unique_record.get('error'))
         if not unique_record:
-            configuration.ContacstSettings().add_csv_file(new_record)
-            read_contacts_data = configuration.ContacstSettings().read_csv_file()
+            configuration.ContactsSettings().add_csv_file(new_record)
+            read_contacts_data = configuration.ContactsSettings().read_csv_file()
             self.update_contact_tablewidget(read_contacts_data)
             self.clear_contacts_line_edit()
             QMessageBox.information(self, "Added Contact", "It is your responsibility that the information "
@@ -973,7 +1009,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         if contacts_data:
             pass
         elif not contacts_data:
-            contacts_data = configuration.ContacstSettings().read_csv_file()
+            contacts_data = configuration.ContactsSettings().read_csv_file()
         if name == address:
             return {'error': 'Name and Address cannot be the same!'}
         if name == pubkey:
@@ -1011,7 +1047,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         if contacts_data:
             pass
         elif not contacts_data:
-            contacts_data = configuration.ContacstSettings().read_csv_file()
+            contacts_data = configuration.ContactsSettings().read_csv_file()
         self.contacts_tableWidget.setRowCount(len(contacts_data) - 1)  # -1 for exclude header
         self.contacts_tableWidget.autoScrollMargin()
         for row in contacts_data:
@@ -1041,11 +1077,11 @@ class MarmaraMain(QMainWindow, GuiStyle):
     @pyqtSlot()
     def update_contact(self):
         if self.contact_editing_row is not None:
-            read_contacts_data = configuration.ContacstSettings().read_csv_file()
+            read_contacts_data = configuration.ContactsSettings().read_csv_file()
             contact_name = self.contactname_lineEdit.text()
             contact_address = self.contactaddress_lineEdit.text()
             contact_pubkey = self.contactpubkey_lineEdit.text()
-            contact_data = configuration.ContacstSettings().read_csv_file()
+            contact_data = configuration.ContactsSettings().read_csv_file()
             del contact_data[self.contact_editing_row + 1]  # removing editing record to don't check same record
             unique_record = self.unique_contacts(contact_name, contact_address, contact_pubkey, contact_data)
             if unique_record:
@@ -1054,7 +1090,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 read_contacts_data[self.contact_editing_row + 1][0] = contact_name  # +1 for exclude header
                 read_contacts_data[self.contact_editing_row + 1][1] = contact_address  # +1 for exclude header
                 read_contacts_data[self.contact_editing_row + 1][2] = contact_pubkey  # +1 for exclude header
-                configuration.ContacstSettings().update_csv_file(read_contacts_data)
+                configuration.ContactsSettings().update_csv_file(read_contacts_data)
                 self.update_contact_tablewidget()
                 self.clear_contacts_line_edit()
         else:
@@ -1069,9 +1105,9 @@ class MarmaraMain(QMainWindow, GuiStyle):
                                             "Are you sure to delete the contact from the list?",
                                             )
             if response == QMessageBox.Yes:
-                read_contacts_data = configuration.ContacstSettings().read_csv_file()
+                read_contacts_data = configuration.ContactsSettings().read_csv_file()
                 del read_contacts_data[self.contact_editing_row + 1]  # +1 for exclude header
-                configuration.ContacstSettings().update_csv_file(read_contacts_data)
+                configuration.ContactsSettings().update_csv_file(read_contacts_data)
                 self.update_contact_tablewidget()
                 self.clear_contacts_line_edit()
             else:
