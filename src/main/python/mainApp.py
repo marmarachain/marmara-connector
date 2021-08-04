@@ -927,6 +927,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
         elif result_out[1]:
             print(result_out[1])
 
+
+
     def clear_lq_txid_search_result(self):
         self.loopquery_baton_value.clear()
         self.loopquery_amount_value.clear()

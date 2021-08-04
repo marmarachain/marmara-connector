@@ -3379,7 +3379,7 @@
                       </widget>
                      </item>
                      <item row="2" column="1">
-                      <widget class="QLineEdit" name="create_credit_loop_receiverpubkey_lineEdit"/>
+                      <widget class="QLineEdit" name="create_credit_loop_senderpubkey_lineEdit"/>
                      </item>
                      <item row="3" column="1">
                       <widget class="QDateTimeEdit" name="create_credit_loop_matures_dateTimeEdit">
@@ -3410,12 +3410,12 @@
                       </widget>
                      </item>
                      <item row="2" column="0">
-                      <widget class="QLabel" name="create_credit_loop_receiverpubkey_label">
+                      <widget class="QLabel" name="create_credit_loop_senderpubkey_label">
                        <property name="text">
-                        <string>Receiver Pubkey</string>
+                        <string>Sender Pubkey</string>
                        </property>
                        <property name="buddy">
-                        <cstring>create_credit_loop_receiverpubkey_lineEdit</cstring>
+                        <cstring>create_credit_loop_senderpubkey_lineEdit</cstring>
                        </property>
                       </widget>
                      </item>
@@ -3490,12 +3490,12 @@
                     </property>
                     <layout class="QGridLayout" name="gridLayout_50">
                      <item row="0" column="0">
-                      <widget class="QLabel" name="transfer_receiverpubkey_label">
+                      <widget class="QLabel" name="transfer_senderpubkey_label">
                        <property name="text">
-                        <string>Receiver Pubkey</string>
+                        <string>Sender Pubkey</string>
                        </property>
                        <property name="buddy">
-                        <cstring>transfer_receiverpubkey_lineEdit</cstring>
+                        <cstring>transfer_senderpubkey_lineEdit</cstring>
                        </property>
                       </widget>
                      </item>
@@ -3507,7 +3507,7 @@
                       </widget>
                      </item>
                      <item row="0" column="1">
-                      <widget class="QLineEdit" name="transfer_receiverpubkey_lineEdit"/>
+                      <widget class="QLineEdit" name="transfer_senderpubkey_lineEdit"/>
                      </item>
                      <item row="1" column="1">
                       <widget class="QLineEdit" name="transfer_baton_lineEdit"/>
@@ -5027,9 +5027,9 @@
   <tabstop>pushButton_21</tabstop>
   <tabstop>transferrequests_tableWidget</tabstop>
   <tabstop>create_credit_loop_amount_lineEdit</tabstop>
-  <tabstop>create_credit_loop_receiverpubkey_lineEdit</tabstop>
+  <tabstop>create_credit_loop_senderpubkey_lineEdit</tabstop>
   <tabstop>create_credit_loop_matures_dateTimeEdit</tabstop>
-  <tabstop>transfer_receiverpubkey_lineEdit</tabstop>
+  <tabstop>transfer_senderpubkey_lineEdit</tabstop>
   <tabstop>transfer_baton_lineEdit</tabstop>
   <tabstop>addresses_privkey_tableWidget</tabstop>
   <tabstop>stopchain_button</tabstop>
