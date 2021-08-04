@@ -74,6 +74,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         # ---- Received Loop Requests page ----
         self.looprequest_search_button.clicked.connect(self.search_marmarareceivelist)
         self.request_date_checkBox.clicked.connect(self.set_request_date_state)
+        self.request_dateTimeEdit.setDateTime(QDateTime.currentDateTime())
 
         # -----Create credit Loop Request
         self.contactpubkey_loop_comboBox.currentTextChanged.connect(self.get_selected_contact_loop_pubkey)
@@ -332,8 +333,9 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 print_result = print_result + ' ' + str(line)
             print(print_result)
             self.bottom_message_label.setText(print_result)
+
     # -----------------------------------------------------------
-    # Chian page functions
+    # Chain page functions
     # -----------------------------------------------------------
 
     # getting addresses for address table widget
@@ -748,35 +750,12 @@ class MarmaraMain(QMainWindow, GuiStyle):
     # -------------------------------------------------------------------
     # Credit loops functions
     # --------------------------------------------------------------------
-    #--- Received loop request page ----
-    @pyqtSlot()
-    def set_request_date_state(self):
-        if self.request_date_checkBox.checkState():
-            self.request_dateTimeEdit.setEnabled(False)
-        else:
-            self.request_dateTimeEdit.setEnabled(True)
-    @pyqtSlot()
-    def search_marmarareceivelist(self):
-        if self.request_date_checkBox.checkState():
-            maxage = '1440'
-        else:
-            maxage = '1440' # get the maxage from date field (block to date conversion)
-            #
-        self.worker_marmarareceivelist = marmarachain_rpc.RpcHandler()
-        command = cp.marmararecievelist + ' ' + self.current_pubkey_value.text() + ' ' + maxage
-        marmarareceivelist_thread = self.worker_thread(self.thread_marmarareceivelist, self.worker_marmarareceivelist, command)
-        marmarareceivelist_thread.command_out.connect(self.search_marmarareceivelist_result)
-    @pyqtSlot(tuple)
-    def search_marmarareceivelist_result(self, result_out):
-        if result_out[0]:
-            print(result_out[0])
-        elif result_out[1]:
-            print(result_out[1])
 
-    # changes datetime to block age with args date and begin_height=False as default
-    # calling function without specifying begin_height calculates the block_age between current datetime and date arg
-    # calling function with begin_Height=True calculates the block_age from start of Marmarachain to the date arg
-    # returns absolute value of block_age
+    # function name: change_datetime_to_block_age
+    # purpose: changes datetime to block age with given args date and begin_height=False set as default
+    # usage: Calling function without providing begin_height, calculates the block_age between current datetime and date
+    # arg. Calling function with begin_Height=True calculates the block_age from start of Marmarachain to the date arg
+    # return: absolute value of block_age
     def change_datetime_to_block_age(self, date, begin_height=False):
         minute_ = date.toPyDateTime().minute
         hour_ = date.toPyDateTime().hour
@@ -784,7 +763,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         month_ = date.toPyDateTime().month
         year_ = date.toPyDateTime().year
         if begin_height:
-           now = datetime.fromtimestamp(1579278200)
+            now = datetime.fromtimestamp(1579278200)
         else:
             now = datetime.now()
         minute_ = now.minute - minute_
@@ -796,9 +775,50 @@ class MarmaraMain(QMainWindow, GuiStyle):
         block_age = minute_ + (hour_ * 60) + (day_ * 1440) + (month_ * 30 * 1440) + (year_ * 365 * 1440)
         return abs(block_age)
 
+    @pyqtSlot()
+    def set_request_date_state(self):
+        if self.request_date_checkBox.checkState():
+            self.request_dateTimeEdit.setEnabled(False)
+        else:
+            self.request_dateTimeEdit.setEnabled(True)
+            self.request_dateTimeEdit.setDateTime(QDateTime.currentDateTime())
+            self.request_dateTimeEdit.setMaximumDateTime(QDateTime.currentDateTime())
 
+    @pyqtSlot()
+    def search_marmarareceivelist(self):
+        if self.request_date_checkBox.checkState():
+            maxage = '1440'
+        else:
+            date = self.request_dateTimeEdit.dateTime()
+            maxage = self.change_datetime_to_block_age(date)
+            print('maxage ' + str(maxage))
+        self.worker_marmarareceivelist = marmarachain_rpc.RpcHandler()
+        command = cp.marmararecievelist + ' ' + self.current_pubkey_value.text() + ' ' + str(maxage)
+        marmarareceivelist_thread = self.worker_thread(self.thread_marmarareceivelist, self.worker_marmarareceivelist,
+                                                       command)
+        marmarareceivelist_thread.command_out.connect(self.search_marmarareceivelist_result)
 
-    # Loop Querries functions
+    @pyqtSlot(tuple)
+    def search_marmarareceivelist_result(self, result_out):
+        if result_out[0]:
+            print(result_out[0])
+        elif result_out[1]:
+            print(result_out[1])
+
+    @pyqtSlot(list)
+    def set_transfer_request_result(self, transfer_result):
+        for row in transfer_result:
+            row_number = transfer_result.index(row)
+            self.transferrequests_tableWidget.setRowCount(len(transfer_result))
+
+    @pyqtSlot(list)
+    def set_credit_request_result(self, credit_request_result):
+        for row in credit_request_result:
+            row_number = credit_request_result.index(row)
+            self.loop_request_tableWidget.setRowCount(len(credit_request_result))
+    # -------------------------------------------------------------------
+    # Credit transaction functions
+    # --------------------------------------------------------------------
 
     @pyqtSlot()
     def search_pubkeyloops(self):
@@ -1050,7 +1070,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
                                             )
             if response == QMessageBox.Yes:
                 read_contacts_data = configuration.ContacstSettings().read_csv_file()
-                print(read_contacts_data[self.contact_editing_row +1])
                 del read_contacts_data[self.contact_editing_row + 1]  # +1 for exclude header
                 configuration.ContacstSettings().update_csv_file(read_contacts_data)
                 self.update_contact_tablewidget()
