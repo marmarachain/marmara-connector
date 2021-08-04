@@ -85,7 +85,7 @@
               <enum>QFrame::NoFrame</enum>
              </property>
              <property name="currentIndex">
-              <number>3</number>
+              <number>0</number>
              </property>
              <widget class="QWidget" name="hostselection_page">
               <layout class="QGridLayout" name="gridLayout_5">
@@ -1473,7 +1473,7 @@
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>3</number>
           </property>
           <property name="iconSize">
            <size>
@@ -2649,23 +2649,62 @@
             <string>Coin Send-Receive</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_30">
+            <item row="5" column="1">
+             <widget class="QTableWidget" name="transactions_tableWidget">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>300</height>
+               </size>
+              </property>
+              <column>
+               <property name="text">
+                <string>txid</string>
+               </property>
+               <property name="textAlignment">
+                <set>AlignLeading|AlignTop</set>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Amount</string>
+               </property>
+               <property name="textAlignment">
+                <set>AlignLeading|AlignTop</set>
+               </property>
+              </column>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <spacer name="verticalSpacer_12">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
             <item row="4" column="1">
-             <layout class="QHBoxLayout" name="horizontalLayout">
+             <layout class="QHBoxLayout" name="transaction_search_Layout">
               <item>
-               <widget class="QLabel" name="label_29">
+               <widget class="QLabel" name="transaction_startdate_label">
                 <property name="text">
                  <string>Start Date</string>
                 </property>
                 <property name="buddy">
-                 <cstring>dateTimeEdit_5</cstring>
+                 <cstring>transactions_startdate_dateTimeEdit</cstring>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QDateTimeEdit" name="dateTimeEdit_5">
+               <widget class="QDateTimeEdit" name="transactions_startdate_dateTimeEdit">
                 <property name="date">
                  <date>
-                  <year>2020</year>
+                  <year>2021</year>
                   <month>1</month>
                   <day>17</day>
                  </date>
@@ -2683,14 +2722,14 @@
                </widget>
               </item>
               <item>
-               <widget class="QLabel" name="label_53">
+               <widget class="QLabel" name="transaction_enddate_label">
                 <property name="text">
                  <string>End Date</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QDateTimeEdit" name="dateTimeEdit">
+               <widget class="QDateTimeEdit" name="transactions_endtdate_dateTimeEdit">
                 <property name="date">
                  <date>
                   <year>2021</year>
@@ -2721,7 +2760,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton_20">
+               <widget class="QPushButton" name="transaction_search_button">
                 <property name="text">
                  <string>Search</string>
                 </property>
@@ -2729,35 +2768,18 @@
               </item>
              </layout>
             </item>
-            <item row="5" column="1">
-             <widget class="QTableWidget" name="tableWidget_7">
-              <column>
-               <property name="text">
-                <string>New Column</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>Amount</string>
-               </property>
-              </column>
+            <item row="3" column="1">
+             <widget class="QLabel" name="transactions_label">
+              <property name="text">
+               <string>Transactions</string>
+              </property>
+              <property name="buddy">
+               <cstring>transactions_tableWidget</cstring>
+              </property>
              </widget>
             </item>
-            <item row="2" column="1">
-             <spacer name="verticalSpacer_12">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="0" column="0" rowspan="6">
-             <spacer name="horizontalSpacer_50">
+            <item row="0" column="2" rowspan="6">
+             <spacer name="horizontalSpacer_51">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
@@ -2937,18 +2959,8 @@
               </property>
              </spacer>
             </item>
-            <item row="3" column="1">
-             <widget class="QLabel" name="label_45">
-              <property name="text">
-               <string>Transactions</string>
-              </property>
-              <property name="buddy">
-               <cstring>tableWidget_7</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="2" rowspan="6">
-             <spacer name="horizontalSpacer_51">
+            <item row="0" column="0" rowspan="6">
+             <spacer name="horizontalSpacer_50">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
@@ -2956,6 +2968,19 @@
                <size>
                 <width>40</width>
                 <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="6" column="1">
+             <spacer name="verticalSpacer_11">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
                </size>
               </property>
              </spacer>
@@ -2981,7 +3006,7 @@
                <enum>QTabWidget::Rounded</enum>
               </property>
               <property name="currentIndex">
-               <number>0</number>
+               <number>3</number>
               </property>
               <widget class="QWidget" name="looprequests_tab">
                <attribute name="title">
@@ -3012,8 +3037,11 @@
                      <date>
                       <year>2020</year>
                       <month>1</month>
-                      <day>16</day>
+                      <day>17</day>
                      </date>
+                    </property>
+                    <property name="calendarPopup">
+                     <bool>true</bool>
                     </property>
                    </widget>
                   </item>
@@ -3536,447 +3564,6 @@
                 </item>
                </layout>
               </widget>
-              <widget class="QWidget" name="loopqueries_tab">
-               <attribute name="title">
-                <string>Loop Queries</string>
-               </attribute>
-               <layout class="QVBoxLayout" name="verticalLayout_17">
-                <item>
-                 <spacer name="verticalSpacer_30">
-                  <property name="orientation">
-                   <enum>Qt::Vertical</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>20</width>
-                    <height>40</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item>
-                 <layout class="QGridLayout" name="gridLayout_15">
-                  <item row="0" column="1">
-                   <widget class="QFrame" name="loopqueries_pubkey_frame">
-                    <property name="maximumSize">
-                     <size>
-                      <width>700</width>
-                      <height>16777215</height>
-                     </size>
-                    </property>
-                    <property name="frameShape">
-                     <enum>QFrame::NoFrame</enum>
-                    </property>
-                    <property name="frameShadow">
-                     <enum>QFrame::Raised</enum>
-                    </property>
-                    <layout class="QGridLayout" name="gridLayout_21">
-                     <item row="0" column="1">
-                      <widget class="QLineEdit" name="loopqueries_pubkey_lineEdit"/>
-                     </item>
-                     <item row="0" column="0">
-                      <widget class="QLabel" name="loopqueries_pubkey_label">
-                       <property name="text">
-                        <string>Pubkey</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="2">
-                      <widget class="QPushButton" name="loopqueries_pubkey_search_button">
-                       <property name="text">
-                        <string>Search</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
-                   <widget class="QFrame" name="frame">
-                    <property name="maximumSize">
-                     <size>
-                      <width>815</width>
-                      <height>200</height>
-                     </size>
-                    </property>
-                    <property name="frameShape">
-                     <enum>QFrame::NoFrame</enum>
-                    </property>
-                    <property name="frameShadow">
-                     <enum>QFrame::Raised</enum>
-                    </property>
-                    <layout class="QGridLayout" name="gridLayout_19">
-                     <item row="2" column="0">
-                      <widget class="QLabel" name="label_8">
-                       <property name="text">
-                        <string>Total Amount in Closed loops </string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="2">
-                      <widget class="QLabel" name="label_10">
-                       <property name="text">
-                        <string>Number of  Active Loops </string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="1">
-                      <widget class="QLabel" name="label_9">
-                       <property name="frameShape">
-                        <enum>QFrame::WinPanel</enum>
-                       </property>
-                       <property name="frameShadow">
-                        <enum>QFrame::Sunken</enum>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                       <property name="textInteractionFlags">
-                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="0">
-                      <widget class="QLabel" name="label_6">
-                       <property name="text">
-                        <string>Total Amount in Active Loops </string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="2">
-                      <widget class="QLabel" name="label_12">
-                       <property name="text">
-                        <string>Number of Closed Loops</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="1">
-                      <widget class="QLabel" name="label_3">
-                       <property name="frameShape">
-                        <enum>QFrame::WinPanel</enum>
-                       </property>
-                       <property name="frameShadow">
-                        <enum>QFrame::Sunken</enum>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                       <property name="textInteractionFlags">
-                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="0">
-                      <widget class="QLabel" name="label_2">
-                       <property name="text">
-                        <string>Total Normal amount</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="3">
-                      <widget class="QLabel" name="label_13">
-                       <property name="frameShape">
-                        <enum>QFrame::WinPanel</enum>
-                       </property>
-                       <property name="frameShadow">
-                        <enum>QFrame::Sunken</enum>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                       <property name="textInteractionFlags">
-                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="3">
-                      <widget class="QLabel" name="label_5">
-                       <property name="frameShape">
-                        <enum>QFrame::WinPanel</enum>
-                       </property>
-                       <property name="frameShadow">
-                        <enum>QFrame::Sunken</enum>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                       <property name="textInteractionFlags">
-                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="2">
-                      <widget class="QLabel" name="label_4">
-                       <property name="text">
-                        <string>Total Activated Amount</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="3">
-                      <widget class="QLabel" name="label_11">
-                       <property name="frameShape">
-                        <enum>QFrame::WinPanel</enum>
-                       </property>
-                       <property name="frameShadow">
-                        <enum>QFrame::Sunken</enum>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                       <property name="textInteractionFlags">
-                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="1">
-                      <widget class="QLabel" name="label_7">
-                       <property name="frameShape">
-                        <enum>QFrame::WinPanel</enum>
-                       </property>
-                       <property name="frameShadow">
-                        <enum>QFrame::Sunken</enum>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                       <property name="textInteractionFlags">
-                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-                <item>
-                 <spacer name="verticalSpacer_29">
-                  <property name="orientation">
-                   <enum>Qt::Vertical</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>20</width>
-                    <height>40</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item>
-                 <layout class="QGridLayout" name="loopqueries_Layout">
-                  <item row="3" column="0">
-                   <widget class="QFrame" name="loopquery_info_frame">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                     <size>
-                      <width>0</width>
-                      <height>0</height>
-                     </size>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>815</width>
-                      <height>200</height>
-                     </size>
-                    </property>
-                    <layout class="QFormLayout" name="formLayout_2">
-                     <item row="0" column="0">
-                      <widget class="QLabel" name="loopquery_txid_label">
-                       <property name="text">
-                        <string>Txid</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="1">
-                      <widget class="QLabel" name="loopquery_txid_value">
-                       <property name="frameShape">
-                        <enum>QFrame::WinPanel</enum>
-                       </property>
-                       <property name="frameShadow">
-                        <enum>QFrame::Sunken</enum>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                       <property name="textInteractionFlags">
-                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="0">
-                      <widget class="QLabel" name="loopquery_amount_label">
-                       <property name="text">
-                        <string>Amount</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="1">
-                      <widget class="QLabel" name="loopquery_amount_value">
-                       <property name="frameShape">
-                        <enum>QFrame::WinPanel</enum>
-                       </property>
-                       <property name="frameShadow">
-                        <enum>QFrame::Sunken</enum>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                       <property name="textInteractionFlags">
-                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="0">
-                      <widget class="QLabel" name="loopquery_currency_label">
-                       <property name="text">
-                        <string>Currency </string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="1">
-                      <widget class="QLabel" name="loopquery_currency_value">
-                       <property name="frameShape">
-                        <enum>QFrame::WinPanel</enum>
-                       </property>
-                       <property name="frameShadow">
-                        <enum>QFrame::Sunken</enum>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                       <property name="textInteractionFlags">
-                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="3" column="0">
-                      <widget class="QLabel" name="loopquery_matures_label">
-                       <property name="text">
-                        <string>Matures</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="3" column="1">
-                      <widget class="QLabel" name="loopquery_matures_value">
-                       <property name="frameShape">
-                        <enum>QFrame::WinPanel</enum>
-                       </property>
-                       <property name="frameShadow">
-                        <enum>QFrame::Sunken</enum>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                       <property name="textInteractionFlags">
-                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="4" column="0">
-                      <widget class="QLabel" name="loopquery_issuer_label">
-                       <property name="text">
-                        <string>Issuer pubkey</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="4" column="1">
-                      <widget class="QLabel" name="loopquery_issuer_value">
-                       <property name="frameShape">
-                        <enum>QFrame::WinPanel</enum>
-                       </property>
-                       <property name="frameShadow">
-                        <enum>QFrame::Sunken</enum>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                       <property name="textInteractionFlags">
-                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="loopquery_info_label">
-                    <property name="text">
-                     <string>Detailed Information About Loop</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="0" rowspan="2">
-                   <widget class="QFrame" name="loopquery_seach_frame">
-                    <property name="maximumSize">
-                     <size>
-                      <width>700</width>
-                      <height>16777215</height>
-                     </size>
-                    </property>
-                    <property name="frameShape">
-                     <enum>QFrame::NoFrame</enum>
-                    </property>
-                    <property name="frameShadow">
-                     <enum>QFrame::Raised</enum>
-                    </property>
-                    <layout class="QHBoxLayout" name="horizontalLayout_9">
-                     <item>
-                      <widget class="QLabel" name="loopsearch_txid_label">
-                       <property name="text">
-                        <string>Txid </string>
-                       </property>
-                       <property name="buddy">
-                        <cstring>loopsearch_txid_lineEdit</cstring>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLineEdit" name="loopsearch_txid_lineEdit">
-                       <property name="font">
-                        <font>
-                         <pointsize>12</pointsize>
-                        </font>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                       <property name="placeholderText">
-                        <string>txid</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QPushButton" name="loopsearch_button">
-                       <property name="text">
-                        <string>Search</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-                <item>
-                 <spacer name="verticalSpacer_39">
-                  <property name="orientation">
-                   <enum>Qt::Vertical</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>20</width>
-                    <height>40</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-               </layout>
-              </widget>
               <widget class="QWidget" name="totalloops_tab">
                <attribute name="title">
                 <string>Total Credit Loops</string>
@@ -4478,6 +4065,447 @@
                 </item>
                </layout>
               </widget>
+              <widget class="QWidget" name="loopqueries_tab">
+               <attribute name="title">
+                <string>Loop Queries</string>
+               </attribute>
+               <layout class="QVBoxLayout" name="verticalLayout_17">
+                <item>
+                 <spacer name="verticalSpacer_30">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <layout class="QGridLayout" name="pubkeyqueries_Layout">
+                  <item row="0" column="1">
+                   <widget class="QFrame" name="loopqueries_pubkey_frame">
+                    <property name="maximumSize">
+                     <size>
+                      <width>700</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="frameShape">
+                     <enum>QFrame::NoFrame</enum>
+                    </property>
+                    <property name="frameShadow">
+                     <enum>QFrame::Raised</enum>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_21">
+                     <item row="0" column="1">
+                      <widget class="QLineEdit" name="loopqueries_pubkey_lineEdit"/>
+                     </item>
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="loopqueries_pubkey_label">
+                       <property name="text">
+                        <string>Pubkey</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="2">
+                      <widget class="QPushButton" name="lq_pubkey_search_button">
+                       <property name="text">
+                        <string>Search</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QFrame" name="loopquery_result_frame">
+                    <property name="maximumSize">
+                     <size>
+                      <width>815</width>
+                      <height>200</height>
+                     </size>
+                    </property>
+                    <property name="frameShape">
+                     <enum>QFrame::NoFrame</enum>
+                    </property>
+                    <property name="frameShadow">
+                     <enum>QFrame::Raised</enum>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_19">
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="lq_pubkeynormalamount_label">
+                       <property name="text">
+                        <string>Normal amount</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="lq_pubkeyclosedloopamount_label">
+                       <property name="text">
+                        <string>Total Amount in Closed loops </string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="2">
+                      <widget class="QLabel" name="lq_activeloopno_label">
+                       <property name="text">
+                        <string>Number of Loops </string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="3">
+                      <widget class="QLabel" name="lq_closedloopno_value_label">
+                       <property name="frameShape">
+                        <enum>QFrame::WinPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Sunken</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="textInteractionFlags">
+                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="2">
+                      <widget class="QLabel" name="lq_pubkeyactivatedamount_label">
+                       <property name="text">
+                        <string>Activated Amount</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QLabel" name="lq_pubkeyclosedloopamount_value_label">
+                       <property name="frameShape">
+                        <enum>QFrame::WinPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Sunken</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="textInteractionFlags">
+                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="3">
+                      <widget class="QLabel" name="lq_pubkeyactivatedamount_value_label">
+                       <property name="frameShape">
+                        <enum>QFrame::WinPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Sunken</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="textInteractionFlags">
+                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QLabel" name="lq_pubkeynormalamount_value_label">
+                       <property name="frameShape">
+                        <enum>QFrame::WinPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Sunken</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="textInteractionFlags">
+                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="2">
+                      <widget class="QLabel" name="lq_closedloopno_label">
+                       <property name="text">
+                        <string>Number of Closed Loops</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="3">
+                      <widget class="QLabel" name="lq_activeloopno_value_label">
+                       <property name="frameShape">
+                        <enum>QFrame::WinPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Sunken</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="textInteractionFlags">
+                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="lq_pubkeyloopamount_label">
+                       <property name="text">
+                        <string>Total Amount in Loops </string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QLabel" name="lq_pubkeyloopamount_value_label">
+                       <property name="frameShape">
+                        <enum>QFrame::WinPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Sunken</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="textInteractionFlags">
+                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <spacer name="verticalSpacer_29">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <layout class="QGridLayout" name="txidqueries_Layout">
+                  <item row="3" column="0">
+                   <widget class="QFrame" name="txidquery_result_frame">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>815</width>
+                      <height>200</height>
+                     </size>
+                    </property>
+                    <layout class="QFormLayout" name="formLayout_2">
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="loopquery_baton_label">
+                       <property name="text">
+                        <string>Txid (baton)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QLabel" name="loopquery_baton_value">
+                       <property name="frameShape">
+                        <enum>QFrame::WinPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Sunken</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="textInteractionFlags">
+                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="loopquery_amount_label">
+                       <property name="text">
+                        <string>Amount</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QLabel" name="loopquery_amount_value">
+                       <property name="frameShape">
+                        <enum>QFrame::WinPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Sunken</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="textInteractionFlags">
+                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="loopquery_currency_label">
+                       <property name="text">
+                        <string>Currency </string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QLabel" name="loopquery_currency_value">
+                       <property name="frameShape">
+                        <enum>QFrame::WinPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Sunken</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="textInteractionFlags">
+                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="0">
+                      <widget class="QLabel" name="loopquery_matures_label">
+                       <property name="text">
+                        <string>Matures</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="1">
+                      <widget class="QLabel" name="loopquery_matures_value">
+                       <property name="frameShape">
+                        <enum>QFrame::WinPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Sunken</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="textInteractionFlags">
+                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="0">
+                      <widget class="QLabel" name="loopquery_issuer_label">
+                       <property name="text">
+                        <string>Issuer pubkey</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="1">
+                      <widget class="QLabel" name="loopquery_issuer_value">
+                       <property name="frameShape">
+                        <enum>QFrame::WinPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Sunken</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="textInteractionFlags">
+                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="loopquery_info_label">
+                    <property name="text">
+                     <string>Detailed Information About Credit Loop</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0" rowspan="2">
+                   <widget class="QFrame" name="loopquery_seach_frame">
+                    <property name="maximumSize">
+                     <size>
+                      <width>700</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="frameShape">
+                     <enum>QFrame::NoFrame</enum>
+                    </property>
+                    <property name="frameShadow">
+                     <enum>QFrame::Raised</enum>
+                    </property>
+                    <layout class="QHBoxLayout" name="horizontalLayout_9">
+                     <item>
+                      <widget class="QLabel" name="loopsearch_txid_label">
+                       <property name="text">
+                        <string>Txid </string>
+                       </property>
+                       <property name="buddy">
+                        <cstring>loopsearch_txid_lineEdit</cstring>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLineEdit" name="loopsearch_txid_lineEdit">
+                       <property name="font">
+                        <font>
+                         <pointsize>12</pointsize>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="placeholderText">
+                        <string>txid</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="lq_txid_search_button">
+                       <property name="text">
+                        <string>Search</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <spacer name="verticalSpacer_39">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </widget>
              </widget>
             </item>
            </layout>
@@ -4889,16 +4917,6 @@
    <addaction name="menuConfig"/>
    <addaction name="menuHelp"/>
   </widget>
-  <action name="actionlogout">
-   <property name="text">
-    <string>Logout</string>
-   </property>
-  </action>
-  <action name="actionexit">
-   <property name="text">
-    <string>Exit</string>
-   </property>
-  </action>
   <action name="actionLanguage_Selection">
    <property name="text">
     <string>Language Selection</string>
@@ -4907,34 +4925,9 @@
     <enum>QAction::ApplicationSpecificRole</enum>
    </property>
   </action>
-  <action name="actionversion_no">
-   <property name="text">
-    <string>About</string>
-   </property>
-  </action>
-  <action name="actiondebug_file">
-   <property name="text">
-    <string>debug file</string>
-   </property>
-  </action>
-  <action name="actionconsole">
-   <property name="text">
-    <string>console</string>
-   </property>
-  </action>
-  <action name="actiondebug_file_2">
-   <property name="text">
-    <string>log file</string>
-   </property>
-  </action>
   <action name="actionConsole">
    <property name="text">
     <string>Console</string>
-   </property>
-  </action>
-  <action name="actionlog_file">
-   <property name="text">
-    <string>See Log file</string>
    </property>
   </action>
   <action name="actionConfigure_Paths">
@@ -4971,7 +4964,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Quit</string>
+    <string>&amp;Quit</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>

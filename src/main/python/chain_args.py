@@ -25,6 +25,8 @@ dumpprivkey = 'dumpprivkey'  # + "address"
 marmarainfo = 'marmarainfo'  # firstheight lastheight  minamount maxamount pubkey
 sendrawtransaction = 'sendrawtransaction'  # + hex
 marmararecievelist = 'marmarareceivelist'  # + pubkey + maxage
+sendtoaddress = 'sendtoaddress'  # + amount
+marmaracreditloop = 'marmaracreditloop'  # + txid
 
 def start_param_local(marmarad):
     if platform.system() == 'Linux' or platform.system() == 'Darwin':

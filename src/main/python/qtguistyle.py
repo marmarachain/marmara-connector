@@ -45,15 +45,17 @@ class GuiStyle(ApplicationContext ,Ui_MainWindow):
         # Coin Send-Receive page
         self.coinsend_button.setIcon(QtGui.QIcon(self.icon_path + '/send_coin_icon.png'))
         self.coinsend_button.setIconSize(QtCore.QSize(24, 24))
+        self.transaction_search_button.setIcon(QtGui.QIcon(self.icon_path + '/search_icon.png'))
+        self.transaction_search_button.setIconSize(QtCore.QSize(24, 24))
         # Credit loops page
         self.looprequest_search_button.setIcon(QtGui.QIcon(self.icon_path + '/search_icon.png'))
         self.looprequest_search_button.setIconSize(QtCore.QSize(24, 24))
 
-        self.loopsearch_button.setIcon(QtGui.QIcon(self.icon_path + '/search_icon.png'))
-        self.loopsearch_button.setIconSize(QtCore.QSize(24, 24))
+        self.lq_pubkey_search_button.setIcon(QtGui.QIcon(self.icon_path + '/search_icon.png'))
+        self.lq_pubkey_search_button.setIconSize(QtCore.QSize(24, 24))
 
-        self.loopqueries_pubkey_search_button.setIcon(QtGui.QIcon(self.icon_path + '/search_icon.png'))
-        self.loopqueries_pubkey_search_button.setIconSize(QtCore.QSize(24, 24))
+        self.lq_txid_search_button.setIcon(QtGui.QIcon(self.icon_path + '/search_icon.png'))
+        self.lq_txid_search_button.setIconSize(QtCore.QSize(24, 24))
 
         self.activeloops_search_button.setIcon(QtGui.QIcon(self.icon_path + '/search_icon.png'))
         self.activeloops_search_button.setIconSize(QtCore.QSize(24, 24))
