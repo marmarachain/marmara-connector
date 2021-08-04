@@ -28,6 +28,7 @@ marmarareceivelist = 'marmarareceivelist'  # + pubkey + maxage
 sendtoaddress = 'sendtoaddress'  # + amount
 marmaracreditloop = 'marmaracreditloop'  # + txid
 marmarareceive = 'marmarareceive'  # + senderpk + amount + currency + matures + '{"avalcount":"n"}'
+marmaratransfer = 'marmaratransfer'  # + receiverpk + '{"avalcount":"n"}' + requesttxid
 
 
 def start_param_local(marmarad):
