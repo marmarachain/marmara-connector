@@ -96,7 +96,6 @@ class RpcHandler(QtCore.QObject):
 
     @pyqtSlot()
     def do_execute_rpc(self):
-
         result_out = handle_rpc(self.command)
         self.command_out.emit(result_out)
         self.finished.emit()
@@ -160,25 +159,13 @@ class RpcHandler(QtCore.QObject):
         elif addresses[1]:
             print(addresses[1])
             self.finished.emit()
-# @pyqtSlot()
-    # def chain_pid(self):
-    #     i = 10
-    #     while True:
-    #         result_out = mcl_chain_status()
-    #         if len(result_out[0]) > 0:
-    #             self.daemon_pid.emit(str(result_out[0]))
-    #             self.finished.emit()
-    #             print('chain has pid')
-    #             break
-    #         time.sleep(1)
-    #         i = i - 1
-    #         if i == 0:
-    #             print('tried still no pid')
-    #             self.daemon_pid.emit(str(result_out[0]))
-    #             self.finished.emit()
-    #             break
-    #         elif result_out[1]:
-    #             print('error ??')
-    #             self.daemon_pid.emitstr(str(result_out[1]))
-    #             self.finished.emit()
-    #             break
+    @pyqtSlot()
+    def setgenerate(self):
+        setgenerate = handle_rpc(self.command)
+        if setgenerate[2] == 0:
+            getgenerate = handle_rpc(cp.getgenerate)
+            self.command_out.emit(getgenerate)
+            self.finished.emit()
+        else:
+            self.command_out.emit(setgenerate)
+            self.finished.emit()

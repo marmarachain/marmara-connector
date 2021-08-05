@@ -961,20 +961,8 @@
                </property>
               </widget>
              </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="totalactivated_label">
-               <property name="font">
-                <font>
-                 <pointsize>12</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>Total Activated</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
-              <widget class="QLabel" name="totalactivated_value_label">
+             <item row="1" column="1">
+              <widget class="QLabel" name="totalnormal_value_label">
                <property name="font">
                 <font>
                  <pointsize>12</pointsize>
@@ -994,8 +982,20 @@
                </property>
               </widget>
              </item>
-             <item row="1" column="1">
-              <widget class="QLabel" name="totalnormal_value_label">
+             <item row="2" column="0">
+              <widget class="QLabel" name="totalactivated_label">
+               <property name="font">
+                <font>
+                 <pointsize>12</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Total Activated</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLabel" name="totalactivated_value_label">
                <property name="font">
                 <font>
                  <pointsize>12</pointsize>
@@ -1053,7 +1053,7 @@
                 </font>
                </property>
                <property name="text">
-                <string>Chain S&amp;ync</string>
+                <string>Chain Sync</string>
                </property>
                <property name="buddy">
                 <cstring>chainsync_button</cstring>
@@ -1222,117 +1222,6 @@
                </property>
                <property name="textInteractionFlags">
                 <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QFrame" name="miningstatus_frame">
-            <property name="maximumSize">
-             <size>
-              <width>240</width>
-              <height>135</height>
-             </size>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::WinPanel</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <layout class="QGridLayout" name="gridLayout_17">
-             <item row="5" column="0">
-              <widget class="QLabel" name="cpu_label">
-               <property name="font">
-                <font>
-                 <pointsize>12</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>CPU</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="0">
-              <widget class="QLabel" name="mining_label">
-               <property name="font">
-                <font>
-                 <pointsize>12</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>Mining</string>
-               </property>
-               <property name="buddy">
-                <cstring>mining_button</cstring>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QPushButton" name="staking_button">
-               <property name="font">
-                <font>
-                 <pointsize>12</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="staking_label">
-               <property name="font">
-                <font>
-                 <pointsize>12</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>Sta&amp;king</string>
-               </property>
-               <property name="buddy">
-                <cstring>staking_button</cstring>
-               </property>
-              </widget>
-             </item>
-             <item row="5" column="1">
-              <widget class="QLabel" name="cpu_core_label">
-               <property name="font">
-                <font>
-                 <pointsize>12</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>0</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="1">
-              <widget class="QPushButton" name="mining_button">
-               <property name="font">
-                <font>
-                 <pointsize>12</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0" colspan="2">
-              <widget class="QLabel" name="miningstatus_label">
-               <property name="font">
-                <font>
-                 <pointsize>12</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>Mining Status</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
                </property>
               </widget>
              </item>
@@ -1511,7 +1400,7 @@
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>3</number>
+           <number>0</number>
           </property>
           <property name="iconSize">
            <size>
@@ -1571,6 +1460,19 @@
                <layout class="QGridLayout" name="gridLayout_26">
                 <item row="0" column="0">
                  <layout class="QGridLayout" name="chainaddresses_Layout">
+                  <item row="6" column="1">
+                   <spacer name="verticalSpacer_15">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
                   <item row="5" column="1">
                    <layout class="QGridLayout" name="chain_stop_Layout">
                     <item row="0" column="1">
@@ -1594,6 +1496,19 @@
                      </spacer>
                     </item>
                    </layout>
+                  </item>
+                  <item row="4" column="1">
+                   <spacer name="verticalSpacer_33">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                   </spacer>
                   </item>
                   <item row="3" column="1">
                    <layout class="QGridLayout" name="create_privkey_buttons_Layout">
@@ -1625,32 +1540,6 @@
                      </widget>
                     </item>
                    </layout>
-                  </item>
-                  <item row="4" column="1">
-                   <spacer name="verticalSpacer_33">
-                    <property name="orientation">
-                     <enum>Qt::Vertical</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>20</width>
-                      <height>40</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="6" column="1">
-                   <spacer name="verticalSpacer_15">
-                    <property name="orientation">
-                     <enum>Qt::Vertical</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>20</width>
-                      <height>40</height>
-                     </size>
-                    </property>
-                   </spacer>
                   </item>
                   <item row="2" column="1">
                    <widget class="QTableWidget" name="addresses_tableWidget">
@@ -1754,19 +1643,6 @@
                     </column>
                    </widget>
                   </item>
-                  <item row="0" column="1">
-                   <spacer name="verticalSpacer_16">
-                    <property name="orientation">
-                     <enum>Qt::Vertical</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>20</width>
-                      <height>40</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
                   <item row="1" column="1">
                    <layout class="QGridLayout" name="gridLayout_29">
                     <item row="1" column="0">
@@ -1805,6 +1681,19 @@
                      </spacer>
                     </item>
                    </layout>
+                  </item>
+                  <item row="0" column="1">
+                   <spacer name="verticalSpacer_16">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                   </spacer>
                   </item>
                  </layout>
                 </item>
@@ -3044,7 +2933,7 @@
                <enum>QTabWidget::Rounded</enum>
               </property>
               <property name="currentIndex">
-               <number>2</number>
+               <number>0</number>
               </property>
               <widget class="QWidget" name="looprequests_tab">
                <attribute name="title">

@@ -51,6 +51,12 @@ class MarmaraMain(QMainWindow, GuiStyle):
         # side panel
         self.copyaddress_button.clicked.connect(self.copyaddress_clipboard)
         self.copypubkey_button.clicked.connect(self.copypubkey_clipboard)
+        self.staking_button.setChecked(False)
+        self.staking_button.clicked.connect(self.toggle_staking)
+        self.mining_button.setChecked(False)
+        self.cpu_core_selection_off()
+        self.cpu_core_set_button.clicked.connect(self.setmining_cpu_core)
+        self.mining_button.clicked.connect(self.toggle_mining)
         # Chain page
         self.stopchain_button.clicked.connect(self.stop_chain)
         self.addaddress_page_button.clicked.connect(self.get_address_page)
@@ -81,8 +87,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
 
         # -----Create credit Loop Request
         self.contactpubkey_makeloop_comboBox.currentTextChanged.connect(self.get_selected_contact_loop_pubkey)
-        self.contactpubkey_transferrequest_comboBox.currentTextChanged.connect(
-            self.get_selected_contact_transfer_pubkey)
+        self.contactpubkey_transferrequest_comboBox.currentTextChanged.connect(self.get_selected_contact_transfer_pubkey)
         self.make_credit_loop_matures_dateTimeEdit.setMinimumDateTime(QDateTime.currentDateTime())
         self.send_loop_request_button.clicked.connect(self.marmarareceive)
         self.send_transfer_request_button.clicked.connect(self.marmararecieve_transfer)
@@ -120,6 +125,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.thread_sendtoaddress = QThread()
         self.thread_marmaracreditloop = QThread()
         self.thread_marmarareceive = QThread()
+        self.thread_getgenerate = QThread()
+        self.thread_setgenerate = QThread()
         self.thread_marmarareceive_transfer = QThread()
         self.thread_search_active_loops = QThread()
 
@@ -367,6 +374,101 @@ class MarmaraMain(QMainWindow, GuiStyle):
             self.bottom_info('copied ' + pubkey)
         else:
             self.bottom_info('no pubkey value set')
+
+    @pyqtSlot()
+    def toggle_staking(self):
+        if self.staking_button.isChecked():  # Staking button status is True.
+            if self.mining_button.isChecked():  # Checking mining is  also active
+                response = QMessageBox.question(self, 'Turnoff Mining', 'Mining is active it will be closed')
+                if response == QMessageBox.Yes:
+                    self.mining_button.setChecked(False)  # Close mining and set staking mode
+                    self.cpu_core_selection_off()
+                    print('setgenerate True 0')
+                    self.setgenerate('true 0')
+                if response == QMessageBox.No:  # Abort selecting staking and continue mining
+                    self.staking_button.setChecked(False)
+            else:  # set staking mode
+                print('setgenerate True 0')
+                self.setgenerate('true 0')
+        else:  # Staking button status is False
+            response = QMessageBox.question(self, 'Turnoff Staking', ' You are about to close staking. Are you sure?')
+            if response == QMessageBox.Yes:
+                print('setgenerate False')
+                self.setgenerate('false')
+            if response == QMessageBox.No:
+                self.staking_button.setChecked(True)  # Abort selecting staking button
+
+    @pyqtSlot()
+    def toggle_mining(self):
+        if self.mining_button.isChecked():  # Mining button status is True.
+            if self.staking_button.isChecked():  # Checking staking is also active
+                response = QMessageBox.question(self, 'Turnoff Staking', 'Staking is active it will be closed')
+                if response == QMessageBox.Yes:
+                    self.staking_button.setChecked(False)  # Close staking and turn on mining
+                    print('setgenerate True 1')
+                    self.setgenerate('true 1')
+                    self.cpu_core_selection_on()
+                if response == QMessageBox.No:  # Abort selecting mining and continue staking
+                    self.mining_button.setChecked(False)
+            else:  # Staking is off turn on Mining mode
+                print('setgenerate True 1')
+                self.setgenerate('true 1')
+                self.cpu_core_selection_on()
+        else:  # Mining button status is False.
+            response = QMessageBox.question(self, 'Turnoff Mining', ' You are about to close mining. Are you sure?')
+            if response == QMessageBox.Yes:
+                print('setgenerate False')
+                self.setgenerate('false')
+                self.cpu_core_selection_off()
+            if response == QMessageBox.No:
+                self.mining_button.setChecked(True)  # Abort selecting mining button
+
+    def cpu_core_selection_on(self):
+        self.cpu_label.setVisible(True)
+        self.cpu_core_lineEdit.setVisible(True)
+        self.cpu_core_set_button.setVisible(True)
+
+    def cpu_core_selection_off(self):
+        self.cpu_label.setVisible(False)
+        self.cpu_core_lineEdit.setVisible(False)
+        self.cpu_core_set_button.setVisible(False)
+
+    def setgenerate(self, arg):
+        self.worker_setgenerate = marmarachain_rpc.RpcHandler()
+        self.worker_setgenerate.set_command(cp.setgenerate + ' ' + arg)
+        setgenerate_thread = self.worker_thread(self.thread_setgenerate, self.worker_setgenerate)
+        self.thread_setgenerate.started.connect(self.worker_setgenerate.setgenerate)
+        setgenerate_thread.command_out.connect(self.setgenerate_result)
+
+    @pyqtSlot(tuple)
+    def setgenerate_result(self, result_out):
+        if result_out[0]:
+            # print(json.loads(result_out[0]))
+            result = json.loads(result_out[0])
+            if result.get('staking') is True and result.get('generate') is False:
+                self.bottom_info('Staking ON')
+            if result.get('staking') is False and result.get('generate') is False:
+                self.bottom_info('Mining status is OFF')
+            if result.get('generate') is True and result.get('staking') is False:
+                self.bottom_info('Mining ON with ' + str(result.get('numthreads')))
+        if result_out[1]:
+            print(result_out[1])
+            self.bottom_info('wrong input format. please use ')
+
+    @pyqtSlot()
+    def setmining_cpu_core(self):
+        cpu_no = self.cpu_core_lineEdit.text()
+        # print(int(cpu_no))
+        try:
+            int(cpu_no)
+            if int(cpu_no) == 0:
+                cpu_no = 1
+                self.cpu_core_lineEdit.setText('1')
+                self.bottom_info('for mining cpu core cannot be 0')
+            self.setgenerate('true ' + str(cpu_no))
+        except Exception:
+            self.bottom_info('CPU core should be integer!')
+
 
     # -----------------------------------------------------------
     # Chain page functions
@@ -1006,7 +1108,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
             self.bottom_info('write pubkey to search !')
             self.clear_lq_txid_search_result()
 
-    @pyqtSlot(tuple)
     def get_search_pubkeyloops_result(self, result_out):
         if result_out[0]:
             print(result_out[0])
