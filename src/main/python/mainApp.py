@@ -250,7 +250,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def is_chain_ready(self):
         self.worker_getchain = marmarachain_rpc.RpcHandler()  # worker setting
         chain_ready_thread = self.worker_thread(self.thread_getchain, self.worker_getchain)  # putting in to thread
-        self.thread_getchain.started.connect(self.worker_getchain.is_chain_ready)  # executing respective worker class function
+        self.thread_getchain.started.connect(
+            self.worker_getchain.is_chain_ready)  # executing respective worker class function
         chain_ready_thread.command_out.connect(self.chain_ready_result)  # getting results and connecting to socket
         chain_ready_thread.finished.connect(self.chain_init)  # chain_status is True go back continue to init
 
