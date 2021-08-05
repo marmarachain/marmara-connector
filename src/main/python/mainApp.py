@@ -78,7 +78,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
 
         # -----Create credit Loop Request
         self.contactpubkey_createloop_comboBox.currentTextChanged.connect(self.get_selected_contact_loop_pubkey)
-        self.contactpubkey_transferrequest_comboBox.currentTextChanged.connect(self.get_selected_contact_transfer_pubkey)
+        self.contactpubkey_transferrequest_comboBox.currentTextChanged.connect(
+            self.get_selected_contact_transfer_pubkey)
         self.create_credit_loop_matures_dateTimeEdit.setMinimumDateTime(QDateTime.currentDateTime())
         self.create_loop_request_button.clicked.connect(self.marmarareceive)
         # ---- Loop Queries page --
@@ -241,7 +242,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def is_chain_ready(self):
         self.worker_getchain = marmarachain_rpc.RpcHandler()  # worker setting
         chain_ready_thread = self.worker_thread(self.thread_getchain, self.worker_getchain)  # putting in to thread
-        self.thread_getchain.started.connect(self.worker_getchain.is_chain_ready)  # executing respective worker class function
+        self.thread_getchain.started.connect(
+            self.worker_getchain.is_chain_ready)  # executing respective worker class function
         chain_ready_thread.command_out.connect(self.chain_ready_result)  # getting results and connecting to socket
         chain_ready_thread.finished.connect(self.chain_init)  # chain_status is True go back continue to init
 
@@ -293,6 +295,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 print_result = print_result + ' ' + str(line)
             print(print_result)
             self.bottom_message_label.setText(print_result)
+
     # -------------------------------------------------------
     # Getting getinfo command
     # -------------------------------------------------------
@@ -470,7 +473,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
     @pyqtSlot()
     def get_new_address(self):
         response = QMessageBox.question(self, "Creating New Address",
-                                      "You are about to create a new address. Are you sure?")
+                                        "You are about to create a new address. Are you sure?")
         if response == QMessageBox.Yes:
             self.worker_get_newaddress = marmarachain_rpc.RpcHandler()
             command = cp.getnewaddress
@@ -577,7 +580,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def get_privkey_table(self):
         self.worker_getaddress_privkey = marmarachain_rpc.RpcHandler()
         command = cp.getaddressesbyaccount
-        address_privkey_thread = self.worker_thread(self.thread_address_privkey, self.worker_getaddress_privkey, command)
+        address_privkey_thread = self.worker_thread(self.thread_address_privkey, self.worker_getaddress_privkey,
+                                                    command)
         address_privkey_thread.command_out.connect(self.set_privkey_table_result)
 
     @pyqtSlot(tuple)
@@ -593,8 +597,10 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 btn_seeprivkey.setIcon(QIcon(self.icon_path + "/details.png"))
                 self.addresses_privkey_tableWidget.setCellWidget(row_number, 1, btn_seeprivkey)
                 self.addresses_privkey_tableWidget.setItem(row_number, 0, QTableWidgetItem(address))
-                self.addresses_privkey_tableWidget.horizontalHeader().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
-                self.addresses_privkey_tableWidget.horizontalHeader().setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+                self.addresses_privkey_tableWidget.horizontalHeader().setSectionResizeMode(0,
+                                                                                           QtWidgets.QHeaderView.ResizeToContents)
+                self.addresses_privkey_tableWidget.horizontalHeader().setSectionResizeMode(1,
+                                                                                           QtWidgets.QHeaderView.ResizeToContents)
                 btn_seeprivkey.clicked.connect(self.set_seeprivkey)
 
         elif result_out[1]:
@@ -663,7 +669,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             # print(json.loads(result_out[0]))
             if result['result'] == 'success':
                 response = QMessageBox.question(self,
-                                     'Confirm Transaction' f'You are about to activate {self.lock_amount_value.text()}')
+                                                'Confirm Transaction' f'You are about to activate {self.lock_amount_value.text()}')
                 if response == QMessageBox.Yes:
                     self.sendrawtransaction(result['hex'])
                 if response == QMessageBox.No:
@@ -690,7 +696,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
             result = json.loads(result_out[0])
             if result.get('result') == "success":
                 print(result)
-                response = QMessageBox.question(self, 'Confirm Transaction' f'You are about to activate {self.unlock_amount_value.text()}')
+                response = QMessageBox.question(self,
+                                                'Confirm Transaction' f'You are about to activate {self.unlock_amount_value.text()}')
                 if response == QMessageBox.Yes:
                     self.sendrawtransaction(result['hex'])
                 if response == QMessageBox.No:
@@ -707,7 +714,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def sendrawtransaction(self, hex):
         self.worker_sendrawtransaction = marmarachain_rpc.RpcHandler()
         command = cp.sendrawtransaction + ' ' + hex
-        sendrawtransaction_thread = self.worker_thread(self.thread_sendrawtransaction, self.worker_sendrawtransaction, command)
+        sendrawtransaction_thread = self.worker_thread(self.thread_sendrawtransaction, self.worker_sendrawtransaction,
+                                                       command)
         sendrawtransaction_thread.command_out.connect(self.sendrawtransaction_result)
 
     @pyqtSlot(tuple)
@@ -728,12 +736,14 @@ class MarmaraMain(QMainWindow, GuiStyle):
             if self.sending_amount_lineEdit.text() == "":
                 self.bottom_info('write some amount')
             else:
-                response = QMessageBox.question(self, 'Confirm Transaction', f'You are about to send {self.sending_amount_lineEdit.text()} MCL to {self.receiver_address_lineEdit.text()}')
+                response = QMessageBox.question(self, 'Confirm Transaction',
+                                                f'You are about to send {self.sending_amount_lineEdit.text()} MCL to {self.receiver_address_lineEdit.text()}')
                 if response == QMessageBox.Yes:
                     self.worker_sendtoaddress = marmarachain_rpc.RpcHandler()
                     command = cp.sendtoaddress + ' ' + self.receiver_address_lineEdit.text() + ' ' + self.sending_amount_lineEdit.text()
                     print(command)
-                    sendtoaddress_thread = self.worker_thread(self.thread_sendtoaddress, self.worker_sendtoaddress, command)
+                    sendtoaddress_thread = self.worker_thread(self.thread_sendtoaddress, self.worker_sendtoaddress,
+                                                              command)
                     sendtoaddress_thread.command_out.connect(self.sendtoaddress_result)
                 if response == QMessageBox.No:
                     self.bottom_info('Transaction aborted')
@@ -829,9 +839,10 @@ class MarmaraMain(QMainWindow, GuiStyle):
         matures = self.change_datetime_to_block_age(matures_date)
         if amount and senderpk and matures:
             self.worker_marmarareceive = marmarachain_rpc.RpcHandler()
-            command = cp.marmarareceive + ' ' + senderpk + ' ' + amount + ' MARMARA ' + str(matures) + " '" + '{"avalcount":"0"}' + "'"
+            command = cp.marmarareceive + ' ' + senderpk + ' ' + amount + ' MARMARA ' + str(
+                matures) + " '" + '{"avalcount":"0"}' + "'"
             print(command)
-            marmarareceive_thread = self.worker_thread(self.thread_marmarareceive, self.worker_marmarareceive,  command)
+            marmarareceive_thread = self.worker_thread(self.thread_marmarareceive, self.worker_marmarareceive, command)
             marmarareceive_thread.command_out.connect(self.marmarareceive_result)
         else:
             self.bottom_info('cannot make a credit loop request with empty fields')
@@ -852,6 +863,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 self.bottom_info(result.get('error'))
         elif result_out[1]:
             print(result_out[1])
+
     # -------------------------------------------------------------------
     # Credit Loop Queries functions
     # --------------------------------------------------------------------
@@ -863,7 +875,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
             self.bottom_info('getting marmarainfo, please wait')
             self.worker_pubkeyloopsearch = marmarachain_rpc.RpcHandler()
             command = cp.marmarainfo + ' 0 0 0 0 ' + pubkey
-            pubkeyloopsearch_thread = self.worker_thread(self.thread_pubkeyloopsearch, self.worker_pubkeyloopsearch, command)
+            pubkeyloopsearch_thread = self.worker_thread(self.thread_pubkeyloopsearch, self.worker_pubkeyloopsearch,
+                                                         command)
             pubkeyloopsearch_thread.command_out.connect(self.get_search_pubkeyloops_result)
         else:
             self.bottom_info('write pubkey to search !')
@@ -903,7 +916,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
             self.bottom_info('getting credit loop info, please wait')
             self.worker_marmaracreditloop = marmarachain_rpc.RpcHandler()
             command = cp.marmaracreditloop + ' ' + txid
-            marmaracreditloop_thread = self.worker_thread(self.thread_marmaracreditloop, self.worker_marmaracreditloop, command)
+            marmaracreditloop_thread = self.worker_thread(self.thread_marmaracreditloop, self.worker_marmaracreditloop,
+                                                          command)
             marmaracreditloop_thread.command_out.connect(self.marmaracreditloop_result)
         else:
             self.bottom_info('write loop transaction id  to search !')
@@ -927,14 +941,13 @@ class MarmaraMain(QMainWindow, GuiStyle):
         elif result_out[1]:
             print(result_out[1])
 
-
-
     def clear_lq_txid_search_result(self):
         self.loopquery_baton_value.clear()
         self.loopquery_amount_value.clear()
         self.loopquery_currency_value.clear()
         self.loopquery_matures_value.clear()
         self.loopquery_issuer_value.clear()
+
     # -------------------------------------------------------------------
     # Getting Contacts in to comboboxes
     # --------------------------------------------------------------------
