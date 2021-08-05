@@ -24,14 +24,17 @@ getaddressbalance = 'getaddressbalance '  # +  '{"addresses": ["address"]}'
 convertpassphrase = 'convertpassphrase'  # + "agamapassphrase"
 importprivkey = 'importprivkey'  # + "wifkey"
 dumpprivkey = 'dumpprivkey'  # + "address"
-marmarainfo = 'marmarainfo'  # firstheight lastheight  minamount maxamount pubkey
+marmarainfo = 'marmarainfo'  # firstheight + lastheight + minamount + maxamount + pubkey
 sendrawtransaction = 'sendrawtransaction'  # + hex
 marmarareceivelist = 'marmarareceivelist'  # + pubkey + maxage
 sendtoaddress = 'sendtoaddress'  # + amount
 marmaracreditloop = 'marmaracreditloop'  # + txid
-marmarareceive = 'marmarareceive'  # + senderpk + amount + currency + matures + '{"avalcount":"n"}'
+marmarareceive = 'marmarareceive'  # case 1: + senderpk + amount + currency + matures + '{"avalcount":"n"}' case 2:
+# senderpk batontxid '{"avalcount":"n"}'
 marmaratransfer = 'marmaratransfer'  # + receiverpk + '{"avalcount":"n"}' + requesttxid
-
+marmaraissue = 'marmaraissue'  # receiverpk + '{"avalcount":"n", "autosettlement":"true"|"false",
+# "autoinsurance":"true"|"false", "disputeexpires":"offset", "EscrowOn":"true"|"false", "BlockageAmount":"amount" }'
+# + requesttxid
 
 def start_param_local(marmarad):
     if platform.system() == 'Linux' or platform.system() == 'Darwin':

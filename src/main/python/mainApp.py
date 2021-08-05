@@ -87,10 +87,10 @@ class MarmaraMain(QMainWindow, GuiStyle):
 
         # -----Create credit Loop Request
         self.contactpubkey_makeloop_comboBox.currentTextChanged.connect(self.get_selected_contact_loop_pubkey)
-        self.contactpubkey_transferrequest_comboBox.currentTextChanged.connect(
-            self.get_selected_contact_transfer_pubkey)
+        self.contactpubkey_transferrequest_comboBox.currentTextChanged.connect(self.get_selected_contact_transfer_pubkey)
         self.make_credit_loop_matures_dateTimeEdit.setMinimumDateTime(QDateTime.currentDateTime())
         self.send_loop_request_button.clicked.connect(self.marmarareceive)
+        self.send_transfer_request_button.clicked.connect(self.marmararecieve_transfer)
         # ---- Loop Queries page --
         self.lq_pubkey_search_button.clicked.connect(self.search_pubkeyloops)
         self.lq_txid_search_button.clicked.connect(self.marmaracreditloop)
@@ -125,6 +125,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.thread_marmarareceive = QThread()
         self.thread_getgenerate = QThread()
         self.thread_setgenerate = QThread()
+        self.thread_marmarareceive_transfer = QThread()
 
         # Loading Gif
         # --------------------------------------------------
@@ -253,8 +254,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def is_chain_ready(self):
         self.worker_getchain = marmarachain_rpc.RpcHandler()  # worker setting
         chain_ready_thread = self.worker_thread(self.thread_getchain, self.worker_getchain)  # putting in to thread
-        self.thread_getchain.started.connect(
-            self.worker_getchain.is_chain_ready)  # executing respective worker class function
+        self.thread_getchain.started.connect(self.worker_getchain.is_chain_ready)  # executing respective worker class function
         chain_ready_thread.command_out.connect(self.chain_ready_result)  # getting results and connecting to socket
         chain_ready_thread.finished.connect(self.chain_init)  # chain_status is True go back continue to init
 
@@ -956,7 +956,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             row_number = credit_request_result.index(row)
             self.loop_request_tableWidget.setRowCount(len(credit_request_result))
 
-    # --- Create Loop Request page ----
+    # --- Create Loop Request page functions ----
 
     @pyqtSlot()
     def marmarareceive(self):
@@ -981,7 +981,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             result = json.loads(result_out[0])
             # if result.get('result') == "success":
             #     print(result)
-            #     response = QMessageBox.question(self, 'Confirm Transaction' 'You are about to activate')
+            #     response = QMessageBox.question(self, 'Confirm Transaction', 'You are about to make a credit loop request')
             #     if response == QMessageBox.Yes:
             #         self.sendrawtransaction(result.get('hex'))
             #     if response == QMessageBox.No:
@@ -990,6 +990,43 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 self.bottom_info(result.get('error'))
         elif result_out[1]:
             print(result_out[1])
+
+    # function name: marmararecieve_transfer
+    # purpose:  holder makes a marmarareceive request to the endorser to get the credit for selling the goods/services
+    @pyqtSlot()
+    def marmararecieve_transfer(self):
+        senderpk = self.transfer_senderpubkey_lineEdit.text()
+        baton = self.transfer_baton_lineEdit.text()
+        if senderpk and baton:
+            self.worker_marmarareceive_transfer = marmarachain_rpc.RpcHandler()
+            command = cp.marmarareceive + ' ' + senderpk + ' ' + baton + " '" + '{"avalcount":"0"}' + "'"
+            print(command)
+            marmarareceive_transfer_thread = self.worker_thread(self.thread_marmarareceive_transfer,
+                                                                self.worker_marmarareceive_transfer, command)
+            marmarareceive_transfer_thread.command_out.connect(self.marmararecieve_transfer_result)
+        else:
+            self.bottom_info('cannot make a receive transfer request with empty fields')
+
+    @pyqtSlot(tuple)
+    def marmararecieve_transfer_result(self, result_out):
+        if result_out[0]:
+            # print(result_out[0])
+            result = json.loads(result_out[0])
+            # if result.get('result') == "success":
+            #     print(result)
+            #     response = QMessageBox.question(self, 'Confirm Transaction', 'You are about to make a request to the endorser')
+            #     if response == QMessageBox.Yes:
+            #         self.sendrawtransaction(result.get('hex'))
+            #     if response == QMessageBox.No:
+            #         self.bottom_info('Transaction aborted')
+            if result.get('result') == "error":
+                self.bottom_info(result.get('error'))
+        elif result_out[1]:
+            print(result_out[1])
+            result = str(result_out[1]).splitlines()
+            if str(result_out[1]).find('error message:') != -1:
+                index = result.index('error message:') + 1
+                self.bottom_info(result[index])
 
     # -------------------------------------------------------------------
     # Credit Loop Queries functions
@@ -1024,11 +1061,11 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 self.bottom_info('finished searching marmarainfo')
             if result.get('result') == "error":
                 self.bottom_info(result.get('error'))
-                self.clear_lq_pubkey_resrult()
+                self.clear_lq_pubkey_result()
         elif result_out[1]:
             print(result_out[1])
 
-    def clear_lq_pubkey_resrult(self):
+    def clear_lq_pubkey_result(self):
         self.lq_pubkeynormalamount_value_label.clear()
         self.lq_pubkeyactivatedamount_value_label.clear()
         self.lq_activeloopno_value_label.clear()
