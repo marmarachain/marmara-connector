@@ -1053,7 +1053,7 @@
                 </font>
                </property>
                <property name="text">
-                <string>Chain Sync</string>
+                <string>Chain S&amp;ync</string>
                </property>
                <property name="buddy">
                 <cstring>chainsync_button</cstring>
@@ -3044,7 +3044,7 @@
                <enum>QTabWidget::Rounded</enum>
               </property>
               <property name="currentIndex">
-               <number>1</number>
+               <number>2</number>
               </property>
               <widget class="QWidget" name="looprequests_tab">
                <attribute name="title">
@@ -3623,14 +3623,14 @@
                 <item>
                  <layout class="QGridLayout" name="activeloops_Layout">
                   <item row="2" column="1">
-                   <widget class="QLabel" name="loopamount_total_label">
+                   <widget class="QLabel" name="activeloops_total_amount_label">
                     <property name="text">
                      <string>Total Amount in Active Loops  </string>
                     </property>
                    </widget>
                   </item>
                   <item row="3" column="2">
-                   <widget class="QLabel" name="closedloopamount_total_value">
+                   <widget class="QLabel" name="closedloops_total_amount_value_label">
                     <property name="minimumSize">
                      <size>
                       <width>120</width>
@@ -3652,7 +3652,7 @@
                    </widget>
                   </item>
                   <item row="3" column="4">
-                   <widget class="QLabel" name="total_closedloops_no_value">
+                   <widget class="QLabel" name="closedloops_total_number_value_label">
                     <property name="minimumSize">
                      <size>
                       <width>120</width>
@@ -3674,14 +3674,14 @@
                    </widget>
                   </item>
                   <item row="3" column="3">
-                   <widget class="QLabel" name="total_closedloops_no_label">
+                   <widget class="QLabel" name="closedloops_total_number_label">
                     <property name="text">
                      <string>Number of Closed loops</string>
                     </property>
                    </widget>
                   </item>
                   <item row="2" column="2">
-                   <widget class="QLabel" name="loopamount_total__value">
+                   <widget class="QLabel" name="activeloops_total_amount_value_label">
                     <property name="minimumSize">
                      <size>
                       <width>120</width>
@@ -3703,7 +3703,7 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QLabel" name="closedloopamount_total_label">
+                   <widget class="QLabel" name="closedloops_total_amount_label">
                     <property name="text">
                      <string>Total Amount in Closed Loops</string>
                     </property>
@@ -3789,14 +3789,14 @@
                    </widget>
                   </item>
                   <item row="2" column="3">
-                   <widget class="QLabel" name="label_14">
+                   <widget class="QLabel" name="activeloops_total_number_label">
                     <property name="text">
                      <string>Number of Active loops</string>
                     </property>
                    </widget>
                   </item>
                   <item row="2" column="4">
-                   <widget class="QLabel" name="label_15">
+                   <widget class="QLabel" name="activeloops_total_number_value_label">
                     <property name="frameShape">
                      <enum>QFrame::WinPanel</enum>
                     </property>
