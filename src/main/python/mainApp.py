@@ -884,11 +884,11 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 self.bottom_info('finished searching marmarainfo')
             if result.get('result') == "error":
                 self.bottom_info(result.get('error'))
-                self.clear_lq_pubkey_resrult()
+                self.clear_lq_pubkey_result()
         elif result_out[1]:
             print(result_out[1])
 
-    def clear_lq_pubkey_resrult(self):
+    def clear_lq_pubkey_result(self):
         self.lq_pubkeynormalamount_value_label.clear()
         self.lq_pubkeyactivatedamount_value_label.clear()
         self.lq_activeloopno_value_label.clear()
