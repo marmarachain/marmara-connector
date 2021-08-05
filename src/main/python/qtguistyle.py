@@ -35,6 +35,10 @@ class GuiStyle(ApplicationContext ,Ui_MainWindow):
         self.mining_button = ToggleSwitch(self.miningstatus_frame)
         self.mining_button.setObjectName("mining_button")
         self.gridLayout_17.addWidget(self.mining_button, 3, 1, 1, 1)
+        self.copyaddress_button.setIcon(QtGui.QIcon(self.icon_path + '/copy_wallet_icon_.png'))
+        self.copyaddress_button.setIconSize(QtCore.QSize(24, 24))
+        self.copypubkey_button.setIcon(QtGui.QIcon(self.icon_path + '/copy_key_icon.png'))
+        self.copypubkey_button.setIconSize(QtCore.QSize(24, 24))
         # Wallet page button icons
         self.lock_button.setIcon(QtGui.QIcon(self.icon_path + "/coin_lock_icon.png"))
         self.lock_button.setIconSize(QtCore.QSize(32, 32))

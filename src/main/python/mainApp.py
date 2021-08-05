@@ -48,6 +48,9 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.serverdelete_button.clicked.connect(self.delete_server_setting)
         # MCL tabwidget
         self.mcl_tab.currentChanged.connect(self.mcl_tab_changed)
+        # side panel
+        self.copyaddress_button.clicked.connect(self.copyaddress_clipboard)
+        self.copypubkey_button.clicked.connect(self.copypubkey_clipboard)
         # Chain page
         self.stopchain_button.clicked.connect(self.stop_chain)
         self.addaddress_page_button.clicked.connect(self.get_address_page)
@@ -77,10 +80,10 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.request_dateTimeEdit.setDateTime(QDateTime.currentDateTime())
 
         # -----Create credit Loop Request
-        self.contactpubkey_createloop_comboBox.currentTextChanged.connect(self.get_selected_contact_loop_pubkey)
+        self.contactpubkey_makeloop_comboBox.currentTextChanged.connect(self.get_selected_contact_loop_pubkey)
         self.contactpubkey_transferrequest_comboBox.currentTextChanged.connect(self.get_selected_contact_transfer_pubkey)
-        self.create_credit_loop_matures_dateTimeEdit.setMinimumDateTime(QDateTime.currentDateTime())
-        self.create_loop_request_button.clicked.connect(self.marmarareceive)
+        self.make_credit_loop_matures_dateTimeEdit.setMinimumDateTime(QDateTime.currentDateTime())
+        self.send_loop_request_button.clicked.connect(self.marmarareceive)
         # ---- Loop Queries page --
         self.lq_pubkey_search_button.clicked.connect(self.search_pubkeyloops)
         self.lq_txid_search_button.clicked.connect(self.marmaracreditloop)
@@ -155,7 +158,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
 
     @pyqtSlot(int)
     def credit_tab_changed(self, index):
-        if self.creditloop_tabWidget.tabText(index) == 'Create Loop Request':
+        if self.creditloop_tabWidget.tabText(index) == 'Make Loop Request':
             self.get_contact_names_pubkeys()
 
     @pyqtSlot()
@@ -337,6 +340,27 @@ class MarmaraMain(QMainWindow, GuiStyle):
             self.bottom_message_label.setText(print_result)
 
     # -----------------------------------------------------------
+    # Side panel functions
+    # -----------------------------------------------------------
+    @pyqtSlot()
+    def copyaddress_clipboard(self):
+        address = self.currentaddress_value.text()
+        if address != "":
+            QtWidgets.QApplication.clipboard().setText(address)
+            self.bottom_info('copied ' + address)
+        else:
+            self.bottom_info('no address value set')
+
+    @pyqtSlot()
+    def copypubkey_clipboard(self):
+        pubkey = self.current_pubkey_value.text()
+        if pubkey != "":
+            QtWidgets.QApplication.clipboard().setText(pubkey)
+            self.bottom_info('copied ' + pubkey)
+        else:
+            self.bottom_info('no pubkey value set')
+
+    # -----------------------------------------------------------
     # Chain page functions
     # -----------------------------------------------------------
 
@@ -459,7 +483,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             self.check_chain_pid()
 
     # ------------------
-    # wallet Address Add, import
+    # Chain  --- wallet Address Add, import
     # -------------------
     @pyqtSlot()
     def get_address_page(self):
@@ -823,13 +847,13 @@ class MarmaraMain(QMainWindow, GuiStyle):
 
     @pyqtSlot()
     def marmarareceive(self):
-        amount = self.create_credit_loop_amount_lineEdit.text()
-        senderpk = self.create_credit_loop_receiverpubkey_lineEdit.text()
-        matures_date = self.create_credit_loop_matures_dateTimeEdit.dateTime()
+        amount = self.make_credit_loop_amount_lineEdit.text()
+        senderpk = self.make_credit_loop_senderpubkey_lineEdit.text()
+        matures_date = self.make_credit_loop_matures_dateTimeEdit.dateTime()
         matures = self.change_datetime_to_block_age(matures_date)
         if amount and senderpk and matures:
             self.worker_marmarareceive = marmarachain_rpc.RpcHandler()
-            command = cp.marmarareceive + ' ' + senderpk + ' ' + amount + ' MARMARA ' + str(matures) + " '" + '{"avalcount":"0"}' + "'"
+            command = cp.marmarareceive + ' ' + senderpk + ' ' + amount + ' ' + self.make_credit_loop_currency_value_label.text() + ' ' + str(matures) + " '" + '{"avalcount":"0"}' + "'"
             print(command)
             marmarareceive_thread = self.worker_thread(self.thread_marmarareceive, self.worker_marmarareceive,  command)
             marmarareceive_thread.command_out.connect(self.marmarareceive_result)
@@ -957,35 +981,35 @@ class MarmaraMain(QMainWindow, GuiStyle):
             self.receiver_address_lineEdit.clear()
 
     def get_contact_names_pubkeys(self):
-        self.contactpubkey_createloop_comboBox.clear()
+        self.contactpubkey_makeloop_comboBox.clear()
         self.contactpubkey_transferrequest_comboBox.clear()
-        self.create_credit_loop_receiverpubkey_lineEdit.clear()
-        self.transfer_receiverpubkey_lineEdit.clear()
-        self.contactpubkey_createloop_comboBox.addItem('Contacts')
+        self.make_credit_loop_senderpubkey_lineEdit.clear()
+        self.transfer_senderpubkey_lineEdit.clear()
+        self.contactpubkey_makeloop_comboBox.addItem('Contacts')
         self.contactpubkey_transferrequest_comboBox.addItem('Contacts')
         contacts_data = configuration.ContactsSettings().read_csv_file()
         for name in contacts_data:
             if name[0] != 'Name':
-                self.contactpubkey_createloop_comboBox.addItem(name[0])
+                self.contactpubkey_makeloop_comboBox.addItem(name[0])
                 self.contactpubkey_transferrequest_comboBox.addItem(name[0])
 
     @pyqtSlot()
     def get_selected_contact_loop_pubkey(self):
         contacts_data = configuration.ContactsSettings().read_csv_file()
-        selected_contactpubkey_loop = contacts_data[self.contactpubkey_createloop_comboBox.currentIndex()]
+        selected_contactpubkey_loop = contacts_data[self.contactpubkey_makeloop_comboBox.currentIndex()]
         if selected_contactpubkey_loop[2] != 'Pubkey':
-            self.create_credit_loop_receiverpubkey_lineEdit.setText(selected_contactpubkey_loop[2])
+            self.make_credit_loop_senderpubkey_lineEdit.setText(selected_contactpubkey_loop[2])
         if selected_contactpubkey_loop[2] == 'Pubkey':
-            self.create_credit_loop_receiverpubkey_lineEdit.clear()
+            self.make_credit_loop_senderpubkey_lineEdit.clear()
 
     @pyqtSlot()
     def get_selected_contact_transfer_pubkey(self):
         contacts_data = configuration.ContactsSettings().read_csv_file()
         selected_contactpubkey_transfer = contacts_data[self.contactpubkey_transferrequest_comboBox.currentIndex()]
         if selected_contactpubkey_transfer[2] != 'Pubkey':
-            self.transfer_receiverpubkey_lineEdit.setText(selected_contactpubkey_transfer[2])
+            self.transfer_senderpubkey_lineEdit.setText(selected_contactpubkey_transfer[2])
         if selected_contactpubkey_transfer[2] == 'Pubkey':
-            self.transfer_receiverpubkey_lineEdit.clear()
+            self.transfer_senderpubkey_lineEdit.clear()
 
     # -------------------------------------------------------------------
     # Adding contacts editing and deleting
