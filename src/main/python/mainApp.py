@@ -1052,11 +1052,11 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def search_active_loops(self):
         pubkey = self.current_pubkey_value.text()
         if pubkey:
-            self.bottom_info('getting marmarainfo, please wait')
+            self.bottom_message_label.setText('getting marmarainfo, please wait')
             self.worker_search_active_loops = marmarachain_rpc.RpcHandler()
             command = cp.marmarainfo + ' 0 0 0 0 ' + pubkey
-            search_active_loops_thread = self.worker_thread(self.thread_search_active_loops, self.worker_search_active_loops,
-                                                            command)
+            search_active_loops_thread = self.worker_thread(self.thread_search_active_loops,
+                                                            self.worker_search_active_loops, command)
             search_active_loops_thread.command_out.connect(self.get_search_active_loops_result)
         else:
             self.bottom_info('pubkey not set!')
@@ -1098,7 +1098,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def search_pubkeyloops(self):
         pubkey = self.loopqueries_pubkey_lineEdit.text()
         if pubkey:
-            self.bottom_info('getting marmarainfo, please wait')
+            self.bottom_message_label.setText('getting marmarainfo, please wait')
             self.worker_pubkeyloopsearch = marmarachain_rpc.RpcHandler()
             command = cp.marmarainfo + ' 0 0 0 0 ' + pubkey
             pubkeyloopsearch_thread = self.worker_thread(self.thread_pubkeyloopsearch, self.worker_pubkeyloopsearch,
