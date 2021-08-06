@@ -4,10 +4,10 @@ import time
 import qrcode
 from datetime import datetime
 from qr_code_gen import Image
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtGui import QIcon, QImage, QPixmap, QPainter
-from PyQt5.QtCore import QThread, pyqtSlot, QSize, QDateTime
-from PyQt5.QtWidgets import QMainWindow, QPushButton, QTableWidgetItem, QMessageBox
+from PyQt5 import QtWidgets
+from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import QThread, pyqtSlot, QDateTime
+from PyQt5.QtWidgets import QMainWindow, QPushButton, QTableWidgetItem, QMessageBox, QDesktopWidget
 import configuration
 import marmarachain_rpc
 import remote_connection
@@ -27,6 +27,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.home_button.setVisible(False)
         self.chain_status = False
         self.pubkey_status = False
+        self.center_ui()
         # paths settings
         # Menu Actions
         self.actionAbout.triggered.connect(self.show_about)
@@ -57,6 +58,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.cpu_core_selection_off()
         self.cpu_core_set_button.clicked.connect(self.setmining_cpu_core)
         self.mining_button.clicked.connect(self.toggle_mining)
+        self.getinfo_refresh_button.clicked.connect(self.refresh_side_panel)
         # Chain page
         self.stopchain_button.clicked.connect(self.stop_chain)
         self.addaddress_page_button.clicked.connect(self.get_address_page)
@@ -127,6 +129,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.thread_marmarareceive = QThread()
         self.thread_getgenerate = QThread()
         self.thread_setgenerate = QThread()
+        self.thread_sidepanel = QThread()
         self.thread_marmarareceive_transfer = QThread()
         self.thread_search_active_loops = QThread()
 
@@ -134,6 +137,13 @@ class MarmaraMain(QMainWindow, GuiStyle):
         # --------------------------------------------------
         self.loading = LoadingScreen()
         # --------------------------------------------------
+
+    def center_ui(self):
+        qr = self.frameGeometry()
+        center_point = QDesktopWidget().availableGeometry().center()
+        qr.moveCenter(center_point)
+        self.move(qr.topLeft())
+
 
     def show_about(self):
         QMessageBox.about(
@@ -190,7 +200,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             self.mcl_tab.setCurrentIndex(0)
 
     def worker_thread(self, thread, worker, command=None):
-        self.loading.startAnimation()
+        self.start_animation()
         if command:
             worker.set_command(command)
         worker.moveToThread(thread)
@@ -198,24 +208,32 @@ class MarmaraMain(QMainWindow, GuiStyle):
         worker.finished.connect(self.stop_animation)
         if command:
             thread.started.connect(worker.do_execute_rpc)
+
         thread.start()
         return worker
 
+    @pyqtSlot()
+    def start_animation(self):
+        self.loading.startAnimation()
+
+    @pyqtSlot()
     def stop_animation(self):
         self.loading.stopAnimation()
 
     def bottom_info(self, info):
-        self.worker_bottom_info = marmarachain_rpc.RpcHandler()
-        self.worker_bottom_info.set_bottom_info(self.bottom_message_label, info)
-        self.worker_bottom_info.moveToThread(self.thread_bottom_info)
-        self.worker_bottom_info.finished.connect(self.thread_bottom_info.quit)
-        self.thread_bottom_info.started.connect(self.worker_bottom_info.write_bottom_info)
-        self.thread_bottom_info.start()
+        self.bottom_message_label.setText(info)
+
+    def bottom_err_info(self, err_msg):
+        err_result = ""
+        for line in str(err_msg).splitlines():
+            err_result = err_result + ' ' + str(line)
+        print(err_result)
+        self.bottom_message_label.setText(err_result)
 
     # ---------------------------------------
     #  Chain initialization
     # ---------------------------------------
-
+    @pyqtSlot()
     def chain_init(self):
         print('chain_status ' + str(self.chain_status))
         if not self.chain_status:
@@ -236,6 +254,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.check_chain_pid()
 
     def check_chain_pid(self):
+        i = 5
         while True:
             marmara_pid = marmarachain_rpc.mcl_chain_status()
             if len(marmara_pid[0]) > 0:
@@ -253,7 +272,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 break
         self.is_chain_ready()
 
-    @pyqtSlot()
+
     def is_chain_ready(self):
         self.worker_getchain = marmarachain_rpc.RpcHandler()  # worker setting
         chain_ready_thread = self.worker_thread(self.thread_getchain, self.worker_getchain)  # putting in to thread
@@ -288,7 +307,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 self.worker_stopchain.stopping_chain)  # executing respective worker class function
             stop_chain_thread.command_out.connect(self.result_stopchain)  # getting results and connecting to socket
         else:
-            self.bottom_message_label.setText('chain is not ready')
+            self.bottom_info('chain is not ready')
 
     @pyqtSlot(tuple)
     def result_stopchain(self, result_out):
@@ -305,11 +324,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 "QPushButton {image: url(" + self.icon_path + "/circle-inactive.png); border: 0; width: 30px; height: 30px;}")
             self.update_addresses_table()
         elif result_out[1]:
-            print_result = ""
-            for line in str(result_out[1]).splitlines():
-                print_result = print_result + ' ' + str(line)
-            print(print_result)
-            self.bottom_message_label.setText(print_result)
+            self.bottom_err_info(result_out[1])
 
     # -------------------------------------------------------
     # Getting getinfo command
@@ -319,44 +334,68 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.worker_getinfo = marmarachain_rpc.RpcHandler()  # worker setting
         command = cp.getinfo  # setting command
         getinfo_thread = self.worker_thread(self.thread_getinfo, self.worker_getinfo, command)  # putting in to thread
-        getinfo_thread.command_out.connect(self.set_getinfo_result)  # getting results and connecting to socket
+        getinfo_thread.command_out.connect(self.getinfo_result)  # getting results and connecting to socket
 
     @pyqtSlot(tuple)
-    def set_getinfo_result(self, result_out):
+    def getinfo_result(self, result_out):
         if result_out[0]:
             getinfo_result = result_out[0]
             getinfo_result = json.loads(getinfo_result)
-            self.bottom_message_label.setText('loading values')
-            self.difficulty_value_label.setText(str(int(getinfo_result['difficulty'])))
-            self.currentblock_value_label.setText(str(getinfo_result['blocks']))
-            self.longestchain_value_label.setText(str(getinfo_result['longestchain']))
-            self.connections_value_label.setText(str(getinfo_result['connections']))
+            self.bottom_message_label.setText('loading getinfo values')
+            self.set_getinfo_result(getinfo_result)
             print('getinfo finished')
-            self.bottom_info('initialization finished')
-            if getinfo_result.get('synced'):
-                self.chainsync_button.setStyleSheet(
-                    "QPushButton {image: url(" + self.icon_path + "/circle-active.png); border: 0; width: 30px; height: 30px;}")
-            elif not getinfo_result.get('synced'):
-                self.chainsync_button.setStyleSheet(
-                    "QPushButton {image: url(" + self.icon_path + "/circle-inactive.png); border: 0; width: 30px; height: 30px;}")
-            if getinfo_result.get('pubkey'):
-                self.pubkey_status = True
-                self.current_pubkey_value.setText(str(getinfo_result['pubkey']))
-            if getinfo_result.get('pubkey') is None:
-                self.bottom_info('pubkey is not set')
-                self.pubkey_status = False
-                self.current_pubkey_value.setText("")
         elif result_out[1]:
-            getinfo_result = str(result_out[1]).splitlines()
-            err_result = ""
-            for line in getinfo_result:
-                err_result = err_result + ' ' + str(line)
-            print(err_result)
-            self.bottom_info(err_result)
+            self.bottom_err_info(result_out[1])
+
+    def set_getinfo_result(self, getinfo_result):
+        if getinfo_result.get('synced'):
+            self.chainsync_button.setStyleSheet(
+                "QPushButton {image: url(" + self.icon_path + "/circle-active.png); border: 0; width: 30px; height: 30px;}")
+        elif not getinfo_result.get('synced'):
+            self.chainsync_button.setStyleSheet(
+                "QPushButton {image: url(" + self.icon_path + "/circle-inactive.png); border: 0; width: 30px; height: 30px;}")
+        if getinfo_result.get('pubkey'):
+            self.pubkey_status = True
+            self.current_pubkey_value.setText(str(getinfo_result['pubkey']))
+        if getinfo_result.get('pubkey') is None:
+            self.bottom_info('pubkey is not set')
+            self.pubkey_status = False
+            self.current_pubkey_value.setText("")
+        self.difficulty_value_label.setText(str(int(getinfo_result['difficulty'])))
+        self.currentblock_value_label.setText(str(getinfo_result['blocks']))
+        self.longestchain_value_label.setText(str(getinfo_result['longestchain']))
+        self.connections_value_label.setText(str(getinfo_result['connections']))
+        self.totalnormal_value_label.setText(str(getinfo_result['balance']))
+        self.bottom_info('getinfo finished')
 
     # -----------------------------------------------------------
     # Side panel functions
     # -----------------------------------------------------------
+    @pyqtSlot()
+    def refresh_side_panel(self):
+        self.worker_sidepanel = marmarachain_rpc.RpcHandler()
+        sidepanel_thread = self.worker_thread(self.thread_sidepanel, self.worker_sidepanel)
+        self.thread_sidepanel.started.connect(self.worker_sidepanel.refresh_sidepanel)
+        sidepanel_thread.command_out.connect(self.refresh_side_panel_result)
+        last_update = self.tr('Last Update: ')
+        date = (str(datetime.now().date()))
+        hour = (str(datetime.now().hour))
+        minute = (str(datetime.now().minute))
+        self.last_update_label.setText(last_update + date + ' ' + hour + ':' + minute)
+
+
+    @pyqtSlot(tuple)
+    def refresh_side_panel_result(self, result_out):
+        if result_out[0]:
+            result = json.loads(result_out[0])
+            if result.get('version'):
+                self.set_getinfo_result(result)
+            else:
+                self.setgenerate_result(result_out)
+                self.bottom_info('Refresh done.')
+        elif result_out[1]:
+            self.bottom_err_info(result_out[1])
+
     @pyqtSlot()
     def copyaddress_clipboard(self):
         address = self.currentaddress_value.text()
@@ -412,14 +451,14 @@ class MarmaraMain(QMainWindow, GuiStyle):
                     self.mining_button.setChecked(False)
             else:  # Staking is off turn on Mining mode
                 print('setgenerate True 1')
-                self.setgenerate('true 1')
                 self.cpu_core_selection_on()
+                self.setgenerate('true 1')
         else:  # Mining button status is False.
             response = QMessageBox.question(self, 'Turnoff Mining', ' You are about to close mining. Are you sure?')
             if response == QMessageBox.Yes:
                 print('setgenerate False')
-                self.setgenerate('false')
                 self.cpu_core_selection_off()
+                self.setgenerate('false')
             if response == QMessageBox.No:
                 self.mining_button.setChecked(True)  # Abort selecting mining button
 
@@ -443,17 +482,22 @@ class MarmaraMain(QMainWindow, GuiStyle):
     @pyqtSlot(tuple)
     def setgenerate_result(self, result_out):
         if result_out[0]:
-            # print(json.loads(result_out[0]))
+            print(json.loads(result_out[0]))
             result = json.loads(result_out[0])
             if result.get('staking') is True and result.get('generate') is False:
                 self.bottom_info('Staking ON')
+                self.staking_button.setChecked(True)
+                self.mining_button.setChecked(False)
             if result.get('staking') is False and result.get('generate') is False:
                 self.bottom_info('Mining status is OFF')
+                self.staking_button.setChecked(False)
+                self.mining_button.setChecked(False)
             if result.get('generate') is True and result.get('staking') is False:
                 self.bottom_info('Mining ON with ' + str(result.get('numthreads')))
+                self.staking_button.setChecked(False)
+                self.mining_button.setChecked(True)
         if result_out[1]:
-            print(result_out[1])
-            self.bottom_info('wrong input format. please use ')
+            self.bottom_err_info(result_out[1])
 
     @pyqtSlot()
     def setmining_cpu_core(self):
@@ -511,7 +555,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
                     self.addresses_tableWidget.setRowHidden(rowcount, True)
                 if rowcount == 0:
                     break
-
         else:
             rowcount = self.addresses_tableWidget.rowCount()
             while True:
@@ -575,13 +618,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             if QtWidgets.QMessageBox.Ok:
                 self.update_addresses_table()
         elif result_out[1]:
-            print(result_out[1])
-            result = str(result_out[1]).splitlines()
-            err_result = ""
-            for line in result:
-                err_result = err_result + ' ' + str(line)
-            print(err_result)
-            self.bottom_message_label.setText(err_result)
+            self.bottom_err_info(result_out[1])
 
     @pyqtSlot()
     def start_chain(self):
@@ -621,12 +658,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         if result_out[0]:
             self.bottom_message_label.setText('new address = ' + str(result_out[0]))
         elif result_out[1]:
-            result = str(result_out[1]).splitlines()
-            err_result = ""
-            for line in result:
-                err_result = err_result + ' ' + str(line)
-            print(err_result)
-            self.bottom_message_label.setText(err_result)
+            self.bottom_err_info(result_out[1])
 
     @pyqtSlot()
     def convertpassphrase(self):
@@ -666,12 +698,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
 
         # for error handling of convertpassphrase method
         elif result_out[1]:
-            result = str(result_out[1]).splitlines()
-            err_result = ""
-            for line in result:
-                err_result = err_result + ' ' + str(line)
-            print(err_result)
-            self.bottom_message_label.setText(err_result)
+            self.bottom_err_info(result_out[1])
 
 
     @pyqtSlot()
@@ -694,12 +721,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             self.bottom_message_label.setText(str(result_out[0]))
             print(result_out[0])
         elif result_out[1]:
-            result = str(result_out[1]).splitlines()
-            err_result = ""
-            for line in result:
-                err_result = err_result + ' ' + str(line)
-            print(err_result)
-            self.bottom_message_label.setText(err_result)
+            self.bottom_err_info(result_out[1])
 
     @pyqtSlot()
     def back_chain_widget_index(self):
@@ -741,12 +763,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 btn_seeprivkey.clicked.connect(self.set_seeprivkey)
 
         elif result_out[1]:
-            result = str(result_out[1]).splitlines()
-            err_result = ""
-            for line in result:
-                err_result = err_result + ' ' + str(line)
-            print(err_result)
-            self.bottom_message_label.setText(err_result)
+            self.bottom_err_info(result_out[1])
 
     @pyqtSlot()
     def set_seeprivkey(self):
@@ -767,12 +784,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             # self.bottom_message_label.setText('private key = ' + result_out[0])
             QMessageBox.information(self, 'Private key', result_out[0])
         elif result_out[1]:
-            result = str(result_out[1]).splitlines()
-            err_result = ""
-            for line in result:
-                err_result = err_result + ' ' + str(line)
-            print(err_result)
-            self.bottom_message_label.setText(err_result)
+            self.bottom_err_info(result_out[1])
 
     # --------------------------------------------------------------------
     # Wallet page functions
@@ -803,7 +815,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def marmaralock_amount_result(self, result_out):
         if result_out[0]:
             result = json.loads(result_out[0])
-            # print(json.loads(result_out[0]))
+            print(result)
             if result['result'] == 'success':
                 response = QMessageBox.question(self,
                                                 'Confirm Transaction' f'You are about to activate {self.lock_amount_value.text()}')
@@ -812,9 +824,13 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 if response == QMessageBox.No:
                     self.bottom_info('Transaction aborted')
             if result.get('error'):
+
                 self.bottom_info(str(result['error']))
         elif result_out[1]:
+            if self.chain_status is False:
+                self.bottom_err_info(result_out[1])
             result = str(result_out[1]).splitlines()
+            print(result)
             if str(result_out[1]).find('error message:') != -1:
                 index = result.index('error message:') + 1
                 self.bottom_info(result[index])
@@ -831,8 +847,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def marmaraunlock_amount_result(self, result_out):
         if result_out[0]:
             result = json.loads(result_out[0])
+            print(result)
             if result.get('result') == "success":
-                print(result)
                 response = QMessageBox.question(self,
                                                 'Confirm Transaction' f'You are about to activate {self.unlock_amount_value.text()}')
                 if response == QMessageBox.Yes:
@@ -842,7 +858,13 @@ class MarmaraMain(QMainWindow, GuiStyle):
             if result.get('result') == "error":
                 self.bottom_info(result.get('error'))
         elif result_out[1]:
-            print(result_out[1])
+            if self.chain_status is False:
+                self.bottom_err_info(result_out[1])
+            result = str(result_out[1]).splitlines()
+            print(result)
+            if str(result_out[1]).find('error message:') != -1:
+                index = result.index('error message:') + 1
+                self.bottom_info(result[index])
 
     # --------------------------------------------------------------------
     # sending raw transaction
@@ -860,7 +882,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         if result_out[0]:
             print(result_out[0])
         elif result_out[1]:
-            print(result_out[1])
+            self.bottom_err_info(result_out[1])
 
     # --------------------------------------------------------------------
     # Coin Send-Receive  page functions
@@ -890,8 +912,10 @@ class MarmaraMain(QMainWindow, GuiStyle):
         if result_out[0]:
             print(result_out[0])
         elif result_out[1]:
-            print(result_out[1])
+            if self.chain_status is False:
+                self.bottom_err_info(result_out[1])
             result = str(result_out[1]).splitlines()
+            print(result)
             if str(result_out[1]).find('error message:') != -1:
                 index = result.index('error message:') + 1
                 self.bottom_info(result[index])
@@ -952,7 +976,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         if result_out[0]:
             print(result_out[0])
         elif result_out[1]:
-            print(result_out[1])
+            self.bottom_err_info(result_out[1])
 
     @pyqtSlot(list)
     def set_transfer_request_result(self, transfer_result):
@@ -1000,13 +1024,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             if result.get('result') == "error":
                 self.bottom_info(result.get('error'))
         elif result_out[1]:
-            print(result_out[1])
-            result = str(result_out[1]).splitlines()
-            err_result = ""
-            for line in result:
-                err_result = err_result + ' ' + str(line)
-            print(err_result)
-            self.bottom_message_label.setText(err_result)
+            self.bottom_err_info(result_out[1])
 
     # function name: marmararecieve_transfer
     # purpose:  holder makes a marmarareceive request to the endorser to get the credit for selling the goods/services
@@ -1039,8 +1057,10 @@ class MarmaraMain(QMainWindow, GuiStyle):
             if result.get('result') == "error":
                 self.bottom_info(result.get('error'))
         elif result_out[1]:
-            print(result_out[1])
+            if self.chain_status is False:
+                self.bottom_err_info(result_out[1])
             result = str(result_out[1]).splitlines()
+            print(result)
             if str(result_out[1]).find('error message:') != -1:
                 index = result.index('error message:') + 1
                 self.bottom_info(result[index])
@@ -1077,12 +1097,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 self.bottom_info(result.get('error'))
                 self.clear_search_active_loops_result()
         elif result_out[1]:
-            result = str(result_out[1]).splitlines()
-            err_result = ""
-            for line in result:
-                err_result = err_result + ' ' + str(line)
-            print(err_result)
-            self.bottom_message_label.setText(err_result)
+            self.bottom_err_info(result_out[1])
 
     def clear_search_active_loops_result(self):
         self.activeloops_total_amount_value_label.clear()
@@ -1125,7 +1140,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 self.bottom_info(result.get('error'))
                 self.clear_lq_pubkey_result()
         elif result_out[1]:
-            print(result_out[1])
+            self.bottom_err_info(result_out[1])
 
     def clear_lq_pubkey_result(self):
         self.lq_pubkeynormalamount_value_label.clear()
@@ -1165,7 +1180,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 self.loopquery_issuer_value.setText(str(result.get('batonpk')))
                 self.bottom_info('credit loop info finished')
         elif result_out[1]:
-            print(result_out[1])
+            self.bottom_err_info(result_out[1])
 
     def clear_lq_txid_search_result(self):
         self.loopquery_baton_value.clear()

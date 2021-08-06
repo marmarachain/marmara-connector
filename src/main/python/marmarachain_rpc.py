@@ -71,7 +71,7 @@ def handle_rpc(command):
 
 class RpcHandler(QtCore.QObject):
     command_out = pyqtSignal(tuple)
-    daemon_pid = pyqtSignal(str)
+    output = pyqtSignal(str)
     walletlist_out = pyqtSignal(list)
     finished = pyqtSignal()
 
@@ -159,13 +159,31 @@ class RpcHandler(QtCore.QObject):
         elif addresses[1]:
             print(addresses[1])
             self.finished.emit()
+
+    @pyqtSlot()
+    def refresh_sidepanel(self):
+        getinfo = handle_rpc(cp.getinfo)
+        if getinfo[0]:
+            self.command_out.emit(getinfo)
+            getgenerate = handle_rpc(cp.getgenerate)
+            if getgenerate[0]:
+                self.command_out.emit(getgenerate)
+                self.finished.emit()
+            elif getgenerate[1]:
+                self.command_out(getgenerate)
+                self.finished.emit()
+        elif getinfo[1]:
+            self.command_out.emit(getinfo)
+            self.finished.emit()
+
     @pyqtSlot()
     def setgenerate(self):
         setgenerate = handle_rpc(self.command)
         if setgenerate[2] == 0:
             getgenerate = handle_rpc(cp.getgenerate)
+            self.finished.emit()
             self.command_out.emit(getgenerate)
-            self.finished.emit()
         else:
-            self.command_out.emit(setgenerate)
             self.finished.emit()
+            self.command_out.emit(setgenerate)
+
