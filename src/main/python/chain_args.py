@@ -35,6 +35,7 @@ marmaratransfer = 'marmaratransfer'  # + receiverpk + '{"avalcount":"n"}' + requ
 marmaraissue = 'marmaraissue'  # receiverpk + '{"avalcount":"n", "autosettlement":"true"|"false",
 # "autoinsurance":"true"|"false", "disputeexpires":"offset", "EscrowOn":"true"|"false", "BlockageAmount":"amount" }'
 # + requesttxid
+marmaraholderloops = 'marmaraholderloops'  # firstheight + lastheight + minamount + maxamount + pk + [currency]
 
 def start_param_local(marmarad):
     if platform.system() == 'Linux' or platform.system() == 'Darwin':

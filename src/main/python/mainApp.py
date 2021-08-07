@@ -89,7 +89,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
 
         # -----Create credit Loop Request
         self.contactpubkey_makeloop_comboBox.currentTextChanged.connect(self.get_selected_contact_loop_pubkey)
-        self.contactpubkey_transferrequest_comboBox.currentTextChanged.connect(self.get_selected_contact_transfer_pubkey)
+        self.contactpubkey_transferrequest_comboBox.currentTextChanged.connect(
+            self.get_selected_contact_transfer_pubkey)
         self.make_credit_loop_matures_dateTimeEdit.setMinimumDateTime(QDateTime.currentDateTime())
         self.send_loop_request_button.clicked.connect(self.marmarareceive)
         self.send_transfer_request_button.clicked.connect(self.marmararecieve_transfer)
@@ -101,6 +102,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.transferable_maturesto_dateTimeEdit.setMaximumDateTime(QDateTime.currentDateTime())
         self.transferable_matures_checkBox.clicked.connect(self.set_transferable_mature_date_state)
         self.transferable_amount_checkBox.clicked.connect(self.set_transferable_amount_state)
+        self.transferableloops_search_button.clicked.connect(self.marmaraholderloops)
         # ---- Loop Queries page --
         self.lq_pubkey_search_button.clicked.connect(self.search_pubkeyloops)
         self.lq_txid_search_button.clicked.connect(self.marmaracreditloop)
@@ -138,6 +140,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.thread_sidepanel = QThread()
         self.thread_marmarareceive_transfer = QThread()
         self.thread_search_active_loops = QThread()
+        self.thread_marmaraholderloops = QThread()
 
         # Loading Gif
         # --------------------------------------------------
@@ -149,7 +152,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
         center_point = QDesktopWidget().availableGeometry().center()
         qr.moveCenter(center_point)
         self.move(qr.topLeft())
-
 
     def show_about(self):
         QMessageBox.about(
@@ -278,7 +280,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 break
         self.is_chain_ready()
 
-
     def is_chain_ready(self):
         self.worker_getchain = marmarachain_rpc.RpcHandler()  # worker setting
         chain_ready_thread = self.worker_thread(self.thread_getchain, self.worker_getchain)  # putting in to thread
@@ -388,7 +389,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
         hour = (str(datetime.now().hour))
         minute = (str(datetime.now().minute))
         self.last_update_label.setText(last_update + date + ' ' + hour + ':' + minute)
-
 
     @pyqtSlot(tuple)
     def refresh_side_panel_result(self, result_out):
@@ -518,7 +518,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
             self.setgenerate('true ' + str(cpu_no))
         except Exception:
             self.bottom_info('CPU core should be integer!')
-
 
     # -----------------------------------------------------------
     # Chain page functions
@@ -706,7 +705,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
         elif result_out[1]:
             self.bottom_err_info(result_out[1])
 
-
     @pyqtSlot()
     def importprivkey(self):
         privkey = self.privkey_lineEdit.text()
@@ -830,7 +828,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 if response == QMessageBox.No:
                     self.bottom_info('Transaction aborted')
             if result.get('error'):
-
                 self.bottom_info(str(result['error']))
         elif result_out[1]:
             if self.chain_status is False:
@@ -1128,6 +1125,48 @@ class MarmaraMain(QMainWindow, GuiStyle):
         else:
             self.transferable_minamount_lineEdit.setEnabled(True)
             self.transferable_maxamount_lineEdit.setEnabled(True)
+
+    @pyqtSlot()
+    def marmaraholderloops(self):
+        if self.transferable_matures_checkBox.checkState() and self.transferable_amount_checkBox.checkState():
+            firstheight = '0'
+            lastheight = '0'
+            minamount = '0'
+            maxamount = '0'
+
+        else:
+            matures_from_date = self.transferable_maturesfrom_dateTimeEdit.dateTime()
+            firstheight = self.change_datetime_to_block_age(matures_from_date)
+            matures_to_date = self.transferable_maturesto_dateTimeEdit.dateTime()
+            lastheight = self.change_datetime_to_block_age(matures_to_date)
+            minamount = self.transferable_minamount_lineEdit.text()
+            maxamount = self.transferable_maxamount_lineEdit.text()
+            print('matures_from_date ' + str(matures_from_date))
+            print('firstheight ' + str(firstheight))
+            print('matures_to_date ' + str(matures_to_date))
+            print('lastheight ' + str(lastheight))
+            print('minamount' + str(minamount))
+            print('maxamount' + str(maxamount))
+
+        self.worker_marmaraholderloops = marmarachain_rpc.RpcHandler()
+        command = cp.marmaraholderloops + ' ' + firstheight + ' ' + lastheight + ' ' + str(minamount) + ' ' + \
+                  str(maxamount) + ' ' + self.current_pubkey_value.text()
+        marmaraholderloops_thread = self.worker_thread(self.thread_marmaraholderloops, self.worker_marmaraholderloops,
+                                                       command)
+        marmaraholderloops_thread.command_out.connect(self.marmaraholderloops_result)
+
+    @pyqtSlot(tuple)
+    def marmaraholderloops_result(self, result_out):
+        if result_out[0]:
+            result = json.loads(result_out[0])
+            print(result)
+            if result.get('result') == "error":
+                print(result.get('error'))
+            if result.get('result') == "success":
+                print("numpending: " + str(result.get('numpending')))
+                print("issuances: " + str(result.get('issuances')))
+        elif result_out[1]:
+            print(result_out[1])
 
     # -------------------------------------------------------------------
     # Credit Loop Queries functions
