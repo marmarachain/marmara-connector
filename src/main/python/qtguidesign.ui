@@ -1020,7 +1020,7 @@
                 </font>
                </property>
                <property name="text">
-                <string>Chain Sync</string>
+                <string>Chain S&amp;ync</string>
                </property>
                <property name="buddy">
                 <cstring>chainsync_button</cstring>
@@ -1490,7 +1490,7 @@
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>3</number>
           </property>
           <property name="iconSize">
            <size>
@@ -2390,7 +2390,7 @@
                  <item row="0" column="0" colspan="2">
                   <widget class="QLabel" name="unlock_amount_label">
                    <property name="text">
-                    <string>Amount</string>
+                    <string>Amo&amp;unt</string>
                    </property>
                    <property name="buddy">
                     <cstring>unlock_amount_value</cstring>
@@ -3896,11 +3896,21 @@
                           <property name="enabled">
                            <bool>false</bool>
                           </property>
+                          <property name="dateTime">
+                           <datetime>
+                            <hour>0</hour>
+                            <minute>0</minute>
+                            <second>0</second>
+                            <year>2020</year>
+                            <month>1</month>
+                            <day>17</day>
+                           </datetime>
+                          </property>
                           <property name="date">
                            <date>
-                            <year>2021</year>
-                            <month>9</month>
-                            <day>14</day>
+                            <year>2020</year>
+                            <month>1</month>
+                            <day>17</day>
                            </date>
                           </property>
                           <property name="minimumDate">
@@ -3910,6 +3920,9 @@
                             <day>17</day>
                            </date>
                           </property>
+                          <property name="calendarPopup">
+                           <bool>true</bool>
+                          </property>
                          </widget>
                         </item>
                         <item row="3" column="3">
@@ -3917,12 +3930,22 @@
                           <property name="enabled">
                            <bool>false</bool>
                           </property>
+                          <property name="date">
+                           <date>
+                            <year>2021</year>
+                            <month>1</month>
+                            <day>16</day>
+                           </date>
+                          </property>
                           <property name="minimumDate">
                            <date>
                             <year>2020</year>
                             <month>1</month>
                             <day>16</day>
                            </date>
+                          </property>
+                          <property name="calendarPopup">
+                           <bool>true</bool>
                           </property>
                          </widget>
                         </item>

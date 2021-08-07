@@ -95,6 +95,11 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.send_transfer_request_button.clicked.connect(self.marmararecieve_transfer)
         # -----Total Credit Loops page -----
         self.activeloops_search_button.clicked.connect(self.search_active_loops)
+        self.transferable_maturesfrom_dateTimeEdit.setDateTime(QDateTime(datetime.fromtimestamp(1579278200)))
+        self.transferable_maturesfrom_dateTimeEdit.setMinimumDateTime(QDateTime(datetime.fromtimestamp(1579278200)))
+        self.transferable_maturesto_dateTimeEdit.setDateTime(QDateTime.currentDateTime())
+        self.transferable_maturesto_dateTimeEdit.setMaximumDateTime(QDateTime.currentDateTime())
+        self.transferable_matures_checkBox.clicked.connect(self.set_transferable_mature_date_state)
         # ---- Loop Queries page --
         self.lq_pubkey_search_button.clicked.connect(self.search_pubkeyloops)
         self.lq_txid_search_button.clicked.connect(self.marmaracreditloop)
@@ -1104,6 +1109,15 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.closedloops_total_amount_value_label.clear()
         self.activeloops_total_number_value_label.clear()
         self.closedloops_total_number_value_label.clear()
+
+    @pyqtSlot()
+    def set_transferable_mature_date_state(self):
+        if self.transferable_matures_checkBox.checkState():
+            self.transferable_maturesfrom_dateTimeEdit.setEnabled(False)
+            self.transferable_maturesto_dateTimeEdit.setEnabled(False)
+        else:
+            self.transferable_maturesfrom_dateTimeEdit.setEnabled(True)
+            self.transferable_maturesto_dateTimeEdit.setEnabled(True)
 
     # -------------------------------------------------------------------
     # Credit Loop Queries functions
