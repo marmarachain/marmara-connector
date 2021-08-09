@@ -96,9 +96,11 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.send_transfer_request_button.clicked.connect(self.marmararecieve_transfer)
         # -----Total Credit Loops page -----
         self.activeloops_search_button.clicked.connect(self.search_active_loops)
-        self.transferable_maturesfrom_dateTimeEdit.setDateTime(QDateTime(datetime.fromtimestamp(1579278200)))
+        self.transferable_maturesfrom_dateTimeEdit.setDateTime(QDateTime.currentDateTime())
         self.transferable_maturesfrom_dateTimeEdit.setMinimumDateTime(QDateTime(datetime.fromtimestamp(1579278200)))
+        self.transferable_maturesfrom_dateTimeEdit.setMaximumDateTime(QDateTime.currentDateTime())
         self.transferable_maturesto_dateTimeEdit.setDateTime(QDateTime.currentDateTime())
+        self.transferable_maturesto_dateTimeEdit.setMinimumDateTime(QDateTime(datetime.fromtimestamp(1579278200)))
         self.transferable_maturesto_dateTimeEdit.setMaximumDateTime(QDateTime.currentDateTime())
         self.transferable_matures_checkBox.clicked.connect(self.set_transferable_mature_date_state)
         self.transferable_amount_checkBox.clicked.connect(self.set_transferable_amount_state)
@@ -1128,33 +1130,35 @@ class MarmaraMain(QMainWindow, GuiStyle):
 
     @pyqtSlot()
     def marmaraholderloops(self):
-        if self.transferable_matures_checkBox.checkState() and self.transferable_amount_checkBox.checkState():
+        if self.transferable_matures_checkBox.checkState():
             firstheight = '0'
             lastheight = '0'
-            minamount = '0'
-            maxamount = '0'
-
         else:
             matures_from_date = self.transferable_maturesfrom_dateTimeEdit.dateTime()
-            firstheight = self.change_datetime_to_block_age(matures_from_date)
             matures_to_date = self.transferable_maturesto_dateTimeEdit.dateTime()
-            lastheight = self.change_datetime_to_block_age(matures_to_date)
+            firstheight = self.change_datetime_to_block_age(matures_from_date, begin_height=True)
+            lastheight = self.change_datetime_to_block_age(matures_to_date, begin_height=True)
+
+        if self.transferable_amount_checkBox.checkState():
+            minamount = '0'
+            maxamount = '0'
+        else:
             minamount = self.transferable_minamount_lineEdit.text()
             maxamount = self.transferable_maxamount_lineEdit.text()
-            print('matures_from_date ' + str(matures_from_date))
-            print('firstheight ' + str(firstheight))
-            print('matures_to_date ' + str(matures_to_date))
-            print('lastheight ' + str(lastheight))
-            print('minamount' + str(minamount))
-            print('maxamount' + str(maxamount))
-
-        self.worker_marmaraholderloops = marmarachain_rpc.RpcHandler()
-        command = cp.marmaraholderloops + ' ' + firstheight + ' ' + lastheight + ' ' + str(minamount) + ' ' + \
-                  str(maxamount) + ' ' + self.current_pubkey_value.text()
-        marmaraholderloops_thread = self.worker_thread(self.thread_marmaraholderloops, self.worker_marmaraholderloops,
-                                                       command)
-        marmaraholderloops_thread.command_out.connect(self.marmaraholderloops_result)
-
+        if minamount > maxamount:
+            maxamount = minamount
+            self.transferable_maxamount_lineEdit.setText(maxamount)
+        if int(firstheight) <= int(lastheight):
+            self.worker_marmaraholderloops = marmarachain_rpc.RpcHandler()
+            command = cp.marmaraholderloops + ' ' + str(firstheight) + ' ' + str(lastheight) + ' ' + str(minamount) + ' ' + \
+                      str(maxamount) + ' ' + self.current_pubkey_value.text()
+            marmaraholderloops_thread = self.worker_thread(self.thread_marmaraholderloops, self.worker_marmaraholderloops,
+                                                           command)
+            marmaraholderloops_thread.command_out.connect(self.marmaraholderloops_result)
+        else:
+            print(firstheight)
+            print(lastheight)
+            response = QMessageBox.warning(self, "", "Make sure that the from and to dates are selected correctly.")
     @pyqtSlot(tuple)
     def marmaraholderloops_result(self, result_out):
         if result_out[0]:
