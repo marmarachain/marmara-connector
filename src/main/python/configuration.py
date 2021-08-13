@@ -1,9 +1,51 @@
 import csv
 import os
-
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 
 resource_path = ApplicationContext().get_resource("configuration")
+
+
+class ConnectorConf:
+    marmara_connector_conf = resource_path + "/mclconnector.conf"
+
+    def is_conf_exist(self):
+        if os.path.isfile(self.marmara_connector_conf):
+            return
+        else:
+            try:
+                file = open(self.marmara_connector_conf, 'w')
+            except IOError:
+                print("Exception error when writing conf file!")
+            finally:
+                file.close()
+
+    def write_conf_file(self, conf_key, conf_value):
+        try:
+            conf_file = open(self.marmara_connector_conf, 'w')
+            conf_data = conf_key + "=" + conf_value + "\n"
+            conf_file.write(conf_data)
+        except IOError:
+            print("Exception error while writing conf file!")
+        finally:
+            conf_file.close()
+
+    def read_conf_file(self):
+        self.is_conf_exist()
+        data_dict = {}
+        try:
+            conf_file = open(self.marmara_connector_conf, 'r')
+            conf_data = conf_file.read().split("\n")
+            for data in conf_data:
+                data_split = data.split('=')
+                if not data_split == ['']:
+                    key = data_split[0]
+                    value = data_split[1]
+                    data_dict.__setitem__(key, value)
+        except IOError:
+            print("Exception error while reading conf file!")
+        finally:
+            conf_file.close()
+        return data_dict
 
 
 class ServerSettings:
@@ -85,4 +127,3 @@ class ContactsSettings:
         contacts_csv = open(self.contacts_file, 'w', newline='')
         create = csv.writer(contacts_csv)
         create.writerows(contact_csv_list)
-

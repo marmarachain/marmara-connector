@@ -1,12 +1,18 @@
 import json
-import subprocess, pathlib
+import platform
+import re
 import time
+import subprocess
+import pathlib
+import version
+
 from PyQt5 import QtCore
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
 import remote_connection
 import chain_args as cp
+import configuration
 
-marmara_path = str(pathlib.Path.home()) + '/komodo/src/'
+marmara_path = configuration.ConnectorConf().read_conf_file().get('marmarad_path')
 is_local = None
 
 
@@ -20,9 +26,82 @@ def set_connection_remote():
     is_local = False
 
 
+def set_marmara_path(path):
+    global marmara_path
+    marmara_path = path
+
+
+def start_param_local(marmarad):
+    if platform.system() == 'Linux' or platform.system() == 'Darwin':
+        marmarad = cp.linux_d + marmarad
+    if platform.system() == 'Windows':
+        marmarad = cp.windows_d + marmarad
+    return marmarad
+
+
+def start_param_remote():
+    marmarad = cp.linux_d + cp.marmarad
+    return marmarad
+
+
+def set_remote(command):
+    command = cp.linux_cli + command
+    return command
+
+
+def set_local(command):
+    if platform.system() == 'Linux' or platform.system() == 'Darwin':
+        command = cp.linux_cli + command
+    if platform.system() == 'Windows':
+        if command.find("{"):
+            command = command.replace("'{", '{').replace("}'", '}').replace('"', '\\"')
+        command = cp.windows_cli + command
+    return command
+
+
+def set_pid_local(command):
+    if platform.system() == 'Linux' or platform.system() == 'Darwin':
+        return command
+    if platform.system() == 'Windows':
+        marmara_pid = 'tasklist | findstr komodod'
+        return marmara_pid
+
+
+def do_search_path(cmd):
+    if is_local:
+        mcl_path = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+        mcl_path.wait()
+        mcl_path.terminate()
+        return mcl_path.stdout.read().decode("utf8").split('\n'), mcl_path.stdout.read().decode("utf8").split('\n')
+    else:
+        mcl_path = remote_connection.server_execute_command(cmd)
+        return mcl_path[0].split('\n'), mcl_path[1].split('\n'),
+
+
+def search_marmarad_path():  # will be added for windows search
+    search_list = ['ls ' + str(pathlib.Path.home()), 'ls ' + str(pathlib.Path.home()) + '/marmara/src',
+                   'ls ' + str(pathlib.Path.home()) + '/komodo0/src']
+    i = 0
+    while True:
+        path = do_search_path(search_list[i])
+        if not path[0] == ['']:
+            if 'komodod' in path[0] and 'komodo-cli' in path[0]:
+                out_path = search_list[i]
+                out_path = out_path.replace('ls ', '') + '/'
+                break
+            else:
+                i = i + 1
+        else:
+            i = i + 1
+        if i == 3:
+            out_path = ""
+            break
+    return out_path
+
+
 def start_chain(pubkey=None):
     if is_local:
-        marmara_param = cp.start_param_local(cp.marmarad)
+        marmara_param = start_param_local(cp.marmarad)
         if pubkey is None:
             marmara_param = marmara_param + ' &'
         if pubkey is not None:
@@ -33,7 +112,7 @@ def start_chain(pubkey=None):
         start.terminate()
         print('shell closed')
     else:
-        marmara_param = cp.start_param_remote()
+        marmara_param = start_param_remote()
         if not pubkey:
             marmara_param = marmara_path + marmara_param
         if pubkey:
@@ -45,25 +124,25 @@ def start_chain(pubkey=None):
 
 def mcl_chain_status():
     if is_local:
-        marmara_pid = cp.set_pid_local(cp.marmara_pid)
+        marmara_pid = set_pid_local('pidof komodod')
         marmarad_pid = subprocess.Popen(marmara_pid, shell=True, stdout=subprocess.PIPE)
         marmarad_pid.wait()
         marmarad_pid.terminate()
         return marmarad_pid.stdout.read().decode("utf8"), marmarad_pid.stdout.read().decode("utf8")
     else:
-        marmarad_pid = remote_connection.server_execute_command(cp.marmara_pid)
+        marmarad_pid = remote_connection.server_execute_command('pidof komodod')
     return marmarad_pid
 
 
 def handle_rpc(command):
     if is_local:
-        cmd = cp.set_local(command)
+        cmd = set_local(command)
         proc = subprocess.Popen(cmd, cwd=marmara_path, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         proc.wait()
         retvalue = proc.poll()
         return proc.stdout.read().decode("utf8"), proc.stderr.read().decode("utf8"), retvalue
     else:
-        cmd = cp.set_remote(command)
+        cmd = set_remote(command)
         cmd = marmara_path + cmd
         result = remote_connection.server_execute_command(cmd)
         return result
@@ -99,7 +178,6 @@ class RpcHandler(QtCore.QObject):
         result_out = handle_rpc(self.command)
         self.command_out.emit(result_out)
         self.finished.emit()
-
 
     @pyqtSlot()
     def is_chain_ready(self):
@@ -186,4 +264,73 @@ class RpcHandler(QtCore.QObject):
         else:
             self.finished.emit()
             self.command_out.emit(setgenerate)
+
+
+class Autoinstall(QtCore.QObject):
+    out_text = pyqtSignal(str)
+    progress = pyqtSignal(int)
+    finished = pyqtSignal()
+
+    def __init__(self):
+        super().__init__()
+        self.mcl_linux_download_command = version.latest_marmara_zip_url()
+        self.linux_command_list = ['sudo apt-get update', 'sudo apt-get install libgomp1 -y',
+                                   'wget ' + str(self.mcl_linux_download_command) + '/MCL-linux.zip',
+                                   'sudo apt-get install unzip -y', 'unzip MCL-linux.zip',
+                                   'sudo chmod +x komodod komodo-cli fetch-params.sh', './fetch-params.sh']
+        self.win_command_list = []
+
+    @pyqtSlot()
+    def start_install(self):
+        if is_local:
+            if platform.system() == 'Linux':
+                self.out_text.emit(str("installing on linux"))
+                self.linux_install()
+            if platform.system() == 'Windows':
+                self.windows_install()
+        else:
+            self.out_text.emit(str("installing on linux"))
+            self.linux_install()
+
+    def linux_install(self):
+        self.out_text.emit(str("update linux"))
+        i = 0
+        while i < len(self.linux_command_list):
+            cmd = self.linux_command_list[i]
+            if cmd.startswith('sudo'):
+                cmd = 'sudo -S -- ' + cmd + '\n'
+            print(cmd)
+            if is_local:
+                print('local linux installation not coded yet!')
+                # proc = subprocess.Popen(cmd, cwd=str(pathlib.Path.home()), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE)
+            else:
+                sshclient = remote_connection.server_ssh_connect()
+                session = sshclient.get_transport().open_session()
+                stdin = session.makefile_stdin('wb', -1)
+                stdout = session.makefile('rb', -1)
+                session.exec_command(cmd)
+                if cmd.startswith('sudo'):
+                    stdin.write(remote_connection.server_password + '\n')
+                    stdin.flush()
+                while not stdout.channel.exit_status_ready():
+                    if stdout.channel.recv_ready():
+                        out = stdout.channel.recv(4096).decode()
+                        print(str(out))
+                        self.out_text.emit(str(out))
+                    if stdout.channel.recv_stderr_ready():
+                        err = stdout.channel.recv_stderr(4096).decode()
+                        self.out_text.emit(str(err))
+                        print(str(err))
+                exit_status = session.recv_exit_status()  # Blocking call
+                print(exit_status)
+                session.close()
+                sshclient.close()
+            i = i + 1
+            self.progress.emit(int(i*14))
+        self.finished.emit()
+
+    def windows_install(self):
+        self.out_text.emit(str("installing on windows"))
+        print('local Windows installation not coded yet!')
+        # update = subprocess.Popen
 

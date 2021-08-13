@@ -29,18 +29,20 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.pubkey_status = False
         self.center_ui()
         # paths settings
+        # self.get_marmara_path()
         # Menu Actions
         self.actionAbout.triggered.connect(self.show_about)
         #   Login page Host Selection
         self.local_button.clicked.connect(self.local_selection)
         self.remote_button.clicked.connect(self.remote_selection)
-
         #   Login page Server authentication
         self.home_button.clicked.connect(self.host_selection)
         self.serveradd_button.clicked.connect(self.server_add_selected)
         self.connect_button.clicked.connect(self.server_connect)
         self.serverpw_lineEdit.returnPressed.connect(self.server_connect)
         self.serveredit_button.clicked.connect(self.server_edit_selected)
+        # install page
+        self.start_install_button.clicked.connect(self.start_autoinstall)
         #  Add Server Settings page
         self.add_serversave_button.clicked.connect(self.save_server_settings)
         self.servercancel_button.clicked.connect(self.add_cancel_selected)
@@ -117,6 +119,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
 
         # Thread setup
         self.thread_bottom_info = QThread()
+        self.thread_autoinstall = QThread()
         self.thread_getinfo = QThread()
         self.thread_getchain = QThread()
         self.thread_stopchain = QThread()
@@ -169,7 +172,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         marmarachain_rpc.set_connection_local()
         self.mcl_tab.setCurrentIndex(0)
         self.chain_stackedWidget.setCurrentIndex(0)
-        self.chain_init()
+        self.check_marmara_path()
 
     def remote_selection(self):
         self.login_stackedWidget.setCurrentIndex(1)
@@ -204,8 +207,50 @@ class MarmaraMain(QMainWindow, GuiStyle):
             self.login_message_label.setText(str(validate))
         else:
             self.main_tab.setCurrentIndex(1)
-            self.chain_init()
+            self.check_marmara_path()
             self.mcl_tab.setCurrentIndex(0)
+
+    def check_marmara_path(self):
+        conf_paths = configuration.ConnectorConf().read_conf_file()
+        if len(conf_paths) == 0:
+            print('no conf')
+            self.get_marmara_path()
+        else:
+            marmarad_path = marmarachain_rpc.marmara_path  # get path from cof file
+            print(marmarad_path)
+            if marmarad_path:
+                print('asd')
+                verify_path = marmarachain_rpc.do_search_path('ls ' + marmarad_path)
+                if not verify_path[0] == ['']:
+                    if 'komodod' in verify_path[0] and 'komodo-cli' in verify_path[0]:
+                        print('komodod komodo-cli found')
+                        self.chain_init()
+                    else:
+                        self.get_marmara_path()    # search path for komodo-cli and komodod
+                elif verify_path[1]:
+                    print('wqe')
+                    self.get_marmara_path()   # search path for komodo-cli and komodod
+            else:
+                self.get_marmara_path()   # search path for komodo-cli and komodod
+
+    def get_marmara_path(self):
+        marmarad_path = marmarachain_rpc.search_marmarad_path()  # search path for komodo-cli and komodod
+        if marmarad_path:
+            configuration.ConnectorConf().write_conf_file('marmarad_path', marmarad_path)
+            if marmarachain_rpc.marmara_path != marmarad_path:
+                marmarachain_rpc.set_marmara_path(marmarad_path)
+                print(marmarachain_rpc.marmara_path)
+                self.chain_init()
+        else:
+            self.main_tab.setCurrentIndex(0)
+            print('komodod komodo-cli not found!')
+            print('need to install mcl')
+            respoonse = QMessageBox.question(self, 'Marmarachain is not installed', 'Would you like to install?')
+            if respoonse == QMessageBox.Yes:
+                print('auto install ...')
+                self.main_tab.setCurrentIndex(2)
+            if respoonse == QMessageBox.No:
+                self.main_tab.setCurrentIndex(0)
 
     def worker_thread(self, thread, worker, command=None):
         self.start_animation()
@@ -227,6 +272,32 @@ class MarmaraMain(QMainWindow, GuiStyle):
     @pyqtSlot()
     def stop_animation(self):
         self.loading.stopAnimation()
+
+    @pyqtSlot()
+    def start_autoinstall(self):
+        self.install_progress_textBrowser.append('Starting Install ...')
+        self.worker_autoinstall = marmarachain_rpc.Autoinstall()
+        self.worker_autoinstall.moveToThread(self.thread_autoinstall)
+        self.worker_autoinstall.finished.connect(self.thread_autoinstall.quit)
+        self.thread_autoinstall.started.connect(self.worker_autoinstall.start_install)
+        self.thread_autoinstall.start()
+        self.worker_autoinstall.out_text.connect(self.start_autoinstall_textout)
+        self.worker_autoinstall.progress.connect(self.start_autoinstall_progress)
+
+    @pyqtSlot(str)
+    def start_autoinstall_textout(self, output):
+        self.install_progress_textBrowser.append(output)
+
+    @pyqtSlot(int)
+    def start_autoinstall_progress(self, val):
+        self.install_progressBar.setValue(val)
+        if val == 98:
+            self.install_progressBar.setValue(100)
+            response = QMessageBox.information(self, 'Installation complete', 'Start Chain')
+            if response == QMessageBox.Ok:
+                self.main_tab.setCurrentIndex(1)
+                self.mcl_tab.setCurrentIndex(0)
+                self.check_marmara_path()
 
     def bottom_info(self, info):
         self.bottom_message_label.setText(info)
@@ -803,8 +874,10 @@ class MarmaraMain(QMainWindow, GuiStyle):
         qr_image = qr.make_image(image_factory=Image).pixmap()
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Information)
+        # msg.setDetailedText(self.currentaddress_value.text())
         msg.setIconPixmap(qr_image)
         msg.setWindowTitle('Qr Code')
+
         msg.exec_()
 
     @pyqtSlot()
