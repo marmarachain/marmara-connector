@@ -31,7 +31,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="login_tab">
        <attribute name="title">
@@ -4860,51 +4860,6 @@
            <enum>QFrame::Raised</enum>
           </property>
           <layout class="QGridLayout" name="gridLayout_9">
-           <item row="0" column="0">
-            <spacer name="horizontalSpacer_52">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="0" column="3">
-            <spacer name="horizontalSpacer_53">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="0" column="2">
-            <widget class="QPushButton" name="start_install_button">
-             <property name="minimumSize">
-              <size>
-               <width>150</width>
-               <height>90</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>150</width>
-               <height>90</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>Start Install</string>
-             </property>
-            </widget>
-           </item>
            <item row="2" column="0" colspan="4">
             <layout class="QGridLayout" name="gridLayout_6">
              <item row="2" column="0">
@@ -4927,12 +4882,71 @@ p, li { white-space: pre-wrap; }
              </item>
             </layout>
            </item>
-           <item row="1" column="2">
-            <widget class="QCheckBox" name="checkBox">
-             <property name="text">
-              <string>install bootstrap</string>
+           <item row="1" column="0">
+            <spacer name="horizontalSpacer_53">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
              </property>
-            </widget>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="1" column="1">
+            <layout class="QGridLayout" name="gridLayout_12">
+             <item row="2" column="1">
+              <widget class="QCheckBox" name="checkBox">
+               <property name="text">
+                <string>install bootstrap</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QPushButton" name="start_install_button">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Start Install</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLineEdit" name="sudo_password_lineEdit">
+               <property name="echoMode">
+                <enum>QLineEdit::Password</enum>
+               </property>
+               <property name="placeholderText">
+                <string>Password</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="1" column="2">
+            <spacer name="horizontalSpacer_54">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </widget>
@@ -5104,7 +5118,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>privatekeypage_back_button</tabstop>
   <tabstop>privkey_lineEdit</tabstop>
   <tabstop>importprivkey_button</tabstop>
-  <tabstop>start_install_button</tabstop>
   <tabstop>transferrequests_tableWidget</tabstop>
   <tabstop>make_credit_loop_amount_lineEdit</tabstop>
   <tabstop>make_credit_loop_senderpubkey_lineEdit</tabstop>
