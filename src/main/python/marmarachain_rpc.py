@@ -79,15 +79,29 @@ def do_search_path(cmd):
 
 
 def search_marmarad_path():  # will be added for windows search
-    search_list = ['ls ' + str(pathlib.Path.home()), 'ls ' + str(pathlib.Path.home()) + '/marmara/src',
-                   'ls ' + str(pathlib.Path.home()) + '/komodo0/src']
+    search_list = ['ls', 'ls /marmara/src', 'ls /komodo/src']
+    if is_local:
+        pwd = str(pathlib.Path.home())
+        print('pwd_local :' + pwd)
+    else:
+        pwd_r = remote_connection.server_execute_command('pwd')
+        pwd = str(pwd_r[0].replace('\n', ''))
+        print('pwd_remote :' + pwd)
     i = 0
     while True:
-        path = do_search_path(search_list[i])
+        if len(search_list[i].split(' ')) > 1:
+            search_path = str(search_list[i].split(' ')[0]) + ' ' + pwd + search_list[i].split(' ')[1]
+            print(search_list[i].split(' ')[1])
+        else:
+            search_path = search_list[i].split(' ')[0] + ' ' + pwd
+        print('search_path :' + search_path)
+        path = do_search_path(search_path)
+        print(path)
         if not path[0] == ['']:
             if 'komodod' in path[0] and 'komodo-cli' in path[0]:
-                out_path = search_list[i]
+                out_path = search_path
                 out_path = out_path.replace('ls ', '') + '/'
+                print('out_path :' + out_path)
                 break
             else:
                 i = i + 1

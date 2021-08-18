@@ -758,9 +758,9 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def convertpassphrase(self):
         verified = False
         seed = self.passphrase_TextEdit.toPlainText()
-        print(seed)
+        print('seed word : ' + seed)
         verify = self.verify_passphrase_TextEdit.toPlainText()
-        print(verify)
+        print('verifiyin seed :' + verify)
         if seed:
             if seed == verify:
                 verified = True
@@ -1069,6 +1069,22 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def search_marmarareceivelist_result(self, result_out):
         if result_out[0]:
             print(result_out[0])
+            result = json.loads(result_out[0])
+            print(len(result))
+            self.loop_request_tableWidget.setRowCount(len(result))
+            for item in result:
+                tx_id = item.get('txid')
+                func_id = item.get('funcid')
+                amount = item.get('amount')
+                matures = item.get('matures')
+                receive_pk = item.get('receivepk')
+                issuer_pk = item.get('issuerpk')
+                if func_id == 'B':
+                    self.loop_request_tableWidget.setItem(result.index(item), 0, QTableWidgetItem(tx_id))
+                    self.loop_request_tableWidget.setItem(result.index(item), 1, QTableWidgetItem(amount))
+                    self.loop_request_tableWidget.setItem(result.index(item), 2, QTableWidgetItem(matures))
+                    self.loop_request_tableWidget.setItem(result.index(item), 3, QTableWidgetItem(receive_pk))
+
         elif result_out[1]:
             self.bottom_err_info(result_out[1])
 
