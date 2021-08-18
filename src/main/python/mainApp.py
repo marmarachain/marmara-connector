@@ -98,9 +98,11 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.send_transfer_request_button.clicked.connect(self.marmararecieve_transfer)
         # -----Total Credit Loops page -----
         self.activeloops_search_button.clicked.connect(self.search_active_loops)
-        self.transferable_maturesfrom_dateTimeEdit.setDateTime(QDateTime(datetime.fromtimestamp(1579278200)))
+        self.transferable_maturesfrom_dateTimeEdit.setDateTime(QDateTime.currentDateTime())
         self.transferable_maturesfrom_dateTimeEdit.setMinimumDateTime(QDateTime(datetime.fromtimestamp(1579278200)))
+        self.transferable_maturesfrom_dateTimeEdit.setMaximumDateTime(QDateTime.currentDateTime())
         self.transferable_maturesto_dateTimeEdit.setDateTime(QDateTime.currentDateTime())
+        self.transferable_maturesto_dateTimeEdit.setMinimumDateTime(QDateTime(datetime.fromtimestamp(1579278200)))
         self.transferable_maturesto_dateTimeEdit.setMaximumDateTime(QDateTime.currentDateTime())
         self.transferable_matures_checkBox.clicked.connect(self.set_transferable_mature_date_state)
         self.transferable_amount_checkBox.clicked.connect(self.set_transferable_amount_state)
@@ -162,6 +164,38 @@ class MarmaraMain(QMainWindow, GuiStyle):
             "About Marmara Connector",
             "This is a software written to carry out Marmarachain node operations on a local or remote machine."
         )
+
+    def custom_message(self, title, content, message_type, icon=None, detailed_text=None):
+        """ custom_message(str, str, str: message_type = {information, question}, icon = {QMessageBox.Question,
+        QMessageBox.Information, QMessageBox.Warning, QMessageBox.Critical}, str) """
+        messagebox = QMessageBox()
+        messagebox.setWindowTitle(title)
+        messagebox.setText(content)
+        messagebox.setDetailedText(detailed_text)
+        btn_yes = None
+        btn_no = None
+        btn_ok = None
+        if message_type == "information":
+            if icon:
+                messagebox.setIcon(icon)
+            messagebox.setStandardButtons(QMessageBox.Ok)
+            btn_ok = messagebox.button(QMessageBox.Ok)
+            btn_ok.setText(self.tr("Ok"))
+        if message_type == "question":
+            if icon:
+                messagebox.setIcon(icon)
+            messagebox.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+            btn_yes = messagebox.button(QMessageBox.Yes)
+            btn_yes.setText(self.tr("Yes"))
+            btn_no = messagebox.button(QMessageBox.No)
+            btn_no.setText(self.tr("No"))
+        messagebox.exec_()
+        if messagebox.clickedButton() == btn_yes:
+            return QMessageBox.Yes
+        if messagebox.clickedButton() == btn_no:
+            return QMessageBox.No
+        if messagebox.clickedButton() == btn_ok:
+            return QMessageBox.Ok
 
     def host_selection(self):
         self.login_stackedWidget.setCurrentIndex(0)
@@ -225,11 +259,11 @@ class MarmaraMain(QMainWindow, GuiStyle):
                         print('komodod komodo-cli found')
                         self.chain_init()
                     else:
-                        self.get_marmara_path()    # search path for komodo-cli and komodod
+                        self.get_marmara_path()  # search path for komodo-cli and komodod
                 elif verify_path[1]:
-                    self.get_marmara_path()   # search path for komodo-cli and komodod
+                    self.get_marmara_path()  # search path for komodo-cli and komodod
             else:
-                self.get_marmara_path()   # search path for komodo-cli and komodod
+                self.get_marmara_path()  # search path for komodo-cli and komodod
 
     def get_marmara_path(self):
         marmarad_path = marmarachain_rpc.search_marmarad_path()  # search path for komodo-cli and komodod
@@ -243,15 +277,17 @@ class MarmaraMain(QMainWindow, GuiStyle):
             self.main_tab.setCurrentIndex(0)
             print('komodod komodo-cli not found!')
             print('need to install mcl')
-            respoonse = QMessageBox.question(self, 'Marmarachain is not installed', 'Would you like to install?')
-            if respoonse == QMessageBox.Yes:
+            message_box = self.custom_message(self.tr('Installing Marmarachain'),
+                                              self.tr('Marmarachain is not installed. Would you like to install it?'),
+                                              self.tr("question"), QMessageBox.Question)
+            if message_box == QMessageBox.Yes:
                 print('auto install ...')
                 self.main_tab.setCurrentIndex(2)
                 if marmarachain_rpc.is_local:
                     self.sudo_password_lineEdit.setVisible(True)
                 else:
                     self.sudo_password_lineEdit.setVisible(False)
-            if respoonse == QMessageBox.No:
+            if message_box == QMessageBox.No:
                 self.main_tab.setCurrentIndex(0)
 
     def worker_thread(self, thread, worker, command=None):
@@ -284,7 +320,10 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 start_install = True
                 self.sudo_password_lineEdit.clear()
             else:
-                QMessageBox.information(self, 'Auto Install does not start', 'You need to write a password that has admin privileges')
+                message_box = self.custom_message(self.tr('Auto-installation does not begin'), self.tr(
+                    'You need to write a password that has admin privileges'), self.tr("information"),
+                                                  QMessageBox.Information)
+
                 start_install = False
         else:
             start_install = True
@@ -308,24 +347,30 @@ class MarmaraMain(QMainWindow, GuiStyle):
         print(val)
         if val == 98:
             self.install_progressBar.setValue(100)
-            response = QMessageBox.information(self, 'Installation complete', 'Start Chain')
-            if response == QMessageBox.Ok:
+            message_box = self.custom_message(self.tr('Installation Completed'), self.tr('Starting Marmarachain'),
+                                              'information', QMessageBox.Information)
+            if message_box == QMessageBox.Ok:
                 self.main_tab.setCurrentIndex(1)
                 self.mcl_tab.setCurrentIndex(0)
                 self.check_marmara_path()
         if val > 100:
             self.install_progressBar.setValue(0)
-            QMessageBox.information(self, 'Installation did not complete correctly', 'Wrong password input. Install again')
+            message_box = self.custom_message(self.tr('Installation not completed correctly'),
+                                              self.tr('Wrong password input. Please install again'),
+                                              'information', QMessageBox.Information)
 
     def bottom_info(self, info):
-        self.bottom_message_label.setText(info)
+        # self.bottom_message_label.setText(info)
+        self.main_statusBar.showMessage(info)
+
 
     def bottom_err_info(self, err_msg):
-        err_result = ""
-        for line in str(err_msg).splitlines():
-            err_result = err_result + ' ' + str(line)
-        print(err_result)
-        self.bottom_message_label.setText(err_result)
+        # err_result = ""
+        # for line in str(err_msg).splitlines():
+        #     err_result = err_result + ' ' + str(line)
+        # print(err_result)
+        # self.bottom_message_label.setText(err_result)
+        self.main_statusBar.showMessage(err_msg)
 
     # ---------------------------------------
     #  Chain initialization
@@ -341,7 +386,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             self.getaddresses()
 
     def check_chain(self):
-        self.bottom_message_label.setText('Checking marmarachain')
+        self.bottom_info('Checking marmarachain')
         marmara_pid = marmarachain_rpc.mcl_chain_status()
         print(len(marmara_pid[0]))
         if len(marmara_pid[0]) == 0:
@@ -412,9 +457,9 @@ class MarmaraMain(QMainWindow, GuiStyle):
             for line in str(result_out[0]).splitlines():
                 print_result = print_result + ' ' + str(line)
             print(print_result)
-            self.bottom_message_label.setText(print_result)
+            self.bottom_info(print_result)
         if len(result_out[0]) == 0:
-            self.bottom_message_label.setText('chain stopped')
+            self.bottom_info('chain stopped')
             self.chain_status = False
             self.chainstatus_button.setStyleSheet(
                 "QPushButton {image: url(" + self.icon_path + "/circle-inactive.png); border: 0; width: 30px; height: 30px;}")
@@ -437,7 +482,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         if result_out[0]:
             getinfo_result = result_out[0]
             getinfo_result = json.loads(getinfo_result)
-            self.bottom_message_label.setText('loading getinfo values')
+            self.bottom_info('loading getinfo values')
             self.set_getinfo_result(getinfo_result)
             print('getinfo finished')
         elif result_out[1]:
@@ -513,48 +558,58 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def toggle_staking(self):
         if self.staking_button.isChecked():  # Staking button status is True.
             if self.mining_button.isChecked():  # Checking mining is  also active
-                response = QMessageBox.question(self, 'Turnoff Mining', 'Mining is active it will be closed')
-                if response == QMessageBox.Yes:
+                message_box = self.custom_message(self.tr('Turning off Mining'), self.tr(
+                    'Mining is currently on. You are about to turn off mining. Are you sure?'), "question",
+                                                  QMessageBox.Question)
+
+                if message_box == QMessageBox.Yes:
                     self.mining_button.setChecked(False)  # Close mining and set staking mode
                     self.cpu_core_selection_off()
                     print('setgenerate True 0')
                     self.setgenerate('true 0')
-                if response == QMessageBox.No:  # Abort selecting staking and continue mining
+                if message_box == QMessageBox.No:  # Abort selecting staking and continue mining
                     self.staking_button.setChecked(False)
             else:  # set staking mode
                 print('setgenerate True 0')
                 self.setgenerate('true 0')
         else:  # Staking button status is False
-            response = QMessageBox.question(self, 'Turnoff Staking', ' You are about to close staking. Are you sure?')
-            if response == QMessageBox.Yes:
+            message_box = self.custom_message(self.tr('Turning off Staking'), self.tr(
+                'You are about to turn off staking. Are you sure?'), "question",
+                                              QMessageBox.Question)
+
+            if message_box == QMessageBox.Yes:
                 print('setgenerate False')
                 self.setgenerate('false')
-            if response == QMessageBox.No:
+            if message_box == QMessageBox.No:
                 self.staking_button.setChecked(True)  # Abort selecting staking button
 
     @pyqtSlot()
     def toggle_mining(self):
         if self.mining_button.isChecked():  # Mining button status is True.
             if self.staking_button.isChecked():  # Checking staking is also active
-                response = QMessageBox.question(self, 'Turnoff Staking', 'Staking is active it will be closed')
-                if response == QMessageBox.Yes:
+                message_box = self.custom_message(self.tr('Turning off Staking'), self.tr(
+                    'Staking is currently active. You are about to turn off staking. Are you sure?'), "question",
+                                                  QMessageBox.Question)
+                if message_box == QMessageBox.Yes:
                     self.staking_button.setChecked(False)  # Close staking and turn on mining
                     print('setgenerate True 1')
                     self.setgenerate('true 1')
                     self.cpu_core_selection_on()
-                if response == QMessageBox.No:  # Abort selecting mining and continue staking
+                if message_box == QMessageBox.No:  # Abort selecting mining and continue staking
                     self.mining_button.setChecked(False)
             else:  # Staking is off turn on Mining mode
                 print('setgenerate True 1')
                 self.cpu_core_selection_on()
                 self.setgenerate('true 1')
         else:  # Mining button status is False.
-            response = QMessageBox.question(self, 'Turnoff Mining', ' You are about to close mining. Are you sure?')
-            if response == QMessageBox.Yes:
+            message_box = self.custom_message(self.tr('Turning off Mining'), self.tr(
+                'You are about to turn off mining. Are you sure?'), "question",
+                                              QMessageBox.Question)
+            if message_box == QMessageBox.Yes:
                 print('setgenerate False')
                 self.cpu_core_selection_off()
                 self.setgenerate('false')
-            if response == QMessageBox.No:
+            if message_box == QMessageBox.No:
                 self.mining_button.setChecked(True)  # Abort selecting mining button
 
     def cpu_core_selection_on(self):
@@ -662,7 +717,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def itemcontext(self, row, column):
         item = self.addresses_tableWidget.item(row, column).text()
         QtWidgets.QApplication.clipboard().setText(item)
-        self.bottom_message_label.setText("Copied  " + str(item))
+        self.bottom_info("Copied  " + str(item))
 
     def update_addresses_table(self):
         if self.pubkey_status:
@@ -707,9 +762,12 @@ class MarmaraMain(QMainWindow, GuiStyle):
             if str(json.loads(result_out[0])).rfind('error') > -1:
                 pubkey = json.loads(result_out[0])['pubkey']
                 print('this pubkey: ' + pubkey + ' already set')
-                self.bottom_message_label.setText(result_out[0])
-            QtWidgets.QMessageBox.information(self, 'Pubkey set', str(json.loads(result_out[0])['pubkey']))
-            if QtWidgets.QMessageBox.Ok:
+                self.bottom_info(result_out[0])
+
+            message_box = self.custom_message(self.tr('Pubkey set'), str(json.loads(result_out[0])['pubkey']),
+                                              "information",
+                                              QMessageBox.Information)
+            if message_box == QMessageBox.Ok:
                 self.update_addresses_table()
         elif result_out[1]:
             self.bottom_err_info(result_out[1])
@@ -735,14 +793,18 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def get_address_page(self):
         self.chain_stackedWidget.setCurrentIndex(1)
         self.passphrase_TextEdit.clear()
-        self.verify_passphrase_TextEdit.clear()
+        self.confirm_passphrase_TextEdit.clear()
 
     @pyqtSlot()
     def get_new_address(self):
-        response = QMessageBox.question(self, "Creating New Address",
-                                        "You are about to create a new address. Are you sure?")
-        if response == QMessageBox.Yes:
-            self.worker_get_newaddress = marmarachain_rpc.RpcHandler()
+        self.worker_get_newaddress = marmarachain_rpc.RpcHandler()
+        message_box = self.custom_message(self.tr('Creating New Address'),
+                                          self.tr("You are about to create a new address. Are you sure?"),
+                                          "question",
+                                          QMessageBox.Question)
+
+        if message_box == QMessageBox.Yes:
+
             command = cp.getnewaddress
             getnewaddress_thread = self.worker_thread(self.thread_getnewaddress, self.worker_get_newaddress, command)
             getnewaddress_thread.command_out.connect(self.set_getnewaddress_result)
@@ -750,7 +812,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
     @pyqtSlot(tuple)
     def set_getnewaddress_result(self, result_out):
         if result_out[0]:
-            self.bottom_message_label.setText('new address = ' + str(result_out[0]))
+            print(result_out[0])
+            # self.bottom_info('new address = ' + str(result_out[0]))
         elif result_out[1]:
             self.bottom_err_info(result_out[1])
 
@@ -758,36 +821,39 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def convertpassphrase(self):
         verified = False
         seed = self.passphrase_TextEdit.toPlainText()
-        print('seed word : ' + seed)
-        verify = self.verify_passphrase_TextEdit.toPlainText()
-        print('verifiyin seed :' + verify)
+        print("seed: " + seed)
+        confirm_seed = self.confirm_passphrase_TextEdit.toPlainText()
+        print("confirm_seed: " + confirm_seed)
         if seed:
-            if seed == verify:
+            if seed == confirm_seed:
                 verified = True
             else:
-                self.bottom_message_label.setText('seed words does not match')
+                self.bottom_info('seed words does not match')
+        else:
+            self.bottom_info('write some seed words !')
         if verified:
             self.worker_convert_passphrase = marmarachain_rpc.RpcHandler()
             command = cp.convertpassphrase + ' "' + seed + '"'
             convert_passphrase_thread = self.worker_thread(self.thread_convertpassphrase,
                                                            self.worker_convert_passphrase, command)
             convert_passphrase_thread.command_out.connect(self.converpassphrase_result)
-        else:
-            self.bottom_message_label.setText('write some seed words !')
+
 
     @pyqtSlot(tuple)
     def converpassphrase_result(self, result_out):
         if result_out[0]:
             result = json.loads(result_out[0])
             wif = result['wif']
-            response = QMessageBox.question(self, "Creating an Address",
-                                            "An address has been created with details below. Do you want to "
-                                            "import this address to the wallet?" +
-                                            "<br><b>Seed = </b><br>" + result['agamapassphrase'] +
-                                            "<br><b>Private Key = </b><br>" + wif +
-                                            "<br><b>Address = </b><br>" + result['address'] +
-                                            "<br><b>Pubkey = </b><br>" + result['pubkey'])
-            if response == QMessageBox.Yes:
+            message_box = self.custom_message(self.tr('Creating an Address'),
+                                              self.tr("An address has been created with details below. Do you want to "
+                                                      "import this address to the wallet?" +
+                                                      "<br><b>Seed = </b><br>" + result['agamapassphrase'] +
+                                                      "<br><b>Private Key = </b><br>" + wif +
+                                                      "<br><b>Address = </b><br>" + result['address'] +
+                                                      "<br><b>Pubkey = </b><br>" + result['pubkey']),
+                                              "question",
+                                              QMessageBox.Question)
+            if message_box == QMessageBox.Yes:
                 self.get_importprivkey(wif)
 
         # for error handling of convertpassphrase method
@@ -800,7 +866,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         if privkey:
             self.get_importprivkey(privkey)
         else:
-            self.bottom_message_label.setText('write private key first')
+            self.bottom_info('write private key first')
 
     def get_importprivkey(self, wif):
         self.worker_importprivkey = marmarachain_rpc.RpcHandler()
@@ -811,7 +877,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
     @pyqtSlot(tuple)
     def set_importprivkey_result(self, result_out):
         if result_out[0]:
-            self.bottom_message_label.setText(str(result_out[0]))
+            self.bottom_info(str(result_out[0]))
             print(result_out[0])
         elif result_out[1]:
             self.bottom_err_info(result_out[1])
@@ -874,8 +940,11 @@ class MarmaraMain(QMainWindow, GuiStyle):
     @pyqtSlot(tuple)
     def get_seeprivkey_result(self, result_out):
         if result_out[0]:
-            # self.bottom_message_label.setText('private key = ' + result_out[0])
-            QMessageBox.information(self, 'Private key', result_out[0])
+            # self.bottom_info('private key = ' + result_out[0])
+            message_box = self.custom_message(self.tr('Private Key'),
+                                              result_out[0],
+                                              "information",
+                                              QMessageBox.Information)
         elif result_out[1]:
             self.bottom_err_info(result_out[1])
 
@@ -912,11 +981,13 @@ class MarmaraMain(QMainWindow, GuiStyle):
             result = json.loads(result_out[0])
             print(result)
             if result['result'] == 'success':
-                response = QMessageBox.question(self,
-                                                'Confirm Transaction' f'You are about to activate {self.lock_amount_value.text()}')
-                if response == QMessageBox.Yes:
+                message_box = self.custom_message(self.tr('Confirm Transaction'),
+                                                  self.tr(f'You are about to activate {self.lock_amount_value.text()}'),
+                                                  "question",
+                                                  QMessageBox.Question)
+                if message_box == QMessageBox.Yes:
                     self.sendrawtransaction(result['hex'])
-                if response == QMessageBox.No:
+                if message_box == QMessageBox.No:
                     self.bottom_info('Transaction aborted')
             if result.get('error'):
                 self.bottom_info(str(result['error']))
@@ -943,11 +1014,13 @@ class MarmaraMain(QMainWindow, GuiStyle):
             result = json.loads(result_out[0])
             print(result)
             if result.get('result') == "success":
-                response = QMessageBox.question(self,
-                                                'Confirm Transaction' f'You are about to activate {self.unlock_amount_value.text()}')
-                if response == QMessageBox.Yes:
+                message_box = self.custom_message(self.tr('Confirm Transaction'),
+                                                  self.tr(f'You are about to activate {self.unlock_amount_value.text()}'),
+                                                  "question",
+                                                  QMessageBox.Question)
+                if message_box == QMessageBox.Yes:
                     self.sendrawtransaction(result['hex'])
-                if response == QMessageBox.No:
+                if message_box == QMessageBox.No:
                     self.bottom_info('Transaction aborted')
             if result.get('result') == "error":
                 self.bottom_info(result.get('error'))
@@ -984,21 +1057,24 @@ class MarmaraMain(QMainWindow, GuiStyle):
     @pyqtSlot()
     def sendtoaddress(self):
         if self.receiver_address_lineEdit.text() == "":
-            self.bottom_info('write a receiver address')
+            self.bottom_info(self.tr('enter a receiver address'))
         else:
             if self.sending_amount_lineEdit.text() == "":
-                self.bottom_info('write some amount')
+                self.bottom_info(self.tr('enter some amount to send'))
             else:
-                response = QMessageBox.question(self, 'Confirm Transaction',
-                                                f'You are about to send {self.sending_amount_lineEdit.text()} MCL to {self.receiver_address_lineEdit.text()}')
-                if response == QMessageBox.Yes:
+                message_box = self.custom_message(self.tr('Confirm Transaction'),
+                                                  self.tr(
+                                                      f'You are about to send {self.sending_amount_lineEdit.text()} MCL to {self.receiver_address_lineEdit.text()}'),
+                                                  "question",
+                                                  QMessageBox.Question)
+                if message_box == QMessageBox.Yes:
                     self.worker_sendtoaddress = marmarachain_rpc.RpcHandler()
                     command = cp.sendtoaddress + ' ' + self.receiver_address_lineEdit.text() + ' ' + self.sending_amount_lineEdit.text()
                     print(command)
                     sendtoaddress_thread = self.worker_thread(self.thread_sendtoaddress, self.worker_sendtoaddress,
                                                               command)
                     sendtoaddress_thread.command_out.connect(self.sendtoaddress_result)
-                if response == QMessageBox.No:
+                if message_box == QMessageBox.No:
                     self.bottom_info('Transaction aborted')
 
     @pyqtSlot(tuple)
@@ -1069,22 +1145,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def search_marmarareceivelist_result(self, result_out):
         if result_out[0]:
             print(result_out[0])
-            result = json.loads(result_out[0])
-            print(len(result))
-            self.loop_request_tableWidget.setRowCount(len(result))
-            for item in result:
-                tx_id = item.get('txid')
-                func_id = item.get('funcid')
-                amount = item.get('amount')
-                matures = item.get('matures')
-                receive_pk = item.get('receivepk')
-                issuer_pk = item.get('issuerpk')
-                if func_id == 'B':
-                    self.loop_request_tableWidget.setItem(result.index(item), 0, QTableWidgetItem(tx_id))
-                    self.loop_request_tableWidget.setItem(result.index(item), 1, QTableWidgetItem(amount))
-                    self.loop_request_tableWidget.setItem(result.index(item), 2, QTableWidgetItem(matures))
-                    self.loop_request_tableWidget.setItem(result.index(item), 3, QTableWidgetItem(receive_pk))
-
         elif result_out[1]:
             self.bottom_err_info(result_out[1])
 
@@ -1124,13 +1184,16 @@ class MarmaraMain(QMainWindow, GuiStyle):
         if result_out[0]:
             print(result_out[0])
             result = json.loads(result_out[0])
-            # if result.get('result') == "success":
-            #     print(result)
-            #     response = QMessageBox.question(self, 'Confirm Transaction', 'You are about to make a credit loop request')
-            #     if response == QMessageBox.Yes:
-            #         self.sendrawtransaction(result.get('hex'))
-            #     if response == QMessageBox.No:
-            #         self.bottom_info('Transaction aborted')
+            if result.get('result') == "success":
+                print(result)
+                # message_box = self.custom_message(self.tr('Confirm Transaction'),
+                #                                   self.tr('You are about to make a credit loop request'),
+                #                                   "question",
+                #                                   QMessageBox.Question)
+                # if message_box == QMessageBox.Yes:
+                #     self.sendrawtransaction(result.get('hex'))
+                # if message_box == QMessageBox.No:
+                #     self.bottom_info('Transaction aborted')
             if result.get('result') == "error":
                 self.bottom_info(result.get('error'))
         elif result_out[1]:
@@ -1157,13 +1220,16 @@ class MarmaraMain(QMainWindow, GuiStyle):
         if result_out[0]:
             # print(result_out[0])
             result = json.loads(result_out[0])
-            # if result.get('result') == "success":
-            #     print(result)
-            #     response = QMessageBox.question(self, 'Confirm Transaction', 'You are about to make a request to the endorser')
-            #     if response == QMessageBox.Yes:
-            #         self.sendrawtransaction(result.get('hex'))
-            #     if response == QMessageBox.No:
-            #         self.bottom_info('Transaction aborted')
+            if result.get('result') == "success":
+                print(result)
+                # message_box = self.custom_message(self.tr('Confirm Transaction'),
+                #                                   self.tr('You are about to make a request to the endorser'),
+                #                                   "question",
+                #                                   QMessageBox.Question)
+                # if message_box == QMessageBox.Yes:
+                #     self.sendrawtransaction(result.get('hex'))
+                # if message_box == QMessageBox.No:
+                #     self.bottom_info('Transaction aborted')
             if result.get('result') == "error":
                 self.bottom_info(result.get('error'))
         elif result_out[1]:
@@ -1182,7 +1248,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def search_active_loops(self):
         pubkey = self.current_pubkey_value.text()
         if pubkey:
-            self.bottom_message_label.setText('getting marmarainfo, please wait')
+            self.bottom_info('getting marmarainfo, please wait')
             self.worker_search_active_loops = marmarachain_rpc.RpcHandler()
             command = cp.marmarainfo + ' 0 0 0 0 ' + pubkey
             search_active_loops_thread = self.worker_thread(self.thread_search_active_loops,
@@ -1235,32 +1301,40 @@ class MarmaraMain(QMainWindow, GuiStyle):
 
     @pyqtSlot()
     def marmaraholderloops(self):
-        if self.transferable_matures_checkBox.checkState() and self.transferable_amount_checkBox.checkState():
+        if self.transferable_matures_checkBox.checkState():
             firstheight = '0'
             lastheight = '0'
-            minamount = '0'
-            maxamount = '0'
-
         else:
             matures_from_date = self.transferable_maturesfrom_dateTimeEdit.dateTime()
-            firstheight = self.change_datetime_to_block_age(matures_from_date)
             matures_to_date = self.transferable_maturesto_dateTimeEdit.dateTime()
-            lastheight = self.change_datetime_to_block_age(matures_to_date)
+            firstheight = self.change_datetime_to_block_age(matures_from_date, begin_height=True)
+            lastheight = self.change_datetime_to_block_age(matures_to_date, begin_height=True)
+
+        if self.transferable_amount_checkBox.checkState():
+            minamount = '0'
+            maxamount = '0'
+        else:
             minamount = self.transferable_minamount_lineEdit.text()
             maxamount = self.transferable_maxamount_lineEdit.text()
-            print('matures_from_date ' + str(matures_from_date))
-            print('firstheight ' + str(firstheight))
-            print('matures_to_date ' + str(matures_to_date))
-            print('lastheight ' + str(lastheight))
-            print('minamount' + str(minamount))
-            print('maxamount' + str(maxamount))
-
-        self.worker_marmaraholderloops = marmarachain_rpc.RpcHandler()
-        command = cp.marmaraholderloops + ' ' + firstheight + ' ' + lastheight + ' ' + str(minamount) + ' ' + \
-                  str(maxamount) + ' ' + self.current_pubkey_value.text()
-        marmaraholderloops_thread = self.worker_thread(self.thread_marmaraholderloops, self.worker_marmaraholderloops,
-                                                       command)
-        marmaraholderloops_thread.command_out.connect(self.marmaraholderloops_result)
+        if minamount > maxamount:
+            maxamount = minamount
+            self.transferable_maxamount_lineEdit.setText(maxamount)
+        if int(firstheight) <= int(lastheight):
+            self.worker_marmaraholderloops = marmarachain_rpc.RpcHandler()
+            command = cp.marmaraholderloops + ' ' + str(firstheight) + ' ' + str(lastheight) + ' ' + str(
+                minamount) + ' ' + \
+                      str(maxamount) + ' ' + self.current_pubkey_value.text()
+            marmaraholderloops_thread = self.worker_thread(self.thread_marmaraholderloops,
+                                                           self.worker_marmaraholderloops,
+                                                           command)
+            marmaraholderloops_thread.command_out.connect(self.marmaraholderloops_result)
+        else:
+            print(firstheight)
+            print(lastheight)
+            response = self.custom_message(self.tr("Date Selection Warning"),
+                                           self.tr('Make sure that the from and to dates are selected correctly.'),
+                                           "information",
+                                           QMessageBox.Warning)
 
     @pyqtSlot(tuple)
     def marmaraholderloops_result(self, result_out):
@@ -1283,7 +1357,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def search_pubkeyloops(self):
         pubkey = self.loopqueries_pubkey_lineEdit.text()
         if pubkey:
-            self.bottom_message_label.setText('getting marmarainfo, please wait')
+            self.bottom_info('getting marmarainfo, please wait')
             self.worker_pubkeyloopsearch = marmarachain_rpc.RpcHandler()
             command = cp.marmarainfo + ' 0 0 0 0 ' + pubkey
             pubkeyloopsearch_thread = self.worker_thread(self.thread_pubkeyloopsearch, self.worker_pubkeyloopsearch,
@@ -1422,14 +1496,20 @@ class MarmaraMain(QMainWindow, GuiStyle):
         new_record = [contact_name, contact_address, contact_pubkey]
         unique_record = self.unique_contacts(contact_name, contact_address, contact_pubkey)
         if unique_record:
-            QMessageBox.information(self, "Error Adding Contact", unique_record.get('error'))
+            response = self.custom_message(self.tr("Error Adding Contact"),
+                                           unique_record.get('error'),
+                                           "information",
+                                           QMessageBox.Warning)
         if not unique_record:
             configuration.ContactsSettings().add_csv_file(new_record)
             read_contacts_data = configuration.ContactsSettings().read_csv_file()
             self.update_contact_tablewidget(read_contacts_data)
             self.clear_contacts_line_edit()
-            QMessageBox.information(self, "Added Contact", "It is your responsibility that the information "
-                                                           "you have entered are correct and valid.")
+            response = self.custom_message(self.tr('Added Contact'),
+                                           self.tr('It is your responsibility that the information you have entered '
+                                                   'are correct and valid.'),
+                                           "information",
+                                           QMessageBox.Information)
 
     def unique_contacts(self, name, address, pubkey, contacts_data=None):
         if contacts_data:
@@ -1448,7 +1528,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 return {'error': 'Same name exists'}
             if row[1] == address:
                 print('same address')
-                return {'error': 'Same address exists'}
+                return {'error': self.tr('Same address exists')}
             if row[2] == pubkey:
                 print('same pubkey')
                 return {'error': 'Same pubkey exists'}
@@ -1511,7 +1591,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             del contact_data[self.contact_editing_row + 1]  # removing editing record to don't check same record
             unique_record = self.unique_contacts(contact_name, contact_address, contact_pubkey, contact_data)
             if unique_record:
-                self.bottom_message_label.setText(unique_record.get('error'))
+                self.bottom_info(unique_record.get('error'))
             if not unique_record:
                 read_contacts_data[self.contact_editing_row + 1][0] = contact_name  # +1 for exclude header
                 read_contacts_data[self.contact_editing_row + 1][1] = contact_address  # +1 for exclude header
@@ -1520,17 +1600,20 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 self.update_contact_tablewidget()
                 self.clear_contacts_line_edit()
         else:
-            QMessageBox.information(self, "Error Updating Contact", "You didn't select a contact from table.")
+            message_box = self.custom_message(self.tr('Error Updating Contact'),
+                                              self.tr('You did not select a contact from table.'),
+                                              "information",
+                                              QMessageBox.Information)
 
     @pyqtSlot()
     def delete_contact(self):
         print(self.contact_editing_row)
         if self.contact_editing_row is not None:
-            response = QMessageBox.question(self,
-                                            "Deleting Contact",
-                                            "Are you sure to delete the contact from the list?",
-                                            )
-            if response == QMessageBox.Yes:
+            message_box = self.custom_message(self.tr('Deleting Contact'),
+                                              self.tr('Are you sure to delete the contact from the list?'),
+                                              "question",
+                                              QMessageBox.Question)
+            if message_box == QMessageBox.Yes:
                 read_contacts_data = configuration.ContactsSettings().read_csv_file()
                 del read_contacts_data[self.contact_editing_row + 1]  # +1 for exclude header
                 configuration.ContactsSettings().update_csv_file(read_contacts_data)
@@ -1539,7 +1622,10 @@ class MarmaraMain(QMainWindow, GuiStyle):
             else:
                 self.clear_contacts_line_edit()
         else:
-            QMessageBox.information(self, "Error Deleting Contact", "You didn't select a contact from table.")
+            message_box = self.custom_message(self.tr('Error Deleting Contact'),
+                                              self.tr('You did not select a contact from table.'),
+                                              "information",
+                                              QMessageBox.Information)
 
     # -------------------------------------------------------------------
     # Remote Host adding , editing, deleting and  saving in conf file
