@@ -31,7 +31,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="login_tab">
        <attribute name="title">
@@ -1544,7 +1544,7 @@
                <enum>QFrame::Raised</enum>
               </property>
               <property name="currentIndex">
-               <number>0</number>
+               <number>2</number>
               </property>
               <widget class="QWidget" name="chainaddresses_page">
                <layout class="QGridLayout" name="gridLayout_26">
@@ -1945,13 +1945,6 @@
                 <item row="2" column="1">
                  <layout class="QHBoxLayout" name="address_backbutton_Layout">
                   <item>
-                   <widget class="QPushButton" name="addresspage_back_button">
-                    <property name="text">
-                     <string>Back</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
                    <spacer name="horizontalSpacer_27">
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
@@ -1963,6 +1956,13 @@
                      </size>
                     </property>
                    </spacer>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="addresspage_back_button">
+                    <property name="text">
+                     <string>Back</string>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </item>
@@ -1999,13 +1999,6 @@
                 <item row="1" column="2">
                  <layout class="QHBoxLayout" name="privkey_backbutton_Layout">
                   <item>
-                   <widget class="QPushButton" name="privatekeypage_back_button">
-                    <property name="text">
-                     <string>Back</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
                    <spacer name="horizontalSpacer_29">
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
@@ -2017,6 +2010,13 @@
                      </size>
                     </property>
                    </spacer>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="privatekeypage_back_button">
+                    <property name="text">
+                     <string>Back</string>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </item>
