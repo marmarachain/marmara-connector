@@ -360,14 +360,17 @@ class MarmaraMain(QMainWindow, GuiStyle):
                                               'information', QMessageBox.Information)
 
     def bottom_info(self, info):
-        self.bottom_message_label.setText(info)
+        # self.bottom_message_label.setText(info)
+        self.main_statusBar.showMessage(info)
+
 
     def bottom_err_info(self, err_msg):
-        err_result = ""
-        for line in str(err_msg).splitlines():
-            err_result = err_result + ' ' + str(line)
-        print(err_result)
-        self.bottom_message_label.setText(err_result)
+        # err_result = ""
+        # for line in str(err_msg).splitlines():
+        #     err_result = err_result + ' ' + str(line)
+        # print(err_result)
+        # self.bottom_message_label.setText(err_result)
+        self.main_statusBar.showMessage(err_msg)
 
     # ---------------------------------------
     #  Chain initialization
@@ -1494,7 +1497,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         unique_record = self.unique_contacts(contact_name, contact_address, contact_pubkey)
         if unique_record:
             response = self.custom_message(self.tr("Error Adding Contact"),
-                                           self.tr(unique_record.get('error')),
+                                           unique_record.get('error'),
                                            "information",
                                            QMessageBox.Warning)
         if not unique_record:
@@ -1525,7 +1528,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 return {'error': 'Same name exists'}
             if row[1] == address:
                 print('same address')
-                return {'error': 'Same address exists'}
+                return {'error': self.tr('Same address exists')}
             if row[2] == pubkey:
                 print('same pubkey')
                 return {'error': 'Same pubkey exists'}
