@@ -1544,7 +1544,7 @@
                <enum>QFrame::Raised</enum>
               </property>
               <property name="currentIndex">
-               <number>2</number>
+               <number>1</number>
               </property>
               <widget class="QWidget" name="chainaddresses_page">
                <layout class="QGridLayout" name="gridLayout_26">
@@ -1884,7 +1884,7 @@
                    </widget>
                   </item>
                   <item row="6" column="0" colspan="3">
-                   <widget class="QPlainTextEdit" name="verify_passphrase_TextEdit">
+                   <widget class="QPlainTextEdit" name="confirm_passphrase_TextEdit">
                     <property name="minimumSize">
                      <size>
                       <width>600</width>
@@ -1901,7 +1901,7 @@
                      <number>1</number>
                     </property>
                     <property name="placeholderText">
-                     <string> Verify Passphrase</string>
+                     <string>Confirm Passphrase</string>
                     </property>
                    </widget>
                   </item>
