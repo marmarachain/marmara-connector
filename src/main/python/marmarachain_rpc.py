@@ -274,11 +274,18 @@ class Autoinstall(QtCore.QObject):
     def __init__(self):
         super().__init__()
         self.mcl_linux_download_command = version.latest_marmara_zip_url()
+        self.mcl_linux_zipname = 'MCL-linux.zip'
         self.linux_command_list = ['sudo apt-get update', 'sudo apt-get install libgomp1 -y',
-                                   'wget ' + str(self.mcl_linux_download_command) + '/MCL-linux.zip',
+                                   'sudo wget ' + str(self.mcl_linux_download_command) + '/' + self.mcl_linux_zipname +
+                                   " -O " + self.mcl_linux_zipname,
                                    'sudo apt-get install unzip -y', 'unzip MCL-linux.zip',
                                    'sudo chmod +x komodod komodo-cli fetch-params.sh', './fetch-params.sh']
         self.win_command_list = []
+        self.sudo_password = ""
+
+    def set_password(self, password):
+        self.sudo_password = password
+
 
     @pyqtSlot()
     def start_install(self):
@@ -295,14 +302,34 @@ class Autoinstall(QtCore.QObject):
     def linux_install(self):
         self.out_text.emit(str("update linux"))
         i = 0
-        while i < len(self.linux_command_list):
+        while True:
             cmd = self.linux_command_list[i]
             if cmd.startswith('sudo'):
-                cmd = 'sudo -S -- ' + cmd + '\n'
+                cmd = 'sudo -k -S -- ' + cmd + '\n'
             print(cmd)
             if is_local:
-                print('local linux installation not coded yet!')
-                # proc = subprocess.Popen(cmd, cwd=str(pathlib.Path.home()), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE)
+                proc = subprocess.Popen(cmd, cwd=str(pathlib.Path.home()), shell=True, stdin=subprocess.PIPE,
+                                        stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                if cmd.startswith('sudo'):
+                    proc.stdin.write(bytes(self.sudo_password + '\n', encoding='utf-8'))
+                    proc.stdin.flush()
+                while not proc.stdout.closed:
+                    out = proc.stdout.readline().decode()
+                    print(out)
+                    self.out_text.emit(out)
+                    if out.find('Sorry, try again.') > 0:
+                        print('wrong password')
+                        proc.stdout.close()
+                        i = len(self.linux_command_list)
+                    if not out:
+                        proc.stdout.close()
+                exit_status = proc.returncode
+                print(exit_status)
+                proc.terminate()
+                i = i + 1
+                if i >= len(self.linux_command_list):
+                    self.progress.emit(int(i * 14))
+                    break
             else:
                 sshclient = remote_connection.server_ssh_connect()
                 session = sshclient.get_transport().open_session()
@@ -314,11 +341,12 @@ class Autoinstall(QtCore.QObject):
                     stdin.flush()
                 while not stdout.channel.exit_status_ready():
                     if stdout.channel.recv_ready():
-                        out = stdout.channel.recv(4096).decode()
+                        out = stdout.channel.recv(65535).decode()
                         print(str(out))
                         self.out_text.emit(str(out))
                     if stdout.channel.recv_stderr_ready():
-                        err = stdout.channel.recv_stderr(4096).decode()
+                        time.sleep(1)
+                        err = stdout.channel.recv_stderr(65535).decode()
                         self.out_text.emit(str(err))
                         print(str(err))
                 exit_status = session.recv_exit_status()  # Blocking call

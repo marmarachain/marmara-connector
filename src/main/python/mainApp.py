@@ -221,7 +221,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
             marmarad_path = marmarachain_rpc.marmara_path  # get path from cof file
             print(marmarad_path)
             if marmarad_path:
-                print('asd')
                 verify_path = marmarachain_rpc.do_search_path('ls ' + marmarad_path)
                 if not verify_path[0] == ['']:
                     if 'komodod' in verify_path[0] and 'komodo-cli' in verify_path[0]:
@@ -230,7 +229,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
                     else:
                         self.get_marmara_path()    # search path for komodo-cli and komodod
                 elif verify_path[1]:
-                    print('wqe')
                     self.get_marmara_path()   # search path for komodo-cli and komodod
             else:
                 self.get_marmara_path()   # search path for komodo-cli and komodod
@@ -251,6 +249,10 @@ class MarmaraMain(QMainWindow, GuiStyle):
             if respoonse == QMessageBox.Yes:
                 print('auto install ...')
                 self.main_tab.setCurrentIndex(2)
+                if marmarachain_rpc.is_local:
+                    self.sudo_password_lineEdit.setVisible(True)
+                else:
+                    self.sudo_password_lineEdit.setVisible(False)
             if respoonse == QMessageBox.No:
                 self.main_tab.setCurrentIndex(0)
 
@@ -277,14 +279,26 @@ class MarmaraMain(QMainWindow, GuiStyle):
 
     @pyqtSlot()
     def start_autoinstall(self):
-        self.install_progress_textBrowser.append('Starting Install ...')
         self.worker_autoinstall = marmarachain_rpc.Autoinstall()
-        self.worker_autoinstall.moveToThread(self.thread_autoinstall)
-        self.worker_autoinstall.finished.connect(self.thread_autoinstall.quit)
-        self.thread_autoinstall.started.connect(self.worker_autoinstall.start_install)
-        self.thread_autoinstall.start()
-        self.worker_autoinstall.out_text.connect(self.start_autoinstall_textout)
-        self.worker_autoinstall.progress.connect(self.start_autoinstall_progress)
+        if marmarachain_rpc.is_local:
+            if self.sudo_password_lineEdit.text():
+                self.worker_autoinstall.set_password(self.sudo_password_lineEdit.text())
+                start_install = True
+                self.sudo_password_lineEdit.clear()
+            else:
+                QMessageBox.information(self, 'Auto Install does not start', 'You need to write a password that has admin privileges')
+                start_install = False
+        else:
+            start_install = True
+        if start_install:
+            self.install_progress_textBrowser.append('Starting Install ...')
+
+            self.worker_autoinstall.moveToThread(self.thread_autoinstall)
+            self.worker_autoinstall.finished.connect(self.thread_autoinstall.quit)
+            self.thread_autoinstall.started.connect(self.worker_autoinstall.start_install)
+            self.thread_autoinstall.start()
+            self.worker_autoinstall.out_text.connect(self.start_autoinstall_textout)
+            self.worker_autoinstall.progress.connect(self.start_autoinstall_progress)
 
     @pyqtSlot(str)
     def start_autoinstall_textout(self, output):
@@ -293,6 +307,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
     @pyqtSlot(int)
     def start_autoinstall_progress(self, val):
         self.install_progressBar.setValue(val)
+        print(val)
         if val == 98:
             self.install_progressBar.setValue(100)
             response = QMessageBox.information(self, 'Installation complete', 'Start Chain')
@@ -300,6 +315,9 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 self.main_tab.setCurrentIndex(1)
                 self.mcl_tab.setCurrentIndex(0)
                 self.check_marmara_path()
+        if val > 100:
+            self.install_progressBar.setValue(0)
+            QMessageBox.information(self, 'Installation did not complete correctly', 'Wrong password input. Install again')
 
     def bottom_info(self, info):
         self.bottom_message_label.setText(info)
