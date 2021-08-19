@@ -200,6 +200,7 @@ class RpcHandler(QtCore.QObject):
             result_out = handle_rpc(cp.getinfo)
             if result_out[0]:
                 self.command_out.emit(result_out)
+                time.sleep(0.01)
                 self.finished.emit()
                 print('chain ready')
                 break
@@ -243,6 +244,7 @@ class RpcHandler(QtCore.QObject):
                 amounts = handle_rpc(command)
                 if amounts[0]:
                     amount = json.loads(amounts[0])['balance']
+                    amount = str(int(amount)/100000000)
                 elif amounts[1]:
                     print(amounts[1])
                 address_list = [amount, address, pubkey]

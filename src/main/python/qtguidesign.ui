@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>1024</width>
-    <height>785</height>
+    <height>768</height>
    </rect>
   </property>
   <property name="font">
@@ -890,33 +890,6 @@
         <string>Marmara</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_8">
-        <item row="1" column="0" colspan="3">
-         <widget class="QLabel" name="bottom_message_label">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>17</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-           </font>
-          </property>
-          <property name="frameShape">
-           <enum>QFrame::NoFrame</enum>
-          </property>
-          <property name="frameShadow">
-           <enum>QFrame::Raised</enum>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="textInteractionFlags">
-           <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-          </property>
-         </widget>
-        </item>
         <item row="0" column="1">
          <layout class="QGridLayout" name="chainsummary_Layout">
           <item row="3" column="0">
@@ -1490,7 +1463,7 @@
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>3</number>
           </property>
           <property name="iconSize">
            <size>
@@ -2187,7 +2160,7 @@
               </property>
               <layout class="QGridLayout" name="gridLayout_36">
                <item row="3" column="2">
-                <widget class="QLabel" name="label_17">
+                <widget class="QLabel" name="wallet_total_normal_value">
                  <property name="frameShape">
                   <enum>QFrame::WinPanel</enum>
                  </property>
@@ -2200,7 +2173,7 @@
                 </widget>
                </item>
                <item row="5" column="0">
-                <widget class="QLabel" name="activatedamount_value">
+                <widget class="QLabel" name="activated_amount_value">
                  <property name="frameShape">
                   <enum>QFrame::WinPanel</enum>
                  </property>
@@ -2216,7 +2189,7 @@
                 </widget>
                </item>
                <item row="3" column="0">
-                <widget class="QLabel" name="normalamount_value">
+                <widget class="QLabel" name="normal_amount_value">
                  <property name="frameShape">
                   <enum>QFrame::WinPanel</enum>
                  </property>
@@ -2265,28 +2238,28 @@
                 </spacer>
                </item>
                <item row="2" column="0">
-                <widget class="QLabel" name="normalamount_label">
+                <widget class="QLabel" name="normal_amount_label">
                  <property name="text">
                   <string>Nomal Amount</string>
                  </property>
                 </widget>
                </item>
                <item row="4" column="0">
-                <widget class="QLabel" name="activatedamount_label">
+                <widget class="QLabel" name="activated_amount_label">
                  <property name="text">
                   <string>Activated Amount</string>
                  </property>
                 </widget>
                </item>
                <item row="2" column="2">
-                <widget class="QLabel" name="label">
+                <widget class="QLabel" name="wallet_total_normal_label">
                  <property name="text">
                   <string>Total Normal</string>
                  </property>
                 </widget>
                </item>
                <item row="5" column="2">
-                <widget class="QLabel" name="label_19">
+                <widget class="QLabel" name="wallet_total_activated_value">
                  <property name="frameShape">
                   <enum>QFrame::WinPanel</enum>
                  </property>
@@ -2299,7 +2272,7 @@
                 </widget>
                </item>
                <item row="4" column="2">
-                <widget class="QLabel" name="label_18">
+                <widget class="QLabel" name="wallet_total_activated_label">
                  <property name="text">
                   <string>Total Activated</string>
                  </property>
@@ -2674,6 +2647,12 @@
                 <height>300</height>
                </size>
               </property>
+              <attribute name="horizontalHeaderDefaultSectionSize">
+               <number>150</number>
+              </attribute>
+              <attribute name="horizontalHeaderMinimumSectionSize">
+               <number>60</number>
+              </attribute>
               <column>
                <property name="text">
                 <string>txid</string>
@@ -2684,7 +2663,7 @@
               </column>
               <column>
                <property name="text">
-                <string>Amount</string>
+                <string>See on Explorer</string>
                </property>
                <property name="textAlignment">
                 <set>AlignLeading|AlignTop</set>
@@ -3185,7 +3164,7 @@
                     </property>
                     <property name="font">
                      <font>
-                      <pointsize>9</pointsize>
+                      <pointsize>12</pointsize>
                      </font>
                     </property>
                     <property name="sizeAdjustPolicy">
@@ -3203,6 +3182,34 @@
                     <property name="cornerButtonEnabled">
                      <bool>false</bool>
                     </property>
+                    <attribute name="horizontalHeaderDefaultSectionSize">
+                     <number>150</number>
+                    </attribute>
+                    <column>
+                     <property name="text">
+                      <string>Review</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>TxId</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Amount</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Maturity</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Receiver Pubkey</string>
+                     </property>
+                    </column>
                    </widget>
                   </item>
                  </layout>
@@ -3260,7 +3267,7 @@
                     </property>
                     <property name="font">
                      <font>
-                      <pointsize>9</pointsize>
+                      <pointsize>12</pointsize>
                      </font>
                     </property>
                     <property name="sizeAdjustPolicy">
@@ -3278,6 +3285,19 @@
                     <property name="cornerButtonEnabled">
                      <bool>false</bool>
                     </property>
+                    <attribute name="horizontalHeaderDefaultSectionSize">
+                     <number>150</number>
+                    </attribute>
+                    <column>
+                     <property name="text">
+                      <string>TxId</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Details</string>
+                     </property>
+                    </column>
                    </widget>
                   </item>
                  </layout>
@@ -3755,6 +3775,24 @@
                     <property name="cornerButtonEnabled">
                      <bool>false</bool>
                     </property>
+                    <attribute name="horizontalHeaderDefaultSectionSize">
+                     <number>150</number>
+                    </attribute>
+                    <column>
+                     <property name="text">
+                      <string>TxId</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Amount</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Matures</string>
+                     </property>
+                    </column>
                    </widget>
                   </item>
                   <item row="0" column="0" colspan="6">
@@ -4041,7 +4079,7 @@
                     </property>
                     <property name="font">
                      <font>
-                      <pointsize>9</pointsize>
+                      <pointsize>12</pointsize>
                      </font>
                     </property>
                     <property name="sizeAdjustPolicy">
@@ -4059,6 +4097,29 @@
                     <property name="cornerButtonEnabled">
                      <bool>false</bool>
                     </property>
+                    <attribute name="horizontalHeaderDefaultSectionSize">
+                     <number>150</number>
+                    </attribute>
+                    <column>
+                     <property name="text">
+                      <string>New Column</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>TxId</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Matures</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Transfer</string>
+                     </property>
+                    </column>
                    </widget>
                   </item>
                   <item row="0" column="0">
