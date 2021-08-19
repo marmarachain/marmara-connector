@@ -5011,13 +5011,6 @@ p, li { white-space: pre-wrap; }
    <addaction name="menuConfig"/>
    <addaction name="menuHelp"/>
   </widget>
-  <widget class="QStatusBar" name="main_statusBar">
-   <property name="font">
-    <font>
-     <pointsize>11</pointsize>
-    </font>
-   </property>
-  </widget>
   <action name="actionLanguage_Selection">
    <property name="text">
     <string>&amp;Language Selection</string>

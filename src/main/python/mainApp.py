@@ -6,7 +6,7 @@ from datetime import datetime
 from qr_code_gen import Image
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import QThread, pyqtSlot, QDateTime
+from PyQt5.QtCore import QThread, pyqtSlot, QDateTime, Qt
 from PyQt5.QtWidgets import QMainWindow, QPushButton, QTableWidgetItem, QMessageBox, QDesktopWidget
 import configuration
 import marmarachain_rpc
@@ -360,17 +360,14 @@ class MarmaraMain(QMainWindow, GuiStyle):
                                               'information', QMessageBox.Information)
 
     def bottom_info(self, info):
-        # self.bottom_message_label.setText(info)
-        self.main_statusBar.showMessage(info)
-
+        self.bottom_message_label.setText(info)
 
     def bottom_err_info(self, err_msg):
-        # err_result = ""
-        # for line in str(err_msg).splitlines():
-        #     err_result = err_result + ' ' + str(line)
-        # print(err_result)
-        # self.bottom_message_label.setText(err_result)
-        self.main_statusBar.showMessage(err_msg)
+        err_result = ""
+        for line in str(err_msg).splitlines():
+            err_result = err_result + ' ' + str(line)
+        print(err_result)
+        self.bottom_message_label.setText(err_result)
 
     # ---------------------------------------
     #  Chain initialization
@@ -804,7 +801,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
                                           QMessageBox.Question)
 
         if message_box == QMessageBox.Yes:
-
             command = cp.getnewaddress
             getnewaddress_thread = self.worker_thread(self.thread_getnewaddress, self.worker_get_newaddress, command)
             getnewaddress_thread.command_out.connect(self.set_getnewaddress_result)
@@ -837,7 +833,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
             convert_passphrase_thread = self.worker_thread(self.thread_convertpassphrase,
                                                            self.worker_convert_passphrase, command)
             convert_passphrase_thread.command_out.connect(self.converpassphrase_result)
-
 
     @pyqtSlot(tuple)
     def converpassphrase_result(self, result_out):
