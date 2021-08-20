@@ -80,7 +80,7 @@ def do_search_path(cmd):
 
 def search_marmarad_path():  # will be added for windows search
     search_list = ['ls', 'ls /marmara/src', 'ls /komodo/src']
-    if is_local:
+    if is_local: # add for windows and mac
         pwd = str(pathlib.Path.home())
         print('pwd_local :' + pwd)
     else:
