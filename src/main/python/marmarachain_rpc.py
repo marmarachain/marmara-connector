@@ -191,7 +191,7 @@ class RpcHandler(QtCore.QObject):
     def do_execute_rpc(self):
         result_out = handle_rpc(self.command)
         self.command_out.emit(result_out)
-        time.sleep(0.05)
+        time.sleep(0.1)
         self.finished.emit()
 
     @pyqtSlot()
