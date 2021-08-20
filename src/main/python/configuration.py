@@ -1,8 +1,41 @@
 import csv
 import os
+from appdirs import *
+import configparser
+import remote_connection
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 
+app_name = ApplicationContext().build_settings['app_name']
+author = ApplicationContext().build_settings['author']
+version = ApplicationContext().build_settings['version']
+
 resource_path = ApplicationContext().get_resource("configuration")
+
+
+# class ApplicationConf:
+#     config_directory_path = user_config_dir(app_name, author, version, roaming=True)
+#     # Typical user config directories are:
+#     #   Mac OS X:             ~/Library/Application Support/<AppName>
+#     #   Unix:                 ~/.config/<AppName>     # or in $XDG_CONFIG_HOME, if defined
+#     #   Win XP (roaming):     C:\Documents and Settings\<username>\Local Settings\Application Data\<AppAuthor>\<AppName>
+#     #   Win 7  (roaming):     C:\Users\<username>\AppData\Roaming\<AppAuthor>\<AppName>
+#
+#     print(config_directory_path)
+#     config_file = "marmara-connector.conf"
+#     # make platform-specific config directory to store config and log files
+#     os.makedirs(config_directory_path, exist_ok=True)
+#     config_file_path = os.path.join(config_directory_path, config_file)
+#     print("full_config_file_path: " + config_file_path)
+#
+#     config = configparser.ConfigParser()
+#
+#     config['MCLD PATHS'] = {}
+#
+#     config['USER'] = {"language": ""}
+#
+#     if not os.path.exists(config_file_path) or os.stat(config_file_path).st_size == 0:
+#         with open(config_file_path, 'w') as configfile:
+#             config.write(configfile)
 
 
 class ConnectorConf:
@@ -48,12 +81,28 @@ class ConnectorConf:
         return data_dict
 
 
+user_data_path = user_data_dir(app_name, author, version, roaming=True)
+# Typical user data directories are:
+#     Mac OS X:               ~/Library/Application Support/<AppName>
+#     Unix:                   ~/.local/share/<AppName>    # or in $XDG_DATA_HOME, if defined
+#     Win XP (roaming=True):  C:\Documents and Settings\<username>\Local Settings\Application Data\<AppAuthor>\<AppName>
+#     Win 7  (roaming=True):  C:\Users\<username>\AppData\Roaming\<AppAuthor>\<AppName>
+
+os.makedirs(user_data_path, exist_ok=True)  # make platform-specific user directory to store user data files
+
+
 class ServerSettings:
-    server_conf_file = resource_path + "/servers.info"
+    server_conf_file = "servers.info"
+    server_config_file_path = os.path.join(user_data_path, server_conf_file)
+    print("server_config_file_path located in: " + server_config_file_path)
+
+    # Create the file if it does not exist
+    if not os.path.exists(server_config_file_path) or os.stat(server_config_file_path).st_size == 0:
+        open(server_config_file_path, 'a+').close()
 
     def save_file(self, server_name, server_username, server_ip):
         try:
-            file = open(self.server_conf_file, 'a')
+            file = open(self.server_config_file_path, 'a')
             server_params = server_name + "," + server_username + "," + server_ip + "\n"
             file.write(server_params)
         except IOError:
@@ -63,10 +112,10 @@ class ServerSettings:
 
     def read_file(self):
         server_list = []
-        if os.stat(self.server_conf_file).st_size != 0:
+        if os.stat(self.server_config_file_path).st_size != 0:
             if os.path.isfile(self.server_conf_file):
                 try:
-                    file = open(self.server_conf_file, "r")
+                    file = open(self.server_config_file_path, "r")
                     server_all_info = file.read().rstrip()
                     server_list = server_all_info.split("\n")
                 except IOError:
@@ -78,7 +127,7 @@ class ServerSettings:
     def delete_record(self, server_list):
         print(server_list)
         try:
-            file = open(self.server_conf_file, 'w')
+            file = open(self.server_config_file_path, 'w')
             for line in server_list:
                 file.write(line + "\n")
         except IOError:
@@ -88,21 +137,24 @@ class ServerSettings:
 
 
 class ContactsSettings:
-    contacts_file = resource_path + '/contacts.csv'
+    #contacts_file = resource_path + '/contacts.csv'
+    contacts_file = "contacts.csv"
     header = ['Name', 'Address', 'Pubkey']
+    contacts_file_path = os.path.join(user_data_path, contacts_file)
+    print("contacts_file_path located in: " + contacts_file_path)
 
     def is_file_exist(self):
-        if os.path.isfile(self.contacts_file):
+        if os.path.isfile(self.contacts_file_path):
             return
         else:
-            print('no file')
+            print('no file found')
             self.create_csv_file()
-            print('file created')
+            print('contacts file created')
             return
 
     def read_csv_file(self):
         self.is_file_exist()
-        contactdata = open(self.contacts_file, 'r')
+        contactdata = open(self.contacts_file_path, 'r')
         contactdatadata_reader = csv.reader(contactdata)
         contactdatadata_list = []
         for row in contactdatadata_reader:
@@ -111,19 +163,19 @@ class ContactsSettings:
         return contactdatadata_list
 
     def create_csv_file(self):
-        contacts_csv = open(self.contacts_file, 'w', newline='')
+        contacts_csv = open(self.contacts_file_path, 'w', newline='')
         create = csv.writer(contacts_csv)
         create.writerow(self.header)
 
     def add_csv_file(self, row):
-        if not os.path.isfile(self.contacts_file):
+        if not os.path.isfile(self.contacts_file_path):
             self.create_csv_file()
-        contacts_csv = open(self.contacts_file, 'a', newline='')
+        contacts_csv = open(self.contacts_file_path, 'a', newline='')
         contacts_csv_writer = csv.writer(contacts_csv)
         contacts_csv_writer.writerow(row)
         contacts_csv.close()
 
     def update_csv_file(self, contact_csv_list):
-        contacts_csv = open(self.contacts_file, 'w', newline='')
+        contacts_csv = open(self.contacts_file_path, 'w', newline='')
         create = csv.writer(contacts_csv)
         create.writerows(contact_csv_list)
