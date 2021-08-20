@@ -7,7 +7,7 @@ from qr_code_gen import Image
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QThread, pyqtSlot, QDateTime, QSize, Qt
-from PyQt5.QtWidgets import QMainWindow, QPushButton, QTableWidgetItem, QMessageBox, QDesktopWidget
+from PyQt5.QtWidgets import QMainWindow, QPushButton, QTableWidgetItem, QMessageBox, QDesktopWidget, QHeaderView
 import configuration
 import marmarachain_rpc
 import remote_connection
@@ -15,6 +15,7 @@ import chain_args as cp
 from qtguistyle import GuiStyle
 from Loading import LoadingScreen
 import qtawesome as qta
+
 
 class MarmaraMain(QMainWindow, GuiStyle):
 
@@ -90,7 +91,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.request_date_checkBox.clicked.connect(self.set_request_date_state)
         self.request_dateTimeEdit.setDateTime(QDateTime.currentDateTime())
 
-        # -----Create credit Loop Request
+        # -----Make credit Loop Request
         self.contactpubkey_makeloop_comboBox.currentTextChanged.connect(self.get_selected_contact_loop_pubkey)
         self.contactpubkey_transferrequest_comboBox.currentTextChanged.connect(
             self.get_selected_contact_transfer_pubkey)
@@ -110,7 +111,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.transferableloops_search_button.clicked.connect(self.marmaraholderloops)
         # ---- Loop Queries page --
         self.lq_pubkey_search_button.clicked.connect(self.search_any_pubkey_loops)
-        self.lq_txid_search_button.clicked.connect(self.marmaracreditloop)
+        self.lq_txid_search_button.clicked.connect(self.search_loop_txid)
 
         # Contacts Page
         self.addcontact_button.clicked.connect(self.add_contact)
@@ -147,6 +148,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.thread_marmarareceive_transfer = QThread()
         self.thread_marmarainfo = QThread()
         self.thread_marmaraholderloops = QThread()
+        self.thread_marmaraissue = QThread()
+        self.thread_marmaratransfer = QThread()
 
         # Loading Gif
         # --------------------------------------------------
@@ -689,11 +692,10 @@ class MarmaraMain(QMainWindow, GuiStyle):
             for item in row:
                 btn_setpubkey = QPushButton('Set pubkey')
                 self.addresses_tableWidget.setCellWidget(row_number, 0, btn_setpubkey)
-                self.addresses_tableWidget.horizontalHeader().setSectionResizeMode(0,
-                                                                                   QtWidgets.QHeaderView.ResizeToContents)
+                self.addresses_tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
                 self.addresses_tableWidget.setItem(row_number, (row.index(item) + 1), QTableWidgetItem(str(item)))
                 self.addresses_tableWidget.horizontalHeader().setSectionResizeMode(row.index(item) + 1,
-                                                                                   QtWidgets.QHeaderView.ResizeToContents)
+                                                                                   QHeaderView.ResizeToContents)
                 btn_setpubkey.clicked.connect(self.set_pubkey)
         self.update_addresses_table()
 
@@ -917,9 +919,9 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 self.addresses_privkey_tableWidget.setCellWidget(row_number, 1, btn_seeprivkey)
                 self.addresses_privkey_tableWidget.setItem(row_number, 0, QTableWidgetItem(address))
                 self.addresses_privkey_tableWidget.horizontalHeader().setSectionResizeMode(0,
-                                                                                           QtWidgets.QHeaderView.ResizeToContents)
+                                                                                           QHeaderView.ResizeToContents)
                 self.addresses_privkey_tableWidget.horizontalHeader().setSectionResizeMode(1,
-                                                                                           QtWidgets.QHeaderView.ResizeToContents)
+                                                                                           QHeaderView.ResizeToContents)
                 btn_seeprivkey.clicked.connect(self.set_seeprivkey)
 
         elif result_out[1]:
@@ -958,7 +960,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
         command = cp.marmarainfo + ' 0 0 0 0 ' + pubkey
         marmarainfo_thread = self.worker_thread(self.thread_marmarainfo, self.worker_marmarainfo, command)
         return marmarainfo_thread
-
 
     @pyqtSlot()
     def get_address_amounts(self):
@@ -1064,6 +1065,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def sendrawtransaction(self, hex):
         self.worker_sendrawtransaction = marmarachain_rpc.RpcHandler()
         command = cp.sendrawtransaction + ' ' + hex
+        time.sleep(0.1)
         sendrawtransaction_thread = self.worker_thread(self.thread_sendrawtransaction, self.worker_sendrawtransaction,
                                                        command)
         sendrawtransaction_thread.command_out.connect(self.sendrawtransaction_result)
@@ -1171,7 +1173,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         contacts_data = configuration.ContactsSettings().read_csv_file()
         known_pubkey = pubkey
         for contact in contacts_data:  # each contact set in  contacts_data
-            if contact[2] == pubkey:   # contact[2] contact pubkey
+            if contact[2] == pubkey:  # contact[2] contact pubkey
                 known_pubkey = contact[0]  # contact[0] contact name
                 break
         return known_pubkey
@@ -1202,12 +1204,11 @@ class MarmaraMain(QMainWindow, GuiStyle):
     @pyqtSlot(tuple)
     def search_marmarareceivelist_result(self, result_out):
         if result_out[0]:
-            print(result_out[0])
             result = json.loads(result_out[0])
-            print(len(result))
             self.loop_request_tableWidget.setRowCount(len(result))
+            loop_create_request_list = []
+            loop_transfer_request_list = []
             for item in result:
-                row_number = result.index(item)
                 tx_id = item.get('txid')
                 func_id = item.get('funcid')
                 amount = item.get('amount')
@@ -1217,58 +1218,133 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 receive_pubkey = self.check_pubkey_contact_name(receive_pk)
                 # issuer_pk = item.get('issuerpk')
                 if func_id == 'B':
-                    btn_review = QPushButton(qta.icon('mdi.text-box-check-outline'), '')
-                    btn_review.setIconSize(QSize(24, 24))
-                    self.loop_request_tableWidget.setCellWidget(row_number, 0, btn_review)
-                    self.loop_request_tableWidget.setItem(row_number, 1, QTableWidgetItem(str(tx_id)))
-                    self.loop_request_tableWidget.setItem(row_number, 2, QTableWidgetItem(str(amount)))
-                    self.loop_request_tableWidget.setItem(row_number, 3, QTableWidgetItem(str(maturity)))
-                    self.loop_request_tableWidget.setItem(row_number, 4, QTableWidgetItem(str(receive_pubkey)))
-                    self.loop_request_tableWidget.horizontalHeader().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
-                    self.loop_request_tableWidget.horizontalHeader().setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
-                    self.loop_request_tableWidget.horizontalHeader().setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
-                    self.loop_request_tableWidget.horizontalHeader().setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
-                    self.loop_request_tableWidget.horizontalHeader().setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)
-                    btn_review.clicked.connect(self.review_creditloop_request)
+                    row = [tx_id, amount, maturity, receive_pubkey, receive_pk]
+                    loop_create_request_list.append(row)
+                if func_id == 'R':
+                    row = [tx_id, amount, maturity, receive_pubkey, receive_pk]
+                    loop_transfer_request_list.append(row)
+            self.set_credit_request_table(loop_create_request_list)
+            self.set_transfer_request_table(loop_transfer_request_list)
         elif result_out[1]:
             self.bottom_err_info(self.tr(result_out[1]))
 
+    def set_credit_request_table(self, credit_request_list):
+        self.loop_request_tableWidget.setRowCount(len(credit_request_list))
+        self.loop_request_tableWidget.setColumnHidden(5, True)
+        for row in credit_request_list:
+            row_number = credit_request_list.index(row)
+            btn_review = QPushButton(qta.icon('mdi.text-box-check-outline'), '')
+            btn_review.setIconSize(QSize(24, 24))
+            self.loop_request_tableWidget.setCellWidget(row_number, 0, btn_review)
+            self.loop_request_tableWidget.setItem(row_number, 1, QTableWidgetItem(str(row[0])))
+            self.loop_request_tableWidget.setItem(row_number, 2, QTableWidgetItem(str(row[1])))
+            self.loop_request_tableWidget.setItem(row_number, 3, QTableWidgetItem(str(row[2])))
+            self.loop_request_tableWidget.setItem(row_number, 4, QTableWidgetItem(str(row[3])))
+            self.loop_request_tableWidget.setItem(row_number, 5, QTableWidgetItem(str(row[4])))
+            self.loop_request_tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+            self.loop_request_tableWidget.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
+            self.loop_request_tableWidget.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
+            self.loop_request_tableWidget.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
+            self.loop_request_tableWidget.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
+            btn_review.clicked.connect(self.review_creditloop_request)
+
+    @pyqtSlot()
     def review_creditloop_request(self):
         button = self.sender()
-        print(button.pos())
         index = self.loop_request_tableWidget.indexAt(button.pos())
-        print(index.row())
         if index.isValid():
             tx_id = self.loop_request_tableWidget.item(index.row(), 1).text()
-            amount = self.loop_request_tableWidget.item(index.row(), 2).text()
-            maturity =self.loop_request_tableWidget.item(index.row(), 3).text()
-            reciver_pk = self.loop_request_tableWidget.item(index.row(), 4).text()
-            message_box = self.custom_message(self.tr('Review Transaction'),
-                                              self.tr(" " +
-                                                      "<br><b>Tx ID = </b>" + tx_id +
-                                                      "<br><b>Amount = </b>" + amount +
-                                                      "<br><b>Maturity = </b>" + maturity +
-                                                      "<br><b>Pubkey = </b>" + reciver_pk),
-                                              "question",
-                                              QMessageBox.Question)
-            if message_box == QMessageBox.Yes:
-                print(' need to do marmaraissue !' + reciver_pk + '{"avalcount":"0", "autosettlement":"true", '
-                                                                  '"autoinsurance":"true", "disputeexpires":"offset", '
-                                                                  '"EscrowOn":"false", "BlockageAmount":"0" }')
-            if message_box == QMessageBox.No:
-                self.bottom_info('Transaction aborted')
+            receiver_pk = self.loop_request_tableWidget.item(index.row(), 5).text()
+            self.marmaraissue(receiver_pk, tx_id)
 
-    @pyqtSlot(list)
-    def set_transfer_request_result(self, transfer_result):
-        for row in transfer_result:
-            row_number = transfer_result.index(row)
-            self.transferrequests_tableWidget.setRowCount(len(transfer_result))
+    def set_transfer_request_table(self, transfer_request_list):
+        self.transferrequests_tableWidget.setRowCount(len(transfer_request_list))
+        self.transferrequests_tableWidget.setColumnHidden(5, True)
+        for row in transfer_request_list:
+            row_number = transfer_request_list.index(row)
+            btn_review = QPushButton(qta.icon('mdi.text-box-check-outline'), '')
+            btn_review.setIconSize(QSize(24, 24))
+            self.transferrequests_tableWidget.setCellWidget(row_number, 0, btn_review)
+            self.transferrequests_tableWidget.setItem(row_number, 1, QTableWidgetItem(str(row[0])))
+            self.transferrequests_tableWidget.setItem(row_number, 2, QTableWidgetItem(str(row[1])))
+            self.transferrequests_tableWidget.setItem(row_number, 3, QTableWidgetItem(str(row[2])))
+            self.transferrequests_tableWidget.setItem(row_number, 4, QTableWidgetItem(str(row[3])))
+            self.transferrequests_tableWidget.setItem(row_number, 5, QTableWidgetItem(str(row[4])))
+            self.transferrequests_tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+            self.transferrequests_tableWidget.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
+            self.transferrequests_tableWidget.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
+            self.transferrequests_tableWidget.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
+            self.transferrequests_tableWidget.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
+            btn_review.clicked.connect(self.review_credittransfer_request)
 
-    @pyqtSlot(list)
-    def set_credit_request_result(self, credit_request_result):
-        for row in credit_request_result:
-            row_number = credit_request_result.index(row)
-            self.loop_request_tableWidget.setRowCount(len(credit_request_result))
+    @pyqtSlot()
+    def review_credittransfer_request(self):
+        button = self.sender()
+        index = self.transferrequests_tableWidget.indexAt(button.pos())
+        if index.isValid():
+            tx_id = self.transferrequests_tableWidget.item(index.row(), 1).text()
+            receiver_pk = self.transferrequests_tableWidget.item(index.row(), 5).text()
+            self.marmaratransfer(receiver_pk, tx_id)
+
+
+    def marmaraissue(self, receiver_pk, txid):
+        command = cp.marmaraissue + ' ' + receiver_pk + " '" + '{"avalcount":"0", "autosettlement":"true", ' \
+                                                               '"autoinsurance":"true", "disputeexpires":"offset", ' \
+                                                               '"EscrowOn":"false", "BlockageAmount":"0" }' + "' " + txid
+        print(command)
+        self.worker_marmaraissue = marmarachain_rpc.RpcHandler()
+        marmaraissue_thread = self.worker_thread(self.thread_marmaraissue, self.worker_marmaraissue, command)
+        marmaraissue_thread.command_out.connect(self.marmaraissue_result)
+
+    @pyqtSlot(tuple)
+    def marmaraissue_result(self, result_out):
+        if result_out[0]:
+            print(result_out[0])
+            result = json.loads(result_out[0])
+            if result.get('result') == "success":
+                message_box = self.custom_message(self.tr('Create Credit Loop'),
+                                                  self.tr(
+                                                      "You are about to create credit loop with given details below:" +
+                                                      "<br><b>Tx ID = </b>" + result.get('requesttxid') +
+                                                      "<br><b>Pubkey = </b>" + result.get('receiverpk')), "question",
+                                                  QMessageBox.Question)
+                if message_box == QMessageBox.Yes:
+                    print(self.sendrawtransaction(result.get('hex')))
+                if message_box == QMessageBox.No:
+                    self.bottom_info('Transaction aborted')
+            if result.get('result') == "error":
+                self.bottom_info(self.tr(result.get('error')))
+        elif result_out[1]:
+            print(result_out[1])
+
+    def marmaratransfer(self, receiver_pk, tx_id):
+        command = cp.marmaratransfer + ' ' + receiver_pk + " '" + '{"avalcount":"0"}' + "' " + tx_id
+        print(command)
+        self.worker_marmaratransfer = marmarachain_rpc.RpcHandler()
+        marmaratransfer_thread = self.worker_thread(self.thread_marmaratransfer, self.worker_marmaratransfer, command)
+        marmaratransfer_thread.command_out.connect(self.marmaratransfer_result)
+
+    @pyqtSlot(tuple)
+    def marmaratransfer_result(self, result_out):
+        if result_out[0]:
+            print(result_out[0])
+            result = json.loads(result_out[0])
+            if result.get('result') == "success":
+                message_box = self.custom_message(self.tr('Transfer Credit Loop'),
+                                                  self.tr("You are about to transfer you credit loop with given details below:") +
+                                                      "<br><b>baton txid = </b>" + result.get('batontxid') +
+                                                      "<br><b>Pubkey = </b>" + result.get('receiverpk'),
+                                                  "question",
+                                                  QMessageBox.Question)
+                if message_box == QMessageBox.Yes:
+                    self.sendrawtransaction(result.get('hex'))
+                if message_box == QMessageBox.No:
+                    self.bottom_info('Transaction aborted')
+            if result.get('result') == "error":
+                self.bottom_info(self.tr(result.get('error')))
+        elif result_out[1]:
+            print(result_out[1])
+            self.bottom_err_info(result_out[1])
 
     # --- Create Loop Request page functions ----
 
@@ -1332,14 +1408,14 @@ class MarmaraMain(QMainWindow, GuiStyle):
             result = json.loads(result_out[0])
             if result.get('result') == "success":
                 print(result)
-                # message_box = self.custom_message(self.tr('Confirm Transaction'),
-                #                                   self.tr('You are about to make a request to the endorser'),
-                #                                   "question",
-                #                                   QMessageBox.Question)
-                # if message_box == QMessageBox.Yes:
-                #     self.sendrawtransaction(result.get('hex'))
-                # if message_box == QMessageBox.No:
-                #     self.bottom_info(self.tr('Transaction aborted'))
+                message_box = self.custom_message(self.tr('Confirm Transaction'),
+                                                  self.tr('You are about to make a request to the endorser'),
+                                                  "question",
+                                                  QMessageBox.Question)
+                if message_box == QMessageBox.Yes:
+                    self.sendrawtransaction(result.get('hex'))
+                if message_box == QMessageBox.No:
+                    self.bottom_info(self.tr('Transaction aborted'))
             if result.get('result') == "error":
                 self.bottom_info(self.tr(result.get('error')))
         elif result_out[1]:
@@ -1370,10 +1446,21 @@ class MarmaraMain(QMainWindow, GuiStyle):
             print(result_out[0])
             result = json.loads(result_out[0])
             if result.get('result') == "success":
-                self.activeloops_total_amount_value_label.setText(str(result.get('totalamount')))
+                loops = result.get('Loops')
+                self.activeloops_total_amount_value_label.setText(str(result.get('TotalLockedInLoop')))
                 self.closedloops_total_amount_value_label.setText(str(result.get('totalclosed')))
-                self.activeloops_total_number_value_label.setText(str(result.get('numpending')))
+                self.activeloops_pending_number_value_label.setText(str(result.get('numpending')))
                 self.closedloops_total_number_value_label.setText(str(result.get('numclosed')))
+                self.activeloops_tableWidget.setRowCount(len(loops))
+                for item in loops:
+                    row_number = loops.index(item)
+                    self.activeloops_tableWidget.setItem(row_number, 0, QTableWidgetItem(str(item.get('LoopAddress'))))
+                    self.activeloops_tableWidget.setItem(row_number, 1,
+                                                         QTableWidgetItem(str(item.get('myAmountLockedInLoop'))))
+                    self.activeloops_tableWidget.horizontalHeader().setSectionResizeMode(0,
+                                                                                         QHeaderView.ResizeToContents)
+                    self.activeloops_tableWidget.horizontalHeader().setSectionResizeMode(1,
+                                                                                         QHeaderView.ResizeToContents)
                 self.bottom_info('finished searching marmara blockchain for all blocks for the set pubkey')
             if result.get('result') == "error":
                 self.bottom_info(result.get('error'))
@@ -1447,13 +1534,47 @@ class MarmaraMain(QMainWindow, GuiStyle):
         if result_out[0]:
             result = json.loads(result_out[0])
             print(result)
-            if result.get('result') == "error":
-                print(result.get('error'))
-            if result.get('result') == "success":
-                print("numpending: " + str(result.get('numpending')))
-                print("issuances: " + str(result.get('issuances')))
+            print("numpending: " + str(result.get('numpending')))
+            issuances = result.get('issuances')
+            self.transferableloops_tableWidget.setRowCount(result.get('numpending'))
+            for item in issuances:
+                row_number = issuances.index(item)
+                btn_detail = QPushButton(qta.icon('mdi.dots-horizontal'), '')
+                btn_detail.setIconSize(QSize(24, 24))
+                self.transferableloops_tableWidget.setItem(row_number, 0, QTableWidgetItem(str(item)))
+                self.transferableloops_tableWidget.setCellWidget(row_number, 1, btn_detail)
+                self.transferableloops_tableWidget.horizontalHeader().setSectionResizeMode(0,
+                                                                                           QHeaderView.ResizeToContents)
+                self.transferableloops_tableWidget.horizontalHeader().setSectionResizeMode(1,
+                                                                                           QHeaderView.ResizeToContents)
+                btn_detail.clicked.connect(self.see_holderloop_detail)
         elif result_out[1]:
             print(result_out[1])
+
+    @pyqtSlot()
+    def see_holderloop_detail(self):
+        button = self.sender()
+        index = self.transferableloops_tableWidget.indexAt(button.pos())
+        if index.isValid():
+            tx_id = self.transferableloops_tableWidget.item(index.row(), 0).text()
+            marmaracreditloop = self.marmaracreditloop(tx_id)
+            marmaracreditloop.command_out.connect(self.holderloop_detail_result)
+
+    @pyqtSlot(tuple)
+    def holderloop_detail_result(self, result_out):
+        if result_out[0]:
+            print(result_out[0])
+            result = json.loads(result_out[0])
+            maturity = self.change_block_to_date(result.get('matures'))
+            message_box = self.custom_message(self.tr("Credit loop detail"), self.tr("Credit loop details.") +
+                                                      "<br><b>Tx ID = </b>" + str(result.get('batontxid')) +
+                                                      "<br><b>Amount = </b>" + str(result.get('amount')) +
+                                                      "<br><b>Maturity = </b>" + str(maturity), "information",
+                                              QMessageBox.Information)
+            print(message_box)
+        elif result_out[1]:
+            print(result_out[1])
+            self.bottom_err_info(result_out[1])
 
     # -------------------------------------------------------------------
     # Credit Loop Queries functions
@@ -1478,7 +1599,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 self.lq_pubkeyactivatedamount_value_label.setText(str(result.get('myActivatedAmount')))
                 # print(result.get('TotalLockedInLoop'))
                 self.lq_activeloopno_value_label.setText(str(result.get('numpending')))
-                self.lq_pubkeyloopamount_value_label.setText(str(result.get('totalamount')))
+                self.lq_pubkeyloopamount_value_label.setText(str(result.get('TotalLockedInLoop')))
                 self.lq_closedloopno_value_label.setText(str(result.get('numclosed')))
                 self.lq_pubkeyclosedloopamount_value_label.setText(str(result.get('totalclosed')))
                 self.bottom_info('finished searching marmarainfo')
@@ -1496,22 +1617,26 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.lq_closedloopno_value_label.clear()
         self.lq_pubkeyclosedloopamount_value_label.clear()
 
+    def marmaracreditloop(self, txid):
+        self.bottom_info('getting credit loop info, please wait')
+        self.worker_marmaracreditloop = marmarachain_rpc.RpcHandler()
+        command = cp.marmaracreditloop + ' ' + txid
+        marmaracreditloop_thread = self.worker_thread(self.thread_marmaracreditloop, self.worker_marmaracreditloop,
+                                                      command)
+        return marmaracreditloop_thread
+
     @pyqtSlot()
-    def marmaracreditloop(self):
+    def search_loop_txid(self):
         txid = self.loopsearch_txid_lineEdit.text()
         if txid:
-            self.bottom_info('getting credit loop info, please wait')
-            self.worker_marmaracreditloop = marmarachain_rpc.RpcHandler()
-            command = cp.marmaracreditloop + ' ' + txid
-            marmaracreditloop_thread = self.worker_thread(self.thread_marmaracreditloop, self.worker_marmaracreditloop,
-                                                          command)
-            marmaracreditloop_thread.command_out.connect(self.marmaracreditloop_result)
+            marmaracreditloop = self.marmaracreditloop(txid)
+            marmaracreditloop.command_out.connect(self.search_loop_txid_result)
         else:
             self.bottom_info('write loop transaction id  to search !')
             self.clear_lq_txid_search_result()
 
     @pyqtSlot(tuple)
-    def marmaracreditloop_result(self, result_out):
+    def search_loop_txid_result(self, result_out):
         if result_out[0]:
             result = json.loads(result_out[0])
             print(result)
@@ -1664,7 +1789,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 for item in row:
                     self.contacts_tableWidget.setItem(row_number, row.index(item), QTableWidgetItem(str(item)))
                     self.contacts_tableWidget.horizontalHeader().setSectionResizeMode(row.index(item),
-                                                                                      QtWidgets.QHeaderView.ResizeToContents)
+                                                                                      QHeaderView.ResizeToContents)
 
     @pyqtSlot(int, int)
     def get_contact_info(self, row, column):
