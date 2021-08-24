@@ -29,13 +29,21 @@ resource_path = ApplicationContext().get_resource("configuration")
 #
 #     config = configparser.ConfigParser()
 #
-#     config['MCLD PATHS'] = {}
-#
-#     config['USER'] = {"language": ""}
-#
-#     if not os.path.exists(config_file_path) or os.stat(config_file_path).st_size == 0:
-#         with open(config_file_path, 'w') as configfile:
+#     # Add the structure to the conf file we will create
+#     config.add_section('PATHS')
+#     # https://blog.finxter.com/creating-reading-updating-a-config-file-with-python/
+#     config.set('PATHS', 'key', 'value')
+#     config.add_section('USER')
+#     # Write the structure to the new file
+#     if not os.path.exists(full_config_file_path) or os.stat(full_config_file_path).st_size == 0:
+#         with open(full_config_file_path, 'w') as configfile:
 #             config.write(configfile)
+#
+#     # reading config file
+#     with open(full_config_file_path, 'r') as configfile:
+#         config.read(configfile)
+#     paths_param = config['PATHS']
+#     user_param = config['USER']
 
 
 class ConnectorConf:
