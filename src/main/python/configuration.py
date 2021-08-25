@@ -121,15 +121,14 @@ class ServerSettings:
     def read_file(self):
         server_list = []
         if os.stat(self.server_config_file_path).st_size != 0:
-            if os.path.isfile(self.server_conf_file):
-                try:
-                    file = open(self.server_config_file_path, "r")
-                    server_all_info = file.read().rstrip()
-                    server_list = server_all_info.split("\n")
-                except IOError:
-                    print("Exception error while reading server file!")
-                finally:
-                    file.close()
+            try:
+                file = open(self.server_config_file_path, "r")
+                server_all_info = file.read().rstrip()
+                server_list = server_all_info.split("\n")
+            except IOError:
+                print("Exception error while reading server file!")
+            finally:
+                file.close()
         return server_list
 
     def delete_record(self, server_list):

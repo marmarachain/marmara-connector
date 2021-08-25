@@ -1,6 +1,5 @@
 import json
 import platform
-import re
 import time
 import subprocess
 import pathlib
@@ -197,15 +196,27 @@ class RpcHandler(QtCore.QObject):
     @pyqtSlot()
     def is_chain_ready(self):
         while True:
-            result_out = handle_rpc(cp.getinfo)
-            if result_out[0]:
-                self.command_out.emit(result_out)
+            getinfo = handle_rpc(cp.getinfo)
+            if getinfo[0]:
+                self.command_out.emit(getinfo)
                 time.sleep(0.01)
-                self.finished.emit()
+                addresses = self._get_addresses()
+                if type(addresses) == list:
+                    self.walletlist_out.emit(addresses)
+                    getgenerate = handle_rpc(cp.getgenerate)
+                    if getgenerate[0]:
+                        self.command_out.emit(getgenerate)
+                        self.finished.emit()
+                    elif getgenerate[1]:
+                        self.command_out(getgenerate)
+                        self.finished.emit()
+                else:
+                    self.output.emit(addresses)
+                    self.finished.emit()
                 print('chain ready')
                 break
-            elif result_out[1]:
-                self.command_out.emit(result_out)
+            elif getinfo[1]:
+                self.command_out.emit(getinfo)
                 # print('chain is not ready')
             time.sleep(2)
 
@@ -226,12 +237,13 @@ class RpcHandler(QtCore.QObject):
             self.command_out.emit(result_out)
             self.finished.emit()
 
-    @pyqtSlot()
-    def get_addresses(self):
+    def _get_addresses(self):
         addresses = handle_rpc(cp.getaddressesbyaccount)
         if addresses[0]:
             addresses = json.loads(addresses[0])
             wallet_list = []
+            amount = 0
+            pubkey = ""
             for address in addresses:
                 validation = handle_rpc(cp.validateaddress + ' ' + address)
                 if validation[0]:
@@ -244,16 +256,25 @@ class RpcHandler(QtCore.QObject):
                 amounts = handle_rpc(command)
                 if amounts[0]:
                     amount = json.loads(amounts[0])['balance']
-                    amount = str(int(amount)/100000000)
+                    amount = str(int(amount) / 100000000)
                 elif amounts[1]:
                     print(amounts[1])
                 address_list = [amount, address, pubkey]
                 wallet_list.append(address_list)
-            self.walletlist_out.emit(wallet_list)
-            self.finished.emit()
+            return wallet_list
         elif addresses[1]:
             print(addresses[1])
-            self.finished.emit()
+            return addresses[1]
+
+    @pyqtSlot()
+    def get_addresses(self):
+        addresses = self._get_addresses()
+        if type(addresses) == list:
+            self.walletlist_out.emit(addresses)
+        else:
+            self.output.emit(addresses)
+        time.sleep(0.2)
+        self.finished.emit()
 
     @pyqtSlot()
     def refresh_sidepanel(self):
@@ -359,10 +380,11 @@ class Autoinstall(QtCore.QObject):
                 while not stdout.channel.exit_status_ready():
                     if stdout.channel.recv_ready():
                         out = stdout.channel.recv(65535).decode()
+                        time.sleep(2)
                         print(str(out))
                         self.out_text.emit(str(out))
                     if stdout.channel.recv_stderr_ready():
-                        time.sleep(1)
+                        time.sleep(2)
                         err = stdout.channel.recv_stderr(65535).decode()
                         self.out_text.emit(str(err))
                         print(str(err))

@@ -31,7 +31,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.pubkey_status = False
         self.center_ui()
         # paths settings
-        # self.get_marmara_path()
         # Menu Actions
         self.actionAbout.triggered.connect(self.show_about)
         #   Login page Host Selection
@@ -172,10 +171,10 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.move(qr.topLeft())
 
     def show_about(self):
-        QMessageBox.about(
-            self,
-            "About Marmara Connector",
-            "This is a software written to carry out Marmarachain node operations on a local or remote machine."
+        QMessageBox.about(self,
+                          self.tr("About Marmara Connector"),
+                          self.tr("This is a software written to carry out Marmarachain node operations "
+                                  "on a local or remote machine.")
         )
 
     def custom_message(self, title, content, message_type, icon=None, detailed_text=None):
@@ -256,6 +255,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             self.main_tab.setCurrentIndex(1)
             self.check_marmara_path()
             self.mcl_tab.setCurrentIndex(0)
+            self.chain_stackedWidget.setCurrentIndex(0)
 
     def check_marmara_path(self):
         conf_paths = configuration.ConnectorConf().read_conf_file()
@@ -391,13 +391,13 @@ class MarmaraMain(QMainWindow, GuiStyle):
         time.sleep(0.1)
         if not self.chain_status:
             self.check_chain()
-        if self.chain_status:
-            time.sleep(0.1)
-            self.get_getinfo()
-            time.sleep(0.1)
-            self.getaddresses()
-            time.sleep(0.2)
-            self.refresh_side_panel()
+        # if self.chain_status:
+        #     time.sleep(0.1)
+        #     self.get_getinfo()
+        #     time.sleep(0.1)
+        #     self.getaddresses()
+        #     time.sleep(0.2)
+        #     self.refresh_side_panel()
 
     def check_chain(self):
         self.bottom_info(self.tr('Checking marmarachain'))
@@ -431,24 +431,31 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def is_chain_ready(self):
         self.worker_getchain = marmarachain_rpc.RpcHandler()  # worker setting
         chain_ready_thread = self.worker_thread(self.thread_getchain, self.worker_getchain)  # putting in to thread
-        self.thread_getchain.started.connect(
-            self.worker_getchain.is_chain_ready)  # executing respective worker class function
+        self.thread_getchain.started.connect(self.worker_getchain.is_chain_ready)  # executing respective worker func.
         chain_ready_thread.command_out.connect(self.chain_ready_result)  # getting results and connecting to socket
-        chain_ready_thread.finished.connect(self.chain_init)  # chain_status is True go back continue to init
+        chain_ready_thread.walletlist_out.connect(self.set_getaddresses_result)
 
     @pyqtSlot(tuple)
     def chain_ready_result(self, result_out):
         if result_out[0]:
             print('chain ready finished')
             self.bottom_info(self.tr('chain ready finished'))
+            result = json.loads(result_out[0])
             self.chain_status = True
-            self.chainstatus_button.setStyleSheet(
-                "QPushButton {image: url(" + self.icon_path + "/circle-active.png); border: 0; width: 30px; height: 30px;}")
+            self.chainstatus_button.setStyleSheet("QPushButton {image: url(" + self.icon_path +
+                                                  "/circle-active.png); border: 0; width: 30px; height: 30px;}")
+            if result.get('version'):
+                self.set_getinfo_result(result)
+            else:
+                self.setgenerate_result(result_out)
+                self.bottom_info(self.tr('Chain init completed.'))
         elif result_out[1]:
-            print_result = str(result_out[1]).splitlines()
+            err_result = str(result_out[1]).splitlines()
             if str(result_out[1]).find('error message:') != -1:
-                index = print_result.index('error message:') + 1
-                self.bottom_info(print_result[index])
+                index = err_result.index('error message:') + 1
+                self.bottom_info(err_result[index])
+            else:
+                self.bottom_err_info(result_out[1])
 
     # --------------------------------------
     # Stopping Chain
@@ -458,8 +465,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         if self.chain_status:
             self.worker_stopchain = marmarachain_rpc.RpcHandler()  # worker setting
             stop_chain_thread = self.worker_thread(self.thread_stopchain, self.worker_stopchain)  # putting in to thread
-            self.thread_stopchain.started.connect(
-                self.worker_stopchain.stopping_chain)  # executing respective worker class function
+            self.thread_stopchain.started.connect(self.worker_stopchain.stopping_chain)  # executing worker function
             stop_chain_thread.command_out.connect(self.result_stopchain)  # getting results and connecting to socket
         else:
             self.bottom_info(self.tr('Marmarachain is not ready'))
@@ -475,8 +481,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
         if len(result_out[0]) == 0:
             self.bottom_info(self.tr('Marmarachain stopped'))
             self.chain_status = False
-            self.chainstatus_button.setStyleSheet(
-                "QPushButton {image: url(" + self.icon_path + "/circle-inactive.png); border: 0; width: 30px; height: 30px;}")
+            self.chainstatus_button.setStyleSheet("QPushButton {image: url(" + self.icon_path +
+                                                  "/circle-inactive.png); border: 0; width: 30px; height: 30px;}")
             self.update_addresses_table()
         elif result_out[1]:
             self.bottom_err_info(result_out[1])
@@ -504,11 +510,11 @@ class MarmaraMain(QMainWindow, GuiStyle):
 
     def set_getinfo_result(self, getinfo_result):
         if getinfo_result.get('synced'):
-            self.chainsync_button.setStyleSheet(
-                "QPushButton {image: url(" + self.icon_path + "/circle-active.png); border: 0; width: 30px; height: 30px;}")
+            self.chainsync_button.setStyleSheet("QPushButton {image: url(" + self.icon_path +
+                                                "/circle-active.png); border: 0; width: 30px; height: 30px;}")
         elif not getinfo_result.get('synced'):
-            self.chainsync_button.setStyleSheet(
-                "QPushButton {image: url(" + self.icon_path + "/circle-inactive.png); border: 0; width: 30px; height: 30px;}")
+            self.chainsync_button.setStyleSheet("QPushButton {image: url(" + self.icon_path +
+                                                "/circle-inactive.png); border: 0; width: 30px; height: 30px;}")
         if getinfo_result.get('pubkey'):
             self.pubkey_status = True
             self.current_pubkey_value.setText(str(getinfo_result['pubkey']))
@@ -573,8 +579,10 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def toggle_staking(self):
         if self.staking_button.isChecked():  # Staking button status is True.
             if self.mining_button.isChecked():  # Checking mining is  also active
-                message_box = self.custom_message(self.tr('Turning off Mining'), self.tr(
-                    'Mining is currently on. You are about to turn off mining. Are you sure?'), "question",
+                message_box = self.custom_message(self.tr('Turning off Mining'),
+                                                  self.tr('Mining is currently on. '
+                                                          'You are about to turn off mining. Are you sure?'),
+                                                  "question",
                                                   QMessageBox.Question)
 
                 if message_box == QMessageBox.Yes:
@@ -602,8 +610,10 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def toggle_mining(self):
         if self.mining_button.isChecked():  # Mining button status is True.
             if self.staking_button.isChecked():  # Checking staking is also active
-                message_box = self.custom_message(self.tr('Turning off Staking'), self.tr(
-                    'Staking is currently active. You are about to turn off staking. Are you sure?'), "question",
+                message_box = self.custom_message(self.tr('Turning off Staking'),
+                                                  self.tr('Staking is currently active. '
+                                                          'You are about to turn off staking. Are you sure?'),
+                                                  "question",
                                                   QMessageBox.Question)
                 if message_box == QMessageBox.Yes:
                     self.staking_button.setChecked(False)  # Close staking and turn on mining
@@ -758,6 +768,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 btn_start.clicked.connect(self.start_chain)
                 if rowcount == 0:
                     break
+        self.hide_addresses()
 
     @pyqtSlot()
     def set_pubkey(self):

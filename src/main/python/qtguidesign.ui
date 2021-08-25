@@ -1490,7 +1490,7 @@
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>2</number>
+           <number>0</number>
           </property>
           <property name="iconSize">
            <size>
@@ -1544,7 +1544,7 @@
                <enum>QFrame::Raised</enum>
               </property>
               <property name="currentIndex">
-               <number>2</number>
+               <number>0</number>
               </property>
               <widget class="QWidget" name="chainaddresses_page">
                <layout class="QGridLayout" name="gridLayout_26">
@@ -1626,6 +1626,9 @@
                      <widget class="QCheckBox" name="hide_address_checkBox">
                       <property name="text">
                        <string>Hide zero amount addresses</string>
+                      </property>
+                      <property name="checked">
+                       <bool>true</bool>
                       </property>
                      </widget>
                     </item>
@@ -3073,7 +3076,7 @@
                <enum>QTabWidget::Rounded</enum>
               </property>
               <property name="currentIndex">
-               <number>0</number>
+               <number>2</number>
               </property>
               <widget class="QWidget" name="looprequests_tab">
                <attribute name="title">
@@ -3721,6 +3724,9 @@
                     <layout class="QGridLayout" name="gridLayout_15">
                      <item row="1" column="1">
                       <widget class="QCheckBox" name="transferable_matures_checkBox">
+                       <property name="enabled">
+                        <bool>true</bool>
+                       </property>
                        <property name="styleSheet">
                         <string notr="true"/>
                        </property>
