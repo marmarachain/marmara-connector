@@ -1180,7 +1180,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             else:
                 for txid in txids:
                     row_number = txids.index(txid)
-                    btn_explorer = QPushButton(qta.icon('mdi.magnify'), '')
+                    btn_explorer = QPushButton(qta.icon('mdi.firefox'), '')
                     btn_explorer.setIconSize(QSize(24, 24))
                     self.transactions_tableWidget.setCellWidget(row_number, 0, btn_explorer)
                     self.transactions_tableWidget.setItem(row_number, 1, QTableWidgetItem(str(txid)))
