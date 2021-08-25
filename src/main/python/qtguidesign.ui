@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>1024</width>
-    <height>768</height>
+    <height>776</height>
    </rect>
   </property>
   <property name="font">
@@ -2740,7 +2740,7 @@
               </attribute>
               <column>
                <property name="text">
-                <string>txid</string>
+                <string>Explorer</string>
                </property>
                <property name="textAlignment">
                 <set>AlignLeading|AlignTop</set>
@@ -2748,7 +2748,7 @@
               </column>
               <column>
                <property name="text">
-                <string>See on Explorer</string>
+                <string>Txid</string>
                </property>
                <property name="textAlignment">
                 <set>AlignLeading|AlignTop</set>
@@ -2783,20 +2783,6 @@
               </item>
               <item>
                <widget class="QDateTimeEdit" name="transactions_startdate_dateTimeEdit">
-                <property name="date">
-                 <date>
-                  <year>2021</year>
-                  <month>1</month>
-                  <day>17</day>
-                 </date>
-                </property>
-                <property name="minimumDate">
-                 <date>
-                  <year>2020</year>
-                  <month>1</month>
-                  <day>17</day>
-                 </date>
-                </property>
                 <property name="calendarPopup">
                  <bool>true</bool>
                 </property>
@@ -2859,19 +2845,6 @@
               </property>
              </widget>
             </item>
-            <item row="0" column="2" rowspan="6">
-             <spacer name="horizontalSpacer_51">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
             <item row="1" column="1">
              <layout class="QGridLayout" name="send_receive_Layout">
               <item row="0" column="2">
@@ -2912,7 +2885,7 @@
                  <item row="2" column="0" colspan="2">
                   <widget class="QLabel" name="sending_amount_label">
                    <property name="text">
-                    <string>Amount </string>
+                    <string>Amo&amp;unt </string>
                    </property>
                    <property name="buddy">
                     <cstring>sending_amount_lineEdit</cstring>
@@ -3040,8 +3013,21 @@
               </property>
              </spacer>
             </item>
-            <item row="0" column="0" rowspan="6">
-             <spacer name="horizontalSpacer_50">
+            <item row="6" column="1">
+             <spacer name="verticalSpacer_11">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="0" column="2" rowspan="6">
+             <spacer name="horizontalSpacer_51">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
@@ -3053,15 +3039,15 @@
               </property>
              </spacer>
             </item>
-            <item row="6" column="1">
-             <spacer name="verticalSpacer_11">
+            <item row="0" column="0" rowspan="6">
+             <spacer name="horizontalSpacer_50">
               <property name="orientation">
-               <enum>Qt::Vertical</enum>
+               <enum>Qt::Horizontal</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
-                <width>20</width>
-                <height>40</height>
+                <width>40</width>
+                <height>20</height>
                </size>
               </property>
              </spacer>

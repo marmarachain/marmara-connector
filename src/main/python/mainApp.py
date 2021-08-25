@@ -1,5 +1,6 @@
 import json
 import time
+import webbrowser
 
 import qrcode
 from datetime import datetime, timedelta
@@ -65,7 +66,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         # Chain page
         self.stopchain_button.clicked.connect(self.stop_chain)
         self.addaddress_page_button.clicked.connect(self.get_address_page)
-        self.addresses_tableWidget.cellClicked.connect(self.itemcontext)
+        self.addresses_tableWidget.cellClicked.connect(self.addresstable_itemcontext)
         self.privkey_page_button.clicked.connect(self.see_privkey_page)
         self.hide_address_checkBox.clicked.connect(self.hide_addresses)
         # - add address page ----
@@ -83,7 +84,13 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.contacts_address_comboBox.currentTextChanged.connect(self.get_selected_contact_address)
         self.qrcode_button.clicked.connect(self.create_currentaddress_qrcode)
         self.coinsend_button.clicked.connect(self.sendtoaddress)
-
+        self.transactions_startdate_dateTimeEdit.setMinimumDateTime(QDateTime(datetime.fromtimestamp(1579278200)))
+        self.transactions_startdate_dateTimeEdit.setMaximumDateTime(QDateTime.currentDateTime())
+        self.transactions_startdate_dateTimeEdit.setDateTime(QDateTime.currentDateTime().addDays(-1))
+        self.transactions_endtdate_dateTimeEdit.setMinimumDateTime(QDateTime(datetime.fromtimestamp(1579278200)))
+        self.transactions_endtdate_dateTimeEdit.setMaximumDateTime(QDateTime.currentDateTime())
+        self.transaction_search_button.clicked.connect(self.getaddresstxids)
+        self.transactions_tableWidget.cellClicked.connect(self.transaction_itemcontext)
         # Credit Loops page-----------------
         self.creditloop_tabWidget.currentChanged.connect(self.credit_tab_changed)
         # ---- Received Loop Requests page ----
@@ -103,6 +110,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.transferable_maturesfrom_dateTimeEdit.setDateTime(QDateTime.currentDateTime())
         self.transferable_maturesfrom_dateTimeEdit.setMinimumDateTime(QDateTime(datetime.fromtimestamp(1579278200)))
         self.transferable_maturesfrom_dateTimeEdit.setMaximumDateTime(QDateTime.currentDateTime())
+        self.transferable_maturesfrom_dateTimeEdit.setDateTime(QDateTime.currentDateTime())
         self.transferable_maturesto_dateTimeEdit.setDateTime(QDateTime.currentDateTime())
         self.transferable_maturesto_dateTimeEdit.setMinimumDateTime(QDateTime(datetime.fromtimestamp(1579278200)))
         self.transferable_maturesto_dateTimeEdit.setMaximumDateTime(QDateTime.currentDateTime())
@@ -150,6 +158,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.thread_marmaraholderloops = QThread()
         self.thread_marmaraissue = QThread()
         self.thread_marmaratransfer = QThread()
+        self.thread_getaddresstxids = QThread()
 
         # Loading Gif
         # --------------------------------------------------
@@ -719,10 +728,10 @@ class MarmaraMain(QMainWindow, GuiStyle):
                     break
 
     @pyqtSlot(int, int)
-    def itemcontext(self, row, column):
+    def addresstable_itemcontext(self, row, column):
         item = self.addresses_tableWidget.item(row, column).text()
         QtWidgets.QApplication.clipboard().setText(item)
-        self.bottom_info(self.tr("Copied  " + str(item)))
+        self.bottom_info(self.tr("Copied  ") + str(item))
 
     def update_addresses_table(self):
         if self.pubkey_status:
@@ -1135,6 +1144,56 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 index = result.index('error message:') + 1
                 self.bottom_info(self.tr(result[index]))
 
+    @pyqtSlot()
+    def getaddresstxids(self):
+        address = self.currentaddress_value.text()
+        start_date = self.transactions_startdate_dateTimeEdit.dateTime()
+        end_date = self.transactions_endtdate_dateTimeEdit.dateTime()
+        start_height = self.change_datetime_to_block_age(start_date, begin_height=True)
+        end_height = self.change_datetime_to_block_age(end_date, begin_height=True)
+        if address == "":
+            self.bottom_info(self.tr('A pubkey is not set yet! Please set a pubkey first.'))
+        else:
+            self.worker_getaddresstxids = marmarachain_rpc.RpcHandler()
+            command = cp.getaddresstxids + " '" + '{"addresses": ["' + address + '"], "start":' + str(start_height) + ', "end":' + str(end_height) + "}'"
+            gettxids_thread = self.worker_thread(self.thread_getaddresstxids, self.worker_getaddresstxids, command)
+            gettxids_thread.command_out.connect(self.getaddresstxids_result)
+
+    @pyqtSlot(tuple)
+    def getaddresstxids_result(self, result_out):
+        if result_out[0]:
+            txids = json.loads(result_out[0])
+            self.transactions_tableWidget.setRowCount(len(txids))
+            if len(txids) == 0:
+                self.bottom_info(self.tr("No transaction between selected dates."))
+            else:
+                for txid in txids:
+                    row_number = txids.index(txid)
+                    btn_explorer = QPushButton(qta.icon('mdi.magnify'), '')
+                    btn_explorer.setIconSize(QSize(24, 24))
+                    self.transactions_tableWidget.setCellWidget(row_number, 0, btn_explorer)
+                    self.transactions_tableWidget.setItem(row_number, 1, QTableWidgetItem(str(txid)))
+                    self.transactions_tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+                    self.transactions_tableWidget.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
+                    btn_explorer.clicked.connect(self.open_in_explorer)
+
+        elif result_out[1]:
+            self.bottom_err_info(self.tr(result_out[1]))
+
+    @pyqtSlot()
+    def open_in_explorer(self):
+        button = self.sender()
+        index = self.transactions_tableWidget.indexAt(button.pos())
+        if index.isValid():
+            tx_id = self.transactions_tableWidget.item(index.row(), 1).text()
+            url = 'https://explorer.marmara.io/tx/' + tx_id
+            webbrowser.open_new(url)
+
+    @pyqtSlot(int, int)
+    def transaction_itemcontext(self, row, column):
+        item = self.transactions_tableWidget.item(row, column).text()
+        QtWidgets.QApplication.clipboard().setText(item)
+        self.bottom_info(self.tr("Copied ") + str(item))
     # -------------------------------------------------------------------
     # Credit loops functions
     # --------------------------------------------------------------------
@@ -1286,7 +1345,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
             receiver_pk = self.transferrequests_tableWidget.item(index.row(), 5).text()
             self.marmaratransfer(receiver_pk, tx_id)
 
-
     def marmaraissue(self, receiver_pk, txid):
         command = cp.marmaraissue + ' ' + receiver_pk + " '" + '{"avalcount":"0", "autosettlement":"true", ' \
                                                                '"autoinsurance":"true", "disputeexpires":"offset", ' \
@@ -1331,9 +1389,10 @@ class MarmaraMain(QMainWindow, GuiStyle):
             result = json.loads(result_out[0])
             if result.get('result') == "success":
                 message_box = self.custom_message(self.tr('Transfer Credit Loop'),
-                                                  self.tr("You are about to transfer you credit loop with given details below:") +
-                                                      "<br><b>baton txid = </b>" + result.get('batontxid') +
-                                                      "<br><b>Pubkey = </b>" + result.get('receiverpk'),
+                                                  self.tr(
+                                                      "You are about to transfer you credit loop with given details below:") +
+                                                  "<br><b>baton txid = </b>" + result.get('batontxid') +
+                                                  "<br><b>Pubkey = </b>" + result.get('receiverpk'),
                                                   "question",
                                                   QMessageBox.Question)
                 if message_box == QMessageBox.Yes:
@@ -1567,9 +1626,9 @@ class MarmaraMain(QMainWindow, GuiStyle):
             result = json.loads(result_out[0])
             maturity = self.change_block_to_date(result.get('matures'))
             message_box = self.custom_message(self.tr("Credit loop detail"), self.tr("Credit loop details.") +
-                                                      "<br><b>Tx ID = </b>" + str(result.get('batontxid')) +
-                                                      "<br><b>Amount = </b>" + str(result.get('amount')) +
-                                                      "<br><b>Maturity = </b>" + str(maturity), "information",
+                                              "<br><b>Tx ID = </b>" + str(result.get('batontxid')) +
+                                              "<br><b>Amount = </b>" + str(result.get('amount')) +
+                                              "<br><b>Maturity = </b>" + str(maturity), "information",
                                               QMessageBox.Information)
             print(message_box)
         elif result_out[1]:
