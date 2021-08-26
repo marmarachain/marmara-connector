@@ -11,7 +11,7 @@ import remote_connection
 import chain_args as cp
 import configuration
 
-marmara_path = configuration.ConnectorConf().read_conf_file().get('marmarad_path')
+marmara_path = None
 is_local = None
 
 

@@ -258,32 +258,36 @@ class MarmaraMain(QMainWindow, GuiStyle):
             self.chain_stackedWidget.setCurrentIndex(0)
 
     def check_marmara_path(self):
-        conf_paths = configuration.ConnectorConf().read_conf_file()
-        if len(conf_paths) == 0:
-            print('no conf')
-            self.get_marmara_path()
+        path_key = ""
+        if marmarachain_rpc.is_local:
+            path_key = 'local'
+        if not marmarachain_rpc.is_local:
+            path_key = remote_connection.server_username
+        marmarad_path = configuration.ApplicationConfig().get_value('PATHS', path_key)
+        print(marmarad_path)
+        if not marmarad_path:
+            self.get_marmara_path(path_key)
         else:
-            marmarad_path = marmarachain_rpc.marmara_path  # get path from cof file
-            print(marmarad_path)
-            if marmarad_path:
-                verify_path = marmarachain_rpc.do_search_path('ls ' + marmarad_path)
-                if not verify_path[0] == ['']:
-                    if 'komodod' in verify_path[0] and 'komodo-cli' in verify_path[0]:
-                        print('komodod komodo-cli found')
-                        self.chain_init()
-                    else:
-                        self.get_marmara_path()  # search path for komodo-cli and komodod
-                elif verify_path[1]:
-                    self.get_marmara_path()  # search path for komodo-cli and komodod
-            else:
-                self.get_marmara_path()  # search path for komodo-cli and komodod
+            print('marmarad_path :' + marmarad_path)
+            verify_path = marmarachain_rpc.do_search_path('ls ' + marmarad_path)
+            if not verify_path[0] == ['']:
+                if 'komodod' in verify_path[0] and 'komodo-cli' in verify_path[0]:
+                    print('komodod komodo-cli found')
+                    marmarachain_rpc.set_marmara_path(marmarad_path)
+                    time.sleep(0.1)
+                    self.chain_init()
+                else:
+                    self.get_marmara_path(path_key)  # search path for komodo-cli and komodod
+            elif verify_path[1]:
+                self.get_marmara_path(path_key)  # search path for komodo-cli and komodod
 
-    def get_marmara_path(self):
-        marmarad_path = marmarachain_rpc.search_marmarad_path()  # search path for komodo-cli and komodod
-        if marmarad_path:
-            configuration.ConnectorConf().write_conf_file('marmarad_path', marmarad_path)
-            if marmarachain_rpc.marmara_path != marmarad_path:
-                marmarachain_rpc.set_marmara_path(marmarad_path)
+
+    def get_marmara_path(self, path_key):
+        search_result = marmarachain_rpc.search_marmarad_path()  # search path for komodo-cli and komodod
+        if search_result:
+            configuration.ApplicationConfig().set_key_value('PATHS', path_key, search_result)
+            if marmarachain_rpc.marmara_path != search_result:
+                marmarachain_rpc.set_marmara_path(search_result)
                 print(marmarachain_rpc.marmara_path)
                 self.chain_init()
         else:

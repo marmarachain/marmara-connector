@@ -1,15 +1,13 @@
 import csv
-import os
 from appdirs import *
 from configparser import ConfigParser, Error
-import remote_connection
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 
 app_name = ApplicationContext().build_settings['app_name']
 author = ApplicationContext().build_settings['author']
 version = ApplicationContext().build_settings['version']
 
-resource_path = ApplicationContext().get_resource("configuration")
+# resource_path = ApplicationContext().get_resource("configuration")
 
 # Typical user config directories are:
 #   Mac OS X:             ~/Library/Application Support/<AppName>
@@ -47,56 +45,14 @@ class ApplicationConfig:
 
     def get_value(self, section, key):
         self.check_conf_exists()
+        print(key)
         self.config.read(self.config_file_path)
         try:
             value = self.config.get(section, key)
             return value
         except Error as e:
-            return e
-
-
-class ConnectorConf:
-    marmara_connector_conf = resource_path + "/mclconnector.conf"
-
-    def is_conf_exist(self):
-        if os.path.isfile(self.marmara_connector_conf):
-            return
-        else:
-            try:
-                file = open(self.marmara_connector_conf, 'w')
-            except IOError:
-                print("Exception error when writing conf file!")
-            finally:
-                file.close()
-
-    def write_conf_file(self, conf_key, conf_value):
-        try:
-            conf_file = open(self.marmara_connector_conf, 'w')
-            conf_data = conf_key + "=" + conf_value + "\n"
-            conf_file.write(conf_data)
-        except IOError:
-            print("Exception error while writing conf file!")
-        finally:
-            conf_file.close()
-
-    def read_conf_file(self):
-        self.is_conf_exist()
-        data_dict = {}
-        try:
-            conf_file = open(self.marmara_connector_conf, 'r')
-            conf_data = conf_file.read().split("\n")
-            for data in conf_data:
-                data_split = data.split('=')
-                if not data_split == ['']:
-                    key = data_split[0]
-                    value = data_split[1]
-                    data_dict.__setitem__(key, value)
-        except IOError:
-            print("Exception error while reading conf file!")
-        finally:
-            conf_file.close()
-        return data_dict
-
+            print(e)
+            return False
 
 user_data_path = user_data_dir(app_name, author, version, roaming=True)
 # Typical user data directories are:
