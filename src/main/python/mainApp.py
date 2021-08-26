@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from qr_code_gen import Image
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import QThread, pyqtSlot, QDateTime, QSize, Qt, QTranslator
+from PyQt5.QtCore import QThread, pyqtSlot, QDateTime, QSize, Qt, QTranslator, QLocale
 from PyQt5.QtWidgets import QMainWindow, QPushButton, QTableWidgetItem, QMessageBox, QDesktopWidget, QHeaderView, \
     QDialog, QDialogButtonBox, QVBoxLayout, QComboBox
 import configuration
@@ -2066,4 +2066,6 @@ if __name__ == '__main__':
     app = QtWidgets.QApplication([])
     ui = MarmaraMain()
     ui.show()
+    defaultLocale = QLocale.system().name()
+    print(defaultLocale)
     app.exec_()
