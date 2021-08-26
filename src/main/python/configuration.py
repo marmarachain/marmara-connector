@@ -1,7 +1,7 @@
 import csv
 import os
 from appdirs import *
-import configparser
+from configparser import ConfigParser, Error
 import remote_connection
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 
@@ -11,39 +11,48 @@ version = ApplicationContext().build_settings['version']
 
 resource_path = ApplicationContext().get_resource("configuration")
 
+# Typical user config directories are:
+#   Mac OS X:             ~/Library/Application Support/<AppName>
+#   Unix:                 ~/.config/<AppName>     # or in $XDG_CONFIG_HOME, if defined
+#   Win XP (roaming):     C:\Documents and Settings\<username>\Local Settings\Application Data\<AppAuthor>\<AppName>
+#   Win 7  (roaming):     C:\Users\<username>\AppData\Roaming\<AppAuthor>\<AppName>
+config_directory_path = user_config_dir(app_name, author, version, roaming=True)
 
-# class ApplicationConf:
-#     config_directory_path = user_config_dir(app_name, author, version, roaming=True)
-#     # Typical user config directories are:
-#     #   Mac OS X:             ~/Library/Application Support/<AppName>
-#     #   Unix:                 ~/.config/<AppName>     # or in $XDG_CONFIG_HOME, if defined
-#     #   Win XP (roaming):     C:\Documents and Settings\<username>\Local Settings\Application Data\<AppAuthor>\<AppName>
-#     #   Win 7  (roaming):     C:\Users\<username>\AppData\Roaming\<AppAuthor>\<AppName>
-#
-#     print(config_directory_path)
-#     config_file = "marmara-connector.conf"
-#     # make platform-specific config directory to store config and log files
-#     os.makedirs(config_directory_path, exist_ok=True)
-#     config_file_path = os.path.join(config_directory_path, config_file)
-#     print("full_config_file_path: " + config_file_path)
-#
-#     config = configparser.ConfigParser()
-#
-#     # Add the structure to the conf file we will create
-#     config.add_section('PATHS')
-#     # https://blog.finxter.com/creating-reading-updating-a-config-file-with-python/
-#     config.set('PATHS', 'key', 'value')
-#     config.add_section('USER')
-#     # Write the structure to the new file
-#     if not os.path.exists(full_config_file_path) or os.stat(full_config_file_path).st_size == 0:
-#         with open(full_config_file_path, 'w') as configfile:
-#             config.write(configfile)
-#
-#     # reading config file
-#     with open(full_config_file_path, 'r') as configfile:
-#         config.read(configfile)
-#     paths_param = config['PATHS']
-#     user_param = config['USER']
+
+class ApplicationConfig:
+    config_file = "marmara-connector.conf"
+    # make platform-specific config directory to store config and log files
+    os.makedirs(config_directory_path, exist_ok=True)
+    config_file_path = os.path.join(config_directory_path, config_file)
+
+    def __init__(self):
+        # create config object
+        self.config = ConfigParser()
+
+    def check_conf_exists(self):
+        if not os.path.exists(self.config_file_path) or os.stat(self.config_file_path).st_size == 0:
+            with open(self.config_file_path, 'w') as configfile:
+                self.config.add_section('PATHS')
+                self.config.add_section('USER')
+                self.config.write(configfile)
+
+    def set_key_value(self, section, key, value):
+        self.check_conf_exists()
+        # reading config file
+        self.config.read(self.config_file_path)
+        # Write the structure to the new file
+        with open(self.config_file_path, 'w') as configfile:
+            self.config.set(section, key, value)
+            self.config.write(configfile)
+
+    def get_value(self, section, key):
+        self.check_conf_exists()
+        self.config.read(self.config_file_path)
+        try:
+            value = self.config.get(section, key)
+            return value
+        except Error as e:
+            return e
 
 
 class ConnectorConf:
@@ -144,7 +153,7 @@ class ServerSettings:
 
 
 class ContactsSettings:
-    #contacts_file = resource_path + '/contacts.csv'
+    # contacts_file = resource_path + '/contacts.csv'
     contacts_file = "contacts.csv"
     header = ['Name', 'Address', 'Pubkey']
     contacts_file_path = os.path.join(user_data_path, contacts_file)
