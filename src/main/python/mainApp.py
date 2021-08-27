@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 import time
 import webbrowser
 
@@ -27,6 +28,7 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
         super(MarmaraMain, self).__init__(parent)
         #   Default Settings
         self.trans = QTranslator(self)
+        self.retranslateUi(self)
         self.main_tab.setCurrentIndex(0)
         self.main_tab.tabBar().setVisible(False)
         self.login_stackedWidget.setCurrentIndex(0)
@@ -179,30 +181,36 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
 
     @pyqtSlot()
     def show_languages(self):
-        # self.lang_comboBox.clear()
-        lang_dialog = QDialog(self)
-        lang_dialog.setWindowTitle(self.tr("Choose a language"))
-        lang_dialog.setLayout(QVBoxLayout())
-        button = QDialogButtonBox(QDialogButtonBox.Apply)
+
+        languageDialog = QDialog(self)
+        languageDialog.setWindowTitle(self.tr("Choose a language"))
+
+        apply_button = QDialogButtonBox(QDialogButtonBox.Apply)
         self.lang_comboBox = QtWidgets.QComboBox()
-        lang_dialog.layout().addWidget(self.lang_comboBox)
-        lang_dialog.layout().addWidget(button)
+
+        languageDialog.layout = QVBoxLayout()
+        languageDialog.layout.addWidget(self.lang_comboBox)
+        languageDialog.layout.addWidget(apply_button)
+        languageDialog.setLayout(languageDialog.layout)
+
         entries = os.listdir(self.get_resource('configuration') + '/language')
         entries.sort()
-        for item in entries:
-            self.lang_comboBox.addItem(item)
-            self.lang_comboBox.setItemIcon(entries.index(item), QIcon(self.get_resource('images') + "/lang_icons" + "/" + item + ".png"))
-        button.clicked.connect(self.change_lang)
-        button.clicked.connect(lang_dialog.close)
-        lang_dialog.exec_()
 
-    @pyqtSlot()
+        for item in entries:
+            self.lang_comboBox.addItem(item.strip('.qm'))
+            self.lang_comboBox.setItemIcon(entries.index(item), QIcon(
+                self.get_resource('images') + "/lang_icons" + "/" + item.strip('.qm') + ".png"))
+        apply_button.clicked.connect(self.change_lang)
+        apply_button.clicked.connect(languageDialog.close)
+        languageDialog.exec_()
+
+    @QtCore.pyqtSlot()
     def change_lang(self):
         data = self.lang_comboBox.currentText()
-        print(data)
         if data:
-            self.trans.load(data)
+            self.trans.load(self.get_resource('configuration') + '/language/' + data + '.qm')
             QtWidgets.QApplication.instance().installTranslator(self.trans)
+            self.retranslateUi(MarmaraMain)
         else:
             QtWidgets.QApplication.instance().removeTranslator(self.trans)
 
@@ -212,7 +220,7 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
                           self.tr("About Marmara Connector"),
                           self.tr("This is a software written to carry out Marmarachain node operations "
                                   "on a local or remote machine.")
-        )
+                          )
 
     def custom_message(self, title, content, message_type, icon=None, detailed_text=None):
         """ custom_message(str, str, str: message_type = {information, question}, icon = {QMessageBox.Question,
@@ -318,7 +326,6 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
                     self.get_marmara_path(path_key)  # search path for komodo-cli and komodod
             elif verify_path[1]:
                 self.get_marmara_path(path_key)  # search path for komodo-cli and komodod
-
 
     def get_marmara_path(self, path_key):
         search_result = marmarachain_rpc.search_marmarad_path()  # search path for komodo-cli and komodod
@@ -1205,7 +1212,8 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
             self.bottom_info(self.tr('A pubkey is not set yet! Please set a pubkey first.'))
         else:
             self.worker_getaddresstxids = marmarachain_rpc.RpcHandler()
-            command = cp.getaddresstxids + " '" + '{"addresses": ["' + address + '"], "start":' + str(start_height) + ', "end":' + str(end_height) + "}'"
+            command = cp.getaddresstxids + " '" + '{"addresses": ["' + address + '"], "start":' + str(
+                start_height) + ', "end":' + str(end_height) + "}'"
             gettxids_thread = self.worker_thread(self.thread_getaddresstxids, self.worker_getaddresstxids, command)
             gettxids_thread.command_out.connect(self.getaddresstxids_result)
 
@@ -1223,8 +1231,10 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
                     btn_explorer.setIconSize(QSize(24, 24))
                     self.transactions_tableWidget.setCellWidget(row_number, 0, btn_explorer)
                     self.transactions_tableWidget.setItem(row_number, 1, QTableWidgetItem(str(txid)))
-                    self.transactions_tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
-                    self.transactions_tableWidget.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
+                    self.transactions_tableWidget.horizontalHeader().setSectionResizeMode(0,
+                                                                                          QHeaderView.ResizeToContents)
+                    self.transactions_tableWidget.horizontalHeader().setSectionResizeMode(1,
+                                                                                          QHeaderView.ResizeToContents)
                     btn_explorer.clicked.connect(self.open_in_explorer)
 
         elif result_out[1]:
@@ -1244,6 +1254,7 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
         item = self.transactions_tableWidget.item(row, column).text()
         QtWidgets.QApplication.clipboard().setText(item)
         self.bottom_info(self.tr("Copied ") + str(item))
+
     # -------------------------------------------------------------------
     # Credit loops functions
     # --------------------------------------------------------------------
@@ -2038,9 +2049,10 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
 
 
 if __name__ == '__main__':
-    app = QtWidgets.QApplication([])
+    app = QtWidgets.QApplication(sys.argv)
+    app.setOrganizationDomain('marmara.io')
     ui = MarmaraMain()
     ui.show()
     defaultLocale = QLocale.system().name()
     print(defaultLocale)
-    app.exec_()
+    sys.exit(app.exec_())
