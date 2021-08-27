@@ -28,7 +28,7 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
         super(MarmaraMain, self).__init__(parent)
         #   Default Settings
         self.trans = QTranslator(self)
-        self.retranslateUi(self)
+        #self.retranslateUi(self)
         self.main_tab.setCurrentIndex(0)
         self.main_tab.tabBar().setVisible(False)
         self.login_stackedWidget.setCurrentIndex(0)
