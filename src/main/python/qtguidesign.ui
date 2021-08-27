@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>1024</width>
-    <height>768</height>
+    <height>776</height>
    </rect>
   </property>
   <property name="font">
@@ -85,7 +85,7 @@
               <enum>QFrame::NoFrame</enum>
              </property>
              <property name="currentIndex">
-              <number>1</number>
+              <number>0</number>
              </property>
              <widget class="QWidget" name="hostselection_page">
               <layout class="QGridLayout" name="gridLayout_5">
@@ -506,9 +506,6 @@
                    <property name="text">
                     <string>Name</string>
                    </property>
-                   <property name="buddy">
-                    <cstring>add_servername_lineEdit</cstring>
-                   </property>
                   </widget>
                  </item>
                  <item row="0" column="1">
@@ -533,9 +530,6 @@
                    <property name="text">
                     <string>Username</string>
                    </property>
-                   <property name="buddy">
-                    <cstring>add_serverusername_lineEdit</cstring>
-                   </property>
                   </widget>
                  </item>
                  <item row="1" column="1">
@@ -559,9 +553,6 @@
                    </property>
                    <property name="text">
                     <string>IP Address</string>
-                   </property>
-                   <property name="buddy">
-                    <cstring>add_serverip_lineEdit</cstring>
                    </property>
                   </widget>
                  </item>
@@ -607,9 +598,6 @@
                    <property name="text">
                     <string>IP Address</string>
                    </property>
-                   <property name="buddy">
-                    <cstring>edit_serverip_lineEdit</cstring>
-                   </property>
                   </widget>
                  </item>
                  <item row="1" column="0">
@@ -622,9 +610,6 @@
                    <property name="text">
                     <string>Username</string>
                    </property>
-                   <property name="buddy">
-                    <cstring>edit_serverusername_lineEdit</cstring>
-                   </property>
                   </widget>
                  </item>
                  <item row="0" column="0">
@@ -636,9 +621,6 @@
                    </property>
                    <property name="text">
                     <string>Name</string>
-                   </property>
-                   <property name="buddy">
-                    <cstring>edit_servername_lineEdit</cstring>
                    </property>
                   </widget>
                  </item>
@@ -967,13 +949,11 @@
                <property name="font">
                 <font>
                  <pointsize>12</pointsize>
+                 <kerning>true</kerning>
                 </font>
                </property>
                <property name="text">
-                <string>Chain S&amp;ync</string>
-               </property>
-               <property name="buddy">
-                <cstring>chainsync_button</cstring>
+                <string>Chain Sync</string>
                </property>
               </widget>
              </item>
@@ -1097,9 +1077,6 @@
                </property>
                <property name="text">
                 <string>Chain Status</string>
-               </property>
-               <property name="buddy">
-                <cstring>chainstatus_button</cstring>
                </property>
               </widget>
              </item>
@@ -1336,10 +1313,7 @@
                 </font>
                </property>
                <property name="text">
-                <string>Sta&amp;king</string>
-               </property>
-               <property name="buddy">
-                <cstring>staking_button</cstring>
+                <string>Staking</string>
                </property>
               </widget>
              </item>
@@ -1352,9 +1326,6 @@
                </property>
                <property name="text">
                 <string>Mining</string>
-               </property>
-               <property name="buddy">
-                <cstring>mining_button</cstring>
                </property>
               </widget>
              </item>
@@ -1441,7 +1412,7 @@
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>3</number>
+           <number>0</number>
           </property>
           <property name="iconSize">
            <size>
@@ -2145,10 +2116,7 @@
                  <item row="0" column="0" colspan="2">
                   <widget class="QLabel" name="unlock_amount_label">
                    <property name="text">
-                    <string>Amo&amp;unt</string>
-                   </property>
-                   <property name="buddy">
-                    <cstring>unlock_amount_value</cstring>
+                    <string>Amount</string>
                    </property>
                   </widget>
                  </item>
@@ -2210,9 +2178,6 @@
                   <widget class="QLabel" name="lock_amount_label">
                    <property name="text">
                     <string>Amount</string>
-                   </property>
-                   <property name="buddy">
-                    <cstring>lock_amount_value</cstring>
                    </property>
                   </widget>
                  </item>
@@ -2871,9 +2836,6 @@
                    <property name="text">
                     <string>Amount </string>
                    </property>
-                   <property name="buddy">
-                    <cstring>sending_amount_lineEdit</cstring>
-                   </property>
                   </widget>
                  </item>
                  <item row="5" column="0" colspan="2">
@@ -3044,7 +3006,7 @@
                <enum>QTabWidget::Rounded</enum>
               </property>
               <property name="currentIndex">
-               <number>2</number>
+               <number>3</number>
               </property>
               <widget class="QWidget" name="looprequests_tab">
                <attribute name="title">
@@ -3924,9 +3886,6 @@
                     <property name="text">
                      <string>Transferrable Loops</string>
                     </property>
-                    <property name="buddy">
-                     <cstring>transferableloops_tableWidget</cstring>
-                    </property>
                    </widget>
                   </item>
                   <item row="1" column="1">
@@ -4307,9 +4266,6 @@
                    <widget class="QLabel" name="activeloops_label">
                     <property name="text">
                      <string>Active Loops</string>
-                    </property>
-                    <property name="buddy">
-                     <cstring>activeloops_tableWidget</cstring>
                     </property>
                    </widget>
                   </item>
@@ -4878,9 +4834,6 @@
                  <property name="text">
                   <string>Pubkey</string>
                  </property>
-                 <property name="buddy">
-                  <cstring>contactpubkey_lineEdit</cstring>
-                 </property>
                 </widget>
                </item>
                <item row="2" column="1">
@@ -5232,7 +5185,7 @@ p, li { white-space: pre-wrap; }
      </font>
     </property>
     <property name="title">
-     <string>Settings</string>
+     <string>Setti&amp;ngs</string>
     </property>
     <addaction name="actionLanguage_Selection"/>
     <addaction name="actionLogout"/>
@@ -5246,11 +5199,11 @@ p, li { white-space: pre-wrap; }
      </font>
     </property>
     <property name="title">
-     <string>Help</string>
+     <string>He&amp;lp</string>
     </property>
     <widget class="QMenu" name="menuDebug">
      <property name="title">
-      <string>Debug</string>
+      <string>&amp;Debug</string>
      </property>
      <addaction name="actionConsole"/>
      <addaction name="actionSee_Log_File"/>
@@ -5263,7 +5216,7 @@ p, li { white-space: pre-wrap; }
   </widget>
   <action name="actionLanguage_Selection">
    <property name="text">
-    <string>Language Selection</string>
+    <string>&amp;Language Selection</string>
    </property>
    <property name="menuRole">
     <enum>QAction::ApplicationSpecificRole</enum>
@@ -5276,7 +5229,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionLogout">
    <property name="text">
-    <string>Logout</string>
+    <string>L&amp;ogout</string>
    </property>
    <property name="menuRole">
     <enum>QAction::ApplicationSpecificRole</enum>
@@ -5289,7 +5242,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionAbout">
    <property name="text">
-    <string>About</string>
+    <string>&amp;About</string>
    </property>
    <property name="menuRole">
     <enum>QAction::AboutRole</enum>
