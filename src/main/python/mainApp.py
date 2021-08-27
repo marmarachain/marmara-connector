@@ -1,14 +1,16 @@
 import json
+import os
 import time
 import webbrowser
 
 import qrcode
 from datetime import datetime, timedelta
 from qr_code_gen import Image
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import QThread, pyqtSlot, QDateTime, QSize, Qt
-from PyQt5.QtWidgets import QMainWindow, QPushButton, QTableWidgetItem, QMessageBox, QDesktopWidget, QHeaderView
+from PyQt5.QtCore import QThread, pyqtSlot, QDateTime, QSize, Qt, QTranslator, QLocale
+from PyQt5.QtWidgets import QMainWindow, QPushButton, QTableWidgetItem, QMessageBox, QDesktopWidget, QHeaderView, \
+    QDialog, QDialogButtonBox, QVBoxLayout, QComboBox
 import configuration
 import marmarachain_rpc
 import remote_connection
@@ -23,6 +25,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def __init__(self, parent=None):
         super(MarmaraMain, self).__init__(parent)
         #   Default Settings
+        self.trans = QTranslator(self)
         self.main_tab.setCurrentIndex(0)
         self.main_tab.tabBar().setVisible(False)
         self.login_stackedWidget.setCurrentIndex(0)
@@ -34,6 +37,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
         # Menu Actions
         self.actionAbout.triggered.connect(self.show_about)
         self.actionLogout.triggered.connect(self.host_selection)
+        self.actionLanguage_Selection.triggered.connect(self.show_languages)
+
         #   Login page Host Selection
         self.local_button.clicked.connect(self.local_selection)
         self.remote_button.clicked.connect(self.remote_selection)
@@ -171,12 +176,67 @@ class MarmaraMain(QMainWindow, GuiStyle):
         qr.moveCenter(center_point)
         self.move(qr.topLeft())
 
+    @pyqtSlot()
+    def show_languages(self):
+        # self.lang_comboBox.clear()
+        lang_dialog = QDialog(self)
+        lang_dialog.setWindowTitle(self.tr("Choose a language"))
+        lang_dialog.setLayout(QVBoxLayout())
+        button = QDialogButtonBox(QDialogButtonBox.Apply)
+        self.lang_comboBox = QtWidgets.QComboBox()
+        lang_dialog.layout().addWidget(self.lang_comboBox)
+        lang_dialog.layout().addWidget(button)
+        entries = os.listdir(self.get_resource('language'))
+        entries.sort()
+        for item in entries:
+            self.lang_comboBox.addItem(item)
+            self.lang_comboBox.setItemIcon(entries.index(item), QIcon(self.get_resource('images') + "/lang_icons" + "/" + item + ".png"))
+        button.clicked.connect(self.change_lang)
+        button.clicked.connect(lang_dialog.close)
+        lang_dialog.exec_()
+
+    @pyqtSlot()
+    def change_lang(self):
+        data = self.lang_comboBox.currentText()
+        print(data)
+        if data:
+            self.trans.load(data)
+            QtWidgets.QApplication.instance().installTranslator(self.trans)
+        else:
+            QtWidgets.QApplication.instance().removeTranslator(self.trans)
+
+
+    # def readLangFile(self):
+    #     entries = os.listdir(self.lang_file_path)
+    #     entries.sort()
+    #
+    #     self.button_group = QButtonGroup()
+    #     count_ = 0
+    #     for i in entries:
+    #         self.button_name = QRadioButton(i)
+    #         self.radioButtonsLang.append(self.button_name)
+    #         self.button_name.setIcon(QtGui.QIcon(self.lang_icon_path + "/" + i + ".png"))
+    #         self.button_name.setIconSize(QtCore.QSize(32, 24))
+    #         self.button_name.setObjectName("radiobtn_{}".format(count_))
+    #         self.verticalLayout_6.addWidget(self.button_name)
+    #         self.button_group.addButton(self.button_name, count_)
+    #         self.button_name.toggled.connect(self.radio_button_event)
+    #
+    #         # Combobox in login
+    #         self.comboBox_3.addItem(i)
+    #         self.comboBox_3.setItemIcon(count_, QtGui.QIcon(self.lang_icon_path + "/" + i + ".png"))
+    #
+    #         if self.button_name.text() == self.conf_lang_info:
+    #             self.button_name.setChecked(True)
+    #             self.comboBox_3.setCurrentIndex(count_)
+    #         count_ = count_ + 1
+
     def show_about(self):
         QMessageBox.about(self,
                           self.tr("About Marmara Connector"),
                           self.tr("This is a software written to carry out Marmarachain node operations "
                                   "on a local or remote machine.")
-                          )
+        )
 
     def custom_message(self, title, content, message_type, icon=None, detailed_text=None):
         """ custom_message(str, str, str: message_type = {information, question}, icon = {QMessageBox.Question,
@@ -2008,4 +2068,6 @@ if __name__ == '__main__':
     app = QtWidgets.QApplication([])
     ui = MarmaraMain()
     ui.show()
+    defaultLocale = QLocale.system().name()
+    print(defaultLocale)
     app.exec_()
