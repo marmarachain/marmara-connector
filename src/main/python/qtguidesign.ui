@@ -31,7 +31,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="login_tab">
        <attribute name="title">
@@ -785,6 +785,17 @@
            <number>2</number>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">
+           <item row="0" column="0">
+            <widget class="QPushButton" name="home_button">
+             <property name="text">
+              <string>Home</string>
+             </property>
+             <property name="icon">
+              <iconset>
+               <normaloff>../../../../../../../../../../../../MarmaraQt/src/main/resources/base/images/exit_icon.png</normaloff>../../../../../../../../../../../../MarmaraQt/src/main/resources/base/images/exit_icon.png</iconset>
+             </property>
+            </widget>
+           </item>
            <item row="0" column="1">
             <spacer name="horizontalSpacer_10">
              <property name="orientation">
@@ -797,41 +808,6 @@
               </size>
              </property>
             </spacer>
-           </item>
-           <item row="0" column="0">
-            <widget class="QPushButton" name="home_button">
-             <property name="text">
-              <string>Home</string>
-             </property>
-             <property name="icon">
-              <iconset>
-               <normaloff>../../../../../../../../../../../../MarmaraQt/src/main/resources/base/images/exit_icon.png</normaloff>../../../../../../../../../../../../MarmaraQt/src/main/resources/base/images/exit_icon.png</iconset>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="3">
-            <widget class="QComboBox" name="lang_comboBox">
-             <property name="font">
-              <font>
-               <pointsize>12</pointsize>
-              </font>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="2">
-            <widget class="QLabel" name="language_label">
-             <property name="font">
-              <font>
-               <pointsize>12</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>Language</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-            </widget>
            </item>
           </layout>
          </widget>
@@ -1481,6 +1457,7 @@
           <property name="font">
            <font>
             <pointsize>12</pointsize>
+            <underline>false</underline>
            </font>
           </property>
           <property name="tabPosition">
@@ -1500,6 +1477,9 @@
           </property>
           <property name="elideMode">
            <enum>Qt::ElideNone</enum>
+          </property>
+          <property name="usesScrollButtons">
+           <bool>true</bool>
           </property>
           <property name="documentMode">
            <bool>false</bool>
@@ -2743,7 +2723,7 @@
               </attribute>
               <column>
                <property name="text">
-                <string>Explorer</string>
+                <string>txid</string>
                </property>
                <property name="textAlignment">
                 <set>AlignLeading|AlignTop</set>
@@ -2751,7 +2731,7 @@
               </column>
               <column>
                <property name="text">
-                <string>Txid</string>
+                <string>See on Explorer</string>
                </property>
                <property name="textAlignment">
                 <set>AlignLeading|AlignTop</set>
@@ -2786,6 +2766,20 @@
               </item>
               <item>
                <widget class="QDateTimeEdit" name="transactions_startdate_dateTimeEdit">
+                <property name="date">
+                 <date>
+                  <year>2021</year>
+                  <month>1</month>
+                  <day>17</day>
+                 </date>
+                </property>
+                <property name="minimumDate">
+                 <date>
+                  <year>2020</year>
+                  <month>1</month>
+                  <day>17</day>
+                 </date>
+                </property>
                 <property name="calendarPopup">
                  <bool>true</bool>
                 </property>
@@ -2848,6 +2842,19 @@
               </property>
              </widget>
             </item>
+            <item row="0" column="2" rowspan="6">
+             <spacer name="horizontalSpacer_51">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
             <item row="1" column="1">
              <layout class="QGridLayout" name="send_receive_Layout">
               <item row="0" column="2">
@@ -2888,7 +2895,7 @@
                  <item row="2" column="0" colspan="2">
                   <widget class="QLabel" name="sending_amount_label">
                    <property name="text">
-                    <string>Amo&amp;unt </string>
+                    <string>Amount </string>
                    </property>
                    <property name="buddy">
                     <cstring>sending_amount_lineEdit</cstring>
@@ -3016,32 +3023,6 @@
               </property>
              </spacer>
             </item>
-            <item row="6" column="1">
-             <spacer name="verticalSpacer_11">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="0" column="2" rowspan="6">
-             <spacer name="horizontalSpacer_51">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
             <item row="0" column="0" rowspan="6">
              <spacer name="horizontalSpacer_50">
               <property name="orientation">
@@ -3051,6 +3032,19 @@
                <size>
                 <width>40</width>
                 <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="6" column="1">
+             <spacer name="verticalSpacer_11">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
                </size>
               </property>
              </spacer>
@@ -3076,7 +3070,7 @@
                <enum>QTabWidget::Rounded</enum>
               </property>
               <property name="currentIndex">
-               <number>2</number>
+               <number>1</number>
               </property>
               <widget class="QWidget" name="looprequests_tab">
                <attribute name="title">
@@ -5257,17 +5251,16 @@ p, li { white-space: pre-wrap; }
    <property name="defaultUp">
     <bool>false</bool>
    </property>
-   <widget class="QMenu" name="menuConfig">
+   <widget class="QMenu" name="menuSettings">
     <property name="font">
      <font>
       <pointsize>12</pointsize>
      </font>
     </property>
     <property name="title">
-     <string>&amp;Config</string>
+     <string>Settings</string>
     </property>
     <addaction name="actionLanguage_Selection"/>
-    <addaction name="actionConfigure_Paths"/>
     <addaction name="actionLogout"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
@@ -5279,11 +5272,11 @@ p, li { white-space: pre-wrap; }
      </font>
     </property>
     <property name="title">
-     <string>He&amp;lp</string>
+     <string>Help</string>
     </property>
     <widget class="QMenu" name="menuDebug">
      <property name="title">
-      <string>&amp;Debug</string>
+      <string>Debug</string>
      </property>
      <addaction name="actionConsole"/>
      <addaction name="actionSee_Log_File"/>
@@ -5291,12 +5284,12 @@ p, li { white-space: pre-wrap; }
     <addaction name="menuDebug"/>
     <addaction name="actionAbout"/>
    </widget>
-   <addaction name="menuConfig"/>
+   <addaction name="menuSettings"/>
    <addaction name="menuHelp"/>
   </widget>
   <action name="actionLanguage_Selection">
    <property name="text">
-    <string>&amp;Language Selection</string>
+    <string>Language Selection</string>
    </property>
    <property name="menuRole">
     <enum>QAction::ApplicationSpecificRole</enum>
@@ -5307,17 +5300,9 @@ p, li { white-space: pre-wrap; }
     <string>&amp;Console</string>
    </property>
   </action>
-  <action name="actionConfigure_Paths">
-   <property name="text">
-    <string>&amp;Configure Paths</string>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::ApplicationSpecificRole</enum>
-   </property>
-  </action>
   <action name="actionLogout">
    <property name="text">
-    <string>L&amp;ogout</string>
+    <string>Logout</string>
    </property>
    <property name="menuRole">
     <enum>QAction::ApplicationSpecificRole</enum>
@@ -5330,7 +5315,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionAbout">
    <property name="text">
-    <string>&amp;About</string>
+    <string>About</string>
    </property>
    <property name="menuRole">
     <enum>QAction::AboutRole</enum>
@@ -5339,9 +5324,6 @@ p, li { white-space: pre-wrap; }
   <action name="actionQuit">
    <property name="text">
     <string>&amp;Quit</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Q</string>
    </property>
   </action>
  </widget>
@@ -5361,7 +5343,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>edit_serverip_lineEdit</tabstop>
   <tabstop>edit_serversave_button</tabstop>
   <tabstop>serverdelete_button</tabstop>
-  <tabstop>lang_comboBox</tabstop>
   <tabstop>home_button</tabstop>
   <tabstop>remote_button</tabstop>
   <tabstop>local_button</tabstop>

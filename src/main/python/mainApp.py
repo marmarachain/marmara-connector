@@ -33,6 +33,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         # paths settings
         # Menu Actions
         self.actionAbout.triggered.connect(self.show_about)
+        self.actionLogout.triggered.connect(self.host_selection)
         #   Login page Host Selection
         self.local_button.clicked.connect(self.local_selection)
         self.remote_button.clicked.connect(self.remote_selection)
@@ -175,7 +176,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                           self.tr("About Marmara Connector"),
                           self.tr("This is a software written to carry out Marmarachain node operations "
                                   "on a local or remote machine.")
-        )
+                          )
 
     def custom_message(self, title, content, message_type, icon=None, detailed_text=None):
         """ custom_message(str, str, str: message_type = {information, question}, icon = {QMessageBox.Question,
@@ -210,6 +211,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             return QMessageBox.Ok
 
     def host_selection(self):
+        self.main_tab.setCurrentIndex(0)
         self.login_stackedWidget.setCurrentIndex(0)
         self.home_button.setVisible(False)
 

@@ -79,11 +79,16 @@ def do_search_path(cmd):
 
 def search_marmarad_path():  # will be added for windows search
     search_list = ['ls', 'ls /marmara/src', 'ls /komodo/src']
-    if is_local: # add for windows and mac
+    if is_local:  # add for windows and mac
         pwd = str(pathlib.Path.home())
         print('pwd_local :' + pwd)
     else:
         pwd_r = remote_connection.server_execute_command('pwd')
+        time.sleep(2)
+        print(pwd_r)
+        if not pwd_r[0]:
+            pwd_r = remote_connection.server_execute_command('pwd')
+            time.sleep(1)
         pwd = str(pwd_r[0].replace('\n', ''))
         print('pwd_remote :' + pwd)
     i = 0
