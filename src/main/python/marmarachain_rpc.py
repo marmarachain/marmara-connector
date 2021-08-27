@@ -286,6 +286,7 @@ class RpcHandler(QtCore.QObject):
         getinfo = handle_rpc(cp.getinfo)
         if getinfo[0]:
             self.command_out.emit(getinfo)
+            time.sleep(0.1)
             getgenerate = handle_rpc(cp.getgenerate)
             if getgenerate[0]:
                 self.command_out.emit(getgenerate)

@@ -18,9 +18,10 @@ import chain_args as cp
 from qtguistyle import GuiStyle
 from Loading import LoadingScreen
 import qtawesome as qta
+from fbs_runtime.application_context.PyQt5 import ApplicationContext
 
 
-class MarmaraMain(QMainWindow, GuiStyle):
+class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
 
     def __init__(self, parent=None):
         super(MarmaraMain, self).__init__(parent)
@@ -186,7 +187,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.lang_comboBox = QtWidgets.QComboBox()
         lang_dialog.layout().addWidget(self.lang_comboBox)
         lang_dialog.layout().addWidget(button)
-        entries = os.listdir(self.get_resource('language'))
+        entries = os.listdir(self.get_resource('configuration') + '/language')
         entries.sort()
         for item in entries:
             self.lang_comboBox.addItem(item)
@@ -205,31 +206,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
         else:
             QtWidgets.QApplication.instance().removeTranslator(self.trans)
 
-
-    # def readLangFile(self):
-    #     entries = os.listdir(self.lang_file_path)
-    #     entries.sort()
-    #
-    #     self.button_group = QButtonGroup()
-    #     count_ = 0
-    #     for i in entries:
-    #         self.button_name = QRadioButton(i)
-    #         self.radioButtonsLang.append(self.button_name)
-    #         self.button_name.setIcon(QtGui.QIcon(self.lang_icon_path + "/" + i + ".png"))
-    #         self.button_name.setIconSize(QtCore.QSize(32, 24))
-    #         self.button_name.setObjectName("radiobtn_{}".format(count_))
-    #         self.verticalLayout_6.addWidget(self.button_name)
-    #         self.button_group.addButton(self.button_name, count_)
-    #         self.button_name.toggled.connect(self.radio_button_event)
-    #
-    #         # Combobox in login
-    #         self.comboBox_3.addItem(i)
-    #         self.comboBox_3.setItemIcon(count_, QtGui.QIcon(self.lang_icon_path + "/" + i + ".png"))
-    #
-    #         if self.button_name.text() == self.conf_lang_info:
-    #             self.button_name.setChecked(True)
-    #             self.comboBox_3.setCurrentIndex(count_)
-    #         count_ = count_ + 1
 
     def show_about(self):
         QMessageBox.about(self,
@@ -508,8 +484,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             self.bottom_info(self.tr('chain ready finished'))
             result = json.loads(result_out[0])
             self.chain_status = True
-            self.chainstatus_button.setStyleSheet("QPushButton {image: url(" + self.icon_path +
-                                                  "/circle-active.png); border: 0; width: 30px; height: 30px;}")
+            self.chainstatus_button.setIcon(QIcon(self.icon_path + '/circle-active.png'))
             if result.get('version'):
                 self.set_getinfo_result(result)
             else:
@@ -547,8 +522,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         if len(result_out[0]) == 0:
             self.bottom_info(self.tr('Marmarachain stopped'))
             self.chain_status = False
-            self.chainstatus_button.setStyleSheet("QPushButton {image: url(" + self.icon_path +
-                                                  "/circle-inactive.png); border: 0; width: 30px; height: 30px;}")
+            self.chainstatus_button.setIcon(QIcon(self.icon_path + '/circle-inactive.png'))
             self.update_addresses_table()
         elif result_out[1]:
             self.bottom_err_info(result_out[1])
@@ -576,11 +550,9 @@ class MarmaraMain(QMainWindow, GuiStyle):
 
     def set_getinfo_result(self, getinfo_result):
         if getinfo_result.get('synced'):
-            self.chainsync_button.setStyleSheet("QPushButton {image: url(" + self.icon_path +
-                                                "/circle-active.png); border: 0; width: 30px; height: 30px;}")
+            self.chainsync_button.setIcon(QIcon(self.icon_path + '/circle-active.png'))
         elif not getinfo_result.get('synced'):
-            self.chainsync_button.setStyleSheet("QPushButton {image: url(" + self.icon_path +
-                                                "/circle-inactive.png); border: 0; width: 30px; height: 30px;}")
+            self.chainsync_button.setIcon(QIcon(self.icon_path + '/circle-inactive.png'))
         if getinfo_result.get('pubkey'):
             self.pubkey_status = True
             self.current_pubkey_value.setText(str(getinfo_result['pubkey']))
@@ -610,6 +582,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         hour = (str(datetime.now().hour))
         minute = (str(datetime.now().minute))
         self.last_update_label.setText(last_update + hour + ':' + minute)
+        self.thread_sidepanel.finished.connect(self.stop_animation)
 
     @pyqtSlot(tuple)
     def refresh_side_panel_result(self, result_out):

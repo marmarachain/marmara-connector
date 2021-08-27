@@ -9,10 +9,10 @@ class LoadingScreen(QWidget, ApplicationContext):
     def __init__(self):
         super().__init__()
         self.setFixedSize(200, 200)
-        self.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.CustomizeWindowHint)
+        self.setWindowFlags(Qt.SplashScreen)
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setWindowModality(Qt.ApplicationModal)
-        self.move(QDesktopWidget().availableGeometry().center() - QtCore.QPoint(100, 100))
+        # self.move(QDesktopWidget().availableGeometry().center() - QtCore.QPoint(100, 100))
         self.label_animation = QLabel(self)
         # self.label_animation.setStyleSheet("background: transparent;")
         self.movie = QMovie(self.get_resource("images")+"/fluid-loader.gif")
@@ -32,4 +32,3 @@ class LoadingScreen(QWidget, ApplicationContext):
     def stopAnimation(self):
         self.movie.stop()
         self.close()
-
