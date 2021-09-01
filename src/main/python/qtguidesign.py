@@ -1968,9 +1968,9 @@ class Ui_MainWindow(object):
         self.menuBar.addAction(self.menuHelp.menuAction())
 
         self.retranslateUi(MainWindow)
-        self.main_tab.setCurrentIndex(1)
+        self.main_tab.setCurrentIndex(0)
         self.login_stackedWidget.setCurrentIndex(0)
-        self.mcl_tab.setCurrentIndex(1)
+        self.mcl_tab.setCurrentIndex(4)
         self.chain_stackedWidget.setCurrentIndex(0)
         self.creditloop_tabWidget.setCurrentIndex(0)
         self.actionQuit.triggered.connect(MainWindow.close)
@@ -2121,7 +2121,7 @@ class Ui_MainWindow(object):
         self.lock_normal_amount_label.setText(_translate("MainWindow", "Lock Normal Amount"))
         self.normal_amount_value.setText(_translate("MainWindow", "0"))
         self.addressamount_refresh_button.setText(_translate("MainWindow", "Refresh"))
-        self.normal_amount_label.setText(_translate("MainWindow", "Nomal Amount"))
+        self.normal_amount_label.setText(_translate("MainWindow", "Normal Amount"))
         self.activated_amount_value.setText(_translate("MainWindow", "0"))
         self.wallet_total_activated_label.setText(_translate("MainWindow", "Total Activated"))
         self.wallet_total_normal_value.setText(_translate("MainWindow", "0"))
@@ -2270,4 +2270,14 @@ class Ui_MainWindow(object):
         self.actionSee_Log_File.setText(_translate("MainWindow", "&See Log File"))
         self.actionAbout.setText(_translate("MainWindow", "&About"))
         self.actionQuit.setText(_translate("MainWindow", "&Quit"))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
 
