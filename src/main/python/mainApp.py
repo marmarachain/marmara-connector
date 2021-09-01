@@ -1,5 +1,6 @@
 import json
 import os
+import platform
 import sys
 import time
 import webbrowser
@@ -315,7 +316,11 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
             self.get_marmara_path(path_key)
         else:
             print('marmarad_path :' + marmarad_path)
-            verify_path = marmarachain_rpc.do_search_path('ls ' + marmarad_path)
+            if platform.system() == 'Windows':
+                lscmd = 'PowerShell ls '
+            else:
+                lscmd = 'ls '
+            verify_path = marmarachain_rpc.do_search_path(lscmd + marmarad_path)
             if not verify_path[0] == ['']:
                 if 'komodod' in verify_path[0] and 'komodo-cli' in verify_path[0]:
                     print('komodod komodo-cli found')
@@ -347,6 +352,8 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
                 self.main_tab.setCurrentIndex(2)
                 if marmarachain_rpc.is_local:
                     self.sudo_password_lineEdit.setVisible(True)
+                    if platform.system() == 'Windows':
+                        self.sudo_password_lineEdit.setVisible(False)
                 else:
                     self.sudo_password_lineEdit.setVisible(False)
             if message_box == QMessageBox.No:
@@ -377,19 +384,23 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
     def start_autoinstall(self):
         self.worker_autoinstall = marmarachain_rpc.Autoinstall()
         if marmarachain_rpc.is_local:
-            if self.sudo_password_lineEdit.text():
-                self.worker_autoinstall.set_password(self.sudo_password_lineEdit.text())
+            if platform.system() == 'Windows':
                 start_install = True
-                self.sudo_password_lineEdit.clear()
             else:
-                message_box = self.custom_message(self.tr('Auto-installation does not begin'), self.tr(
-                    'You need to write a password that has admin privileges'), self.tr("information"),
-                                                  QMessageBox.Information)
+                if self.sudo_password_lineEdit.text():
+                    self.worker_autoinstall.set_password(self.sudo_password_lineEdit.text())
+                    start_install = True
+                    self.sudo_password_lineEdit.clear()
+                else:
+                    message_box = self.custom_message(self.tr('Auto-installation does not begin'), self.tr(
+                        'You need to write a password that has admin privileges'), self.tr("information"),
+                                                      QMessageBox.Information)
 
-                start_install = False
+                    start_install = False
         else:
             start_install = True
         if start_install:
+            self.start_install_button.setEnabled(False)
             self.install_progress_textBrowser.append('Starting Install ...')
 
             self.worker_autoinstall.moveToThread(self.thread_autoinstall)
@@ -407,7 +418,7 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
     def start_autoinstall_progress(self, val):
         self.install_progressBar.setValue(val)
         print(val)
-        if val == 98:
+        if val >= 96:
             self.install_progressBar.setValue(100)
             message_box = self.custom_message(self.tr('Installation Completed'), self.tr('Starting Marmarachain'),
                                               'information', QMessageBox.Information)
@@ -463,7 +474,7 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
         while True:
             marmara_pid = marmarachain_rpc.mcl_chain_status()
             if len(marmara_pid[0]) > 0:
-                print('chain has pid')
+                print('chain has pid' + str(marmara_pid))
                 break
             time.sleep(1)
             i = i - 1

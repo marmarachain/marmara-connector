@@ -7,8 +7,8 @@ from PyQt5.uic import loadUi
 class GuiStyle(ApplicationContext ,Ui_MainWindow):
 
     def __init__(self):
-        # loadUi("qtguidesign.ui", self)  #  loadin from qtguidesign.ui
-        self.setupUi(self)   # loading from qtguidesign.py
+        loadUi("qtguidesign.ui", self)  #  loadin from qtguidesign.ui
+        # self.setupUi(self)   # loading from qtguidesign.py
         # setting params
         self.icon_path = self.get_resource("images")
         # stop button style

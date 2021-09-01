@@ -52,8 +52,8 @@ def set_local(command):
     if platform.system() == 'Linux' or platform.system() == 'Darwin':
         command = cp.linux_cli + command
     if platform.system() == 'Windows':
-        if command.find("{"):
-            command = command.replace("'{", '{').replace("}'", '}').replace('"', '\\"')
+        if command.find("{") > 0:
+            command = command.replace('"', '\\"').replace("'{", '"{').replace("}'", '}"')
         command = cp.windows_cli + command
     return command
 
@@ -78,10 +78,14 @@ def do_search_path(cmd):
 
 
 def search_marmarad_path():  # will be added for windows search
-    search_list = ['ls', 'ls /marmara/src', 'ls /komodo/src']
+    windows = False
     if is_local:  # add for windows and mac
         pwd = str(pathlib.Path.home())
         print('pwd_local :' + pwd)
+        if platform.system() == 'Windows':
+            windows = True
+        else:
+            windows = False
     else:
         pwd_r = remote_connection.server_execute_command('pwd')
         time.sleep(2)
@@ -91,13 +95,19 @@ def search_marmarad_path():  # will be added for windows search
             time.sleep(1)
         pwd = str(pwd_r[0].replace('\n', ''))
         print('pwd_remote :' + pwd)
+    search_list_linux = ['ls ' + pwd, 'ls ' + pwd + '/marmara/src', 'ls ' + pwd + '/komodo/src']
+    search_list_windows = ['PowerShell ls ' + pwd + '\marmara -name']
+    if windows:
+        out_path = check_path_windows(search_list_windows)
+        return out_path
+    else:
+        out_path = check_path_linux(search_list_linux)
+        return out_path
+
+def check_path_linux(search_list):
     i = 0
     while True:
-        if len(search_list[i].split(' ')) > 1:
-            search_path = str(search_list[i].split(' ')[0]) + ' ' + pwd + search_list[i].split(' ')[1]
-            print(search_list[i].split(' ')[1])
-        else:
-            search_path = search_list[i].split(' ')[0] + ' ' + pwd
+        search_path = search_list[i]
         print('search_path :' + search_path)
         path = do_search_path(search_path)
         print(path)
@@ -111,11 +121,34 @@ def search_marmarad_path():  # will be added for windows search
                 i = i + 1
         else:
             i = i + 1
-        if i == 3:
+        if i == len(search_list):
             out_path = ""
             break
     return out_path
 
+
+def check_path_windows(search_list):
+    i = 0
+    while True:
+        search_path = search_list[i]
+        print('search_path :' + search_path)
+        path = do_search_path(search_path)
+        print(path)
+        if not path[0] == ['']:
+            out = str(path[0]).replace('.exe', '').replace('\r', '')
+            if 'komodod' in out and 'komodo-cli' in out:
+                out_path = search_path
+                out_path = out_path.replace('PowerShell ls ', '').replace(' -name', '') + '\\'
+                print('out_path :' + out_path)
+                break
+            else:
+                i = i + 1
+        else:
+            i = i + 1
+        if i == len(search_list):
+            out_path = ""
+            break
+    return out_path
 
 def start_chain(pubkey=None):
     if is_local:
@@ -126,9 +159,11 @@ def start_chain(pubkey=None):
             marmara_param = marmara_param + ' -pubkey=' + str(pubkey) + ' &'
         start = subprocess.Popen(marmara_param, cwd=marmara_path, shell=True, stdout=subprocess.DEVNULL,
                                  stderr=subprocess.DEVNULL)
-        start.communicate()
-        start.terminate()
-        print('shell closed')
+        while True:
+            pid = mcl_chain_status()
+            if not len(pid) == 0:
+                break
+        return
     else:
         marmara_param = start_param_remote()
         if not pubkey:
@@ -155,6 +190,7 @@ def mcl_chain_status():
 def handle_rpc(command):
     if is_local:
         cmd = set_local(command)
+        print(cmd)
         proc = subprocess.Popen(cmd, cwd=marmara_path, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         proc.wait()
         retvalue = proc.poll()
@@ -321,19 +357,25 @@ class Autoinstall(QtCore.QObject):
         self.mcl_linux_zipname = 'MCL-linux.zip'
         self.linux_command_list = ['sudo apt-get update', 'sudo apt-get install libgomp1 -y',
                                    'sudo wget ' + str(self.mcl_linux_download_command) + '/' + self.mcl_linux_zipname +
-                                   " -O " + self.mcl_linux_zipname,
-                                   'sudo apt-get install unzip -y', 'unzip MCL-linux.zip',
-                                   'sudo chmod +x komodod komodo-cli fetch-params.sh', './fetch-params.sh']
-        self.win_command_list = []
+                                   " -O " + self.mcl_linux_zipname, 'sudo apt-get install unzip -y',
+                                   'unzip MCL-linux.zip', 'sudo chmod +x komodod komodo-cli fetch-params.sh',
+                                   './fetch-params.sh']
+
+        self.mcl_linux_download_command = version.latest_marmara_zip_url()
+        self.mcl_linux_zipname = 'MCL-win.zip'
+        self.win_command_list = ['mkdir marmara',
+                                 'curl -L ' + str(self.mcl_linux_download_command) + '/' + self.mcl_linux_zipname +
+                                 " > " + self.mcl_linux_zipname, 'PowerShell Expand-Archive .\MCL-win.zip . -Force',
+                                 'fetch-params.bat']
         self.sudo_password = ""
 
     def set_password(self, password):
         self.sudo_password = password
 
-
     @pyqtSlot()
     def start_install(self):
         if is_local:
+            print(platform.system())
             if platform.system() == 'Linux':
                 self.out_text.emit(str("installing on linux"))
                 self.linux_install()
@@ -399,11 +441,40 @@ class Autoinstall(QtCore.QObject):
                 session.close()
                 sshclient.close()
             i = i + 1
-            self.progress.emit(int(i*14))
+            self.progress.emit(int(i * 14))
         self.finished.emit()
 
     def windows_install(self):
         self.out_text.emit(str("installing on windows"))
-        print('local Windows installation not coded yet!')
+        # print('local Windows installation not coded yet!')
+        i = 0
+        while True:
+            cmd = self.win_command_list[i]
+            self.out_text.emit(cmd)
+            if i == 0:
+                cwd = str(pathlib.Path.home())
+            else:
+                cwd = str(pathlib.Path.home()) + '\marmara'
+            print(cwd)
+            proc = subprocess.Popen(cmd, cwd=cwd, shell=True, stdin=subprocess.PIPE,
+                                    stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            while not proc.stdout.closed:
+                out = proc.stdout.readline()
+                try:
+                    out_d = out.decode()
+                except:
+                    out_d = '*-*-'
+                print(out_d)
+                self.out_text.emit(out_d)
+                if not out:
+                    proc.stdout.close()
+            exit_status = proc.returncode
+            print(exit_status)
+            proc.terminate()
+            i = i + 1
+            if i >= len(self.win_command_list):
+                self.progress.emit(int(i * 24))
+                break
+            self.progress.emit(int(i * 24))
+        self.finished.emit()
         # update = subprocess.Popen
-

@@ -20,6 +20,6 @@ combines the marmara download_url with latest releases' tag name to form the url
 
 def latest_marmara_zip_url():
     tag_name = git_request_tag()
-    linux_release_url = download_url + tag_name  # should be added + '/MCL-linux.zip' or '/MCL-win.zip according to OS
+    latest_release_url = download_url + tag_name  # should be added + '/MCL-linux.zip' or '/MCL-win.zip according to OS
     # print(linux_release_url)
-    return linux_release_url
+    return latest_release_url

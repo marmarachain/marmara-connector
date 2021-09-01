@@ -10,3 +10,4 @@ simplejson==3.13.2
 webdriver-manager==3.2.2
 beautifulsoup4==4.9.3
 appdirs==1.4.4
+QtAwesome==1.0.3
