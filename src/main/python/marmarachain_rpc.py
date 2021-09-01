@@ -372,10 +372,10 @@ class Autoinstall(QtCore.QObject):
     def set_password(self, password):
         self.sudo_password = password
 
+
     @pyqtSlot()
     def start_install(self):
         if is_local:
-            print(platform.system())
             if platform.system() == 'Linux':
                 self.out_text.emit(str("installing on linux"))
                 self.linux_install()
@@ -441,7 +441,7 @@ class Autoinstall(QtCore.QObject):
                 session.close()
                 sshclient.close()
             i = i + 1
-            self.progress.emit(int(i * 14))
+            self.progress.emit(int(i*14))
         self.finished.emit()
 
     def windows_install(self):
@@ -478,3 +478,4 @@ class Autoinstall(QtCore.QObject):
             self.progress.emit(int(i * 24))
         self.finished.emit()
         # update = subprocess.Popen
+

@@ -759,6 +759,7 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
 
     @pyqtSlot(list)
     def set_getaddresses_result(self, result_out):
+        self.bottom_info(self.tr('Loading Addresses ...'))
         for row in result_out:
             row_number = result_out.index(row)
             self.addresses_tableWidget.setRowCount(len(result_out))
@@ -773,6 +774,7 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
                 self.addresses_tableWidget.horizontalHeader().setSectionResizeMode(row.index(item) + 1,
                                                                                    QHeaderView.ResizeToContents)
                 btn_setpubkey.clicked.connect(self.set_pubkey)
+        self.bottom_info(self.tr('Loading Addresses finished'))
         self.update_addresses_table()
 
     @pyqtSlot()
