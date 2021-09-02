@@ -139,7 +139,7 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
         self.contact_editing_row = ""
 
         # Thread setup
-        self.thread_bottom_info = QThread()
+        self.thread_marmarad_path = QThread()
         self.thread_autoinstall = QThread()
         self.thread_getinfo = QThread()
         self.thread_getchain = QThread()
@@ -263,11 +263,8 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
         self.chain_status = False
 
     def local_selection(self):
-        self.main_tab.setCurrentIndex(1)
         marmarachain_rpc.set_connection_local()
         print('is_local: ' + str(marmarachain_rpc.is_local))
-        self.mcl_tab.setCurrentIndex(0)
-        self.chain_stackedWidget.setCurrentIndex(0)
         self.check_marmara_path()
 
     def remote_selection(self):
@@ -276,6 +273,7 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
         self.home_button.setVisible(True)
         marmarachain_rpc.set_connection_remote()
         print('is_local: ' + str(marmarachain_rpc.is_local))
+        self.serverpw_lineEdit.clear()
 
     @pyqtSlot(int)
     def mcl_tab_changed(self, index):
@@ -301,73 +299,9 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
                                                 pw=self.serverpw_lineEdit.text())
         validate = remote_connection.check_server_connection()
         if validate:
-            self.login_message_label.setText(str(validate))
+            self.login_page_info(str(validate))
         else:
-            self.main_tab.setCurrentIndex(1)
             self.check_marmara_path()
-            self.mcl_tab.setCurrentIndex(0)
-            self.chain_stackedWidget.setCurrentIndex(0)
-
-    def check_marmara_path(self):
-        print('getting marmara path')
-        self.login_message_label.setText(self.tr('getting marmara path'))
-        path_key = ""
-        if marmarachain_rpc.is_local:
-            path_key = 'local'
-        if not marmarachain_rpc.is_local:
-            path_key = remote_connection.server_username
-        print('path key : ' + path_key)
-        marmarad_path = configuration.ApplicationConfig().get_value('PATHS', path_key)
-        # print(marmarad_path)
-        if not marmarad_path:
-            self.get_marmara_path(path_key)
-        else:
-            print('marmarad_path :' + marmarad_path)
-            self.login_message_label.setText(self.tr('marmarad_path :' + marmarad_path))
-            if platform.system() == 'Windows':
-                lscmd = 'PowerShell ls '
-            else:
-                lscmd = 'ls '
-            self.login_message_label.setText(self.tr('verifiying path'))
-            verify_path = marmarachain_rpc.do_search_path(lscmd + marmarad_path)
-            if not verify_path[0] == ['']:
-                if 'komodod' in verify_path[0] and 'komodo-cli' in verify_path[0]:
-                    print('komodod komodo-cli found')
-                    self.login_message_label.setText(self.tr('komodod komodo-cli found'))
-                    marmarachain_rpc.set_marmara_path(marmarad_path)
-                    time.sleep(0.1)
-                    self.chain_init()
-                else:
-                    self.get_marmara_path(path_key)  # search path for komodo-cli and komodod
-            elif verify_path[1]:
-                self.get_marmara_path(path_key)  # search path for komodo-cli and komodod
-
-    def get_marmara_path(self, path_key):
-        search_result = marmarachain_rpc.search_marmarad_path()  # search path for komodo-cli and komodod
-        if search_result:
-            configuration.ApplicationConfig().set_key_value('PATHS', path_key, search_result)
-            if marmarachain_rpc.marmara_path != search_result:
-                marmarachain_rpc.set_marmara_path(search_result)
-                print(marmarachain_rpc.marmara_path)
-                self.chain_init()
-        else:
-            self.main_tab.setCurrentIndex(0)
-            print('komodod komodo-cli not found!')
-            print('need to install mcl')
-            message_box = self.custom_message(self.tr('Installing Marmarachain'),
-                                              self.tr('Marmarachain is not installed. Would you like to install it?'),
-                                              self.tr("question"), QMessageBox.Question)
-            if message_box == QMessageBox.Yes:
-                print('auto install ...')
-                self.main_tab.setCurrentIndex(2)
-                if marmarachain_rpc.is_local:
-                    self.sudo_password_lineEdit.setVisible(True)
-                    if platform.system() == 'Windows':
-                        self.sudo_password_lineEdit.setVisible(False)
-                else:
-                    self.sudo_password_lineEdit.setVisible(False)
-            if message_box == QMessageBox.No:
-                self.main_tab.setCurrentIndex(0)
 
     def worker_thread(self, thread, worker, command=None):
         self.start_animation()
@@ -389,6 +323,43 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
     @pyqtSlot()
     def stop_animation(self):
         self.loading.stopAnimation()
+
+    def check_marmara_path(self):
+        self.worker_check_marmara_path = marmarachain_rpc.RpcHandler()
+        self.worker_check_marmara_path.moveToThread(self.thread_marmarad_path)
+        self.worker_check_marmara_path.finished.connect(self.thread_marmarad_path.quit)
+        self.thread_marmarad_path.started.connect(self.worker_check_marmara_path.check_marmara_path)
+        self.thread_marmarad_path.start()
+        self.worker_check_marmara_path.output.connect(self.check_marmara_path_output)
+
+    @pyqtSlot(str)
+    def check_marmara_path_output(self, output):
+        print('login    ' + output)
+        if output == 'get marmarad path':
+            self.login_page_info(self.tr('Getting marmara chain path from config file'))
+        if str(output).split(' ')[0] == 'marmarad_path':
+            self.login_page_info(self.tr('marmara path from configuration file : ') + str(output).split(' ')[1])
+        if output == 'verifiying path':
+            self.login_page_info(self.tr('Verifiying the Chain location '))
+        if output == 'marmarad found.':
+            self.login_page_info(self.tr('Chain location verified.'))
+            self.chain_init()
+        if output == 'need to install mcl':
+            message_box = self.custom_message(self.tr('Installing Marmarachain'),
+                                              self.tr('Marmarachain is not installed. Would you like to install it?'),
+                                              self.tr("question"), QMessageBox.Question)
+            if message_box == QMessageBox.Yes:
+                print('auto install ...')
+                self.main_tab.setCurrentIndex(2)
+                if marmarachain_rpc.is_local:
+                    self.sudo_password_lineEdit.setVisible(True)
+                    if platform.system() == 'Windows':
+                        self.sudo_password_lineEdit.setVisible(False)
+                else:
+                    self.sudo_password_lineEdit.setVisible(False)
+            if message_box == QMessageBox.No:
+                self.main_tab.setCurrentIndex(0)
+
 
     @pyqtSlot()
     def start_autoinstall(self):
@@ -452,21 +423,27 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
         print(err_result)
         self.bottom_message_label.setText(err_result)
 
+    def login_page_info(self, info):
+        self.login_message_label.setText(info)
+
     # ---------------------------------------
     #  Chain initialization
     # ---------------------------------------
     @pyqtSlot()
     def chain_init(self):
+        self.main_tab.setCurrentIndex(1)
+        self.mcl_tab.setCurrentIndex(0)
+        self.chain_stackedWidget.setCurrentIndex(0)
         print('chain_status ' + str(self.chain_status))
-        self.login_message_label.setText(self.tr('chain_status ' + str(self.chain_status)))
+        self.bottom_info(self.tr('chain_status ' + str(self.chain_status)))
         time.sleep(0.1)
         if not self.chain_status:
             print('Checking marmarachain')
-            self.login_message_label.setText(self.tr('Checking marmarachain'))
+            self.bottom_info(self.tr('Checking marmarachain'))
             marmara_pid = marmarachain_rpc.mcl_chain_status()
             if len(marmara_pid[0]) == 0:
                 print('sending chain start command')
-                self.login_message_label.setText(self.tr('sending chain start command'))
+                self.bottom_info(self.tr('sending chain start command'))
                 marmarachain_rpc.start_chain()
             self.is_chain_ready()
 
@@ -851,10 +828,11 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
         if index.isValid():
             pubkey = self.addresses_tableWidget.item(index.row(), 3).text()
             print(pubkey)
+            self.bottom_info(self.tr('Chain started with pubkey'))
             marmarachain_rpc.start_chain(pubkey)
             time.sleep(0.5)
             self.addresses_tableWidget.setColumnHidden(0, True)
-            self.check_chain_pid()
+            self.is_chain_ready()
 
     # ------------------
     # Chain  --- wallet Address Add, import

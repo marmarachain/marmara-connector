@@ -104,6 +104,7 @@ def search_marmarad_path():  # will be added for windows search
         out_path = check_path_linux(search_list_linux)
         return out_path
 
+
 def check_path_linux(search_list):
     i = 0
     while True:
@@ -149,6 +150,7 @@ def check_path_windows(search_list):
             out_path = ""
             break
     return out_path
+
 
 def start_chain(pubkey=None):
     if is_local:
@@ -217,15 +219,15 @@ class RpcHandler(QtCore.QObject):
     def set_command(self, value):
         self.command = value
 
-    @pyqtSlot(object, str)
-    def set_bottom_info(self, info_obj, value):
-        self.bottom_info_obj = info_obj
-        self.info_value = value
-
-    @pyqtSlot()
-    def write_bottom_info(self):
-        self.bottom_info_obj.setText(self.info_value)
-        self.finished.emit()
+    # @pyqtSlot(object, str)
+    # def set_bottom_info(self, info_obj, value):
+    #     self.bottom_info_obj = info_obj
+    #     self.info_value = value
+    #
+    # @pyqtSlot()
+    # def write_bottom_info(self):
+    #     self.bottom_info_obj.setText(self.info_value)
+    #     self.finished.emit()
 
     @pyqtSlot()
     def do_execute_rpc(self):
@@ -233,6 +235,54 @@ class RpcHandler(QtCore.QObject):
         self.command_out.emit(result_out)
         time.sleep(0.1)
         self.finished.emit()
+
+    @pyqtSlot()
+    def check_marmara_path(self):
+        self.output.emit('get marmarad path')
+        path_key = ""
+        if is_local:
+            path_key = 'local'
+        if not is_local:
+            path_key = remote_connection.server_username
+        # print('path key : ' + path_key)
+        marmarad_path = configuration.ApplicationConfig().get_value('PATHS', path_key)
+        #  marmarad_path reading from configuration
+        if marmarad_path:  # if these is path in configuration
+            # print('marmarad_path :' + marmarad_path)
+            self.output.emit('marmarad_path :' + marmarad_path)
+            if platform.system() == 'Windows':
+                ls_cmd = 'PowerShell ls ' + marmarad_path + ' -name'
+            else:
+                ls_cmd = 'ls ' + marmarad_path
+            self.output.emit('verifiying path')
+            verify_path = do_search_path(ls_cmd)
+            if not verify_path[0] == ['']:
+                verify_path_out = str(verify_path[0]).replace('.exe', '')
+                if 'komodod' in verify_path_out and 'komodo-cli' in verify_path_out:
+                    # print('komodod komodo-cli found')
+                    self.output.emit('marmarad found.')
+                    set_marmara_path(marmarad_path)
+                    self.finished.emit()
+                else:
+                    self.get_marmarad_path(path_key)  # search path for marmarad
+            elif verify_path[1]:
+                self.get_marmarad_path(path_key)  # search path for marmarad
+        else:
+            self.get_marmarad_path(path_key)
+
+    @pyqtSlot()
+    def get_marmarad_path(self, path_key):
+        self.output.emit('no path config')
+        search_result = search_marmarad_path()
+        if search_result:
+            self.output.emit('marmarad found.')
+            configuration.ApplicationConfig().set_key_value('PATHS', path_key, search_result)
+            if marmara_path != search_result:
+                set_marmara_path(search_result)
+            self.finished.emit()
+        else:
+            self.output.emit('need to install mcl')
+            self.finished.emit()
 
     @pyqtSlot()
     def is_chain_ready(self):
@@ -368,7 +418,6 @@ class Autoinstall(QtCore.QObject):
     def set_password(self, password):
         self.sudo_password = password
 
-
     @pyqtSlot()
     def start_install(self):
         if is_local:
@@ -437,7 +486,7 @@ class Autoinstall(QtCore.QObject):
                 session.close()
                 sshclient.close()
             i = i + 1
-            self.progress.emit(int(i*14))
+            self.progress.emit(int(i * 14))
         self.finished.emit()
 
     def windows_install(self):
@@ -474,4 +523,3 @@ class Autoinstall(QtCore.QObject):
             self.progress.emit(int(i * 24))
         self.finished.emit()
         # update = subprocess.Popen
-

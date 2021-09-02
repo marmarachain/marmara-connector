@@ -22,7 +22,7 @@ def server_ssh_connect(ssh_key=None):
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     if ssh_key is not None:
         ssh_key = paramiko.RSAKey.from_private_key(StringIO(ssh_key))
-    ssh.connect(hostname=server_hostname, username=server_username, password=server_password, port=port, pkey=ssh_key)
+    ssh.connect(hostname=server_hostname, username=server_username, password=server_password, port=port, pkey=ssh_key, timeout=timeout)
     return ssh
 
 

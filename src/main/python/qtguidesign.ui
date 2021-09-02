@@ -5186,7 +5186,7 @@ p, li { white-space: pre-wrap; }
      </font>
     </property>
     <property name="title">
-     <string>Setti&amp;ngs</string>
+     <string>Settings</string>
     </property>
     <addaction name="actionLanguage_Selection"/>
     <addaction name="actionLogout"/>
@@ -5200,11 +5200,11 @@ p, li { white-space: pre-wrap; }
      </font>
     </property>
     <property name="title">
-     <string>He&amp;lp</string>
+     <string>Help</string>
     </property>
     <widget class="QMenu" name="menuDebug">
      <property name="title">
-      <string>&amp;Debug</string>
+      <string>Debug</string>
      </property>
      <addaction name="actionConsole"/>
      <addaction name="actionSee_Log_File"/>
@@ -5217,7 +5217,7 @@ p, li { white-space: pre-wrap; }
   </widget>
   <action name="actionLanguage_Selection">
    <property name="text">
-    <string>&amp;Language Selection</string>
+    <string>Language Selection</string>
    </property>
    <property name="menuRole">
     <enum>QAction::ApplicationSpecificRole</enum>
@@ -5225,12 +5225,12 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionConsole">
    <property name="text">
-    <string>&amp;Console</string>
+    <string>Console</string>
    </property>
   </action>
   <action name="actionLogout">
    <property name="text">
-    <string>L&amp;ogout</string>
+    <string>Logout</string>
    </property>
    <property name="menuRole">
     <enum>QAction::ApplicationSpecificRole</enum>
@@ -5238,12 +5238,12 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionSee_Log_File">
    <property name="text">
-    <string>&amp;See Log File</string>
+    <string>See Log File</string>
    </property>
   </action>
   <action name="actionAbout">
    <property name="text">
-    <string>&amp;About</string>
+    <string>About</string>
    </property>
    <property name="menuRole">
     <enum>QAction::AboutRole</enum>
@@ -5251,7 +5251,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionQuit">
    <property name="text">
-    <string>&amp;Quit</string>
+    <string>Quit</string>
    </property>
    <property name="shortcutContext">
     <enum>Qt::WidgetWithChildrenShortcut</enum>
