@@ -45,7 +45,6 @@ class ApplicationConfig:
 
     def get_value(self, section, key):
         self.check_conf_exists()
-        print(key)
         self.config.read(self.config_file_path)
         try:
             value = self.config.get(section, key)

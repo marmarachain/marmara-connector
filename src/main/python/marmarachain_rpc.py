@@ -190,7 +190,7 @@ def mcl_chain_status():
 def handle_rpc(command):
     if is_local:
         cmd = set_local(command)
-        print(cmd)
+        # print(cmd)
         proc = subprocess.Popen(cmd, cwd=marmara_path, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         proc.wait()
         retvalue = proc.poll()
@@ -240,17 +240,16 @@ class RpcHandler(QtCore.QObject):
             getinfo = handle_rpc(cp.getinfo)
             if getinfo[0]:
                 self.command_out.emit(getinfo)
-                time.sleep(0.01)
+                time.sleep(0.1)
                 addresses = self._get_addresses()
+                print(addresses)
+                time.sleep(0.1)
                 if type(addresses) == list:
                     self.walletlist_out.emit(addresses)
                     getgenerate = handle_rpc(cp.getgenerate)
-                    if getgenerate[0]:
-                        self.command_out.emit(getgenerate)
-                        self.finished.emit()
-                    elif getgenerate[1]:
-                        self.command_out(getgenerate)
-                        self.finished.emit()
+                    time.sleep(0.1)
+                    self.command_out.emit(getgenerate)
+                    self.finished.emit()
                 else:
                     self.output.emit(addresses)
                     self.finished.emit()
@@ -324,12 +323,9 @@ class RpcHandler(QtCore.QObject):
             self.command_out.emit(getinfo)
             time.sleep(0.1)
             getgenerate = handle_rpc(cp.getgenerate)
-            if getgenerate[0]:
-                self.command_out.emit(getgenerate)
-                self.finished.emit()
-            elif getgenerate[1]:
-                self.command_out(getgenerate)
-                self.finished.emit()
+            time.sleep(0.1)
+            self.command_out.emit(getgenerate)
+            self.finished.emit()
         elif getinfo[1]:
             self.command_out.emit(getinfo)
             self.finished.emit()
