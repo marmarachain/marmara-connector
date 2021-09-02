@@ -259,10 +259,13 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
         self.main_tab.setCurrentIndex(0)
         self.login_stackedWidget.setCurrentIndex(0)
         self.home_button.setVisible(False)
+        self.login_message_label.clear()
+        self.chain_status = False
 
     def local_selection(self):
         self.main_tab.setCurrentIndex(1)
         marmarachain_rpc.set_connection_local()
+        print('is_local: ' + str(marmarachain_rpc.is_local))
         self.mcl_tab.setCurrentIndex(0)
         self.chain_stackedWidget.setCurrentIndex(0)
         self.check_marmara_path()
@@ -272,6 +275,7 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
         self.get_server_combobox_names()
         self.home_button.setVisible(True)
         marmarachain_rpc.set_connection_remote()
+        print('is_local: ' + str(marmarachain_rpc.is_local))
 
     @pyqtSlot(int)
     def mcl_tab_changed(self, index):
@@ -305,25 +309,31 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
             self.chain_stackedWidget.setCurrentIndex(0)
 
     def check_marmara_path(self):
+        print('getting marmara path')
+        self.login_message_label.setText(self.tr('getting marmara path'))
         path_key = ""
         if marmarachain_rpc.is_local:
             path_key = 'local'
         if not marmarachain_rpc.is_local:
             path_key = remote_connection.server_username
+        print('path key : ' + path_key)
         marmarad_path = configuration.ApplicationConfig().get_value('PATHS', path_key)
-        print(marmarad_path)
+        # print(marmarad_path)
         if not marmarad_path:
             self.get_marmara_path(path_key)
         else:
             print('marmarad_path :' + marmarad_path)
+            self.login_message_label.setText(self.tr('marmarad_path :' + marmarad_path))
             if platform.system() == 'Windows':
                 lscmd = 'PowerShell ls '
             else:
                 lscmd = 'ls '
+            self.login_message_label.setText(self.tr('verifiying path'))
             verify_path = marmarachain_rpc.do_search_path(lscmd + marmarad_path)
             if not verify_path[0] == ['']:
                 if 'komodod' in verify_path[0] and 'komodo-cli' in verify_path[0]:
                     print('komodod komodo-cli found')
+                    self.login_message_label.setText(self.tr('komodod komodo-cli found'))
                     marmarachain_rpc.set_marmara_path(marmarad_path)
                     time.sleep(0.1)
                     self.chain_init()
@@ -448,45 +458,17 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
     @pyqtSlot()
     def chain_init(self):
         print('chain_status ' + str(self.chain_status))
+        self.login_message_label.setText(self.tr('chain_status ' + str(self.chain_status)))
         time.sleep(0.1)
         if not self.chain_status:
-            self.check_chain()
-        # if self.chain_status:
-        #     time.sleep(0.1)
-        #     self.get_getinfo()
-        #     time.sleep(0.1)
-        #     self.getaddresses()
-        #     time.sleep(0.2)
-        #     self.refresh_side_panel()
-
-    def check_chain(self):
-        self.bottom_info(self.tr('Checking marmarachain'))
-        marmara_pid = marmarachain_rpc.mcl_chain_status()
-        print(len(marmara_pid[0]))
-        if len(marmara_pid[0]) == 0:
-            print('sending chain start command')
-            self.bottom_info(self.tr('sending chain start command'))
-            marmarachain_rpc.start_chain()
-        self.check_chain_pid()
-
-    def check_chain_pid(self):
-        i = 5
-        while True:
+            print('Checking marmarachain')
+            self.login_message_label.setText(self.tr('Checking marmarachain'))
             marmara_pid = marmarachain_rpc.mcl_chain_status()
-            if len(marmara_pid[0]) > 0:
-                print('chain has pid' + str(marmara_pid))
-                break
-            time.sleep(1)
-            i = i - 1
-            if i == 0:
-                self.bottom_info(self.tr('Marmarachain did not start yet'))
-                print('tried still no pid')
-                break
-            elif marmara_pid[1]:
-                print('error ??')
-                print(marmara_pid[1])
-                break
-        self.is_chain_ready()
+            if len(marmara_pid[0]) == 0:
+                print('sending chain start command')
+                self.login_message_label.setText(self.tr('sending chain start command'))
+                marmarachain_rpc.start_chain()
+            self.is_chain_ready()
 
     def is_chain_ready(self):
         self.worker_getchain = marmarachain_rpc.RpcHandler()  # worker setting
@@ -505,6 +487,8 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
             self.chainstatus_button.setIcon(QIcon(self.icon_path + '/circle-active.png'))
             if result.get('version'):
                 self.set_getinfo_result(result)
+                self.bottom_info(self.tr('getting wallet addresses'))
+                print('getting wallet addresses')
             else:
                 self.setgenerate_result(result_out)
                 self.bottom_info(self.tr('Chain init completed.'))
@@ -591,6 +575,7 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
     # -----------------------------------------------------------
     @pyqtSlot()
     def refresh_side_panel(self):
+        self.bottom_info(self.tr('getting getinfo'))
         self.worker_sidepanel = marmarachain_rpc.RpcHandler()
         sidepanel_thread = self.worker_thread(self.thread_sidepanel, self.worker_sidepanel)
         self.thread_sidepanel.started.connect(self.worker_sidepanel.refresh_sidepanel)
@@ -608,6 +593,7 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
             result = json.loads(result_out[0])
             if result.get('version'):
                 self.set_getinfo_result(result)
+                self.bottom_info(self.tr('checking mining status.'))
             else:
                 self.setgenerate_result(result_out)
                 self.bottom_info(self.tr('Refresh completed.'))
