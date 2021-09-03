@@ -1027,7 +1027,7 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
     @pyqtSlot()
     def get_address_amounts(self):
         pubkey = self.current_pubkey_value.text()
-        print(pubkey)
+        print('---- current pubkey : ' + pubkey)
         if pubkey:
             marmarainfo = self.marmarainfo(pubkey)
             marmarainfo.command_out.connect(self.marmarinfo_amount_and_loops_result)
@@ -1126,6 +1126,7 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
     # --------------------------------------------------------------------
 
     def sendrawtransaction(self, hex):
+        self.bottom_info(self.tr('Signing transaction'))
         self.worker_sendrawtransaction = marmarachain_rpc.RpcHandler()
         command = cp.sendrawtransaction + ' ' + hex
         time.sleep(0.1)
@@ -1137,7 +1138,7 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
     def sendrawtransaction_result(self, result_out):
         if result_out[0]:
             print('txid: ' + result_out[0])
-            self.bottom_info('txid: ' + result_out[0])
+            self.bottom_info('txid: ' + str(result_out[0]).replace('\n', ''))
             time.sleep(0.2)  # wait for loading screen disappear
             self.custom_message(self.tr('Transaction Successful'), self.tr(f'TxId : {result_out[0]}'), "information")
         elif result_out[1]:
@@ -1311,6 +1312,7 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
             date = self.request_dateTimeEdit.dateTime()
             maxage = self.change_datetime_to_block_age(date)
             print('maxage ' + str(maxage))
+        self.bottom_info(self.tr('searching incoming loop requests'))
         self.worker_marmarareceivelist = marmarachain_rpc.RpcHandler()
         command = cp.marmarareceivelist + ' ' + self.current_pubkey_value.text() + ' ' + str(maxage)
         marmarareceivelist_thread = self.worker_thread(self.thread_marmarareceivelist, self.worker_marmarareceivelist,
@@ -1320,6 +1322,7 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
     @pyqtSlot(tuple)
     def search_marmarareceivelist_result(self, result_out):
         if result_out[0]:
+            self.bottom_info(self.tr('finished searching'))
             result = json.loads(result_out[0])
             self.loop_request_tableWidget.setRowCount(len(result))
             loop_create_request_list = []
@@ -1476,6 +1479,7 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
                       self.make_credit_loop_currency_value_label.text() + ' ' + \
                       str(matures) + " '" + '{"avalcount":"0"}' + "'"
             print(command)
+            self.bottom_info(self.tr('preparing loop request'))
             marmarareceive_thread = self.worker_thread(self.thread_marmarareceive, self.worker_marmarareceive, command)
             marmarareceive_thread.command_out.connect(self.marmarareceive_result)
         else:
@@ -1692,7 +1696,7 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
                                               "<br><b>Amount = </b>" + str(result.get('amount')) +
                                               "<br><b>Maturity = </b>" + str(maturity), "information",
                                               QMessageBox.Information)
-            print(message_box)
+            # print(message_box)
         elif result_out[1]:
             print(result_out[1])
             self.bottom_err_info(result_out[1])
