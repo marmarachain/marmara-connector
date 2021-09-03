@@ -7,8 +7,8 @@ from PyQt5.uic import loadUi
 class GuiStyle(ApplicationContext ,Ui_MainWindow):
 
     def __init__(self):
-        loadUi("qtguidesign.ui", self)  #  loadin from qtguidesign.ui
-        # self.setupUi(self)   # loading from qtguidesign.py
+        # loadUi("qtguidesign.ui", self)  #  loadin from qtguidesign.ui
+        self.setupUi(self)   # loading from qtguidesign.py
         # setting params
         self.icon_path = self.get_resource("images")
         # stop button style
@@ -69,6 +69,14 @@ class GuiStyle(ApplicationContext ,Ui_MainWindow):
         self.activeloops_search_button.setIconSize(QtCore.QSize(24, 24))
         self.transferableloops_search_button.setIcon(QtGui.QIcon(self.icon_path + '/search_icon.png'))
         self.transferableloops_search_button.setIconSize(QtCore.QSize(24, 24))
+        # line edit cursor focus
+        self.serverpw_lineEdit.setFocus()
+        self.add_serverip_lineEdit.setFocus()
+        self.add_servername_lineEdit.setFocus()
+        self.add_serverusername_lineEdit.setFocus()
+        self.edit_serverip_lineEdit.setFocus()
+        self.edit_servername_lineEdit.setFocus()
+        self.edit_serverusername_lineEdit.setFocus()
 
 class ToggleSwitch(QtWidgets.QPushButton):
     def __init__(self, parent = None):

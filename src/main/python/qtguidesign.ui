@@ -85,7 +85,7 @@
               <enum>QFrame::NoFrame</enum>
              </property>
              <property name="currentIndex">
-              <number>1</number>
+              <number>0</number>
              </property>
              <widget class="QWidget" name="hostselection_page">
               <layout class="QGridLayout" name="gridLayout_5">
@@ -345,9 +345,6 @@
                     <font>
                      <pointsize>16</pointsize>
                     </font>
-                   </property>
-                   <property name="cursor">
-                    <cursorShape>IBeamCursor</cursorShape>
                    </property>
                    <property name="inputMethodHints">
                     <set>Qt::ImhHiddenText|Qt::ImhNoAutoUppercase|Qt::ImhNoPredictiveText|Qt::ImhSensitiveData</set>
@@ -1279,7 +1276,7 @@
                <property name="minimumSize">
                 <size>
                  <width>0</width>
-                 <height>45</height>
+                 <height>0</height>
                 </size>
                </property>
                <property name="font">
@@ -1598,7 +1595,7 @@
                        <string>Hide zero amount addresses</string>
                       </property>
                       <property name="checked">
-                       <bool>true</bool>
+                       <bool>false</bool>
                       </property>
                      </widget>
                     </item>
@@ -2485,6 +2482,9 @@
                    <property name="text">
                     <string>0</string>
                    </property>
+                   <property name="textInteractionFlags">
+                    <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                   </property>
                   </widget>
                  </item>
                  <item row="2" column="4">
@@ -2517,6 +2517,9 @@
                    </property>
                    <property name="text">
                     <string>0</string>
+                   </property>
+                   <property name="textInteractionFlags">
+                    <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
                    </property>
                   </widget>
                  </item>
@@ -3045,7 +3048,7 @@
                <enum>QTabWidget::Rounded</enum>
               </property>
               <property name="currentIndex">
-               <number>2</number>
+               <number>0</number>
               </property>
               <widget class="QWidget" name="looprequests_tab">
                <attribute name="title">

@@ -261,6 +261,23 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
         self.home_button.setVisible(False)
         self.login_message_label.clear()
         self.chain_status = False
+        self.clear_tablewidgets()
+
+    def clear_tablewidgets(self):
+        self.addresses_tableWidget.clear()
+        self.addresses_privkey_tableWidget.clear()
+        self.transactions_tableWidget.clear()
+        self.loop_request_tableWidget.clear()
+        self.transferrequests_tableWidget.clear()
+        self.activeloops_tableWidget.clear()
+        self.transferableloops_tableWidget.clear()
+        self.addresses_tableWidget.setHorizontalHeaderLabels(['', 'Amount', 'Address', 'Pubkey'])
+        self.addresses_privkey_tableWidget.setHorizontalHeaderLabels(['Address', 'See Private Key'])
+        self.transactions_tableWidget.setHorizontalHeaderLabels(['Txid','See on Explorer'])
+        self.loop_request_tableWidget.setHorizontalHeaderLabels(['Confirm', 'TxId', 'Amount', 'Maturity', 'Receiver Pubkey', ''])
+        self.transferrequests_tableWidget.setHorizontalHeaderLabels(['Confirm', 'TxId', 'Amount', 'Maturity', 'Receiver Pubkey', ''])
+        self.activeloops_tableWidget.setHorizontalHeaderLabels(['Loop Address', 'Amount'])
+        self.transferableloops_tableWidget.setHorizontalHeaderLabels(['Txid','Details'])
 
     def local_selection(self):
         marmarachain_rpc.set_connection_local()
@@ -441,6 +458,8 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
             print('Checking marmarachain')
             self.bottom_info(self.tr('Checking marmarachain'))
             marmara_pid = marmarachain_rpc.mcl_chain_status()
+            if len(marmara_pid[0]) > 0:
+                self.bottom_info(self.tr('marmarachain has pid'))
             if len(marmara_pid[0]) == 0:
                 print('sending chain start command')
                 self.bottom_info(self.tr('sending chain start command'))
@@ -448,6 +467,7 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
             self.is_chain_ready()
 
     def is_chain_ready(self):
+        self.bottom_info(self.tr('Checking for marmarachain is ready for rpc'))
         self.worker_getchain = marmarachain_rpc.RpcHandler()  # worker setting
         chain_ready_thread = self.worker_thread(self.thread_getchain, self.worker_getchain)  # putting in to thread
         self.thread_getchain.started.connect(self.worker_getchain.is_chain_ready)  # executing respective worker func.
@@ -457,8 +477,8 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
     @pyqtSlot(tuple)
     def chain_ready_result(self, result_out):
         if result_out[0]:
-            print('chain ready finished')
-            self.bottom_info(self.tr('chain ready finished'))
+            print('chain ready')
+            self.bottom_info(self.tr('chain ready'))
             result = json.loads(result_out[0])
             self.chain_status = True
             self.chainstatus_button.setIcon(QIcon(self.icon_path + '/circle-active.png'))
@@ -677,7 +697,7 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
     @pyqtSlot(tuple)
     def setgenerate_result(self, result_out):
         if result_out[0]:
-            print(json.loads(result_out[0]))
+            print('\n---- getgenerate result------\n' + str(json.loads(result_out[0])))
             result = json.loads(result_out[0])
             if result.get('staking') is True and result.get('generate') is False:
                 self.bottom_info(self.tr('Staking ON'))
@@ -715,6 +735,7 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
     # getting addresses for address table widget
     @pyqtSlot()
     def getaddresses(self):
+        self.bottom_info(self.tr('getting wallet addresses'))
         self.worker_getaddresses = marmarachain_rpc.RpcHandler()
         getaddresses_thread = self.worker_thread(self.thread_getaddresses, self.worker_getaddresses)
         self.thread_getaddresses.started.connect(self.worker_getaddresses.get_addresses)
@@ -723,20 +744,20 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
     @pyqtSlot(list)
     def set_getaddresses_result(self, result_out):
         self.bottom_info(self.tr('Loading Addresses ...'))
+        self.addresses_tableWidget.setRowCount(len(result_out))
+        print('\n----- wallet address list ----- \n' + str(result_out))
         for row in result_out:
             row_number = result_out.index(row)
-            self.addresses_tableWidget.setRowCount(len(result_out))
-            # self.addresses_tableWidget.autoScrollMargin()
             if self.pubkey_status:
                 self.addresses_tableWidget.setColumnHidden(0, True)
+            btn_setpubkey = QPushButton('Set pubkey')
+            self.addresses_tableWidget.setCellWidget(row_number, 0, btn_setpubkey)
+            self.addresses_tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
             for item in row:
-                btn_setpubkey = QPushButton('Set pubkey')
-                self.addresses_tableWidget.setCellWidget(row_number, 0, btn_setpubkey)
-                self.addresses_tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
                 self.addresses_tableWidget.setItem(row_number, (row.index(item) + 1), QTableWidgetItem(str(item)))
-                self.addresses_tableWidget.horizontalHeader().setSectionResizeMode(row.index(item) + 1,
+                self.addresses_tableWidget.horizontalHeader().setSectionResizeMode((row.index(item) + 1),
                                                                                    QHeaderView.ResizeToContents)
-                btn_setpubkey.clicked.connect(self.set_pubkey)
+            btn_setpubkey.clicked.connect(self.set_pubkey)
         self.bottom_info(self.tr('Loading Addresses finished'))
         self.update_addresses_table()
 
@@ -754,8 +775,7 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
             rowcount = self.addresses_tableWidget.rowCount()
             while True:
                 rowcount = rowcount - 1
-                if self.addresses_tableWidget.item(rowcount, 1).text() == "0.0":
-                    self.addresses_tableWidget.setRowHidden(rowcount, False)
+                self.addresses_tableWidget.setRowHidden(rowcount, False)
                 if rowcount == 0:
                     break
 
@@ -1010,7 +1030,7 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
         print(pubkey)
         if pubkey:
             marmarainfo = self.marmarainfo(pubkey)
-            marmarainfo.command_out.connect(self.set_address_amounts)
+            marmarainfo.command_out.connect(self.marmarinfo_amount_and_loops_result)
         else:
             self.bottom_info('pubkey not set!')
 
@@ -1231,7 +1251,6 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
         item = self.transactions_tableWidget.item(row, column).text()
         QtWidgets.QApplication.clipboard().setText(item)
         self.bottom_info(self.tr("Copied ") + str(item))
-
     # -------------------------------------------------------------------
     # Credit loops functions
     # --------------------------------------------------------------------
@@ -1532,17 +1551,22 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
         pubkey = self.current_pubkey_value.text()
         if pubkey:
             marmarainfo = self.marmarainfo(pubkey)
-            marmarainfo.command_out.connect(self.get_search_active_loops_result)
+            marmarainfo.command_out.connect(self.marmarinfo_amount_and_loops_result)
         else:
             self.bottom_info('pubkey not set!')
             self.clear_search_active_loops_result()
 
     @pyqtSlot(tuple)
-    def get_search_active_loops_result(self, result_out):
+    def marmarinfo_amount_and_loops_result(self, result_out):
         if result_out[0]:
             print(result_out[0])
             result = json.loads(result_out[0])
             if result.get('result') == "success":
+                self.normal_amount_value.setText(str(result.get('myPubkeyNormalAmount')))
+                self.wallet_total_normal_value.setText(str(result.get('myWalletNormalAmount')))
+                self.activated_amount_value.setText(str(result.get('myActivatedAmount')))
+                self.wallet_total_activated_value.setText(str(result.get('myTotalAmountOnActivatedAddress')))
+                self.bottom_info('getting address amounts finished')
                 loops = result.get('Loops')
                 self.activeloops_total_amount_value_label.setText(str(result.get('TotalLockedInLoop')))
                 self.closedloops_total_amount_value_label.setText(str(result.get('totalclosed')))

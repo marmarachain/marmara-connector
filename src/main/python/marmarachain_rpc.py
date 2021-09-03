@@ -68,13 +68,19 @@ def set_pid_local(command):
 
 def do_search_path(cmd):
     if is_local:
-        mcl_path = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
-        mcl_path.wait()
-        mcl_path.terminate()
-        return mcl_path.stdout.read().decode("utf8").split('\n'), mcl_path.stdout.read().decode("utf8").split('\n')
+        try:
+            mcl_path = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+            mcl_path.wait()
+            mcl_path.terminate()
+            return mcl_path.stdout.read().decode("utf8").split('\n'), mcl_path.stdout.read().decode("utf8").split('\n')
+        except Exception as error:
+            print(error)
     else:
-        mcl_path = remote_connection.server_execute_command(cmd)
-        return mcl_path[0].split('\n'), mcl_path[1].split('\n'),
+        try:
+            mcl_path = remote_connection.server_execute_command(cmd)
+            return mcl_path[0].split('\n'), mcl_path[1].split('\n'),
+        except Exception as error:
+            print(error)
 
 
 def search_marmarad_path():  # will be added for windows search
@@ -159,49 +165,68 @@ def start_chain(pubkey=None):
             marmara_param = marmara_param + ' &'
         if pubkey is not None:
             marmara_param = marmara_param + ' -pubkey=' + str(pubkey) + ' &'
-        start = subprocess.Popen(marmara_param, cwd=marmara_path, shell=True, stdout=subprocess.DEVNULL,
-                                 stderr=subprocess.DEVNULL)
-        while True:
-            pid = mcl_chain_status()
-            if not len(pid) == 0:
-                break
-        return
+        try:
+            start = subprocess.Popen(marmara_param, cwd=marmara_path, shell=True, stdout=subprocess.DEVNULL,
+                                     stderr=subprocess.DEVNULL)
+            while True:
+                pid = mcl_chain_status()
+                if not len(pid) == 0:
+                    break
+            return
+        except Exception as error:
+            print(error)
     else:
         marmara_param = start_param_remote()
         if not pubkey:
             marmara_param = marmara_path + marmara_param
         if pubkey:
             marmara_param = marmara_param + ' -pubkey=' + str(pubkey)
-        start = remote_connection.server_start_chain(marmara_param)
-        start.close()
-        print('shell closed')
+        try:
+            start = remote_connection.server_start_chain(marmara_param)
+            start.close()
+            print('shell closed')
+        except Exception as error:
+            print(error)
 
 
 def mcl_chain_status():
     if is_local:
         marmara_pid = set_pid_local('pidof komodod')
-        marmarad_pid = subprocess.Popen(marmara_pid, shell=True, stdout=subprocess.PIPE)
-        marmarad_pid.wait()
-        marmarad_pid.terminate()
-        return marmarad_pid.stdout.read().decode("utf8"), marmarad_pid.stdout.read().decode("utf8")
+        try:
+            marmarad_pid = subprocess.Popen(marmara_pid, shell=True, stdout=subprocess.PIPE)
+            marmarad_pid.wait()
+            marmarad_pid.terminate()
+            return marmarad_pid.stdout.read().decode("utf8"), marmarad_pid.stdout.read().decode("utf8")
+        except Exception as error:
+            print(error)
     else:
-        marmarad_pid = remote_connection.server_execute_command('pidof komodod')
-    return marmarad_pid
+        try:
+            marmarad_pid = remote_connection.server_execute_command('pidof komodod')
+            return marmarad_pid
+        except Exception as error:
+            print(error)
 
 
 def handle_rpc(command):
     if is_local:
         cmd = set_local(command)
-        # print(cmd)
-        proc = subprocess.Popen(cmd, cwd=marmara_path, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        proc.wait()
-        retvalue = proc.poll()
-        return proc.stdout.read().decode("utf8"), proc.stderr.read().decode("utf8"), retvalue
+        print('----- sending command ----- \n ' + cmd)
+        try:
+            proc = subprocess.Popen(cmd, cwd=marmara_path, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            proc.wait()
+            retvalue = proc.poll()
+            return proc.stdout.read().decode("utf8"), proc.stderr.read().decode("utf8"), retvalue
+        except Exception as error:
+            print(error)
     else:
         cmd = set_remote(command)
         cmd = marmara_path + cmd
-        result = remote_connection.server_execute_command(cmd)
-        return result
+        print('----- sending command ----- \n' + cmd)
+        try:
+            result = remote_connection.server_execute_command(cmd)
+            return result
+        except Exception as error:
+            print(error)
 
 
 class RpcHandler(QtCore.QObject):
@@ -244,11 +269,8 @@ class RpcHandler(QtCore.QObject):
             path_key = 'local'
         if not is_local:
             path_key = remote_connection.server_username
-        # print('path key : ' + path_key)
         marmarad_path = configuration.ApplicationConfig().get_value('PATHS', path_key)
-        #  marmarad_path reading from configuration
         if marmarad_path:  # if these is path in configuration
-            # print('marmarad_path :' + marmarad_path)
             self.output.emit('marmarad_path :' + marmarad_path)
             if platform.system() == 'Windows':
                 ls_cmd = 'PowerShell ls ' + marmarad_path + ' -name'
@@ -259,7 +281,6 @@ class RpcHandler(QtCore.QObject):
             if not verify_path[0] == ['']:
                 verify_path_out = str(verify_path[0]).replace('.exe', '')
                 if 'komodod' in verify_path_out and 'komodo-cli' in verify_path_out:
-                    # print('komodod komodo-cli found')
                     self.output.emit('marmarad found.')
                     set_marmara_path(marmarad_path)
                     self.finished.emit()
@@ -289,10 +310,10 @@ class RpcHandler(QtCore.QObject):
         while True:
             getinfo = handle_rpc(cp.getinfo)
             if getinfo[0]:
+                print('----getinfo result ----- \n' + str(getinfo[0]))
                 self.command_out.emit(getinfo)
                 time.sleep(0.1)
                 addresses = self._get_addresses()
-                print(addresses)
                 time.sleep(0.1)
                 if type(addresses) == list:
                     self.walletlist_out.emit(addresses)
@@ -300,10 +321,11 @@ class RpcHandler(QtCore.QObject):
                     time.sleep(0.1)
                     self.command_out.emit(getgenerate)
                     self.finished.emit()
+                    # print('chain ready')
                 else:
-                    self.output.emit(addresses)
+                    # self.output.emit(addresses)
+                    print('could not get addresses')
                     self.finished.emit()
-                print('chain ready')
                 break
             elif getinfo[1]:
                 self.command_out.emit(getinfo)
@@ -348,13 +370,13 @@ class RpcHandler(QtCore.QObject):
                     amount = json.loads(amounts[0])['balance']
                     amount = str(int(amount) / 100000000)
                 elif amounts[1]:
-                    print(amounts[1])
+                    print('getting error in getbalance :' + str(amounts[1]))
                 address_list = [amount, address, pubkey]
                 wallet_list.append(address_list)
             return wallet_list
         elif addresses[1]:
             print(addresses[1])
-            return addresses[1]
+            return False
 
     @pyqtSlot()
     def get_addresses(self):
@@ -362,7 +384,8 @@ class RpcHandler(QtCore.QObject):
         if type(addresses) == list:
             self.walletlist_out.emit(addresses)
         else:
-            self.output.emit(addresses)
+            print('could not get addresses')
+            self.finished.emit()
         time.sleep(0.2)
         self.finished.emit()
 
@@ -491,7 +514,6 @@ class Autoinstall(QtCore.QObject):
 
     def windows_install(self):
         self.out_text.emit(str("installing on windows"))
-        # print('local Windows installation not coded yet!')
         i = 0
         while True:
             cmd = self.win_command_list[i]
