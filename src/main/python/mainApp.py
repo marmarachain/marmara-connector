@@ -121,8 +121,7 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
         self.transferable_maturesfrom_dateTimeEdit.setMaximumDateTime(QDateTime.currentDateTime())
         self.transferable_maturesfrom_dateTimeEdit.setDateTime(QDateTime.currentDateTime())
         self.transferable_maturesto_dateTimeEdit.setDateTime(QDateTime.currentDateTime())
-        self.transferable_maturesto_dateTimeEdit.setMinimumDateTime(QDateTime(datetime.fromtimestamp(1579278200)))
-        self.transferable_maturesto_dateTimeEdit.setMaximumDateTime(QDateTime.currentDateTime())
+        self.transferable_maturesto_dateTimeEdit.setMinimumDateTime(QDateTime.currentDateTime())
         self.transferable_matures_checkBox.clicked.connect(self.set_transferable_mature_date_state)
         self.transferable_amount_checkBox.clicked.connect(self.set_transferable_amount_state)
         self.transferableloops_search_button.clicked.connect(self.marmaraholderloops)
@@ -1204,8 +1203,8 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
         address = self.currentaddress_value.text()
         start_date = self.transactions_startdate_dateTimeEdit.dateTime()
         end_date = self.transactions_endtdate_dateTimeEdit.dateTime()
-        start_height = self.change_datetime_to_block_age(start_date, begin_height=True)
-        end_height = self.change_datetime_to_block_age(end_date, begin_height=True)
+        start_height = int(self.currentblock_value_label.text()) - int(self.change_datetime_to_block_age(start_date))
+        end_height = int(self.currentblock_value_label.text()) - int(self.change_datetime_to_block_age(end_date))
         if address == "":
             self.bottom_info(self.tr('A pubkey is not set yet! Please set a pubkey first.'))
         else:
@@ -1261,24 +1260,16 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
     # usage: Calling function without providing begin_height, calculates the block_age between current datetime and date
     # arg. Calling function with begin_Height=True calculates the block_age from start of Marmarachain to the date arg
     # return: absolute value of block_age
-    def change_datetime_to_block_age(self, date, begin_height=False):
-        minute_ = date.toPyDateTime().minute
-        hour_ = date.toPyDateTime().hour
-        day_ = date.toPyDateTime().day
-        month_ = date.toPyDateTime().month
-        year_ = date.toPyDateTime().year
-        if begin_height:
-            now = datetime.fromtimestamp(1579278200)
-        else:
-            now = datetime.now()
-        minute_ = now.minute - minute_
-        hour_ = now.hour - hour_
-        day_ = now.day - day_
-        month_ = now.month - month_
-        year_ = now.year - year_
-
-        block_age = minute_ + (hour_ * 60) + (day_ * 1440) + (month_ * 30 * 1440) + (year_ * 365 * 1440)
-        return abs(block_age)
+    def change_datetime_to_block_age(self, date):
+        selected_datetime = date.toPyDateTime()
+        now = datetime.now()
+        if selected_datetime > now:
+            time_diff = selected_datetime - now
+        if now > selected_datetime:
+            time_diff = now - selected_datetime
+        block_age = int(time_diff.total_seconds()/60)
+        # print('block_age ' + str(block_age))
+        return str(block_age)
 
     def change_block_to_date(self, block):
         block_diff = int(block) - int(self.longestchain_value_label.text())
@@ -1478,7 +1469,7 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
             command = cp.marmarareceive + ' ' + senderpk + ' ' + amount + ' ' + \
                       self.make_credit_loop_currency_value_label.text() + ' ' + \
                       str(matures) + " '" + '{"avalcount":"0"}' + "'"
-            print(command)
+            # print(command)
             self.bottom_info(self.tr('preparing loop request'))
             marmarareceive_thread = self.worker_thread(self.thread_marmarareceive, self.worker_marmarareceive, command)
             marmarareceive_thread.command_out.connect(self.marmarareceive_result)
@@ -1625,8 +1616,8 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
         else:
             matures_from_date = self.transferable_maturesfrom_dateTimeEdit.dateTime()
             matures_to_date = self.transferable_maturesto_dateTimeEdit.dateTime()
-            firstheight = self.change_datetime_to_block_age(matures_from_date, begin_height=True)
-            lastheight = self.change_datetime_to_block_age(matures_to_date, begin_height=True)
+            firstheight = int(self.currentblock_value_label.text()) - int(self.change_datetime_to_block_age(matures_from_date))
+            lastheight = int(self.currentblock_value_label.text()) + int(self.change_datetime_to_block_age(matures_to_date))
 
         if self.transferable_amount_checkBox.checkState():
             minamount = '0'
