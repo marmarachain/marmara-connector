@@ -9,8 +9,8 @@ import qrcode
 from datetime import datetime, timedelta
 from qr_code_gen import Image
 from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import QThread, pyqtSlot, QDateTime, QSize, Qt, QTranslator, QLocale
+from PyQt5.QtGui import QIcon, QRegExpValidator
+from PyQt5.QtCore import QThread, pyqtSlot, QDateTime, QSize, Qt, QTranslator, QLocale, QRegExp
 from PyQt5.QtWidgets import QMainWindow, QPushButton, QTableWidgetItem, QMessageBox, QDesktopWidget, QHeaderView, \
     QDialog, QDialogButtonBox, QVBoxLayout, QComboBox
 import configuration
@@ -68,6 +68,9 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
         self.staking_button.setChecked(False)
         self.staking_button.clicked.connect(self.toggle_staking)
         self.mining_button.setChecked(False)
+        self.regex = QRegExp("[1-9_]+")
+        self.validator = QRegExpValidator(self.regex)
+        self.cpu_core_lineEdit.setValidator(self.validator)
         self.cpu_core_selection_off()
         self.cpu_core_set_button.clicked.connect(self.setmining_cpu_core)
         self.mining_button.clicked.connect(self.toggle_mining)
@@ -708,6 +711,8 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
                 self.mining_button.setChecked(False)
             if result.get('generate') is True and result.get('staking') is False:
                 self.bottom_info(self.tr('Mining ON with ' + str(result.get('numthreads'))))
+                self.cpu_core_lineEdit.setText(str(result.get('numthreads')))
+                self.cpu_core_selection_on()
                 self.staking_button.setChecked(False)
                 self.mining_button.setChecked(True)
         if result_out[1]:
@@ -716,16 +721,7 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
     @pyqtSlot()
     def setmining_cpu_core(self):
         cpu_no = self.cpu_core_lineEdit.text()
-        # print(int(cpu_no))
-        try:
-            int(cpu_no)
-            if int(cpu_no) == 0:
-                cpu_no = 1
-                self.cpu_core_lineEdit.setText('1')
-                self.bottom_info(self.tr('for mining cpu core cannot be 0'))
-            self.setgenerate('true ' + str(cpu_no))
-        except Exception:
-            self.bottom_info(self.tr('CPU core should be integer!'))
+        self.setgenerate('true ' + str(cpu_no))
 
     # -----------------------------------------------------------
     # Chain page functions

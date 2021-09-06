@@ -408,8 +408,9 @@ class RpcHandler(QtCore.QObject):
         setgenerate = handle_rpc(self.command)
         if setgenerate[2] == 0:
             getgenerate = handle_rpc(cp.getgenerate)
-            self.finished.emit()
+            time.sleep(0.1)
             self.command_out.emit(getgenerate)
+            self.finished.emit()
         else:
             self.finished.emit()
             self.command_out.emit(setgenerate)
