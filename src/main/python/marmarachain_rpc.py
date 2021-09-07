@@ -75,13 +75,13 @@ def do_search_path(cmd):
             mcl_path.terminate()
             return mcl_path.stdout.read().decode("utf8").split('\n'), mcl_path.stdout.read().decode("utf8").split('\n')
         except Exception as error:
-            print(error)
+            logging.error(error)
     else:
         try:
             mcl_path = remote_connection.server_execute_command(cmd)
             return mcl_path[0].split('\n'), mcl_path[1].split('\n'),
         except Exception as error:
-            print(error)
+            logging.error(error)
 
 
 def search_marmarad_path():  # will be added for windows search
