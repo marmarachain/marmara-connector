@@ -8,7 +8,6 @@ app_name = ApplicationContext().build_settings['app_name']
 author = ApplicationContext().build_settings['author']
 version = ApplicationContext().build_settings['version']
 
-
 # Typical user config directories are:
 #   Mac OS X:             ~/Library/Application Support/<AppName>
 #   Unix:                 ~/.config/<AppName>     # or in $XDG_CONFIG_HOME, if defined
@@ -17,12 +16,13 @@ version = ApplicationContext().build_settings['version']
 config_directory_path = user_config_dir(app_name, author, version, roaming=True)
 log_file_path = os.path.join(config_directory_path, "marmara-connector.log")
 logging.getLogger(__name__)
-stream_handler = logging.StreamHandler() # create stream handler and set level to debug
-stream_handler.setLevel(logging.DEBUG)
+stream_handler = logging.StreamHandler()  # create stream handler and set level to debug
+stream_handler.setLevel(logging.DEBUG)  # set stream handler level to debug
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s %(levelname)s %(name)s:%(module)s %(funcName)s:%(lineno)s %(message)s',
                     handlers=[logging.FileHandler(filename=log_file_path, mode='a+'),
                               stream_handler])
+
 
 class ApplicationConfig:
     config_file = "marmara-connector.conf"
@@ -57,7 +57,6 @@ class ApplicationConfig:
             value = self.config.get(section, key)
             return value
         except Error as e:
-            print(e)
             logging.error(e)
             return False
 
@@ -87,7 +86,7 @@ class ServerSettings:
             server_params = server_name + "," + server_username + "," + server_ip + "\n"
             file.write(server_params)
         except IOError:
-            print("Exception error while reading server file!")
+            logging.error("Exception error while reading server file: " + IOError)
         finally:
             file.close()
 
@@ -99,53 +98,53 @@ class ServerSettings:
                 server_all_info = file.read().rstrip()
                 server_list = server_all_info.split("\n")
             except IOError:
-                print("Exception error while reading server file!")
+                logging.error("Exception error while reading server file: " + IOError)
             finally:
                 file.close()
         return server_list
 
     def delete_record(self, server_list):
-        print(server_list)
         try:
             file = open(self.server_config_file_path, 'w')
             for line in server_list:
                 file.write(line + "\n")
         except IOError:
-            print("Exception error when reading server file!")
+            logging.error("Exception error while reading server file: " + IOError)
         finally:
             file.close()
 
 
 class ContactsSettings:
-    # contacts_file = resource_path + '/contacts.csv'
+
     contacts_file = "contacts.csv"
     header = ['Name', 'Address', 'Pubkey']
     contacts_file_path = os.path.join(user_data_path, contacts_file)
-    print("contacts_file_path located in: " + contacts_file_path)
-
-    def is_file_exist(self):
-        if os.path.isfile(self.contacts_file_path):
-            return
-        else:
-            print('no file found')
-            self.create_csv_file()
-            print('contacts file created')
-            return
-
-    def read_csv_file(self):
-        self.is_file_exist()
-        contactdata = open(self.contacts_file_path, 'r')
-        contactdatadata_reader = csv.reader(contactdata)
-        contactdatadata_list = []
-        for row in contactdatadata_reader:
-            contactdatadata_list.append(row)
-        contactdata.close()
-        return contactdatadata_list
 
     def create_csv_file(self):
         contacts_csv = open(self.contacts_file_path, 'w', newline='')
         create = csv.writer(contacts_csv)
         create.writerow(self.header)
+
+    def is_file_exist(self):
+        if os.path.isfile(self.contacts_file_path):
+            return
+        else:
+            logging.warning('No contacts file found under ' + self.user_data_path)
+            self.create_csv_file()
+            logging.info('Contacts file named ' + self.contacts_file + 'is created under ' + self.user_data_path)
+            return
+
+    def read_csv_file(self):
+        self.is_file_exist()
+        contactdata = open(self.contacts_file_path, 'r')
+        contactdata_reader = csv.reader(contactdata)
+        contactdata_list = []
+        for row in contactdata_reader:
+            contactdata_list.append(row)
+        contactdata.close()
+        return contactdata_list
+
+
 
     def add_csv_file(self, row):
         if not os.path.isfile(self.contacts_file_path):
