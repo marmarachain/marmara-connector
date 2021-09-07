@@ -2,12 +2,12 @@ import csv
 from appdirs import *
 from configparser import ConfigParser, Error
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
+import logging
 
 app_name = ApplicationContext().build_settings['app_name']
 author = ApplicationContext().build_settings['author']
 version = ApplicationContext().build_settings['version']
 
-# resource_path = ApplicationContext().get_resource("configuration")
 
 # Typical user config directories are:
 #   Mac OS X:             ~/Library/Application Support/<AppName>
@@ -15,7 +15,14 @@ version = ApplicationContext().build_settings['version']
 #   Win XP (roaming):     C:\Documents and Settings\<username>\Local Settings\Application Data\<AppAuthor>\<AppName>
 #   Win 7  (roaming):     C:\Users\<username>\AppData\Roaming\<AppAuthor>\<AppName>
 config_directory_path = user_config_dir(app_name, author, version, roaming=True)
-
+log_file_path = os.path.join(config_directory_path, "marmara-connector.log")
+logging.getLogger(__name__)
+stream_handler = logging.StreamHandler() # create stream handler and set level to debug
+stream_handler.setLevel(logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s %(levelname)s %(name)s:%(module)s %(funcName)s:%(lineno)s %(message)s',
+                    handlers=[logging.FileHandler(filename=log_file_path, mode='a+'),
+                              stream_handler])
 
 class ApplicationConfig:
     config_file = "marmara-connector.conf"
@@ -51,7 +58,9 @@ class ApplicationConfig:
             return value
         except Error as e:
             print(e)
+            logging.error(e)
             return False
+
 
 user_data_path = user_data_dir(app_name, author, version, roaming=True)
 # Typical user data directories are:

@@ -4,6 +4,7 @@ import time
 import subprocess
 import pathlib
 import version
+import logging
 
 from PyQt5 import QtCore
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
@@ -13,7 +14,7 @@ import configuration
 
 marmara_path = None
 is_local = None
-
+logging.getLogger(__name__)
 
 def set_connection_local():
     global is_local

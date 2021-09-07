@@ -1,5 +1,5 @@
 from io import StringIO
-
+import logging
 import paramiko
 
 server_hostname = ""
@@ -8,6 +8,7 @@ server_password = ""
 port = 22
 timeout = 4
 ssh_key = ""
+logging.getLogger(__name__)
 
 
 def set_server_connection(ip, username, pw):

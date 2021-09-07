@@ -4,7 +4,7 @@ import platform
 import sys
 import time
 import webbrowser
-
+import logging
 import qrcode
 from datetime import datetime, timedelta
 from qr_code_gen import Image
@@ -22,6 +22,7 @@ from Loading import LoadingScreen
 import qtawesome as qta
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 
+logging.getLogger(__name__)
 
 class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
 
@@ -29,7 +30,7 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
         super(MarmaraMain, self).__init__(parent)
         #   Default Settings
         self.trans = QTranslator(self)
-        #self.retranslateUi(self)
+        # self.retranslateUi(self)
         self.main_tab.setCurrentIndex(0)
         self.main_tab.tabBar().setVisible(False)
         self.login_stackedWidget.setCurrentIndex(0)
@@ -217,7 +218,6 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
         else:
             QtWidgets.QApplication.instance().removeTranslator(self.trans)
 
-
     def show_about(self):
         QMessageBox.about(self,
                           self.tr("About Marmara Connector"),
@@ -275,11 +275,13 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
         self.transferableloops_tableWidget.clear()
         self.addresses_tableWidget.setHorizontalHeaderLabels(['', 'Amount', 'Address', 'Pubkey'])
         self.addresses_privkey_tableWidget.setHorizontalHeaderLabels(['Address', 'See Private Key'])
-        self.transactions_tableWidget.setHorizontalHeaderLabels(['Txid','See on Explorer'])
-        self.loop_request_tableWidget.setHorizontalHeaderLabels(['Confirm', 'TxId', 'Amount', 'Maturity', 'Receiver Pubkey', ''])
-        self.transferrequests_tableWidget.setHorizontalHeaderLabels(['Confirm', 'TxId', 'Amount', 'Maturity', 'Receiver Pubkey', ''])
+        self.transactions_tableWidget.setHorizontalHeaderLabels(['Txid', 'See on Explorer'])
+        self.loop_request_tableWidget.setHorizontalHeaderLabels(
+            ['Confirm', 'TxId', 'Amount', 'Maturity', 'Receiver Pubkey', ''])
+        self.transferrequests_tableWidget.setHorizontalHeaderLabels(
+            ['Confirm', 'TxId', 'Amount', 'Maturity', 'Receiver Pubkey', ''])
         self.activeloops_tableWidget.setHorizontalHeaderLabels(['Loop Address', 'Amount'])
-        self.transferableloops_tableWidget.setHorizontalHeaderLabels(['Txid','Details'])
+        self.transferableloops_tableWidget.setHorizontalHeaderLabels(['Txid', 'Details'])
 
     def local_selection(self):
         marmarachain_rpc.set_connection_local()
@@ -378,7 +380,6 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
                     self.sudo_password_lineEdit.setVisible(False)
             if message_box == QMessageBox.No:
                 self.main_tab.setCurrentIndex(0)
-
 
     @pyqtSlot()
     def start_autoinstall(self):
@@ -1247,6 +1248,7 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
         item = self.transactions_tableWidget.item(row, column).text()
         QtWidgets.QApplication.clipboard().setText(item)
         self.bottom_info(self.tr("Copied ") + str(item))
+
     # -------------------------------------------------------------------
     # Credit loops functions
     # --------------------------------------------------------------------
@@ -1263,7 +1265,7 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
             time_diff = selected_datetime - now
         if now > selected_datetime:
             time_diff = now - selected_datetime
-        block_age = int(time_diff.total_seconds()/60)
+        block_age = int(time_diff.total_seconds() / 60)
         # print('block_age ' + str(block_age))
         return str(block_age)
 
@@ -1612,8 +1614,10 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
         else:
             matures_from_date = self.transferable_maturesfrom_dateTimeEdit.dateTime()
             matures_to_date = self.transferable_maturesto_dateTimeEdit.dateTime()
-            firstheight = int(self.currentblock_value_label.text()) - int(self.change_datetime_to_block_age(matures_from_date))
-            lastheight = int(self.currentblock_value_label.text()) + int(self.change_datetime_to_block_age(matures_to_date))
+            firstheight = int(self.currentblock_value_label.text()) - int(
+                self.change_datetime_to_block_age(matures_from_date))
+            lastheight = int(self.currentblock_value_label.text()) + int(
+                self.change_datetime_to_block_age(matures_to_date))
 
         if self.transferable_amount_checkBox.checkState():
             minamount = '0'
