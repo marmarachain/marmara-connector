@@ -16,6 +16,7 @@ marmara_path = None
 is_local = None
 logging.getLogger(__name__)
 
+
 def set_connection_local():
     global is_local
     is_local = True
@@ -88,7 +89,7 @@ def search_marmarad_path():  # will be added for windows search
     windows = False
     if is_local:  # add for windows and mac
         pwd = str(pathlib.Path.home())
-        print('pwd_local :' + pwd)
+        logging.info('pwd local :' + pwd)
         if platform.system() == 'Windows':
             windows = True
         else:
@@ -96,12 +97,12 @@ def search_marmarad_path():  # will be added for windows search
     else:
         pwd_r = remote_connection.server_execute_command('pwd')
         time.sleep(2)
-        print(pwd_r)
+        logging.info('pwd remote' + pwd_r)
         if not pwd_r[0]:
             pwd_r = remote_connection.server_execute_command('pwd')
             time.sleep(1)
         pwd = str(pwd_r[0].replace('\n', ''))
-        print('pwd_remote :' + pwd)
+        logging.info('pwd_remote :' + pwd)
     search_list_linux = ['ls ' + pwd, 'ls ' + pwd + '/marmara/src', 'ls ' + pwd + '/komodo/src']
     search_list_windows = ['PowerShell ls ' + pwd + '\marmara -name']
     if windows:
@@ -116,14 +117,14 @@ def check_path_linux(search_list):
     i = 0
     while True:
         search_path = search_list[i]
-        print('search_path :' + search_path)
+        logging.debug('search_path :' + search_path)
         path = do_search_path(search_path)
-        print(path)
+        logging.debug(path)
         if not path[0] == ['']:
             if 'komodod' in path[0] and 'komodo-cli' in path[0]:
                 out_path = search_path
                 out_path = out_path.replace('ls ', '') + '/'
-                print('out_path :' + out_path)
+                logging.info('out_path :' + out_path)
                 break
             else:
                 i = i + 1
@@ -139,15 +140,15 @@ def check_path_windows(search_list):
     i = 0
     while True:
         search_path = search_list[i]
-        print('search_path :' + search_path)
+        logging.info('search_path :' + search_path)
         path = do_search_path(search_path)
-        print(path)
+        logging.info(path)
         if not path[0] == ['']:
             out = str(path[0]).replace('.exe', '').replace('\r', '')
             if 'komodod' in out and 'komodo-cli' in out:
                 out_path = search_path
                 out_path = out_path.replace('PowerShell ls ', '').replace(' -name', '') + '\\'
-                print('out_path :' + out_path)
+                logging.debug('out_path :' + out_path)
                 break
             else:
                 i = i + 1
@@ -175,7 +176,7 @@ def start_chain(pubkey=None):
                     break
             return
         except Exception as error:
-            print(error)
+            logging.error(error)
     else:
         marmara_param = start_param_remote()
         if not pubkey:
@@ -185,9 +186,9 @@ def start_chain(pubkey=None):
         try:
             start = remote_connection.server_start_chain(marmara_param)
             start.close()
-            print('shell closed')
+            logging.info('shell closed')
         except Exception as error:
-            print(error)
+            logging.error(error)
 
 
 def mcl_chain_status():
@@ -199,35 +200,35 @@ def mcl_chain_status():
             marmarad_pid.terminate()
             return marmarad_pid.stdout.read().decode("utf8"), marmarad_pid.stdout.read().decode("utf8")
         except Exception as error:
-            print(error)
+            logging.error(error)
     else:
         try:
             marmarad_pid = remote_connection.server_execute_command('pidof komodod')
             return marmarad_pid
         except Exception as error:
-            print(error)
+            logging.error(error)
 
 
 def handle_rpc(command):
     if is_local:
         cmd = set_local(command)
-        print('----- sending command ----- \n ' + cmd)
+        logging.info('------sending command ----- \n ' + cmd)
         try:
             proc = subprocess.Popen(cmd, cwd=marmara_path, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             proc.wait()
             retvalue = proc.poll()
             return proc.stdout.read().decode("utf8"), proc.stderr.read().decode("utf8"), retvalue
         except Exception as error:
-            print(error)
+            logging.error(error)
     else:
         cmd = set_remote(command)
         cmd = marmara_path + cmd
-        print('----- sending command ----- \n' + cmd)
+        logging.info('------sending command ----- \n' + cmd)
         try:
             result = remote_connection.server_execute_command(cmd)
             return result
         except Exception as error:
-            print(error)
+            logging.error(error)
 
 
 class RpcHandler(QtCore.QObject):
@@ -311,7 +312,7 @@ class RpcHandler(QtCore.QObject):
         while True:
             getinfo = handle_rpc(cp.getinfo)
             if getinfo[0]:
-                print('----getinfo result ----- \n' + str(getinfo[0]))
+                logging.info('----getinfo result ----- \n' + str(getinfo[0]))
                 self.command_out.emit(getinfo)
                 time.sleep(0.1)
                 addresses = self._get_addresses()
@@ -325,7 +326,7 @@ class RpcHandler(QtCore.QObject):
                     # print('chain ready')
                 else:
                     # self.output.emit(addresses)
-                    print('could not get addresses')
+                    logging.warning('could not get addresses')
                     self.finished.emit()
                 break
             elif getinfo[1]:
@@ -343,7 +344,7 @@ class RpcHandler(QtCore.QObject):
                 if len(pid[0]) == 0:
                     self.finished.emit()
                     self.command_out.emit(pid)
-                    print('chain stopped')
+                    logging.info('chain stopped')
                     break
                 time.sleep(1)
         elif result_out[1]:
@@ -363,7 +364,7 @@ class RpcHandler(QtCore.QObject):
                     if json.loads(validation[0])['ismine']:
                         pubkey = json.loads(validation[0])['pubkey']
                 elif validation[1]:
-                    print(validation[1])
+                    logging.info(validation[1])
                 address_js = {'addresses': [address]}
                 command = cp.getaddressbalance + "'" + json.dumps(address_js) + "'"
                 amounts = handle_rpc(command)
@@ -371,12 +372,12 @@ class RpcHandler(QtCore.QObject):
                     amount = json.loads(amounts[0])['balance']
                     amount = str(int(amount) / 100000000)
                 elif amounts[1]:
-                    print('getting error in getbalance :' + str(amounts[1]))
+                    logging.info('getting error in getbalance :' + str(amounts[1]))
                 address_list = [amount, address, pubkey]
                 wallet_list.append(address_list)
             return wallet_list
         elif addresses[1]:
-            print(addresses[1])
+            logging.info(addresses[1])
             return False
 
     @pyqtSlot()
@@ -385,7 +386,7 @@ class RpcHandler(QtCore.QObject):
         if type(addresses) == list:
             self.walletlist_out.emit(addresses)
         else:
-            print('could not get addresses')
+            logging.info('could not get addresses')
             self.finished.emit()
         time.sleep(0.2)
         self.finished.emit()
@@ -462,7 +463,7 @@ class Autoinstall(QtCore.QObject):
             cmd = self.linux_command_list[i]
             if cmd.startswith('sudo'):
                 cmd = 'sudo -k -S -- ' + cmd + '\n'
-            print(cmd)
+            logging.debug(cmd)
             if is_local:
                 proc = subprocess.Popen(cmd, cwd=str(pathlib.Path.home()), shell=True, stdin=subprocess.PIPE,
                                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -471,16 +472,15 @@ class Autoinstall(QtCore.QObject):
                     proc.stdin.flush()
                 while not proc.stdout.closed:
                     out = proc.stdout.readline().decode()
-                    print(out)
                     self.out_text.emit(out)
                     if out.find('Sorry, try again.') > 0:
-                        print('wrong password')
+                        logging.warning('wrong password')
                         proc.stdout.close()
                         i = len(self.linux_command_list)
                     if not out:
                         proc.stdout.close()
                 exit_status = proc.returncode
-                print(exit_status)
+                logging.debug(exit_status)
                 proc.terminate()
                 i = i + 1
                 if i >= len(self.linux_command_list):
@@ -499,15 +499,15 @@ class Autoinstall(QtCore.QObject):
                     if stdout.channel.recv_ready():
                         out = stdout.channel.recv(65535).decode()
                         time.sleep(2)
-                        print(str(out))
+                        logging.info(str(out))
                         self.out_text.emit(str(out))
                     if stdout.channel.recv_stderr_ready():
                         time.sleep(2)
                         err = stdout.channel.recv_stderr(65535).decode()
                         self.out_text.emit(str(err))
-                        print(str(err))
+                        logging.error(str(err))
                 exit_status = session.recv_exit_status()  # Blocking call
-                print(exit_status)
+                logging.info(exit_status)
                 session.close()
                 sshclient.close()
             i = i + 1
@@ -524,7 +524,7 @@ class Autoinstall(QtCore.QObject):
                 cwd = str(pathlib.Path.home())
             else:
                 cwd = str(pathlib.Path.home()) + '\marmara'
-            print(cwd)
+            logging.debug(cwd)
             proc = subprocess.Popen(cmd, cwd=cwd, shell=True, stdin=subprocess.PIPE,
                                     stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             while not proc.stdout.closed:
@@ -538,7 +538,7 @@ class Autoinstall(QtCore.QObject):
                 if not out:
                     proc.stdout.close()
             exit_status = proc.returncode
-            print(exit_status)
+            logging.debug(exit_status)
             proc.terminate()
             i = i + 1
             if i >= len(self.win_command_list):
