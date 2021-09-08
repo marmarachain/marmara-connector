@@ -2116,13 +2116,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.remote_selection()
 
 
-# if __name__ == '__main__':
-#     app = QtWidgets.QApplication(sys.argv)
-#     app.setOrganizationDomain('marmara.io')
-#     ui = MarmaraMain()
-#     ui.show()
-#     sys.exit(app.exec_())
-
 
 class AppContext(ApplicationContext):
 
