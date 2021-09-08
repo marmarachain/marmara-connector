@@ -24,7 +24,7 @@ class GuiStyle(Ui_MainWindow):
         self.mcl_tab.setTabIcon(0, QtGui.QIcon(self.icon_path + '/chain_icon.png'))
         self.mcl_tab.setTabIcon(1, QtGui.QIcon(self.icon_path + '/wallet_icon.png'))
         self.mcl_tab.setTabIcon(2, QtGui.QIcon(self.icon_path + '/credit.png'))
-        self.mcl_tab.setTabIcon(3, QtGui.QIcon(self.icon_path + '/loop_icon.png'))
+        self.mcl_tab.setTabIcon(3, QtGui.QIcon(qta.icon('fa5b.hornbill')))
         self.mcl_tab.setTabIcon(4, QtGui.QIcon(self.icon_path + '/persons.png'))
         # Side panel
         self.getinfo_refresh_button.setIcon(QtGui.QIcon(self.icon_path + '/refresh_icon.png'))
@@ -48,9 +48,9 @@ class GuiStyle(Ui_MainWindow):
         self.copypubkey_button.setIcon(QtGui.QIcon(self.icon_path + '/copy_key_icon.png'))
         self.copypubkey_button.setIconSize(QtCore.QSize(24, 24))
         # Wallet page button icons
-        self.lock_button.setIcon(QtGui.QIcon(self.icon_path + "/coin_lock_icon.png"))
+        self.lock_button.setIcon(QtGui.QIcon(qta.icon('fa5s.lock')))
         self.lock_button.setIconSize(QtCore.QSize(32, 32))
-        self.unlock_button.setIcon(QtGui.QIcon(self.icon_path + "/coin_unlock_icon.png"))
+        self.unlock_button.setIcon(QtGui.QIcon(qta.icon('fa5s.unlock-alt')))
         self.unlock_button.setIconSize(QtCore.QSize(32, 32))
         self.addressamount_refresh_button.setIcon(QtGui.QIcon(self.icon_path + '/refresh_icon.png'))
         self.addressamount_refresh_button.setIconSize(QtCore.QSize(24, 24))
