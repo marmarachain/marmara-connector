@@ -7,14 +7,24 @@ import logging
 app_name = ApplicationContext().build_settings['app_name']
 author = ApplicationContext().build_settings['author']
 version = ApplicationContext().build_settings['version']
+configuration_path = ApplicationContext().get_resource("configuration")
 
+config_directory_path = user_config_dir(app_name, author, version, roaming=True)
+os.makedirs(config_directory_path, exist_ok=True)  # make platform-specific config directory to store config & log files
 # Typical user config directories are:
 #   Mac OS X:             ~/Library/Application Support/<AppName>
 #   Unix:                 ~/.config/<AppName>     # or in $XDG_CONFIG_HOME, if defined
 #   Win XP (roaming):     C:\Documents and Settings\<username>\Local Settings\Application Data\<AppAuthor>\<AppName>
 #   Win 7  (roaming):     C:\Users\<username>\AppData\Roaming\<AppAuthor>\<AppName>
-config_directory_path = user_config_dir(app_name, author, version, roaming=True)
-log_file_path = os.path.join(config_directory_path, "marmara-connector.log")
+user_data_path = user_data_dir(app_name, author, version, roaming=True)
+os.makedirs(user_data_path, exist_ok=True)  # make platform-specific user directory to store user data files
+# Typical user data directories are:
+#     Mac OS X:               ~/Library/Application Support/<AppName>
+#     Unix:                   ~/.local/share/<AppName>    # or in $XDG_DATA_HOME, if defined
+#     Win XP (roaming=True):  C:\Documents and Settings\<username>\Local Settings\Application Data\<AppAuthor>\<AppName>
+#     Win 7  (roaming=True):  C:\Users\<username>\AppData\Roaming\<AppAuthor>\<AppName>
+
+log_file_path = os.path.join(config_directory_path, "marmara-connector.log")  # configure log file directory
 logging.getLogger(__name__)
 stream_handler = logging.StreamHandler()  # create stream handler and set level to debug
 stream_handler.setLevel(logging.DEBUG)  # set stream handler level to debug
@@ -26,8 +36,6 @@ logging.basicConfig(level=logging.DEBUG,
 
 class ApplicationConfig:
     config_file = "marmara-connector.conf"
-    # make platform-specific config directory to store config and log files
-    os.makedirs(config_directory_path, exist_ok=True)
     config_file_path = os.path.join(config_directory_path, config_file)
 
     def __init__(self):
@@ -61,20 +69,9 @@ class ApplicationConfig:
             return False
 
 
-user_data_path = user_data_dir(app_name, author, version, roaming=True)
-# Typical user data directories are:
-#     Mac OS X:               ~/Library/Application Support/<AppName>
-#     Unix:                   ~/.local/share/<AppName>    # or in $XDG_DATA_HOME, if defined
-#     Win XP (roaming=True):  C:\Documents and Settings\<username>\Local Settings\Application Data\<AppAuthor>\<AppName>
-#     Win 7  (roaming=True):  C:\Users\<username>\AppData\Roaming\<AppAuthor>\<AppName>
-
-os.makedirs(user_data_path, exist_ok=True)  # make platform-specific user directory to store user data files
-
-
 class ServerSettings:
     server_conf_file = "servers.info"
     server_config_file_path = os.path.join(user_data_path, server_conf_file)
-    print("server_config_file_path located in: " + server_config_file_path)
 
     # Create the file if it does not exist
     if not os.path.exists(server_config_file_path) or os.stat(server_config_file_path).st_size == 0:
@@ -85,8 +82,8 @@ class ServerSettings:
             file = open(self.server_config_file_path, 'a')
             server_params = server_name + "," + server_username + "," + server_ip + "\n"
             file.write(server_params)
-        except IOError:
-            logging.error("Exception error while reading server file: " + IOError)
+        except IOError as error:
+            logging.error("Exception error while reading server file: " + error)
         finally:
             file.close()
 
@@ -97,8 +94,8 @@ class ServerSettings:
                 file = open(self.server_config_file_path, "r")
                 server_all_info = file.read().rstrip()
                 server_list = server_all_info.split("\n")
-            except IOError:
-                logging.error("Exception error while reading server file: " + IOError)
+            except IOError as error:
+                logging.error("Exception error while reading server file: " + error)
             finally:
                 file.close()
         return server_list
@@ -108,14 +105,13 @@ class ServerSettings:
             file = open(self.server_config_file_path, 'w')
             for line in server_list:
                 file.write(line + "\n")
-        except IOError:
-            logging.error("Exception error while reading server file: " + IOError)
+        except IOError as error:
+            logging.error("Exception error while reading server file: " + error)
         finally:
             file.close()
 
 
 class ContactsSettings:
-
     contacts_file = "contacts.csv"
     header = ['Name', 'Address', 'Pubkey']
     contacts_file_path = os.path.join(user_data_path, contacts_file)
@@ -129,22 +125,20 @@ class ContactsSettings:
         if os.path.isfile(self.contacts_file_path):
             return
         else:
-            logging.warning('No contacts file found under ' + self.user_data_path)
+            logging.warning('No contacts file found under ' + user_data_path)
             self.create_csv_file()
-            logging.info('Contacts file named ' + self.contacts_file + 'is created under ' + self.user_data_path)
+            logging.info('Contacts file named ' + self.contacts_file + 'is created under ' + user_data_path)
             return
 
     def read_csv_file(self):
         self.is_file_exist()
-        contactdata = open(self.contacts_file_path, 'r')
-        contactdata_reader = csv.reader(contactdata)
-        contactdata_list = []
-        for row in contactdata_reader:
-            contactdata_list.append(row)
-        contactdata.close()
-        return contactdata_list
-
-
+        contact_data = open(self.contacts_file_path, 'r')
+        contact_data_reader = csv.reader(contact_data)
+        contact_data_list = []
+        for row in contact_data_reader:
+            contact_data_list.append(row)
+        contact_data.close()
+        return contact_data_list
 
     def add_csv_file(self, row):
         if not os.path.isfile(self.contacts_file_path):
