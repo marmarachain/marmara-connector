@@ -15,6 +15,7 @@ from PyQt5.QtWidgets import QMainWindow, QPushButton, QTableWidgetItem, QMessage
     QDialog, QDialogButtonBox, QVBoxLayout, QComboBox
 import configuration
 import marmarachain_rpc
+import version
 import remote_connection
 import chain_args as cp
 from qtguistyle import GuiStyle
@@ -40,6 +41,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.chain_status = False
         self.pubkey_status = False
         self.center_ui()
+        self.check_app_version()
+        self.read_lang_setting()
         # paths settings
         # Menu Actions
         self.actionAbout.triggered.connect(self.show_about)
@@ -185,6 +188,25 @@ class MarmaraMain(QMainWindow, GuiStyle):
         qr.moveCenter(center_point)
         self.move(qr.topLeft())
 
+    def check_app_version(self):
+        base_version = configuration.version
+        latest_app_tag = version.git_request_tag(version.app_api_url)
+        latest_app_version = version.latest_app_release_url()
+
+        if base_version != latest_app_tag:
+            message_box = self.custom_message(self.tr('Software Update Available'),
+                                              self.tr('A new update is available. <br>Follow the link '
+                                                      + "<a href='"+latest_app_version+"'>here</a>"),
+                                              'information', QMessageBox.Information)
+
+    def read_lang_setting(self):
+        language = configuration.ApplicationConfig().get_value('USER', 'lang')
+        if language:
+            entries = os.listdir(configuration.configuration_path + '/language')
+            for item in entries:
+                if item.strip('.qm') == language:
+                    self.change_lang(language)
+
     @pyqtSlot()
     def show_languages(self):
 
@@ -206,25 +228,29 @@ class MarmaraMain(QMainWindow, GuiStyle):
             self.lang_comboBox.addItem(item.strip('.qm'))
             self.lang_comboBox.setItemIcon(entries.index(item), QIcon(
                 self.icon_path + "/lang_icons" + "/" + item.strip('.qm') + ".png"))
-        apply_button.clicked.connect(self.change_lang)
+        apply_button.clicked.connect(self.get_lang_selection)
         apply_button.clicked.connect(languageDialog.close)
         languageDialog.exec_()
 
     @QtCore.pyqtSlot()
-    def change_lang(self):
+    def get_lang_selection(self):
         data = self.lang_comboBox.currentText()
         if data:
-            self.trans.load(configuration.configuration_path + '/language/' + data + '.qm')
-            QtWidgets.QApplication.instance().installTranslator(self.trans)
-            self.retranslateUi(MarmaraMain)
+            self.change_lang(data)
+            configuration.ApplicationConfig().set_key_value('USER', 'lang', data)
         else:
             QtWidgets.QApplication.instance().removeTranslator(self.trans)
+
+    def change_lang(self, data):
+        self.trans.load(configuration.configuration_path + '/language/' + data + '.qm')
+        QtWidgets.QApplication.instance().installTranslator(self.trans)
+        self.retranslateUi(MarmaraMain)
 
     def show_about(self):
         QMessageBox.about(self,
                           self.tr("About Marmara Connector"),
                           self.tr("This is a software written to carry out Marmarachain node operations "
-                                  "on a local or remote machine.")
+                                  "on a local or remote machine." + "<br>Version info: " + configuration.version)
                           )
 
     def custom_message(self, title, content, message_type, icon=None, detailed_text=None):
@@ -2114,7 +2140,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
         del server_list[self.server_comboBox.currentIndex()]
         configuration.ServerSettings().delete_record(server_list)
         self.remote_selection()
-
 
 
 class AppContext(ApplicationContext):
