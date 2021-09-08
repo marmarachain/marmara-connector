@@ -425,19 +425,18 @@ class Autoinstall(QtCore.QObject):
 
     def __init__(self):
         super().__init__()
-        self.mcl_linux_download_command = version.latest_marmara_zip_url()
+        self.mcl_download_url = version.latest_marmara_download_url()
         self.mcl_linux_zipname = 'MCL-linux.zip'
         self.linux_command_list = ['sudo apt-get update', 'sudo apt-get install libgomp1 -y',
-                                   'sudo wget ' + str(self.mcl_linux_download_command) + '/' + self.mcl_linux_zipname +
+                                   'sudo wget ' + str(self.mcl_download_url) + '/' + self.mcl_linux_zipname +
                                    " -O " + self.mcl_linux_zipname, 'sudo apt-get install unzip -y',
                                    'unzip MCL-linux.zip', 'sudo chmod +x komodod komodo-cli fetch-params.sh',
                                    './fetch-params.sh']
 
-        self.mcl_linux_download_command = version.latest_marmara_zip_url()
-        self.mcl_linux_zipname = 'MCL-win.zip'
+        self.mcl_win_zipname = 'MCL-win.zip'
         self.win_command_list = ['mkdir marmara',
-                                 'curl -L ' + str(self.mcl_linux_download_command) + '/' + self.mcl_linux_zipname +
-                                 " > " + self.mcl_linux_zipname, 'PowerShell Expand-Archive .\MCL-win.zip . -Force',
+                                 'curl -L ' + str(self.mcl_download_url) + '/' + self.mcl_win_zipname +
+                                 " > " + self.mcl_win_zipname, 'PowerShell Expand-Archive .\MCL-win.zip . -Force',
                                  'fetch-params.bat']
         self.sudo_password = ""
 
