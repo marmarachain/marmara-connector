@@ -18,6 +18,7 @@ import marmarachain_rpc
 import remote_connection
 import chain_args as cp
 from qtguistyle import GuiStyle
+import qtguistyle
 from Loading import LoadingScreen
 import qtawesome as qta
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
@@ -25,7 +26,7 @@ from fbs_runtime.application_context.PyQt5 import ApplicationContext
 logging.getLogger(__name__)
 
 
-class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
+class MarmaraMain(QMainWindow, GuiStyle):
 
     def __init__(self, parent=None):
         super(MarmaraMain, self).__init__(parent)
@@ -198,13 +199,13 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
         languageDialog.layout.addWidget(apply_button)
         languageDialog.setLayout(languageDialog.layout)
 
-        entries = os.listdir(self.get_resource('configuration') + '/language')
+        entries = os.listdir(configuration.configuration_path + '/language')
         entries.sort()
 
         for item in entries:
             self.lang_comboBox.addItem(item.strip('.qm'))
             self.lang_comboBox.setItemIcon(entries.index(item), QIcon(
-                self.get_resource('images') + "/lang_icons" + "/" + item.strip('.qm') + ".png"))
+                self.icon_path + "/lang_icons" + "/" + item.strip('.qm') + ".png"))
         apply_button.clicked.connect(self.change_lang)
         apply_button.clicked.connect(languageDialog.close)
         languageDialog.exec_()
@@ -213,7 +214,7 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
     def change_lang(self):
         data = self.lang_comboBox.currentText()
         if data:
-            self.trans.load(self.get_resource('configuration') + '/language/' + data + '.qm')
+            self.trans.load(configuration.configuration_path + '/language/' + data + '.qm')
             QtWidgets.QApplication.instance().installTranslator(self.trans)
             self.retranslateUi(MarmaraMain)
         else:
@@ -726,7 +727,6 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
     @pyqtSlot(tuple)
     def setgenerate_result(self, result_out):
         if result_out[0]:
-            print('\n-----getgenerate result------\n' + str(json.loads(result_out[0])))
             logging.debug('\n---- getgenerate result------\n' + str(json.loads(result_out[0])))
             result = json.loads(result_out[0])
             if result.get('staking') is True and result.get('generate') is False:
@@ -2115,12 +2115,27 @@ class MarmaraMain(QMainWindow, GuiStyle, ApplicationContext):
         configuration.ServerSettings().delete_record(server_list)
         self.remote_selection()
 
-    # ----------------------------------------------------------------------------
+
+# if __name__ == '__main__':
+#     app = QtWidgets.QApplication(sys.argv)
+#     app.setOrganizationDomain('marmara.io')
+#     ui = MarmaraMain()
+#     ui.show()
+#     sys.exit(app.exec_())
+
+
+class AppContext(ApplicationContext):
+
+    def run(self):
+        version = self.build_settings['version']
+        app = QtWidgets.QApplication(sys.argv)
+        app.setOrganizationDomain('marmara.io')
+        ui = MarmaraMain()
+        ui.show()
+        return self.app.exec_()
 
 
 if __name__ == '__main__':
-    app = QtWidgets.QApplication(sys.argv)
-    app.setOrganizationDomain('marmara.io')
-    ui = MarmaraMain()
-    ui.show()
-    sys.exit(app.exec_())
+    appctxt = AppContext()
+    exit_code = appctxt.run()
+    sys.exit(exit_code)
