@@ -3,6 +3,7 @@ from PyQt5.QtCore import Qt, QRect
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 from qtguidesign import Ui_MainWindow
 from PyQt5.uic import loadUi
+import qtawesome as qta
 
 icon_path = ApplicationContext().get_resource("images")
 
@@ -11,7 +12,7 @@ class GuiStyle(Ui_MainWindow):
 
     def __init__(self):
         # loadUi("qtguidesign.ui", self)  #  loadin from qtguidesign.ui
-        self.setupUi(self)   # loading from qtguidesign.py
+        self.setupUi(self)  # loading from qtguidesign.py
         # setting params
         self.icon_path = icon_path
         # stop button style
@@ -56,21 +57,21 @@ class GuiStyle(Ui_MainWindow):
         # Coin Send-Receive page
         self.coinsend_button.setIcon(QtGui.QIcon(self.icon_path + '/send_coin_icon.png'))
         self.coinsend_button.setIconSize(QtCore.QSize(24, 24))
-        self.transaction_search_button.setIcon(QtGui.QIcon(self.icon_path + '/search_icon.png'))
+        self.transaction_search_button.setIcon(QtGui.QIcon(qta.icon('fa.search')))
         self.transaction_search_button.setIconSize(QtCore.QSize(24, 24))
         # Credit loops page
-        self.looprequest_search_button.setIcon(QtGui.QIcon(self.icon_path + '/search_icon.png'))
+        self.looprequest_search_button.setIcon(QtGui.QIcon(qta.icon('fa.search')))
         self.looprequest_search_button.setIconSize(QtCore.QSize(24, 24))
 
-        self.lq_pubkey_search_button.setIcon(QtGui.QIcon(self.icon_path + '/search_icon.png'))
+        self.lq_pubkey_search_button.setIcon(QtGui.QIcon(qta.icon('fa.search')))
         self.lq_pubkey_search_button.setIconSize(QtCore.QSize(24, 24))
 
-        self.lq_txid_search_button.setIcon(QtGui.QIcon(self.icon_path + '/search_icon.png'))
+        self.lq_txid_search_button.setIcon(QtGui.QIcon(qta.icon('fa.search')))
         self.lq_txid_search_button.setIconSize(QtCore.QSize(24, 24))
 
-        self.activeloops_search_button.setIcon(QtGui.QIcon(self.icon_path + '/search_icon.png'))
+        self.activeloops_search_button.setIcon(QtGui.QIcon(qta.icon('fa.search')))
         self.activeloops_search_button.setIconSize(QtCore.QSize(24, 24))
-        self.transferableloops_search_button.setIcon(QtGui.QIcon(self.icon_path + '/search_icon.png'))
+        self.transferableloops_search_button.setIcon(qta.icon('fa.search'))
         self.transferableloops_search_button.setIconSize(QtCore.QSize(24, 24))
         # line edit cursor focus
         self.serverpw_lineEdit.setFocus()
@@ -81,8 +82,9 @@ class GuiStyle(Ui_MainWindow):
         self.edit_servername_lineEdit.setFocus()
         self.edit_serverusername_lineEdit.setFocus()
 
+
 class ToggleSwitch(QtWidgets.QPushButton):
-    def __init__(self, parent = None):
+    def __init__(self, parent=None):
         super().__init__(parent)
 
         self.setCheckable(True)
@@ -100,15 +102,15 @@ class ToggleSwitch(QtWidgets.QPushButton):
         painter = QtGui.QPainter(self)
         painter.setRenderHint(QtGui.QPainter.Antialiasing)
         painter.translate(center)
-        painter.setBrush(QtGui.QColor(0,0,0))
+        painter.setBrush(QtGui.QColor(0, 0, 0))
 
         pen = QtGui.QPen(Qt.black)
         pen.setWidth(2)
         painter.setPen(pen)
 
-        painter.drawRoundedRect(QRect(-width, -radius, 2*width, 2*radius), radius, radius)
+        painter.drawRoundedRect(QRect(-width, -radius, 2 * width, 2 * radius), radius, radius)
         painter.setBrush(QtGui.QBrush(bg_color))
-        sw_rect = QRect(-radius, -radius, width + radius, 2*radius)
+        sw_rect = QRect(-radius, -radius, width + radius, 2 * radius)
         if not self.isChecked():
             sw_rect.moveLeft(-width)
         painter.drawRoundedRect(sw_rect, radius, radius)
