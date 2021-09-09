@@ -12,7 +12,7 @@ from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import QIcon, QRegExpValidator
 from PyQt5.QtCore import QThread, pyqtSlot, QDateTime, QSize, Qt, QTranslator, QRegExp
 from PyQt5.QtWidgets import QMainWindow, QPushButton, QTableWidgetItem, QMessageBox, QDesktopWidget, QHeaderView, \
-    QDialog, QDialogButtonBox, QVBoxLayout, QComboBox
+    QDialog, QDialogButtonBox, QVBoxLayout, QComboBox, QWidget, QGridLayout
 import configuration
 import marmarachain_rpc
 import version
@@ -48,6 +48,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.actionAbout.triggered.connect(self.show_about)
         self.actionLogout.triggered.connect(self.host_selection)
         self.actionLanguage_Selection.triggered.connect(self.show_languages)
+        self.actionConsole.triggered.connect(self.open_debug_console)
 
         #   Login page Host Selection
         self.local_button.clicked.connect(self.local_selection)
@@ -323,6 +324,24 @@ class MarmaraMain(QMainWindow, GuiStyle):
         marmarachain_rpc.set_connection_remote()
         logging.info('is local connection: ' + str(marmarachain_rpc.is_local))
         self.serverpw_lineEdit.clear()
+
+    def open_debug_console(self):
+
+        debugDialog = QDialog()
+        debugDialog.setWindowTitle(self.tr("Debug Console"))
+        command_browser = QtWidgets.QTextBrowser()
+        command_lineEdit = QtWidgets.QLineEdit()
+        clear_pushButton = QtWidgets.QPushButton()
+        clear_pushButton.setText(self.tr('Clear'))
+
+        debugDialog.layout = QGridLayout()
+        debugDialog.layout.addWidget(clear_pushButton)
+        debugDialog.layout.addWidget(command_browser)
+        debugDialog.layout.addWidget(command_lineEdit)
+        debugDialog.setLayout(debugDialog.layout)
+
+        debugDialog.exec_()
+
 
     @pyqtSlot(int)
     def mcl_tab_changed(self, index):
