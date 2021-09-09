@@ -212,7 +212,10 @@ def mcl_chain_status():
 def handle_rpc(command):
     if is_local:
         cmd = set_local(command)
-        logging.info('------sending command ----- \n ' + cmd)
+        if command.split(" ")[0] != cp.convertpassphrase and command.split(' ')[0] != cp.importprivkey:
+            logging.info('------sending command----- \n ' + cmd)
+        else:
+            logging.info('------sending command----- \n ' + command.split(' ')[0])
         try:
             proc = subprocess.Popen(cmd, cwd=marmara_path, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             proc.wait()
