@@ -303,11 +303,11 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.transferableloops_tableWidget.clear()
         self.addresses_tableWidget.setHorizontalHeaderLabels(['', 'Amount', 'Address', 'Pubkey'])
         self.addresses_privkey_tableWidget.setHorizontalHeaderLabels(['Address', 'See Private Key'])
-        self.transactions_tableWidget.setHorizontalHeaderLabels(['Txid', 'See on Explorer'])
-        self.loop_request_tableWidget.setHorizontalHeaderLabels(
-            ['Confirm', 'TxId', 'Amount', 'Maturity', 'Receiver Pubkey', ''])
-        self.transferrequests_tableWidget.setHorizontalHeaderLabels(
-            ['Confirm', 'TxId', 'Amount', 'Maturity', 'Receiver Pubkey', ''])
+        self.transactions_tableWidget.setHorizontalHeaderLabels(['See on Explorer', 'Txid'])
+        self.loop_request_tableWidget.setHorizontalHeaderLabels(['Confirm', 'TxId', 'Amount', 'Maturity',
+                                                                 'Receiver Pubkey', ''])
+        self.transferrequests_tableWidget.setHorizontalHeaderLabels(['Confirm', 'TxId', 'Amount', 'Maturity',
+                                                                     'Receiver Pubkey', ''])
         self.activeloops_tableWidget.setHorizontalHeaderLabels(['Loop Address', 'Amount'])
         self.transferableloops_tableWidget.setHorizontalHeaderLabels(['Txid', 'Details'])
 
@@ -452,7 +452,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
     @pyqtSlot(int)
     def start_autoinstall_progress(self, val):
         self.install_progressBar.setValue(val)
-        print(val)
         if val >= 96:
             self.install_progressBar.setValue(100)
             message_box = self.custom_message(self.tr('Installation Completed'), self.tr('Starting Marmarachain'),
@@ -1005,7 +1004,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def set_importprivkey_result(self, result_out):
         if result_out[0]:
             self.bottom_info(self.tr(str(result_out[0])))
-            print(result_out[0])
+            print(result_out[0])  # TO DO
         elif result_out[1]:
             self.bottom_err_info(self.tr(result_out[1]))
 
@@ -1154,7 +1153,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
         if not self.unlock_amount_value.text() == "":
             self.worker_marmaraunlock = marmarachain_rpc.RpcHandler()
             command = cp.marmaraunlock + ' ' + self.unlock_amount_value.text()
-            print(command)
             marmarunlock_thread = self.worker_thread(self.thread_marmaraunlock, self.worker_marmaraunlock, command)
             marmarunlock_thread.command_out.connect(self.marmaraunlock_amount_result)
 
@@ -1498,7 +1496,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                                                       "<br><b>Pubkey = </b>" + result.get('receiverpk')), "question",
                                                   QMessageBox.Question)
                 if message_box == QMessageBox.Yes:
-                    print(self.sendrawtransaction(result.get('hex')))
+                    self.sendrawtransaction(result.get('hex'))
                 if message_box == QMessageBox.No:
                     self.bottom_info(self.tr('Transaction aborted'))
                     logging.info('Transaction aborted')
@@ -1805,7 +1803,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
             if result.get('result') == "success":
                 self.lq_pubkeynormalamount_value_label.setText(str(result.get('myPubkeyNormalAmount')))
                 self.lq_pubkeyactivatedamount_value_label.setText(str(result.get('myActivatedAmount')))
-                # print(result.get('TotalLockedInLoop'))
                 self.lq_activeloopno_value_label.setText(str(result.get('numpending')))
                 self.lq_pubkeyloopamount_value_label.setText(str(result.get('TotalLockedInLoop')))
                 self.lq_closedloopno_value_label.setText(str(result.get('numclosed')))
@@ -2050,7 +2047,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
 
     @pyqtSlot()
     def delete_contact(self):
-        print(self.contact_editing_row)
         if self.contact_editing_row is not None:
             message_box = self.custom_message(self.tr('Deleting Contact'),
                                               self.tr('Are you sure to delete the contact from the list?'),

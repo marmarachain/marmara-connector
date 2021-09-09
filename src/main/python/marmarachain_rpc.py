@@ -246,15 +246,6 @@ class RpcHandler(QtCore.QObject):
     def set_command(self, value):
         self.command = value
 
-    # @pyqtSlot(object, str)
-    # def set_bottom_info(self, info_obj, value):
-    #     self.bottom_info_obj = info_obj
-    #     self.info_value = value
-    #
-    # @pyqtSlot()
-    # def write_bottom_info(self):
-    #     self.bottom_info_obj.setText(self.info_value)
-    #     self.finished.emit()
 
     @pyqtSlot()
     def do_execute_rpc(self):

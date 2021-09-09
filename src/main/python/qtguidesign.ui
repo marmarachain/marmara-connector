@@ -18,6 +18,9 @@
     <pointsize>16</pointsize>
    </font>
   </property>
+  <property name="mouseTracking">
+   <bool>false</bool>
+  </property>
   <property name="windowTitle">
    <string notr="true">Marmara Connector</string>
   </property>
@@ -936,7 +939,7 @@
                 <enum>QFrame::Sunken</enum>
                </property>
                <property name="text">
-                <string>0</string>
+                <string/>
                </property>
                <property name="textInteractionFlags">
                 <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
@@ -965,7 +968,7 @@
               <widget class="QPushButton" name="chainsync_button">
                <property name="font">
                 <font>
-                 <pointsize>12</pointsize>
+                 <pointsize>9</pointsize>
                 </font>
                </property>
                <property name="text">
@@ -1012,7 +1015,7 @@
                 <enum>QFrame::Sunken</enum>
                </property>
                <property name="text">
-                <string>0</string>
+                <string/>
                </property>
                <property name="textInteractionFlags">
                 <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
@@ -1033,7 +1036,7 @@
                 <enum>QFrame::Plain</enum>
                </property>
                <property name="text">
-                <string>0</string>
+                <string/>
                </property>
                <property name="textInteractionFlags">
                 <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
@@ -1078,7 +1081,7 @@
                 <enum>QFrame::Sunken</enum>
                </property>
                <property name="text">
-                <string>0</string>
+                <string/>
                </property>
                <property name="textInteractionFlags">
                 <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
@@ -1113,7 +1116,7 @@
               <widget class="QPushButton" name="chainstatus_button">
                <property name="font">
                 <font>
-                 <pointsize>12</pointsize>
+                 <pointsize>9</pointsize>
                 </font>
                </property>
                <property name="text">
@@ -1141,7 +1144,7 @@
                 <enum>QFrame::Plain</enum>
                </property>
                <property name="text">
-                <string>0</string>
+                <string/>
                </property>
                <property name="textInteractionFlags">
                 <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
@@ -1150,19 +1153,6 @@
              </item>
             </layout>
            </widget>
-          </item>
-          <item row="5" column="0">
-           <spacer name="verticalSpacer_28">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
           </item>
           <item row="4" column="0">
            <widget class="QFrame" name="address_pubkey_frame">
@@ -1179,6 +1169,30 @@
              <enum>QFrame::Plain</enum>
             </property>
             <layout class="QGridLayout" name="gridLayout_2">
+             <item row="0" column="2">
+              <widget class="QPushButton" name="copypubkey_button">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>12</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
              <item row="0" column="1">
               <widget class="QPushButton" name="copyaddress_button">
                <property name="sizePolicy">
@@ -1189,7 +1203,7 @@
                </property>
                <property name="minimumSize">
                 <size>
-                 <width>130</width>
+                 <width>0</width>
                  <height>0</height>
                 </size>
                </property>
@@ -1199,35 +1213,11 @@
                 </font>
                </property>
                <property name="text">
-                <string>Copy Address</string>
+                <string/>
                </property>
               </widget>
              </item>
-             <item row="2" column="1">
-              <widget class="QPushButton" name="copypubkey_button">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>130</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="font">
-                <font>
-                 <pointsize>12</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>Copy Pubkey</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="2" rowspan="3">
+             <item row="0" column="3">
               <spacer name="horizontalSpacer_44">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
@@ -1240,7 +1230,7 @@
                </property>
               </spacer>
              </item>
-             <item row="0" column="0" rowspan="3">
+             <item row="0" column="0">
               <spacer name="horizontalSpacer_43">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
@@ -1326,7 +1316,7 @@
               <widget class="QPushButton" name="mining_button">
                <property name="font">
                 <font>
-                 <pointsize>12</pointsize>
+                 <pointsize>9</pointsize>
                 </font>
                </property>
                <property name="text">
@@ -1338,7 +1328,7 @@
               <widget class="QPushButton" name="staking_button">
                <property name="font">
                 <font>
-                 <pointsize>12</pointsize>
+                 <pointsize>9</pointsize>
                 </font>
                </property>
                <property name="text">
@@ -1399,6 +1389,11 @@
                </item>
                <item>
                 <widget class="QPushButton" name="cpu_core_set_button">
+                 <property name="font">
+                  <font>
+                   <pointsize>12</pointsize>
+                  </font>
+                 </property>
                  <property name="text">
                   <string>Set</string>
                  </property>
@@ -1420,6 +1415,125 @@
                 <set>Qt::AlignCenter</set>
                </property>
               </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <spacer name="verticalSpacer_28">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="6" column="0">
+           <widget class="QFrame" name="supportus_frame">
+            <property name="maximumSize">
+             <size>
+              <width>260</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>11</pointsize>
+             </font>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::WinPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_24">
+             <item row="1" column="1" colspan="3">
+              <widget class="QPushButton" name="support_button">
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Support</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QPushButton" name="pushButton">
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <widget class="QLabel" name="label">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>x</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="3">
+              <widget class="QLineEdit" name="lineEdit">
+               <property name="maximumSize">
+                <size>
+                 <width>80</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0" rowspan="2">
+              <spacer name="horizontalSpacer_56">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="0" column="4" rowspan="2">
+              <spacer name="horizontalSpacer_57">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
              </item>
             </layout>
            </widget>
@@ -1453,7 +1567,7 @@
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>4</number>
           </property>
           <property name="iconSize">
            <size>
@@ -2712,7 +2826,7 @@
               </attribute>
               <column>
                <property name="text">
-                <string>txid</string>
+                <string>See on Explorer</string>
                </property>
                <property name="textAlignment">
                 <set>AlignLeading|AlignTop</set>
@@ -2720,7 +2834,7 @@
               </column>
               <column>
                <property name="text">
-                <string>See on Explorer</string>
+                <string>txid</string>
                </property>
                <property name="textAlignment">
                 <set>AlignLeading|AlignTop</set>
@@ -3048,7 +3162,7 @@
                <enum>QTabWidget::Rounded</enum>
               </property>
               <property name="currentIndex">
-               <number>0</number>
+               <number>2</number>
               </property>
               <widget class="QWidget" name="looprequests_tab">
                <attribute name="title">
@@ -4129,7 +4243,7 @@
                      <item row="4" column="0">
                       <widget class="QLabel" name="activeloops_pending_number_label">
                        <property name="text">
-                        <string>number of Pending </string>
+                        <string>Number of Pending </string>
                        </property>
                       </widget>
                      </item>
@@ -4821,7 +4935,11 @@
                 </widget>
                </item>
                <item row="0" column="1">
-                <widget class="QLineEdit" name="contactname_lineEdit"/>
+                <widget class="QLineEdit" name="contactname_lineEdit">
+                 <property name="focusPolicy">
+                  <enum>Qt::StrongFocus</enum>
+                 </property>
+                </widget>
                </item>
                <item row="1" column="0">
                 <widget class="QLabel" name="contactaddress_label">
@@ -5078,15 +5196,7 @@
               </widget>
              </item>
              <item row="0" column="0">
-              <widget class="QTextBrowser" name="install_progress_textBrowser">
-               <property name="html">
-                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-              </widget>
+              <widget class="QTextBrowser" name="install_progress_textBrowser"/>
              </item>
             </layout>
            </item>
@@ -5298,7 +5408,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>staking_button</tabstop>
   <tabstop>mining_button</tabstop>
   <tabstop>copyaddress_button</tabstop>
-  <tabstop>copypubkey_button</tabstop>
   <tabstop>chainsync_button</tabstop>
   <tabstop>chainstatus_button</tabstop>
   <tabstop>addresspage_back_button</tabstop>
