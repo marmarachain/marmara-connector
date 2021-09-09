@@ -9,10 +9,10 @@ import qrcode
 from datetime import datetime, timedelta
 from qr_code_gen import Image
 from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtGui import QIcon, QRegExpValidator
+from PyQt5.QtGui import QIcon, QRegExpValidator, QFont
 from PyQt5.QtCore import QThread, pyqtSlot, QDateTime, QSize, Qt, QTranslator, QRegExp
 from PyQt5.QtWidgets import QMainWindow, QPushButton, QTableWidgetItem, QMessageBox, QDesktopWidget, QHeaderView, \
-    QDialog, QDialogButtonBox, QVBoxLayout, QComboBox, QWidget, QGridLayout
+    QDialog, QDialogButtonBox, QVBoxLayout, QComboBox, QWidget, QGridLayout, QToolTip
 import configuration
 import marmarachain_rpc
 import version
@@ -82,6 +82,12 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.cpu_core_set_button.clicked.connect(self.setmining_cpu_core)
         self.mining_button.clicked.connect(self.toggle_mining)
         self.getinfo_refresh_button.clicked.connect(self.refresh_side_panel)
+        QToolTip.setFont(QFont('SansSerif', 10))
+        self.support_pushButton.setToolTip(self.tr("Treat Marmara Core Team cups of coffee"))
+        self.cup_lineEdit.setValidator(self.validator)
+        self.cup_lineEdit.textChanged.connect(self.calculate_amount)
+        self.cup_lineEdit.returnPressed.connect(self.send_coins_to_team)
+        self.support_pushButton.clicked.connect(self.send_coins_to_team)
         # Chain page
         self.stopchain_button.clicked.connect(self.stop_chain)
         self.addaddress_page_button.clicked.connect(self.get_address_page)
@@ -177,6 +183,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.thread_marmaraissue = QThread()
         self.thread_marmaratransfer = QThread()
         self.thread_getaddresstxids = QThread()
+        self.thread_sendtoteam = QThread()
 
         # Loading Gif
         # --------------------------------------------------
@@ -197,7 +204,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         if base_version != latest_app_tag:
             message_box = self.custom_message(self.tr('Software Update Available'),
                                               self.tr('A new update is available. <br>Follow the link '
-                                                      + "<a href='"+latest_app_version+"'>here</a>"),
+                                                      + "<a href='" + latest_app_version + "'>here</a>"),
                                               'information', QMessageBox.Information)
 
     def read_lang_setting(self):
@@ -341,7 +348,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
         debugDialog.setLayout(debugDialog.layout)
 
         debugDialog.exec_()
-
 
     @pyqtSlot(int)
     def mcl_tab_changed(self, index):
@@ -799,6 +805,51 @@ class MarmaraMain(QMainWindow, GuiStyle):
         cpu_no = self.cpu_core_lineEdit.text()
         self.setgenerate('true ' + str(cpu_no))
 
+    @pyqtSlot()
+    def calculate_amount(self):
+        number_of_cups = self.cup_lineEdit.text()
+        if self.cup_lineEdit.text() == "":
+            number_of_cups = 0
+            self.support_pushButton.setEnabled(False)
+            self.support_pushButton.setText(self.tr('Support'))
+        else:
+            amount = int(number_of_cups) * 50
+            self.support_pushButton.setEnabled(True)
+            self.support_pushButton.setText(self.tr('Support (') + str(amount) + ' MCL)')
+
+    @pyqtSlot()
+    def send_coins_to_team(self):
+        number_of_cups = self.cup_lineEdit.text()
+        amount = int(number_of_cups) * 50
+        team_address = 'RXWqisAoJKEGVyXj46Zo3fDZnZTwQA6kQE'
+        self.support_pushButton.setText(self.tr('Support (') + str(amount) + ' MCL)')
+        message_box = self.custom_message(self.tr('Confirm Transaction'),
+                                          self.tr(
+                                              f'You are about to send {amount} MCL to Marmara Core Team.'),
+                                          "question",
+                                          QMessageBox.Question)
+        if message_box == QMessageBox.Yes:
+            self.worker_sendtoteam = marmarachain_rpc.RpcHandler()
+            command = cp.sendtoaddress + ' ' + team_address + ' ' + str(amount)
+            sendtoteam_thread = self.worker_thread(self.thread_sendtoteam, self.worker_sendtoteam, command)
+            sendtoteam_thread.command_out.connect(self.send_coins_to_team_result)
+        if message_box == QMessageBox.No:
+            self.bottom_info(self.tr('Transaction aborted'))
+            logging.info('Transaction aborted')
+
+    @pyqtSlot(tuple)
+    def send_coins_to_team_result(self, result_out):
+        if result_out[0]:
+            logging.info(result_out[0])
+        elif result_out[1]:
+            if self.chain_status is False:
+                self.bottom_err_info((result_out[1]))
+            result = str(result_out[1]).splitlines()
+            if str(result_out[1]).find('error message:') != -1:
+                index = result.index('error message:') + 1
+                self.bottom_info(result[index])
+                logging.error(result[index])
+
     # -----------------------------------------------------------
     # Chain page functions
     # -----------------------------------------------------------
@@ -1023,7 +1074,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def set_importprivkey_result(self, result_out):
         if result_out[0]:
             self.bottom_info(self.tr(str(result_out[0])))
-            print(result_out[0])  # TO DO
         elif result_out[1]:
             self.bottom_err_info(self.tr(result_out[1]))
 
@@ -1072,9 +1122,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
     @pyqtSlot()
     def set_seeprivkey(self):
         button = self.sender()
-        logging.info(button.pos())  # DOES THIS CONTAIN CRITICAL PRIVATE KEY INFO??
         index = self.addresses_privkey_tableWidget.indexAt(button.pos())
-        logging.info(index.row())  # DOES THIS CONTAIN CRITICAL PRIVATE KEY INFO??
         if index.isValid():
             address = self.addresses_privkey_tableWidget.item(index.row(), 0).text()
             self.worker_see_privkey = marmarachain_rpc.RpcHandler()
@@ -1154,14 +1202,13 @@ class MarmaraMain(QMainWindow, GuiStyle):
                     self.bottom_info(self.tr('Transaction aborted'))
                     logging.info('Transaction aborted')
             if result.get('error'):
-                self.bottom_info(self.tr(str(result['error'])))
+                self.bottom_info(str(result['error']))
                 logging.error(str(result['error']))
         elif result_out[1]:
             if self.chain_status is False:
                 self.bottom_err_info(self.tr(result_out[1]))
                 logging.error(result_out[1])
             result = str(result_out[1]).splitlines()
-            logging.info(result)
             if str(result_out[1]).find('error message:') != -1:
                 index = result.index('error message:') + 1
                 self.bottom_info(self.tr(result[index]))
@@ -1202,7 +1249,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 self.bottom_err_info(result_out[1])
                 logging.error(result_out[1])
             result = str(result_out[1]).splitlines()
-            logging.info(result)
             if str(result_out[1]).find('error message:') != -1:
                 index = result.index('error message:') + 1
                 self.bottom_info(self.tr(result[index]))
@@ -1239,17 +1285,14 @@ class MarmaraMain(QMainWindow, GuiStyle):
     @pyqtSlot()
     def create_currentaddress_qrcode(self):
         # creating a pix map of qr code
-        # qr_image = qrcode.make(self.currentaddress_value.text(), image_factory=Image).pixmap()
-        # set image to the Icon
         qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_H, box_size=7, border=1)
         qr.add_data(self.currentaddress_value.text())
+        # set image to the Icon
         qr_image = qr.make_image(image_factory=Image).pixmap()
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Information)
-        # msg.setDetailedText(self.currentaddress_value.text())
         msg.setIconPixmap(qr_image)
         msg.setWindowTitle('Qr Code')
-
         msg.exec_()
 
     @pyqtSlot()
@@ -1527,7 +1570,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
 
     def marmaratransfer(self, receiver_pk, tx_id):
         command = cp.marmaratransfer + ' ' + receiver_pk + " '" + '{"avalcount":"0"}' + "' " + tx_id
-        logging.debug(command)
         self.worker_marmaratransfer = marmarachain_rpc.RpcHandler()
         marmaratransfer_thread = self.worker_thread(self.thread_marmaratransfer, self.worker_marmaratransfer, command)
         marmaratransfer_thread.command_out.connect(self.marmaratransfer_result)
@@ -1551,7 +1593,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                     self.bottom_info('Transaction aborted')
                     logging.info('Transaction aborted')
             if result.get('result') == "error":
-                self.bottom_info(self.tr(result.get('error')))
+                self.bottom_info(result.get('error'))
                 logging.error(result.get('error'))
         elif result_out[1]:
             self.bottom_err_info(result_out[1])
@@ -1609,7 +1651,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
         if senderpk and baton:
             self.worker_marmarareceive_transfer = marmarachain_rpc.RpcHandler()
             command = cp.marmarareceive + ' ' + senderpk + ' ' + baton + " '" + '{"avalcount":"0"}' + "'"
-            logging.debug(command)
             marmarareceive_transfer_thread = self.worker_thread(self.thread_marmarareceive_transfer,
                                                                 self.worker_marmarareceive_transfer, command)
             marmarareceive_transfer_thread.command_out.connect(self.marmararecieve_transfer_result)
@@ -1639,7 +1680,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
             if self.chain_status is False:
                 self.bottom_err_info(self.tr(result_out[1]))
             result = str(result_out[1]).splitlines()
-            logging.error(result)
             if str(result_out[1]).find('error message:') != -1:
                 index = result.index('error message:') + 1
                 self.bottom_info(result[index])
@@ -2169,6 +2209,6 @@ class AppContext(ApplicationContext):
 
 
 if __name__ == '__main__':
-    appctxt = AppContext()
-    exit_code = appctxt.run()
+    appcontext = AppContext()
+    exit_code = appcontext.run()
     sys.exit(exit_code)
