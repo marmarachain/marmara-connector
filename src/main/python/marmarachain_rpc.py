@@ -97,7 +97,7 @@ def search_marmarad_path():  # will be added for windows search
     else:
         pwd_r = remote_connection.server_execute_command('pwd')
         time.sleep(2)
-        logging.info('pwd remote' + pwd_r)
+        logging.info('pwd remote' + pwd_r[0])
         if not pwd_r[0]:
             pwd_r = remote_connection.server_execute_command('pwd')
             time.sleep(1)
@@ -117,9 +117,9 @@ def check_path_linux(search_list):
     i = 0
     while True:
         search_path = search_list[i]
-        logging.debug('search_path :' + search_path)
+        logging.info('search_path :' + search_path)
         path = do_search_path(search_path)
-        logging.debug(path)
+        # logging.debug(path)
         if not path[0] == ['']:
             if 'komodod' in path[0] and 'komodo-cli' in path[0]:
                 out_path = search_path
@@ -148,7 +148,7 @@ def check_path_windows(search_list):
             if 'komodod' in out and 'komodo-cli' in out:
                 out_path = search_path
                 out_path = out_path.replace('PowerShell ls ', '').replace(' -name', '') + '\\'
-                logging.debug('out_path :' + out_path)
+                logging.info('out_path :' + out_path)
                 break
             else:
                 i = i + 1
@@ -226,7 +226,10 @@ def handle_rpc(command):
     else:
         cmd = set_remote(command)
         cmd = marmara_path + cmd
-        logging.info('------sending command ----- \n' + cmd)
+        if command.split(" ")[0] != cp.convertpassphrase and command.split(' ')[0] != cp.importprivkey:
+            logging.info('------sending command----- \n ' + cmd)
+        else:
+            logging.info('------sending command----- \n ' + command.split(' ')[0])
         try:
             result = remote_connection.server_execute_command(cmd)
             return result
@@ -387,6 +390,7 @@ class RpcHandler(QtCore.QObject):
 
     @pyqtSlot()
     def refresh_sidepanel(self):
+        print('side panel here')
         getinfo = handle_rpc(cp.getinfo)
         if getinfo[0]:
             self.command_out.emit(getinfo)
@@ -531,7 +535,7 @@ class Autoinstall(QtCore.QObject):
                 if not out:
                     proc.stdout.close()
             exit_status = proc.returncode
-            logging.debug(exit_status)
+            logging.info(exit_status)
             proc.terminate()
             i = i + 1
             if i >= len(self.win_command_list):

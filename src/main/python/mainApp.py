@@ -397,16 +397,13 @@ class MarmaraMain(QMainWindow, GuiStyle):
         else:
             self.check_marmara_path()
 
-    def worker_thread(self, thread, worker, command=None):
+    def worker_thread(self, thread, worker, command):
         self.start_animation()
-        if command:
-            worker.set_command(command)
+        worker.set_command(command)
         worker.moveToThread(thread)
         worker.finished.connect(thread.quit)
         worker.finished.connect(self.stop_animation)
-        if command:
-            thread.started.connect(worker.do_execute_rpc)
-
+        thread.started.connect(worker.do_execute_rpc)
         thread.start()
         return worker
 
@@ -551,11 +548,15 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def is_chain_ready(self):
         self.bottom_info(self.tr('Checking if marmarachain is ready for rpc'))
         logging.info('Checking if marmarachain is ready for rpc')
+        self.start_animation()
         self.worker_getchain = marmarachain_rpc.RpcHandler()  # worker setting
-        chain_ready_thread = self.worker_thread(self.thread_getchain, self.worker_getchain)  # putting in to thread
+        self.worker_getchain.moveToThread(self.thread_getchain)  # move object in to thread
+        self.worker_getchain.finished.connect(self.thread_getchain.quit)  # when finished close thread
+        self.worker_getchain.finished.connect(self.stop_animation)  # when finished close animation
         self.thread_getchain.started.connect(self.worker_getchain.is_chain_ready)  # executing respective worker func.
-        chain_ready_thread.command_out.connect(self.chain_ready_result)  # getting results and connecting to socket
-        chain_ready_thread.walletlist_out.connect(self.set_getaddresses_result)
+        self.thread_getchain.start()  # start thread
+        self.worker_getchain.command_out.connect(self.chain_ready_result)  # getting results and connecting to socket
+        self.worker_getchain.walletlist_out.connect(self.set_getaddresses_result)
 
     @pyqtSlot(tuple)
     def chain_ready_result(self, result_out):
@@ -589,10 +590,14 @@ class MarmaraMain(QMainWindow, GuiStyle):
     @pyqtSlot()
     def stop_chain(self):
         if self.chain_status:
+            self.start_animation()
             self.worker_stopchain = marmarachain_rpc.RpcHandler()  # worker setting
-            stop_chain_thread = self.worker_thread(self.thread_stopchain, self.worker_stopchain)  # putting in to thread
+            self.worker_stopchain.moveToThread(self.thread_stopchain)  # putting in to thread
+            self.worker_stopchain.finished.connect(self.thread_stopchain.quit)  # when finished close thread
+            self.worker_stopchain.finished.connect(self.stop_animation)  # when finished close animation
             self.thread_stopchain.started.connect(self.worker_stopchain.stopping_chain)  # executing worker function
-            stop_chain_thread.command_out.connect(self.result_stopchain)  # getting results and connecting to socket
+            self.thread_stopchain.start()
+            self.worker_stopchain.command_out.connect(self.result_stopchain)  # getting results and connecting to socket
         else:
             self.bottom_info(self.tr('Marmarachain is not ready'))
             logging.warning('Marmarachain is not ready')
@@ -664,18 +669,21 @@ class MarmaraMain(QMainWindow, GuiStyle):
     # -----------------------------------------------------------
     @pyqtSlot()
     def refresh_side_panel(self):
+        self.start_animation()
         self.bottom_info(self.tr('getting getinfo'))
         logging.info('getting getinfo')
         self.worker_sidepanel = marmarachain_rpc.RpcHandler()
-        sidepanel_thread = self.worker_thread(self.thread_sidepanel, self.worker_sidepanel)
+        self.worker_sidepanel.moveToThread(self.thread_sidepanel)
+        self.worker_sidepanel.finished.connect(self.thread_sidepanel.quit)
+        self.worker_sidepanel.finished.connect(self.stop_animation)
         self.thread_sidepanel.started.connect(self.worker_sidepanel.refresh_sidepanel)
-        sidepanel_thread.command_out.connect(self.refresh_side_panel_result)
+        self.thread_sidepanel.start()
+        self.worker_sidepanel.command_out.connect(self.refresh_side_panel_result)
         last_update = self.tr('Last Update: ')
         # date = (str(datetime.now().date()))
         hour = (str(datetime.now().hour))
         minute = (str(datetime.now().minute))
         self.last_update_label.setText(last_update + hour + ':' + minute)
-        self.thread_sidepanel.finished.connect(self.stop_animation)
 
     @pyqtSlot(tuple)
     def refresh_side_panel_result(self, result_out):
@@ -788,11 +796,15 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.cpu_core_set_button.setVisible(False)
 
     def setgenerate(self, arg):
+        self.start_animation()
         self.worker_setgenerate = marmarachain_rpc.RpcHandler()
         self.worker_setgenerate.set_command(cp.setgenerate + ' ' + arg)
-        setgenerate_thread = self.worker_thread(self.thread_setgenerate, self.worker_setgenerate)
+        self.worker_setgenerate.moveToThread(self.thread_setgenerate)
+        self.worker_setgenerate.finished.connect(self.thread_setgenerate.quit)
+        self.worker_setgenerate.finished.connect(self.stop_animation)
         self.thread_setgenerate.started.connect(self.worker_setgenerate.setgenerate)
-        setgenerate_thread.command_out.connect(self.setgenerate_result)
+        self.thread_setgenerate.start()
+        self.worker_setgenerate.command_out.connect(self.setgenerate_result)
 
     @pyqtSlot(tuple)
     def setgenerate_result(self, result_out):
@@ -863,12 +875,16 @@ class MarmaraMain(QMainWindow, GuiStyle):
     # getting addresses for address table widget
     @pyqtSlot()
     def getaddresses(self):
+        self.start_animation()
         self.bottom_info(self.tr('getting wallet addresses'))
         logging.info('getting wallet addresses')
         self.worker_getaddresses = marmarachain_rpc.RpcHandler()
-        getaddresses_thread = self.worker_thread(self.thread_getaddresses, self.worker_getaddresses)
+        self.worker_getaddresses.moveToThread(self.thread_getaddresses)
+        self.worker_getaddresses.finished.connect(self.thread_getaddresses.quit)
+        self.worker_getaddresses.finished.connect(self.stop_animation)
         self.thread_getaddresses.started.connect(self.worker_getaddresses.get_addresses)
-        getaddresses_thread.walletlist_out.connect(self.set_getaddresses_result)
+        self.thread_getaddresses.start()
+        self.worker_getaddresses.walletlist_out.connect(self.set_getaddresses_result)
 
     @pyqtSlot(list)
     def set_getaddresses_result(self, result_out):
