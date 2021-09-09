@@ -70,19 +70,21 @@ class MarmaraMain(QMainWindow, GuiStyle):
         # MCL tabwidget
         self.mcl_tab.currentChanged.connect(self.mcl_tab_changed)
         # side panel
+        QToolTip.setFont(QFont('SansSerif', 10))
         self.copyaddress_button.clicked.connect(self.copyaddress_clipboard)
+        self.copyaddress_button.setToolTip(self.tr("Copy address"))
         self.copypubkey_button.clicked.connect(self.copypubkey_clipboard)
+        self.copypubkey_button.setToolTip(self.tr("Copy pubkey"))
         self.staking_button.setChecked(False)
         self.staking_button.clicked.connect(self.toggle_staking)
         self.mining_button.setChecked(False)
-        self.regex = QRegExp("[1-9_]+")
+        self.regex = QRegExp("[1-90_]+")
         self.validator = QRegExpValidator(self.regex)
         self.cpu_core_lineEdit.setValidator(self.validator)
         self.cpu_core_selection_off()
         self.cpu_core_set_button.clicked.connect(self.setmining_cpu_core)
         self.mining_button.clicked.connect(self.toggle_mining)
         self.getinfo_refresh_button.clicked.connect(self.refresh_side_panel)
-        QToolTip.setFont(QFont('SansSerif', 10))
         self.support_pushButton.setToolTip(self.tr("Treat Marmara Core Team cups of coffee"))
         self.cup_lineEdit.setValidator(self.validator)
         self.cup_lineEdit.textChanged.connect(self.calculate_amount)
@@ -310,7 +312,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.activeloops_tableWidget.clear()
         self.transferableloops_tableWidget.clear()
         self.addresses_tableWidget.setHorizontalHeaderLabels(['', 'Amount', 'Address', 'Pubkey'])
-        self.addresses_privkey_tableWidget.setHorizontalHeaderLabels(['Address', 'See Private Key'])
+        self.addresses_privkey_tableWidget.setHorizontalHeaderLabels(['Address', 'See'])
         self.transactions_tableWidget.setHorizontalHeaderLabels(['See on Explorer', 'Txid'])
         self.loop_request_tableWidget.setHorizontalHeaderLabels(['Confirm', 'TxId', 'Amount', 'Maturity',
                                                                  'Receiver Pubkey', ''])
@@ -333,21 +335,39 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.serverpw_lineEdit.clear()
 
     def open_debug_console(self):
-
-        debugDialog = QDialog()
-        debugDialog.setWindowTitle(self.tr("Debug Console"))
-        command_browser = QtWidgets.QTextBrowser()
-        command_lineEdit = QtWidgets.QLineEdit()
-        clear_pushButton = QtWidgets.QPushButton()
-        clear_pushButton.setText(self.tr('Clear'))
-
-        debugDialog.layout = QGridLayout()
-        debugDialog.layout.addWidget(clear_pushButton)
-        debugDialog.layout.addWidget(command_browser)
-        debugDialog.layout.addWidget(command_lineEdit)
-        debugDialog.setLayout(debugDialog.layout)
-
-        debugDialog.exec_()
+        QMessageBox.information(self,
+                          self.tr("Debug Console"),
+                          self.tr("Under development")
+                          )
+        # debugDialog = QDialog()
+        # debugDialog.setWindowTitle(self.tr("Debug Console"))
+        # command_browser = QtWidgets.QTextBrowser()
+        # command_lineEdit = QtWidgets.QLineEdit()
+        # sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Fixed)
+        # sizePolicy.setHorizontalStretch(0)
+        # sizePolicy.setVerticalStretch(0)
+        #
+        # clear_pushButton = QPushButton(qta.icon('ei.remove'), '')
+        # sizePolicy.setHeightForWidth(clear_pushButton.sizePolicy().hasHeightForWidth())
+        # clear_pushButton.setSizePolicy(sizePolicy)
+        # font_plus = QPushButton(qta.icon('mdi.format-font-size-increase'), '')
+        # sizePolicy.setHeightForWidth(font_plus.sizePolicy().hasHeightForWidth())
+        # font_plus.setSizePolicy(sizePolicy)
+        # font_minus = QPushButton(qta.icon('mdi.format-font-size-decrease'), '')
+        # sizePolicy.setHeightForWidth(font_minus.sizePolicy().hasHeightForWidth())
+        # font_minus.setSizePolicy(sizePolicy)
+        # spacer_item = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        # debugDialog.layout = QGridLayout()
+        #
+        # debugDialog.layout.addItem(spacer_item, 0, 0, 1, 2)
+        # debugDialog.layout.addWidget(font_plus, 0, 2, 1, 1)
+        # debugDialog.layout.addWidget(font_minus, 0, 3, 1, 1)
+        # debugDialog.layout.addWidget(clear_pushButton, 0, 4, 1, 1)
+        # debugDialog.layout.addWidget(command_browser, 1, 0, 1, 5)
+        # debugDialog.layout.addWidget(command_lineEdit, 2, 0, 1, 5)
+        # debugDialog.setLayout(debugDialog.layout)
+        #
+        # debugDialog.exec_()
 
     @pyqtSlot(int)
     def mcl_tab_changed(self, index):
@@ -808,14 +828,13 @@ class MarmaraMain(QMainWindow, GuiStyle):
     @pyqtSlot()
     def calculate_amount(self):
         number_of_cups = self.cup_lineEdit.text()
-        if self.cup_lineEdit.text() == "":
-            number_of_cups = 0
+        if number_of_cups == "" or int(number_of_cups) == 0:
             self.support_pushButton.setEnabled(False)
             self.support_pushButton.setText(self.tr('Support'))
         else:
             amount = int(number_of_cups) * 50
             self.support_pushButton.setEnabled(True)
-            self.support_pushButton.setText(self.tr('Support (') + str(amount) + ' MCL)')
+            self.support_pushButton.setText(self.tr('Support') + ' (' + str(amount) + ' MCL)')
 
     @pyqtSlot()
     def send_coins_to_team(self):
@@ -1093,8 +1112,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
             # self.addresses_privkey_tableWidget.autoScrollMargin()
             for address in result:
                 row_number = result.index(address)
-                btn_seeprivkey = QPushButton('')
-                btn_seeprivkey.setIcon(QIcon(self.icon_path + "/details.png"))
+                btn_seeprivkey = QPushButton(qta.icon('mdi.shield-key'), '')
+                btn_seeprivkey.setIconSize(QSize(32, 32))
                 self.addresses_privkey_tableWidget.setCellWidget(row_number, 1, btn_seeprivkey)
                 self.addresses_privkey_tableWidget.setItem(row_number, 0, QTableWidgetItem(address))
                 self.addresses_privkey_tableWidget.horizontalHeader().setSectionResizeMode(0,
@@ -1311,6 +1330,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def sendtoaddress_result(self, result_out):
         if result_out[0]:
             logging.info(result_out[0])
+            self.bottom_info('txid : ' + str(result_out[0]).replace('\n', ''))
         elif result_out[1]:
             if self.chain_status is False:
                 self.bottom_err_info(result_out[1])
