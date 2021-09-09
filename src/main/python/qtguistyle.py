@@ -47,6 +47,11 @@ class GuiStyle(Ui_MainWindow):
         self.copyaddress_button.setIconSize(QtCore.QSize(24, 24))
         self.copypubkey_button.setIcon(QtGui.QIcon(self.icon_path + '/copy_key_icon.png'))
         self.copypubkey_button.setIconSize(QtCore.QSize(24, 24))
+        self.support_pushButton.setText('Support')
+        self.support_pushButton.setEnabled(False)
+        self.coffee_pushButton.setIcon(qta.icon('fa.coffee'))
+        self.coffee_pushButton.setStyleSheet("border-color: brown; border-radius: 10px")
+        self.coffee_pushButton.setIconSize(QtCore.QSize(27, 27))
         # Wallet page button icons
         self.lock_button.setIcon(QtGui.QIcon(qta.icon('fa5s.lock')))
         self.lock_button.setIconSize(QtCore.QSize(32, 32))
