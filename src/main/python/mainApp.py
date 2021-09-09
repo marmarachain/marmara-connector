@@ -832,23 +832,10 @@ class MarmaraMain(QMainWindow, GuiStyle):
             self.worker_sendtoteam = marmarachain_rpc.RpcHandler()
             command = cp.sendtoaddress + ' ' + team_address + ' ' + str(amount)
             sendtoteam_thread = self.worker_thread(self.thread_sendtoteam, self.worker_sendtoteam, command)
-            sendtoteam_thread.command_out.connect(self.send_coins_to_team_result)
+            sendtoteam_thread.command_out.connect(self.sendtoaddress_result)
         if message_box == QMessageBox.No:
             self.bottom_info(self.tr('Transaction aborted'))
             logging.info('Transaction aborted')
-
-    @pyqtSlot(tuple)
-    def send_coins_to_team_result(self, result_out):
-        if result_out[0]:
-            logging.info(result_out[0])
-        elif result_out[1]:
-            if self.chain_status is False:
-                self.bottom_err_info((result_out[1]))
-            result = str(result_out[1]).splitlines()
-            if str(result_out[1]).find('error message:') != -1:
-                index = result.index('error message:') + 1
-                self.bottom_info(result[index])
-                logging.error(result[index])
 
     # -----------------------------------------------------------
     # Chain page functions
