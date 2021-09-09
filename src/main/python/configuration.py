@@ -16,7 +16,7 @@ os.makedirs(config_directory_path, exist_ok=True)  # make platform-specific conf
 #   Unix:                 ~/.config/<AppName>     # or in $XDG_CONFIG_HOME, if defined
 #   Win XP (roaming):     C:\Documents and Settings\<username>\Local Settings\Application Data\<AppAuthor>\<AppName>
 #   Win 7  (roaming):     C:\Users\<username>\AppData\Roaming\<AppAuthor>\<AppName>
-user_data_path = user_data_dir(app_name, author, version, roaming=True)
+user_data_path = user_data_dir(app_name, author, roaming=True)
 os.makedirs(user_data_path, exist_ok=True)  # make platform-specific user directory to store user data files
 # Typical user data directories are:
 #     Mac OS X:               ~/Library/Application Support/<AppName>
