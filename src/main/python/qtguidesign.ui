@@ -1453,19 +1453,19 @@
             </property>
             <layout class="QGridLayout" name="gridLayout_24">
              <item row="1" column="1" colspan="3">
-              <widget class="QPushButton" name="support_button">
+              <widget class="QPushButton" name="support_pushButton">
                <property name="font">
                 <font>
                  <pointsize>11</pointsize>
                 </font>
                </property>
                <property name="text">
-                <string>Support</string>
+                <string/>
                </property>
               </widget>
              </item>
              <item row="0" column="1">
-              <widget class="QPushButton" name="pushButton">
+              <widget class="QPushButton" name="coffee_pushButton">
                <property name="font">
                 <font>
                  <pointsize>11</pointsize>
@@ -1477,7 +1477,7 @@
               </widget>
              </item>
              <item row="0" column="2">
-              <widget class="QLabel" name="label">
+              <widget class="QLabel" name="multiply_label">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                  <horstretch>0</horstretch>
@@ -1495,7 +1495,7 @@
               </widget>
              </item>
              <item row="0" column="3">
-              <widget class="QLineEdit" name="lineEdit">
+              <widget class="QLineEdit" name="cup_lineEdit">
                <property name="maximumSize">
                 <size>
                  <width>80</width>
@@ -1506,6 +1506,9 @@
                 <font>
                  <pointsize>11</pointsize>
                 </font>
+               </property>
+               <property name="placeholderText">
+                <string>1</string>
                </property>
               </widget>
              </item>
@@ -5299,7 +5302,7 @@
      </font>
     </property>
     <property name="title">
-     <string>Settings</string>
+     <string>Setti&amp;ngs</string>
     </property>
     <addaction name="actionLanguage_Selection"/>
     <addaction name="actionLogout"/>
@@ -5313,11 +5316,11 @@
      </font>
     </property>
     <property name="title">
-     <string>Help</string>
+     <string>He&amp;lp</string>
     </property>
     <widget class="QMenu" name="menuDebug">
      <property name="title">
-      <string>Debug</string>
+      <string>&amp;Debug</string>
      </property>
      <addaction name="actionConsole"/>
      <addaction name="actionSee_Log_File"/>
@@ -5330,7 +5333,7 @@
   </widget>
   <action name="actionLanguage_Selection">
    <property name="text">
-    <string>Language Selection</string>
+    <string>&amp;Language Selection</string>
    </property>
    <property name="menuRole">
     <enum>QAction::ApplicationSpecificRole</enum>
@@ -5338,12 +5341,12 @@
   </action>
   <action name="actionConsole">
    <property name="text">
-    <string>Console</string>
+    <string>&amp;Console</string>
    </property>
   </action>
   <action name="actionLogout">
    <property name="text">
-    <string>Logout</string>
+    <string>L&amp;ogout</string>
    </property>
    <property name="menuRole">
     <enum>QAction::ApplicationSpecificRole</enum>
@@ -5351,12 +5354,12 @@
   </action>
   <action name="actionSee_Log_File">
    <property name="text">
-    <string>See Log File</string>
+    <string>&amp;See Log File</string>
    </property>
   </action>
   <action name="actionAbout">
    <property name="text">
-    <string>About</string>
+    <string>&amp;About</string>
    </property>
    <property name="menuRole">
     <enum>QAction::AboutRole</enum>
@@ -5364,7 +5367,7 @@
   </action>
   <action name="actionQuit">
    <property name="text">
-    <string>Quit</string>
+    <string>&amp;Quit</string>
    </property>
    <property name="shortcutContext">
     <enum>Qt::WidgetWithChildrenShortcut</enum>
