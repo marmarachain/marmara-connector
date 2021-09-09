@@ -49,6 +49,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.actionLogout.triggered.connect(self.host_selection)
         self.actionLanguage_Selection.triggered.connect(self.show_languages)
         self.actionConsole.triggered.connect(self.open_debug_console)
+        self.actionSee_Log_File.triggered.connect(self.open_log_file)
 
         #   Login page Host Selection
         self.local_button.clicked.connect(self.local_selection)
@@ -368,6 +369,12 @@ class MarmaraMain(QMainWindow, GuiStyle):
         # debugDialog.setLayout(debugDialog.layout)
         #
         # debugDialog.exec_()
+
+    @pyqtSlot()
+    def open_log_file(self):
+        text_path = configuration.log_file_path
+        webbrowser.open_new(text_path)
+
 
     @pyqtSlot(int)
     def mcl_tab_changed(self, index):
