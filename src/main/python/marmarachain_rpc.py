@@ -390,7 +390,6 @@ class RpcHandler(QtCore.QObject):
 
     @pyqtSlot()
     def refresh_sidepanel(self):
-        print('side panel here')
         getinfo = handle_rpc(cp.getinfo)
         if getinfo[0]:
             self.command_out.emit(getinfo)
