@@ -1,2478 +1,2257 @@
-# -*- coding: utf-8 -*-
-import ast
 import json
-from builtins import type
-
-from fbs_runtime.application_context.PyQt5 import ApplicationContext
-from datetime import datetime, timedelta
-
-import paramiko
-import pyperclip
-
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QMainWindow, QPushButton, QTableWidgetItem, QInputDialog, QRadioButton, \
-    QButtonGroup, QFileDialog, QDialog
-import sys
-
-from PyQt5.QtWidgets import QMessageBox
-
-
-from functools import partial
 import os
-import ThreadGui
+import platform
+import sys
+import time
+import webbrowser
+import logging
+import qrcode
+from datetime import datetime, timedelta
+from qr_code_gen import Image
+from PyQt5 import QtWidgets, QtCore
+from PyQt5.QtGui import QIcon, QRegExpValidator, QFont
+from PyQt5.QtCore import QThread, pyqtSlot, QDateTime, QSize, Qt, QTranslator, QRegExp
+from PyQt5.QtWidgets import QMainWindow, QPushButton, QTableWidgetItem, QMessageBox, QDesktopWidget, QHeaderView, \
+    QDialog, QDialogButtonBox, QVBoxLayout, QComboBox, QWidget, QGridLayout, QToolTip
+import configuration
+import marmarachain_rpc
+import version
+import remote_connection
+import chain_args as cp
+from qtguistyle import GuiStyle
+import qtguistyle
 from Loading import LoadingScreen
+import qtawesome as qta
+from fbs_runtime.application_context.PyQt5 import ApplicationContext
 
-from guiStyle import GuiStyle
-import json
-
-import requests
-from bs4 import BeautifulSoup
-from Connection import ServerConnect
+logging.getLogger(__name__)
 
 
-class MainClassGUI(QMainWindow, GuiStyle, ApplicationContext):
+class MarmaraMain(QMainWindow, GuiStyle):
+
     def __init__(self, parent=None):
-        super(MainClassGUI, self).__init__(parent)
+        super(MarmaraMain, self).__init__(parent)
+        #   Default Settings
+        self.trans = QTranslator(self)
+        # self.retranslateUi(self)
+        self.main_tab.setCurrentIndex(0)
+        self.main_tab.tabBar().setVisible(False)
+        self.login_stackedWidget.setCurrentIndex(0)
+        self.home_button.setVisible(False)
+        self.chain_status = False
+        self.pubkey_status = False
+        self.center_ui()
+        self.read_lang_setting()
+        # paths settings
+        # Menu Actions
+        self.actionAbout.triggered.connect(self.show_about)
+        self.actionLogout.triggered.connect(self.host_selection)
+        self.actionLanguage_Selection.triggered.connect(self.show_languages)
+        self.actionConsole.triggered.connect(self.open_debug_console)
+        self.actionSee_Log_File.triggered.connect(self.open_log_file)
+        self.actionCheck_for_Update.triggered.connect(self.check_app_version)
+        #   Login page Host Selection
+        self.local_button.clicked.connect(self.local_selection)
+        self.remote_button.clicked.connect(self.remote_selection)
+        #   Login page Server authentication
+        self.home_button.clicked.connect(self.host_selection)
+        self.serveradd_button.clicked.connect(self.server_add_selected)
+        self.connect_button.clicked.connect(self.server_connect)
+        self.serverpw_lineEdit.returnPressed.connect(self.server_connect)
+        self.serveredit_button.clicked.connect(self.server_edit_selected)
+        # install page
+        self.start_install_button.clicked.connect(self.start_autoinstall)
+        #  Add Server Settings page
+        self.add_serversave_button.clicked.connect(self.save_server_settings)
+        self.servercancel_button.clicked.connect(self.add_cancel_selected)
+        # Edit Server Settings page
+        self.edit_serversave_button.clicked.connect(self.edit_server_settings)
+        self.serverdelete_button.clicked.connect(self.delete_server_setting)
+        # MCL tabwidget
+        self.mcl_tab.currentChanged.connect(self.mcl_tab_changed)
+        # side panel
+        QToolTip.setFont(QFont('SansSerif', 10))
+        self.copyaddress_button.clicked.connect(self.copyaddress_clipboard)
+        self.copyaddress_button.setToolTip(self.tr("Copy address"))
+        self.copypubkey_button.clicked.connect(self.copypubkey_clipboard)
+        self.copypubkey_button.setToolTip(self.tr("Copy pubkey"))
+        self.staking_button.setChecked(False)
+        self.staking_button.clicked.connect(self.toggle_staking)
+        self.mining_button.setChecked(False)
+        self.regex = QRegExp("[1-90_]+")
+        self.validator = QRegExpValidator(self.regex)
+        self.cpu_core_lineEdit.setValidator(self.validator)
+        self.cpu_core_selection_off()
+        self.cpu_core_set_button.clicked.connect(self.setmining_cpu_core)
+        self.mining_button.clicked.connect(self.toggle_mining)
+        self.getinfo_refresh_button.clicked.connect(self.refresh_side_panel)
+        self.support_pushButton.setToolTip(self.tr("Treat Marmara Core Team cups of coffee"))
+        self.cup_lineEdit.setValidator(self.validator)
+        self.cup_lineEdit.textChanged.connect(self.calculate_amount)
+        self.cup_lineEdit.returnPressed.connect(self.send_coins_to_team)
+        self.support_pushButton.clicked.connect(self.send_coins_to_team)
+        # Chain page
+        self.stopchain_button.clicked.connect(self.stop_chain)
+        self.addaddress_page_button.clicked.connect(self.get_address_page)
+        self.addresses_tableWidget.cellClicked.connect(self.addresstable_itemcontext)
+        self.privkey_page_button.clicked.connect(self.see_privkey_page)
+        self.hide_address_checkBox.clicked.connect(self.hide_addresses)
+        # - add address page ----
+        self.newaddress_button.clicked.connect(self.get_new_address)
+        self.address_seed_button.clicked.connect(self.convertpassphrase)
+        self.addresspage_back_button.clicked.connect(self.back_chain_widget_index)
+        # - private key page ----
+        self.importprivkey_button.clicked.connect(self.importprivkey)
+        self.privatekeypage_back_button.clicked.connect(self.back_chain_widget_index)
+        # Wallet page
+        self.addressamount_refresh_button.clicked.connect(self.get_address_amounts)
+        self.lock_button.clicked.connect(self.marmaralock_amount)
+        self.unlock_button.clicked.connect(self.marmaraunlock_amount)
+        # Coin send-receive page
+        self.contacts_address_comboBox.currentTextChanged.connect(self.get_selected_contact_address)
+        self.qrcode_button.clicked.connect(self.create_currentaddress_qrcode)
+        self.coinsend_button.clicked.connect(self.sendtoaddress)
+        self.transactions_startdate_dateTimeEdit.setMinimumDateTime(QDateTime(datetime.fromtimestamp(1579278200)))
+        self.transactions_startdate_dateTimeEdit.setMaximumDateTime(QDateTime.currentDateTime())
+        self.transactions_startdate_dateTimeEdit.setDateTime(QDateTime.currentDateTime().addDays(-1))
+        self.transactions_endtdate_dateTimeEdit.setMinimumDateTime(QDateTime(datetime.fromtimestamp(1579278200)))
+        self.transactions_endtdate_dateTimeEdit.setMaximumDateTime(QDateTime.currentDateTime())
+        self.transaction_search_button.clicked.connect(self.getaddresstxids)
+        self.transactions_tableWidget.cellClicked.connect(self.transaction_itemcontext)
+        # Credit Loops page-----------------
+        self.creditloop_tabWidget.currentChanged.connect(self.credit_tab_changed)
+        # ---- Received Loop Requests page ----
+        self.looprequest_search_button.clicked.connect(self.search_marmarareceivelist)
+        self.request_date_checkBox.clicked.connect(self.set_request_date_state)
+        self.request_dateTimeEdit.setDateTime(QDateTime.currentDateTime())
 
-        self.tabWidget.setCurrentIndex(0)
-        self.setGeometry(0, 0, 1200, 700)
-        self.center()
-        self.setWindowIcon(QtGui.QIcon(self.get_resource('images') + '/mcl.png'))
-        
-        # self.tabWidget.setCurrentIndex(2)
-        
-        self.icon_path = self.get_resource("images")
-        self.conf_path = self.get_resource('configuration')
-        self.configFilePath = self.get_resource('configuration') + "/foc.info"
-        self.lang_file_path = self.get_resource('configuration') + "/lang/"
-        self.lang_icon_path = self.get_resource('images') + "/lang_icons"
-        self.server_info_file_name = self.conf_path + "/servers.info"
-        self.person_info_file_name = self.conf_path + "/persons.info"
+        # -----Make credit Loop Request
+        self.contactpubkey_makeloop_comboBox.currentTextChanged.connect(self.get_selected_contact_loop_pubkey)
+        self.contactpubkey_transferrequest_comboBox.currentTextChanged.connect(
+            self.get_selected_contact_transfer_pubkey)
+        self.make_credit_loop_matures_dateTimeEdit.setMinimumDateTime(QDateTime.currentDateTime())
+        self.send_loop_request_button.clicked.connect(self.marmarareceive)
+        self.send_transfer_request_button.clicked.connect(self.marmararecieve_transfer)
+        # -----Total Credit Loops page -----
+        self.activeloops_search_button.clicked.connect(self.search_active_loops)
+        self.transferable_maturesfrom_dateTimeEdit.setDateTime(QDateTime.currentDateTime())
+        self.transferable_maturesfrom_dateTimeEdit.setMinimumDateTime(QDateTime(datetime.fromtimestamp(1579278200)))
+        self.transferable_maturesfrom_dateTimeEdit.setMaximumDateTime(QDateTime.currentDateTime())
+        self.transferable_maturesfrom_dateTimeEdit.setDateTime(QDateTime.currentDateTime())
+        self.transferable_maturesto_dateTimeEdit.setDateTime(QDateTime.currentDateTime())
+        self.transferable_maturesto_dateTimeEdit.setMinimumDateTime(QDateTime.currentDateTime())
+        self.transferable_matures_checkBox.clicked.connect(self.set_transferable_mature_date_state)
+        self.transferable_amount_checkBox.clicked.connect(self.set_transferable_amount_state)
+        self.transferableloops_search_button.clicked.connect(self.marmaraholderloops)
+        # ---- Loop Queries page --
+        self.lq_pubkey_search_button.clicked.connect(self.search_any_pubkey_loops)
+        self.lq_txid_search_button.clicked.connect(self.search_loop_txid)
 
-        self.radioButtonsLang = []
-        self.conf_file_content = ""
-        self.conf_lang_info = ""
-        self.choose_server_text = ""
-        self.last_update = ""
-        self.synchronous = ""
-        self.asynchronous = ""
-        self.review = ""
-        self.review_and_confirm = ""
-        self.active_text = ""
-        self.deactive_text = ""
-        self.long_chain_blocks = ""
+        # Contacts Page
+        self.addcontact_button.clicked.connect(self.add_contact)
+        self.updatecontact_button.clicked.connect(self.update_contact)
+        self.deletecontact_button.clicked.connect(self.delete_contact)
+        self.contacts_tableWidget.cellClicked.connect(self.get_contact_info)
+        self.clear_contact_button.clicked.connect(self.clear_contacts_line_edit)
+        self.contact_editing_row = ""
 
-        self.count_wallet_list = 0
-        # Messages
-        # --------------------------------------------------
-        self.msg_title_warning = ""
-        self.msg_title_info = ""
-        self.msg_connection_establish = ""
-        self.msg_check_info = ""
-        self.msg_missing_info = ""
-        self.msg_fill_blank = ""
-        self.msg_you_did_not_choose_a_server = ""
-        self.msg_please_select_server = ""
-        self.msg_do_you_want_to_make_changes = ""
-        self.msg_success_to_save = ""
-        self.msg_do_you_want_to_connect_server = ""
-        self.msg_do_you_want_to_request = ""
-        self.msg_do_you_want_endorser = ""
-        self.msg_do_you_want_to_accept = ""
-        self.msg_credit_confirmation = ""
-        self.msg_do_you_want_to_send_coin = ""
-        self.msg_sended_coin = ""
-        self.msg_do_you_want_to_activate_coins = ""
-        self.msg_do_you_want_to_deactivate_coins = ""
-        self.msg_success_lock = ""
-        self.msg_unsuccess_lock = ""
-        self.msg_success_unlock = ""
-        self.msg_unsuccess_unlock = ""
-        self.msg_success_request = ""
-        self.msg_unsuccess_request = ""
-        self.msg_success_request_accept = ""
-        self.msg_unsuccess_request_accept = ""
-        self.msg_start_chain = ""
-        self.msg_stop_chain = ""
-        self.msg_stop_chain_last = ""
-        self.msg_error_loop_details = ""
-        self.msg_enter_correct_info = ""
-        self.msg_mcl_not_installed = ""
-        self.msg_yes = ""
-        self.msg_no = ""
-        self.msg_accept = ""
-        self.msg_ok = ""
-
-        # Saved server info parameters
-        self.server_all_info = ""
-        self.server_list = []
-        self.message_button_return_boolean = False
-        self.mcl_install_file_path = ""
-        self.is_chain_run = False
-        self.is_mcl_install = False
-        self.person_list = []
-
-        # Server information to login
-        # --------------------------------------------------
-        self.server_nickname = ""
-        self.server_username = ""
-        self.server_hostname = ""
-        self.server_password = ""
-        self.server_port = 22
-
-        self.pubkey = ""
-        self.walletAddress = ""
-        self.privkey = ""
-        self.chain_info = ""
-        self.request_credit_out = ""
-        self.first_request_list = []
-        self.request_list_in_loop = []
-        self.holder_list = []
-        self.output_auto_install = "INSTALL LOG\n**********************************\n"
-        self.progressBarValue = 0
-        self.last_matures_minute = ""
-
-        # Install commands parameters
-        # --------------------------------------------------
-        self.mcl_compiler_zip_command = "wget http://www.marmara.io/guifiles/Linux-MCL-HF.zip"
-        self.mcl_unzip_install_command = "sudo apt-get install unzip"
-        self.mcl_compiler_unzip_command = "unzip Linux-MCL-HF.zip"
-        self.mcl_permission_command = "sudo chmod +x komodod komodo-cli fetch-params.sh"
-        self.mcl_fetch_parameters_command = "./fetch-params.sh"
-
-        # Komodo commands parameters
-        # --------------------------------------------------
-        self.command_start_mcl_mining_without_pubkey = "komodod -ac_name=MCL -ac_supply=2000000 -ac_cc=2 -addnode=37.148.210.158 -addnode=37.148.212.36 -addnode=46.4.238.65 -addressindex=1 -spentindex=1 -ac_marmara=1 -ac_staked=75 -ac_reward=3000000000"
-        self.command_get_address = "komodo-cli -ac_name=MCL getnewaddress"
-        self.command_get_pubkey = "komodo-cli -ac_name=MCL validateaddress"
-        self.command_get_address_convertpassphrase = "komodo-cli -ac_name=MCL convertpassphrase "
-        self.command_get_privkey = "komodo-cli -ac_name=MCL dumpprivkey  "
-
-        self.command_start_mcl_mining_with_pubkey = "komodod -ac_name=MCL -ac_supply=2000000 -ac_cc=2 " \
-                                                    "-addnode=37.148.210.158 -addnode=37.148.212.36 " \
-                                                    "-addnode=46.4.238.65 -addressindex=1 -spentindex=1 -ac_marmara=1 " \
-                                                    "-ac_staked=75 -ac_reward=3000000000 -gen -genproclimit=1 " \
-                                                    "-pubkey="
-        self.command_mcl_get_info = "komodo-cli -ac_name=MCL getinfo"
-        self.command_mcl_marmara_get_info = "komodo-cli -ac_name=MCL marmarainfo 0 0 0 0 "
-        self.command_mcl_get_stacking_and_mining = "komodo-cli -ac_name=MCL getgenerate"
-        self.command_mcl_stop_chain = "komodo-cli -ac_name=MCL stop"
-
-        self.command_mcl_lock_coin = "komodo-cli -ac_name=MCL marmaralock "
-        self.command_mcl_unlock_coin = "komodo-cli -ac_name=MCL marmaraunlock "
-        self.command_mcl_coin_sendrawtransaction = "komodo-cli -ac_name=MCL sendrawtransaction "
-        self.command_mcl_send_coin = "komodo-cli -ac_name=MCL sendtoaddress "
-        self.command_mcl_request_credit_loop = "komodo-cli -ac_name=MCL marmarareceivelist "
-
-        self.command_mcl_set_mining = "komodo-cli -ac_name=MCL setgenerate true "
-        self.command_mcl_set_stacking = "komodo-cli -ac_name=MCL setgenerate true 0"
-        self.command_mcl_set_off_generate = "komodo-cli -ac_name=MCL setgenerate false"
-
-        self.command_mcl_credit_request = "komodo-cli -ac_name=MCL marmarareceive "
-        self.command_mcl_credit_request_countine = """'{"avalcount":"0"}'"""
-
-        self.command_mcl_credit_request_list = "komodo-cli -ac_name=MCL marmarareceivelist "
-        self.command_mcl_credit_request_accept = "komodo-cli -ac_name=MCL marmaraissue "
-        self.command_mcl_credit_request_accept_countine = """ '{"avalcount":"0", "autosettlement":"true", "autoinsurance":"true", "disputeexpires":"0", "EscrowOn":"false", "BlockageAmount":"0" }' """
-
-        self.command_mcl_marmaratransfer_accept = "komodo-cli -ac_name=MCL marmaratransfer "
-        self.command_mcl_marmaratransfer_accept_countine = """'{"avalcount":"0"}'"""
-
-        self.command_mcl_credit_loop_search = "komodo-cli -ac_name=MCL marmaracreditloop "
-        self.command_mcl_marmara_holders = "komodo-cli -ac_name=MCL marmaraholderloops "
-        self.command_mcl_marmara_holders_min_matures = "0"
-        self.command_mcl_marmara_holders_max_matures = "0"
-        self.command_mcl_marmara_holders_min_amount = "0"
-        self.command_mcl_marmara_holders_max_amount = "0"
-
-        self.command_mcl_wallet_list = "komodo-cli -ac_name=MCL listaddressgroupings"
-        self.command_mcl_import_privkey = "komodo-cli -ac_name=MCL importprivkey "
-        self.command_mcl_all_wallet_list = "komodo-cli -ac_name=MCL getaddressesbyaccount \"\""
-
-        # While started, running
-        # --------------------------------------------------
-        self.readConfFile()
-        self.readLangFile()
-        self.readServersInfo()
-        self.readPersons()
-
-        self.pushButton_44.setVisible(True)
-
-        self.progressBar_2.setValue(self.progressBarValue)
-        self.tabWidget.tabBar().setVisible(False)
-        self.tabWidget_3.setTabEnabled(7, False)
-
-        # Button Triggers
-        # --------------------------------------------------
-        self.pushButton_22.clicked.connect(partial(self.buttonClickAddServer))
-        self.pushButton_24.clicked.connect(partial(self.buttonClickNewServerInfoSave))
-        self.pushButton_21.clicked.connect(partial(self.buttonClickSshConnect))
-        self.pushButton_5.clicked.connect(partial(self.buttonClickAutoInstaller))
-        self.pushButton_10.clicked.connect(partial(self.buttonClickGoToCreateWallet))
-        self.pushButton_36.clicked.connect(partial(self.buttonClickCreateWallet))
-        self.pushButton_23.clicked.connect(partial(self.buttonClickGoToLogin))
-        self.pushButton_4.clicked.connect(self.buttonClickExitServer)
-        self.pushButton_2.clicked.connect(self.buttonClickDeleteServer)
-        self.pushButton_12.clicked.connect(self.buttonClickEditServerPage)
-        self.pushButton_25.clicked.connect(self.buttonClickGoToLogin)
-        self.pushButton_26.clicked.connect(self.buttonClickEdit)
-        self.pushButton_8.clicked.connect(self.buttonClickRefreshInformations)
-        self.pushButton_17.clicked.connect(self.buttonClickStartChain)
-        self.pushButton_11.clicked.connect(self.buttonClickStopChain)
-        self.pushButton_13.clicked.connect(self.buttonClickLockCoin)
-        self.pushButton_20.clicked.connect(self.buttonClickUnlockCoin)
-        self.pushButton_19.clicked.connect(self.buttonClickCopyWalletAdress)
-        self.pushButton_18.clicked.connect(self.buttonClickSendCoin)
-        self.pushButton_27.clicked.connect(self.buttonClickCreditRequest)
-        self.pushButton_14.clicked.connect(self.buttonClickPubkey)
-        self.pushButton_7.clicked.connect(self.buttonClickCopyWalletAdress)
-        self.pushButton_6.clicked.connect(self.buttonClickMining)
-        self.pushButton_9.clicked.connect(self.buttonClickStacking)
-        self.pushButton_29.clicked.connect(self.buttonClickRefreshAllCreditRequest)
-        self.pushButton_33.clicked.connect(self.buttonClickRefreshAllCreditRequest)
-        self.pushButton_30.clicked.connect(self.buttonClickRefreshAllCreditRequestCiranta)
-        self.pushButton_32.clicked.connect(self.buttonClickRequestCiranta)
-        self.pushButton_31.clicked.connect(self.buttonClickMarmaraCreditLoopDetails)
-        self.pushButton_35.clicked.connect(self.buttonClickMarmaraHolders)
-        self.pushButton_34.clicked.connect(self.buttonClickActiveLoops)
-        self.pushButton_37.clicked.connect(self.buttonClickBackReturn)
-        self.pushButton_38.clicked.connect(self.buttonClickSavePubkeyWallet)
-        self.pushButton_39.clicked.connect(self.buttonClickNewAdress)
-        self.pushButton_40.clicked.connect(self.buttonClickNewPubkey)
-        self.pushButton_41.clicked.connect(self.buttonClickNewPersonSave)
-        self.pushButton_42.clicked.connect(self.buttonClickRefreshWalletInfo)
-        self.pushButton_44.clicked.connect(self.buttonClickImportWallet)
-        self.pushButton_45.clicked.connect(self.buttonClickImportWalletCommand)
-        self.pushButton_46.clicked.connect(self.buttonClickBackReturn_)
-        self.pushButton_47.clicked.connect(self.buttonClickSeePrivkey)
-        self.pushButton_48.clicked.connect(self.buttonClickBackReturn_)
-        self.tabWidget_4.currentChanged.connect(self.tabWidgetOnChange)
-        self.comboBox_3.currentTextChanged.connect(self.on_combobox_changed)
-
-        # Click Enter
-        self.lineEdit_6.returnPressed.connect(self.buttonClickSshConnect)
-        self.checkBox_2.stateChanged.connect(self.state_changed_checkBox_2)
-        self.checkBox_4.stateChanged.connect(self.state_changed_checkBox_4)
-        self.checkBox_5.stateChanged.connect(self.state_changed_checkBox_5)
-        self.dateTimeEdit.dateTimeChanged.connect(self.start_date_dateedit)
-        self.dateTimeEdit_3.dateTimeChanged.connect(self.dateChangedHolderMin)
-        self.dateTimeEdit_4.dateTimeChanged.connect(self.dateChangedHolderMax)
-        # self.dateTimeEdit.clicked[QtCore.QDate].connect(self.start_date_dateedit)
-
-        # Threads
-        # --------------------------------------------------
-        self.thread_auto_install = ThreadGui.AutoInstall()
-        self.thread_start_chain = ThreadGui.StartChain()
-        self.thread_refresh = ThreadGui.RefreshInformations()
-        self.thread_stop_chain = ThreadGui.StopChain()
-        self.thread_lock_coin = ThreadGui.LockCoin()
-        self.thread_unlock_coin = ThreadGui.UnlockCoin()
-        self.thread_send_coin = ThreadGui.SendCoin()
-        self.thread_first_get_info = ThreadGui.FirstRefreshInformations()
-        self.thread_refresh_credit_request = ThreadGui.RefreshCreditRequest()
-        self.thread_credit_request_accept = ThreadGui.CreditAccept()
-        self.thread_credit_request = ThreadGui.CreditRequest()
-        self.thread_credit_request_ciranta = ThreadGui.CreditRequest()
-        self.thread_request_search = ThreadGui.SearchRequest()
-        self.thread_holder_details_info = ThreadGui.SearchRequest()
-        self.thread_list_holders = ThreadGui.SearchHolders()
-        self.thread_active_list = ThreadGui.ActiveLoops()
-        self.thread_ciranta_request_accept = ThreadGui.CirantaAccept()
-        self.thread_create_wallet_after_install = ThreadGui.CreateWalletAdressAfterInstall()
-        self.thread_create_wallet_click_button = ThreadGui.CreateWalletAdressClickButton()
-        self.thread_create_wallet_convertpassphrase = ThreadGui.CreateWalletAdressConvertpassphrase()
-        self.thread_refresh_wallet = ThreadGui.RefreshWalletInformations()
-        self.thread_wallet_list = ThreadGui.AllWallet()
-        self.thread_start_chain_without_pubkey = ThreadGui.StartChainWithoutPubkey()
-        self.thread_import_wallet = ThreadGui.ImportPrivkey()
-        self.thread_get_private_key = ThreadGui.ShowPrivateKey()
+        # Thread setup
+        self.thread_marmarad_path = QThread()
+        self.thread_autoinstall = QThread()
+        self.thread_getinfo = QThread()
+        self.thread_getchain = QThread()
+        self.thread_stopchain = QThread()
+        self.thread_getaddresses = QThread()
+        self.thread_setpubkey = QThread()
+        self.thread_getnewaddress = QThread()
+        self.thread_convertpassphrase = QThread()
+        self.thread_importprivkey = QThread()
+        self.thread_address_privkey = QThread()
+        self.thread_seeprivkey = QThread()
+        self.thread_pubkeyloopsearch = QThread()
+        self.thread_marmaralock = QThread()
+        self.thread_marmaraunlock = QThread()
+        self.thread_sendrawtransaction = QThread()
+        self.thread_marmarareceivelist = QThread()
+        self.thread_sendtoaddress = QThread()
+        self.thread_marmaracreditloop = QThread()
+        self.thread_marmarareceive = QThread()
+        self.thread_getgenerate = QThread()
+        self.thread_setgenerate = QThread()
+        self.thread_sidepanel = QThread()
+        self.thread_marmarareceive_transfer = QThread()
+        self.thread_marmarainfo = QThread()
+        self.thread_marmaraholderloops = QThread()
+        self.thread_marmaraissue = QThread()
+        self.thread_marmaratransfer = QThread()
+        self.thread_getaddresstxids = QThread()
+        self.thread_sendtoteam = QThread()
 
         # Loading Gif
         # --------------------------------------------------
-        self.loading_screen = LoadingScreen()
-        # self.listWallet()
+        self.loading = LoadingScreen()
+        # --------------------------------------------------
 
-    def buttonClickImportWalletCommand(self):
-        self.loading_screen.startAnimation()
+    def center_ui(self):
+        qr = self.frameGeometry()
+        center_point = QDesktopWidget().availableGeometry().center()
+        qr.moveCenter(center_point)
+        self.move(qr.topLeft())
 
-        self.thread_import_wallet = ThreadGui.ImportPrivkey()
-        self.thread_import_wallet.change_value_information_get_wallet.connect(self.changingInformationWalletAdressAfterImportWallet)
-        self.thread_import_wallet.change_value_information_get_pubkey.connect(self.changingInformationPubkeyAdressAfterImportWallet)
+    def check_app_version(self):
+        base_version = configuration.version
+        latest_app_tag = version.git_request_tag(version.app_api_url)
+        latest_app_version = version.latest_app_release_url()
 
-        self.thread_import_wallet.command_mcl_import_privkey = self.mcl_install_file_path + self.command_mcl_import_privkey + self.lineEdit_28.text()
-        self.thread_import_wallet.command_mcl_get_pubkey = self.mcl_install_file_path + self.command_get_pubkey
-
-        self.thread_import_wallet.server_username = self.server_username
-        self.thread_import_wallet.server_hostname = self.server_hostname
-        self.thread_import_wallet.server_password = self.server_password
-
-        self.thread_import_wallet.start()
-
-    def changingInformationWalletAdressAfterImportWallet(self, val):
-        self.lineEdit_34.setText(val)
-
-    def changingInformationPubkeyAdressAfterImportWallet(self, val):
-        if val == "":
-            self.loading_screen.stopAnimotion()
-            self.showDialogInfo(self.msg_title_warning, self.msg_unsuccess_import, "", self.msg_ok)
+        if base_version != latest_app_tag:
+            message_box = self.custom_message(self.tr('Software Update Available'),
+                                              self.tr('A new update is available. <br>Follow the link ')
+                                                      + "<a href='" + latest_app_version + "'" + self.tr(">here</a>"),
+                                              'information', QMessageBox.Information)
         else:
-            self.thread_wallet_list.terminate()
-
-            self.lineEdit_35.setText(val)
-
-            while self.tableWidget_6.rowCount() > 0:
-                self.tableWidget_6.removeRow(0)
-            self.count_wallet_list = 0
-            self.loading_screen.stopAnimotion()
-            self.listWallet()
-            self.showDialogInfo(self.msg_title_warning,self.msg_success_import,"",self.msg_ok)
-
-    def buttonClickSeePrivkey(self):
-        self.stackedWidget.setCurrentIndex(3)
-        self.thread_get_private_key = ThreadGui.ShowPrivateKey()
-
-        self.thread_get_private_key.change_value_information_privkey.connect(self.changingInformationSetPrivkey)
-
-        self.thread_get_private_key.command_mcl_get_privkey =  self.mcl_install_file_path + self.command_get_privkey + self.lineEdit_31.text()
-
-        self.thread_get_private_key.server_username = self.server_username
-        self.thread_get_private_key.server_hostname = self.server_hostname
-        self.thread_get_private_key.server_password = self.server_password
-
-        self.thread_get_private_key.start()
-
-    def changingInformationSetPrivkey(self, val):
-        self.lineEdit_36.setText(val)
-
-    def listWallet(self):
-        self.thread_wallet_list = ThreadGui.AllWallet()
-        self.thread_wallet_list.change_value_information_wallet.connect(self.changingInformationWalletList)
-
-        self.thread_wallet_list.command_mcl_all_wallet_list =  self.mcl_install_file_path + self.command_mcl_all_wallet_list
-        self.thread_wallet_list.command_mcl_get_pubkey =  self.mcl_install_file_path + self.command_get_pubkey +" "
-
-        self.thread_wallet_list.server_username = self.server_username
-        self.thread_wallet_list.server_hostname = self.server_hostname
-        self.thread_wallet_list.server_password = self.server_password
-
-        self.thread_wallet_list.start()
-
-    def changingInformationWalletList(self, val):
-        print("*****")
-        if val != "0":
-            print("///")
-            self.tableWidget_6.setRowCount(self.tableWidget_6.rowCount()+1)
-
-            val_ = val.split(",")
-            walletAddress_ = QTableWidgetItem(val_[0])
-            self.tableWidget_6.setItem(self.count_wallet_list, 0, walletAddress_)
-
-            self.btn_wallet_copy = QPushButton('')
-            self.btn_wallet_copy.setStyleSheet(
-                    "QPushButton          {image: url("+self.icon_path+"/copy_wallet_icon_.png); border: 0; width: 30px; height: 30px;}"
-                    "QPushButton::hover   {image: url("+self.icon_path+"/copy_wallet_icon_hover_.png);border:0px}"
-                    "QPushButton::pressed {image: url("+self.icon_path+"/copy_wallet_icon_press_.png);border:0px}")
-            self.btn_wallet_copy.clicked.connect(self.buttonClickCopyWalletFromList)
-            self.tableWidget_6.setCellWidget(self.count_wallet_list, 1, self.btn_wallet_copy)
-
-            pubkey_ = QTableWidgetItem(val_[1])
-            self.tableWidget_6.setItem(self.count_wallet_list, 2, pubkey_)
-
-            self.btn_pubkey_copy = QPushButton('')
-            self.btn_pubkey_copy.setStyleSheet(
-                                   "QPushButton          {image: url("+self.icon_path+"/copy_key_icon.png); border: 0; width: 15px; height: 15px;}"
-                                   "QPushButton::hover   {image: url("+self.icon_path+"/copy_key_icon_hover.png);border:0px}"
-                                   "QPushButton::pressed {image: url("+self.icon_path+"/copy_key_icon_press.png);border:0px}"
-            )
-            self.btn_pubkey_copy.clicked.connect(self.buttonClickCopyPubkeyFromList)
-            self.tableWidget_6.setCellWidget(self.count_wallet_list, 3, self.btn_pubkey_copy)
-            self.count_wallet_list = self.count_wallet_list + 1
-        else:
-            print("Couunt 0")
-            self.count_wallet_list=0
-
-    def buttonClickCopyPubkeyFromList(self):
-        button = self.sender()
-        index = self.tableWidget_6.indexAt(button.pos())
-        if index.isValid():
-            pyperclip.copy(self.tableWidget_6.item(index.row(), 2).text())
-
-    def buttonClickCopyWalletFromList(self):
-        button = self.sender()
-        index = self.tableWidget_6.indexAt(button.pos())
-        if index.isValid():
-            pyperclip.copy(self.tableWidget_6.item(index.row(), 0).text())
-
-    def buttonClickImportWallet(self):
-        self.stackedWidget.setCurrentIndex(2)
-
-    def dateChangedHolderMin(self, date):
-        self.dateTimeEdit_4.setMinimumDateTime(self.dateTimeEdit_3.dateTime().toPyDateTime())
-
-    def dateChangedHolderMax(self, date):
-        date_min = self.dateTimeEdit_3.dateTime().toPyDateTime() - datetime.now()
-        date_max = self.dateTimeEdit_4.dateTime().toPyDateTime() - datetime.now()
-
-    def state_changed_checkBox_2(self, int):
-        if self.checkBox_2.isChecked():
-            self.dateTimeEdit.setEnabled(False)
-        else:
-            self.dateTimeEdit.setEnabled(True)
-
-    def state_changed_checkBox_4(self, int):
-        if self.checkBox_4.isChecked():
-            self.dateTimeEdit_3.setEnabled(False)
-            self.dateTimeEdit_4.setEnabled(False)
-        else:
-            self.dateTimeEdit_3.setEnabled(True)
-            self.dateTimeEdit_4.setEnabled(True)
-
-    def state_changed_checkBox_5(self, int):
-        if self.checkBox_5.isChecked():
-            self.lineEdit_29.setEnabled(False)
-            self.lineEdit_30.setEnabled(False)
-        else:
-            self.lineEdit_29.setEnabled(True)
-            self.lineEdit_30.setEnabled(True)
-
-    def start_date_dateedit(self, date):
-        print("Change")
-
-    def buttonClickNewPersonSave(self):
-        if self.lineEdit_39.text() != "" and self.lineEdit_10.text() != "" and self.lineEdit_38.text() != "":
-            try:
-                file = open(self.person_info_file_name, 'a')
-                person_infos = self.lineEdit_39.text() + ","
-                person_infos = person_infos + self.lineEdit_10.text() + ","
-                person_infos = person_infos + self.lineEdit_38.text() + "\n"
-                file.write(person_infos)
-            except IOError:
-                print("Exception error while reading server file!")
-            finally:
-                file.close()
-
-            self.readPersons()
-            self.lineEdit_39.setText("")
-            self.lineEdit_10.setText("")
-            self.lineEdit_38.setText("")
-
-            self.showDialogInfo(self.msg_title_info, self.msg_success_to_save, "", self.msg_ok)
-        else:
-            self.showDialogInfo(self.msg_title_warning, self.msg_missing_info, self.msg_fill_blank, self.msg_ok)
-
-    def readPersons(self):
-        isFilesEmpty = os.stat(self.person_info_file_name).st_size == 0
-        if not isFilesEmpty:
-            if os.path.isfile(self.person_info_file_name):
-                try:
-                    file = open(self.person_info_file_name, "r")
-                    person_all_info = file.read().rstrip()
-                    self.person_list = person_all_info.split("\n")
-                except IOError:
-                    print("Except error while reading server file!")
-                finally:
-                    file.close()
-
-        person_list_atr = []
-        for list in self.person_list:
-            tmp = list.split(",")
-            person_list_atr.append(tmp)
-
-        count_rows = int(self.tableWidget_5.rowCount())
-
-        for index in range(count_rows):
-            self.tableWidget_5.removeRow(index)
-
-        self.tableWidget_5.setRowCount(len(self.person_list))
-        row_index = 0
-
-        for person in person_list_atr:
-            name = QTableWidgetItem(person[0])
-            self.tableWidget_5.setItem(row_index, 0, name)
-
-            walletAddress_ = QTableWidgetItem(person[1])
-            self.tableWidget_5.setItem(row_index, 1, walletAddress_)
-
-            self.btn_wallet_copy = QPushButton('')
-            self.btn_wallet_copy.setStyleSheet(
-                    "QPushButton          {image: url("+self.icon_path+"/copy_wallet_icon_.png); border: 0; width: 30px; height: 30px;}"
-                    "QPushButton::hover   {image: url("+self.icon_path+"/copy_wallet_icon_hover_.png);border:0px}"
-                    "QPushButton::pressed {image: url("+self.icon_path+"/copy_wallet_icon_press_.png);border:0px}")
-            self.btn_wallet_copy.clicked.connect(self.buttonClickPersonCopyWalletAdress)
-            self.tableWidget_5.setCellWidget(row_index, 2, self.btn_wallet_copy)
-
-            pubkey_ = QTableWidgetItem(person[2])
-            self.tableWidget_5.setItem(row_index, 3, pubkey_)
-
-            self.btn_pubkey_copy = QPushButton('')
-            self.btn_pubkey_copy.setStyleSheet(
-                                   "QPushButton          {image: url("+self.icon_path+"/copy_key_icon.png); border: 0; width: 15px; height: 15px;}"
-                                   "QPushButton::hover   {image: url("+self.icon_path+"/copy_key_icon_hover.png);border:0px}"
-                                   "QPushButton::pressed {image: url("+self.icon_path+"/copy_key_icon_press.png);border:0px}"
-            )
-            self.btn_pubkey_copy.clicked.connect(self.buttonClickPersonCopyPubkey)
-            self.tableWidget_5.setCellWidget(row_index, 4, self.btn_pubkey_copy)
-
-            self.btn_delete_person = QPushButton('')
-            self.btn_delete_person.setStyleSheet(
-                                   "QPushButton          {image: url("+self.icon_path+"/delete_person.png); border: 0; width: 15px; height: 15px;}"
-                                   "QPushButton::hover   {image: url("+self.icon_path+"/delete_person_hover.png);border:0px}"
-                                   "QPushButton::pressed {image: url("+self.icon_path+"/delete_person_press.png);border:0px}")
-            self.btn_delete_person.clicked.connect(self.buttonClickPersonDelete)
-            self.tableWidget_5.setCellWidget(row_index, 5, self.btn_delete_person)
-
-            row_index = row_index + 1
-
-    def buttonClickPersonDelete(self):
-        button = self.sender()
-        index = self.tableWidget_5.indexAt(button.pos())
-        del self.person_list[index.row()]
-
-        try:
-            file = open(self.person_info_file_name, 'w')
-            for list in self.person_list:
-                file.write(list + "\n")
-        except IOError:
-            print("Exception error while reading server file!")
-        finally:
-            file.close()
-
-        self.readPersons()
-
-    def buttonClickPersonCopyWalletAdress(self):
-        button = self.sender()
-        index = self.tableWidget_5.indexAt(button.pos())
-
-        if index.isValid():
-            pyperclip.copy(self.tableWidget_5.item(index.row(), 1).text())
-
-    def buttonClickPersonCopyPubkey(self):
-        button = self.sender()
-        index = self.tableWidget_5.indexAt(button.pos())
-        if index.isValid():
-            pyperclip.copy(self.tableWidget_5.item(index.row(), 3).text())
-
-    def keyPressEvent(self, event):
-        if event.key() == Qt.Key_Escape:
-            self.close()
-
-    def buttonClickRefreshWalletInfo(self):
-        self.thread_refresh_wallet = ThreadGui.RefreshWalletInformations()
-        self.loading_screen.startAnimation()
-
-        self.thread_refresh_wallet.change_value_information_get_marmara_info.connect(self.changingInformationWalletInfo)
-        self.thread_refresh_wallet.command_mcl_get_marmara_info =  self.mcl_install_file_path + self.command_mcl_marmara_get_info
-
-        self.thread_refresh_wallet.pubkey = self.pubkey
-        self.thread_refresh_wallet.server_username = self.server_username
-        self.thread_refresh_wallet.server_hostname = self.server_hostname
-        self.thread_refresh_wallet.server_password = self.server_password
-
-        self.thread_refresh_wallet.start()
-
-    def createWalletAdressAfterInstall(self):
-        self.thread_create_wallet_after_install = ThreadGui.CreateWalletAdressAfterInstall()
-
-        self.loading_screen.startAnimation()
-
-        self.thread_create_wallet_after_install.change_value_information_adress.connect(
-            self.changingInformationCreateWalletAdress)
-        self.thread_create_wallet_after_install.change_value_information_pubkey.connect(self.changingInformationPubkey)
-        self.thread_create_wallet_after_install.change_value_information_privkey.connect(
-            self.changingInformationPrivkey)
-        self.thread_create_wallet_after_install.change_value_information_getinfo_check_chain_with_pubkey.connect(
-            self.changingInformationGetInfoPubkeyCheck)
-
-        self.thread_create_wallet_after_install.command_mcl_start_chain_without_pubkey =  self.mcl_install_file_path + self.command_start_mcl_mining_without_pubkey
-        self.thread_create_wallet_after_install.command_mcl_create_wallet_adress =  self.mcl_install_file_path + self.command_get_address
-        self.thread_create_wallet_after_install.command_mcl_get_info =  self.mcl_install_file_path + self.command_mcl_get_info
-        self.thread_create_wallet_after_install.command_mcl_get_pubkey =  self.mcl_install_file_path + self.command_get_pubkey
-        self.thread_create_wallet_after_install.command_mcl_get_privkey =  self.mcl_install_file_path + self.command_get_privkey
-
-        self.thread_create_wallet_after_install.server_username = self.server_username
-        self.thread_create_wallet_after_install.server_hostname = self.server_hostname
-        self.thread_create_wallet_after_install.server_password = self.server_password
-
-        self.thread_create_wallet_after_install.start()
-
-    def changingInformationPrivkey(self, val):
-        self.privkey = val
-
-    def changingInformationPubkey(self, val):
-        self.lineEdit_33.setText(val)
-        self.loading_screen.stopAnimotion()
-
-    def changingInformationCreateWalletAdress(self, val):
-        self.lineEdit_32.setText(val)
-
-    def changingInformationGetInfoPubkeyCheck(self, val):
-        y = json.loads(val)
-        try:
-            self.lineEdit_14.setText(y["pubkey"])
-            self.pubkey = y["pubkey"]
-            self.pushButton_17.setDisabled(True)
-            self.pushButton_11.setDisabled(False)
-        except:
-            self.lineEdit_14.setText(self.lineEdit_14_withoutPubkey)
-
-            self.thread_start_chain.quit()
-            self.thread_refresh.quit()
-
-            self.pushButton_17.setDisabled(True)
-            self.pushButton_11.setDisabled(False)
-
-    def buttonClickGoToCreateWallet(self):
-        self.stackedWidget.setCurrentIndex(1)
-
-    def buttonClickCreateWallet(self):
-        self.thread_wallet_list.terminate()
-        self.count_wallet_list=0
-        if self.lineEdit_7.text() == "":
-            self.thread_create_wallet_click_button = ThreadGui.CreateWalletAdressClickButton()
-
-            self.loading_screen.startAnimation()
-
-            self.thread_create_wallet_click_button.change_value_information_adress.connect(
-                self.changingInformationCreateWalletAdress)
-            self.thread_create_wallet_click_button.change_value_information_pubkey.connect(
-                self.changingInformationPubkey)
-            self.thread_create_wallet_click_button.change_value_information_privkey.connect(
-                self.changingInformationPrivkey)
-            self.thread_create_wallet_click_button.change_value_information_getinfo_check_chain_with_pubkey.connect(
-                self.changingInformationGetInfoPubkeyCheck)
-
-            self.thread_create_wallet_click_button.command_mcl_start_chain_without_pubkey =  self.mcl_install_file_path + self.command_start_mcl_mining_without_pubkey
-            self.thread_create_wallet_click_button.command_mcl_create_wallet_adress =  self.mcl_install_file_path + self.command_get_address
-            self.thread_create_wallet_click_button.command_mcl_get_info =  self.mcl_install_file_path + self.command_mcl_get_info
-            self.thread_create_wallet_click_button.command_mcl_get_pubkey =  self.mcl_install_file_path + self.command_get_pubkey
-            self.thread_create_wallet_click_button.command_mcl_get_privkey =  self.mcl_install_file_path + self.command_get_privkey
-
-            self.thread_create_wallet_click_button.server_username = self.server_username
-            self.thread_create_wallet_click_button.server_hostname = self.server_hostname
-            self.thread_create_wallet_click_button.server_password = self.server_password
-
-            self.thread_create_wallet_click_button.start()
-            self.stackedWidget.setCurrentIndex(1)
-
-        else:
-            words_group = self.lineEdit_7.text().split(" ")
-
-            if len(words_group) == 12:
-                if self.lineEdit_7.text() == self.lineEdit_3.text():
-                    self.thread_create_wallet_convertpassphrase = ThreadGui.CreateWalletAdressConvertpassphrase()
-
-                    self.loading_screen.startAnimation()
-
-                    self.thread_create_wallet_convertpassphrase.change_value_information_adress.connect(
-                        self.changingInformationCreateWalletAdress)
-                    self.thread_create_wallet_convertpassphrase.change_value_information_pubkey.connect(
-                        self.changingInformationPubkey)
-                    self.thread_create_wallet_convertpassphrase.change_value_information_privkey.connect(
-                        self.changingInformationPrivkey)
-                    self.thread_create_wallet_convertpassphrase.change_value_information_getinfo_check_chain_with_pubkey.connect(
-                        self.changingInformationGetInfoPubkeyCheck)
-
-                    self.thread_create_wallet_convertpassphrase.command_mcl_start_chain_without_pubkey =  self.mcl_install_file_path + self.command_start_mcl_mining_without_pubkey
-                    self.thread_create_wallet_convertpassphrase.command_mcl_create_convertpassphrase =  self.mcl_install_file_path + self.command_get_address_convertpassphrase + "\"" + self.lineEdit_7.text() + "\""
-                    self.thread_create_wallet_convertpassphrase.command_mcl_get_info =  self.mcl_install_file_path + self.command_mcl_get_info
-                    self.thread_create_wallet_convertpassphrase.command_mcl_import_private_Key =  self.mcl_install_file_path + self.command_mcl_import_privkey
-
-                    self.thread_create_wallet_convertpassphrase.server_username = self.server_username
-                    self.thread_create_wallet_convertpassphrase.server_hostname = self.server_hostname
-                    self.thread_create_wallet_convertpassphrase.server_password = self.server_password
-
-                    self.thread_create_wallet_convertpassphrase.start()
-                    self.stackedWidget.setCurrentIndex(1)
-                else:
-                    self.showDialogInfo(self.msg_title_warning, "Girdiğiniz kelimeler uyuşmamamktadır.", "",
-                                        self.msg_ok)
-            else:
-                self.showDialogInfo(self.msg_title_warning, "12 Kelime girmeniz gerekmektedir.", "", self.msg_ok)
-
-    def buttonClickBackReturn(self):
-        self.lineEdit_7.setText("")
-        self.lineEdit_3.setText("")
-        self.lineEdit_32.setText("")
-        self.lineEdit_33.setText("")
-        self.stackedWidget.setCurrentIndex(0)
-        while self.tableWidget_6.rowCount() > 0:
-            self.tableWidget_6.removeRow(0)
-        self.count_wallet_list = 0
-        self.listWallet()
-
-    def buttonClickBackReturn_(self):
-        self.lineEdit_28.setText("")
-        self.lineEdit_34.setText("")
-        self.lineEdit_35.setText("")
-        self.stackedWidget.setCurrentIndex(0)
-        self.lineEdit_36.setText("")
-
-    def buttonClickSavePubkeyWallet(self):
-        dialog = QFileDialog()
-        dialog.setFilter(dialog.filter() | QtCore.QDir.Hidden)
-        dialog.setDefaultSuffix('txt')
-        dialog.setAcceptMode(QFileDialog.AcceptSave)
-        dialog.setNameFilters(['Text files (*.txt)'])
-        if dialog.exec_() == QDialog.Accepted:
-            file = open(dialog.selectedFiles()[0], 'w')
-            text = "Agamapassphrase:  " + self.lineEdit_7.text() + "\n" + "Privkey:          " + self.privkey + "\n" + "Wallet Adress:    " + self.lineEdit_32.text() + "\n" + "Pubkey:           " + self.lineEdit_33.text()
-            file.write(text)
-            file.close()
-        else:
-            print('Cancelled')
-
-    def buttonClickNewPubkey(self):
-        pyperclip.copy(self.lineEdit_33.text())
-
-    def buttonClickNewAdress(self):
-        pyperclip.copy(self.lineEdit_32.text())
-
-    def readLangFile(self):
-        entries = os.listdir(self.lang_file_path)
+            message_box = self.custom_message(self.tr('No Update Available'),
+                                              self.tr('Current App version is ') + base_version,
+                                              'information', QMessageBox.Information)
+    def read_lang_setting(self):
+        language = configuration.ApplicationConfig().get_value('USER', 'lang')
+        if language:
+            entries = os.listdir(configuration.configuration_path + '/language')
+            for item in entries:
+                if item.strip('.qm') == language:
+                    self.change_lang(language)
+
+    @pyqtSlot()
+    def show_languages(self):
+
+        languageDialog = QDialog(self)
+        languageDialog.setWindowTitle(self.tr("Choose a language"))
+
+        apply_button = QDialogButtonBox(QDialogButtonBox.Apply)
+        self.lang_comboBox = QtWidgets.QComboBox()
+
+        languageDialog.layout = QVBoxLayout()
+        languageDialog.layout.addWidget(self.lang_comboBox)
+        languageDialog.layout.addWidget(apply_button)
+        languageDialog.setLayout(languageDialog.layout)
+
+        entries = os.listdir(configuration.configuration_path + '/language')
         entries.sort()
 
-        self.button_group = QButtonGroup()
-        count_ = 0
-        for i in entries:
-            self.button_name = QRadioButton(i)
-            self.radioButtonsLang.append(self.button_name)
-            self.button_name.setIcon(QtGui.QIcon(self.lang_icon_path + "/" + i + ".png"))
-            self.button_name.setIconSize(QtCore.QSize(32, 24))
-            self.button_name.setObjectName("radiobtn_{}".format(count_))
-            self.verticalLayout_6.addWidget(self.button_name)
-            self.button_group.addButton(self.button_name, count_)
-            self.button_name.toggled.connect(self.radio_button_event)
-
-            # Combobox in login
-            self.comboBox_3.addItem(i)
-            self.comboBox_3.setItemIcon(count_, QtGui.QIcon(self.lang_icon_path + "/" + i + ".png"))
-
-            if self.button_name.text() == self.conf_lang_info:
-                self.button_name.setChecked(True)
-                self.comboBox_3.setCurrentIndex(count_)
-            count_ = count_ + 1
-
-    def on_combobox_changed(self, value):
-        self.conf_file_content["selected_lang"] = str(value)
-        for radioB in self.radioButtonsLang:
-            if radioB.text() == value:
-                radioB.setChecked(True)
-        tmp = json.dumps(self.conf_file_content)
-        tmp = tmp.replace("{", "")
-        tmp = tmp.replace("}", "")
-        tmp = tmp.replace(",", "\n")
-        f_ = open(self.conf_path + "/foc.info", "w")
-        f_.write(tmp)
-        f_.close()
-
-        f = open(self.lang_file_path + value, "r", encoding="utf8")
-        a = f.read()
-        a = a.replace("\n", ",")
-        res = ast.literal_eval("{" + a + "}")
-        f.close()
-        self.changeLangValues(res)
-
-    def radio_button_event(self):
-        rbtn = self.sender()
-        if rbtn.isChecked():
-            self.conf_file_content["selected_lang"] = rbtn.text()
-            tmp = json.dumps(self.conf_file_content)
-            tmp = tmp.replace("{", "")
-            tmp = tmp.replace("}", "")
-            tmp = tmp.replace(",", "\n")
-            f_ = open(self.conf_path + "/foc.info", "w")
-            f_.write(tmp)
-            f_.close()
-
-            f = open(self.lang_file_path + rbtn.text(), "r", encoding="utf8")
-            a = f.read()
-            a = a.replace("\n", ",")
-            res = ast.literal_eval("{" + a + "}")
-            f.close()
-            self.changeLangValues(res)
-
-    def changeLangValues(self, res):
-        self.setWindowTitle(res["app_title"])
-        self.label_2.setText(res["label_server_login"])
-        self.pushButton_2.setText(res["button_delete"])
-        self.pushButton_12.setText(res["button_edit"])
-        self.pushButton_22.setText(res["button_add"])
-        self.comboBox_2.setItemText(0, res["place_holder_choose_server"])
-        self.choose_server_text = res["place_holder_choose_server"]
-        self.lineEdit_6.setPlaceholderText(res["place_holder_password"])
-        self.pushButton_21.setText(res["button_connect"])
-        self.label_35.setText(res["label_name"])
-        self.lineEdit_8.setPlaceholderText(res["label_name"])
-        self.label_36.setText(res["label_server_username"])
-        self.lineEdit_11.setPlaceholderText(res["label_server_username"])
-        self.label_37.setText(res["label_server_ip"])
-        self.lineEdit_17.setPlaceholderText(res["label_server_ip"])
-        self.pushButton_24.setText(res["button_save"])
-        self.pushButton_23.setText(res["button_login_page"])
-        self.label_39.setText(res["label_name"])
-        self.lineEdit_19.setPlaceholderText(res["label_name"])
-        self.label_40.setText(res["label_server_username"])
-        self.lineEdit_20.setPlaceholderText(res["label_server_username"])
-        self.label_38.setText(res["label_server_ip"])
-        self.lineEdit_18.setPlaceholderText(res["label_server_ip"])
-        self.pushButton_26.setText(res["button_edit_save"])
-        self.pushButton_25.setText(res["button_login_page"])
-
-        self.msg_title_warning = res["msg_title_warning"]
-        self.msg_title_info = res["msg_title_info"]
-        self.msg_connection_establish = res["msg_connection_establish"]
-        self.msg_check_info = res["msg_check_info"]
-        self.msg_missing_info = res["msg_missing_info"]
-        self.msg_fill_blank = res["msg_fill_blank"]
-        self.msg_you_did_not_choose_a_server = res["msg_you_did_not_choose_a_server"]
-        self.msg_please_select_server = res["msg_please_select_server"]
-        self.msg_do_you_want_to_make_changes = res["msg_do_you_want_to_make_changes"]
-        self.msg_success_to_save = res["msg_success_to_save"]
-        self.msg_do_you_want_to_connect_server = res["msg_do_you_want_to_connect_server"]
-        self.msg_do_you_want_to_request = res["msg_do_you_want_to_request"]
-        self.msg_do_you_want_endorser = res["msg_do_you_want_endorser"]
-        self.msg_do_you_want_to_accept = res["msg_do_you_want_to_accept"]
-        self.msg_credit_confirmation = res["msg_credit_confirmation"]
-        self.msg_do_you_want_to_send_coin = res["msg_do_you_want_to_send_coin"]
-        self.msg_sended_coin = res["msg_sended_coin"]
-        self.msg_not_sended_coin = res["msg_not_sended_coin"]
-        self.msg_do_you_want_to_activate_coins = res["msg_do_you_want_to_activate_coins"]
-        self.msg_do_you_want_to_deactivate_coins = res["msg_do_you_want_to_deactivate_coins"]
-        self.msg_succes_lock = res["msg_success_lock"]
-        self.msg_unsuccess_lock = res["msg_unsuccess_lock"]
-        self.msg_success_unlock = res["msg_success_unlock"]
-        self.msg_unsuccess_unlock = res["msg_unsuccess_unlock"]
-        self.msg_success_request = res["msg_success_request"]
-        self.msg_unsuccess_request = res["msg_unsuccess_request"]
-        self.msg_success_request_accept = res["msg_success_request_accept"]
-        self.msg_unsuccess_request_accept = res["msg_unsuccess_request_accept"]
-        self.msg_start_chain = res["msg_start_chain"]
-        self.msg_stop_chain = res["msg_stop_chain"]
-        self.msg_stop_chain_last = res["msg_stop_chain_last"]
-        self.msg_error_loop_details = res["msg_error_loop_details"]
-        self.msg_enter_correct_info = res["msg_enter_correct_info"]
-        self.msg_mcl_not_installed = res["msg_mcl_not_installed"]
-        self.msg_yes = res["msg_yes"]
-        self.msg_no = res["msg_no"]
-        self.msg_accept = res["msg_accept"]
-        self.msg_ok = res["msg_ok"]
-
-        self.last_update = res["label_last_update"]
-        self.label_28.setText(res["choose_language"])
-        self.label_19.setText(res["server_information"])
-
-        self.tabWidget_3.setTabText(0, res["button_chain"])
-        self.tabWidget_3.setTabText(1, res["button_wallet"])
-        self.tabWidget_3.setTabText(2, res["button_coin_send_receive"])
-        self.tabWidget_3.setTabText(3, res["button_credit_transaction"])
-        self.tabWidget_3.setTabText(4, res["persons"])
-        self.tabWidget_3.setTabText(5, res["button_setting"])
-        self.tabWidget_3.setTabText(6, res["button_exit"])
-
-        self.label_27.setText(res["label_pubkey"])
-        self.label_56.setText(res["label_wallet_address"])
-        self.pushButton_17.setText(res["button_start"])
-        self.pushButton_11.setText(res["button_stop"])
-        self.active_text = res["active"]
-        self.deactive_text = res["deactive"]
-        self.pushButton_10.setText(res["button_create_new_wallet"].upper())
-        self.pushButton_8.setText(res["button_refresh"])
-        self.label.setText(res["chain_active"])
-        self.label_4.setText(res["chain_synchronous"])
-        self.label_3.setText(res["block_count"])
-        self.label_50.setText(res["all_block_count"])
-        self.label_14.setText(res["currency"])
-        self.label_12.setText(res["status"])
-        self.label_15.setText(res["cpu"])
-        self.label_10.setText(res["wallet_amount"])
-        self.label_16.setText(res["normal_amount"])
-        self.label_8.setText(res["activate_amount"])
-        self.label_29.setText(res["copy_pubkey"])
-        self.label_9.setText(res["copy_wallet"])
-        self.label_64.setText(res["login_lang"])
-
-        self.groupBox_2.setTitle(res["persons"])
-        self.currency = res["currency"]
-
-        self.groupBox_5.setTitle(res["active_amount"])
-        self.groupBox_9.setTitle(res["unlock_amount"])
-        self.label_21.setText(res["amount"])
-        self.label_33.setText(res["amount"])
-        self.lineEdit_12.setPlaceholderText(res["amount_to_lock"])
-        self.lineEdit_16.setPlaceholderText(res["amount_to_unlock"])
-
-        self.groupBox_6.setTitle(res["send_amount"])
-        self.groupBox_8.setTitle(res["receive_amount"])
-        self.label_30.setText(res["receiver_adress"])
-        self.label_31.setText(res["amount"])
-        self.label_32.setText(res["my_wallet_adress"])
-        self.lineEdit_9.setPlaceholderText(res["label_wallet_address"])
-        self.lineEdit_15.setPlaceholderText(res["amount_to_sent"])
-
-        self.tabWidget_4.setTabText(0, res["issuer_operations"])
-        self.tabWidget_4.setTabText(1, res["bearer_operations"])
-        self.tabWidget_4.setTabText(2, res["endorser_operations"])
-        self.tabWidget_4.setTabText(3, res["loop_info"])
-        self.tabWidget_4.setTabText(4, res["activate_loops"])
-
-        self.groupBox_16.setTitle(res["active_loops_groupbox_"])
-
-        self.groupBox_13.setTitle(res["list_of_first_credit_request"])
-        self.label_18.setText(res["how_many_minutes_previous_request"])
-
-        self.groupBox_10.setTitle(res["first_credit_request"])
-        self.groupBox_11.setTitle(res["credit_request_in_loop"])
-        self.label_34.setText(res["receiver_pub_key"])
-        self.label_51.setText(res["receiver_pub_key"])
-        self.label_22.setText(res["amount"])
-        self.label_41.setText(res["matures"])
-        self.label_42.setText(res["currency_request"])
-        self.label_43.setText(res["request_credit"])
-        self.label_53.setText(res["request_credit"])
-        self.label_49.setText(res["baton_txid"])
-
-        self.lineEdit_2.setPlaceholderText(res["amount"])
-        self.lineEdit_21.setPlaceholderText(res["receiver_pub_key"])
-        self.lineEdit_24.setPlaceholderText(res["receiver_pub_key"])
-        self.lineEdit_25.setPlaceholderText(res["baton_txid"])
-
-        self.groupBox_14.setTitle(res["list_of_credit_requests_in_loop"])
-        self.groupBox_15.setTitle(res["bearer_loops"])
-        self.pushButton_30.setText(res["button_refresh"])
-        self.pushButton_35.setText(res["button_refresh"])
-
-        self.pushButton_41.setText(res["button_save"])
-
-        self.groupBox_7.setTitle(res["detailed_information_about_loops"])
-        self.label_46.setText(res["amount"])
-        self.label_48.setText(res["currency_loop_info"])
-        self.label_7.setText(res["matures"])
-        self.label_17.setText(res["issuer_pk"])
-
-        self.label_68.setText(res["label_name"].capitalize())
-        self.label_67.setText(res["label_wallet_address"])
-
-        # Install Objects
-        self.pushButton_5.setText(res["button_install"])
-        self.label_71.setText(res["label_notice"])
-        self.msg_box_end_1 = res["msg_box_end_1"]
-        self.msg_box_end_2 = res["msg_box_end_2"]
-        self.label_72.setText(res["label_72_text"])
-        self.label_73.setText(res["label_73_text"])
-        self.label_74.setText(res["label_74_text"])
-
-        self.pushButton_34.setText(res["button_refresh"])
-
-        self.pushButton_36.setText(res["pushbutton_36"])
-        self.label_63.setText(res["label_63"])
-        self.label_62.setText(res["label_62"])
-        self.lineEdit_7.setPlaceholderText(res["lineEdit_7_palaceholder"])
-        self.lineEdit_3.setPlaceholderText(res["lineEdit_3_placeholder"])
-
-        self.pushButton_37.setText(res["pushbutton_37"] + "\n" + res["pushbutton_37_"])
-        self.pushButton_38.setText(res["pushbutton_38"] + "\n" + res["pushbutton_38_"])
-        self.label_70.setText(res["label_70"])
-        self.lineEdit_14_withoutPubkey = res["lineEdit_14_withoutPubkey"]
-
-        self.copy = res["copy"]
-        self.amount = res["amount"]
-        self.receiver_pubkey = res["receiver_pubkey"]
-
-        self.matures = res["matures"]
-
-        self.groupBox_19.setTitle(res["amount_info"])
-        self.groupBox_20.setTitle(res["my_wallets"])
-        self.pushButton_44.setText(res["import_private_key"])
-        self.pushButton_47.setText(res["see_privkey"])
-        self.pushButton_46.setText(res["pushbutton_37"])
-        self.pushButton_48.setText(res["pushbutton_37"])
-        self.pushButton_45.setText(res["import"])
-        self.pushButton_42.setText(res["button_refresh"])
-        self.label_78.setText(res["difficultly"])
-
-        self.msg_unsuccess_import=res["unsuccess_import"]
-        self.msg_success_import=res["success_import"]
-
-
-        self.checkBox_2.setText(res["checkbox_all"])
-        self.checkBox_4.setText(res["checkbox_all"])
-        self.checkBox_5.setText(res["checkbox_all"])
-        self.checkBox.setText(res["checkbox_withbootstrap"])
-
-        self.label_54.setText(res["min_amount"])
-        self.label_55.setText(res["max_amount"])
-        self.label_65.setText(res["from"])
-        self.label_66.setText(res["to"])
-        self.label_83.setText(res["label_wallet_address"])
-
-        self.groupBox_3.setTitle(res["matures"])
-        self.groupBox_18.setTitle(res["amount"])
-
-        self.groupBox_14.setTitle(res["active_loops_groupbox"])
-
-        self.synchronous = res["synchronous"]
-        self.asynchronous = res["asynchronous"]
-        self.review = res["review"]
-        self.review_and_confirm = res["review_and_confirm"]
-        self.tableWidget.setColumnCount(4)
-
-        header = self.tableWidget.horizontalHeader()
-        header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
-        # self.tableWidget.setHorizontalHeaderLabels(['TXID', 'AMOUNT', "REVIEW AND CONFIRM"])
-
-        self.tableWidget_2.setColumnCount(4)
-        header = self.tableWidget_2.horizontalHeader()
-        header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
-        # self.tableWidget_2.setHorizontalHeaderLabels(['TXID',"REVIEW AND CONFIRM"])
-
-        self.tableWidget_3.setColumnCount(2)
-        header = self.tableWidget_3.horizontalHeader()
-        header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
-        # self.tableWidget_3.setHorizontalHeaderLabels(['LOOP ADRESS', 'AMOUNT'])
-
-        self.tableWidget_4.setColumnCount(3)
-        header = self.tableWidget_4.horizontalHeader()
-        header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
-
-        self.tableWidget_5.setColumnCount(6)
-        header = self.tableWidget_5.horizontalHeader()
-        header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(3, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(5, QtWidgets.QHeaderView.ResizeToContents)
-
-        self.tableWidget_6.setColumnCount(4)
-        header = self.tableWidget_6.horizontalHeader()
-        header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
-
-        self.tableWidget.setHorizontalHeaderLabels(
-            ['TXID', res["amount_table_title"], res["matures"].upper(), res["review_and_confirm"]])
-        self.tableWidget_2.setHorizontalHeaderLabels(
-            ['TXID', res["amount_table_title"], res["matures"].upper(), res["review_and_confirm"]])
-        self.tableWidget_3.setHorizontalHeaderLabels([res["loop_address"], res["amount_table_title"]])
-        self.tableWidget_4.setHorizontalHeaderLabels(['TXID', res["copy_txid_table_title"], res["msg_title_info"]])
-        self.tableWidget_5.setHorizontalHeaderLabels(
-            [res["label_name"].capitalize(), res["label_wallet_address"].capitalize(), res["copy"].capitalize(),
-             "Pubkey", res["copy"].capitalize(), res["button_delete"]])
-        self.tableWidget_6.setHorizontalHeaderLabels(
-            [res["label_wallet_address"].capitalize(), res["copy"].capitalize(),
-             "Pubkey", res["copy"].capitalize()])
-
-    def readConfFile(self):
-        import ast
-        f = open(self.configFilePath, "r")
-        a = f.read()
-        res = ast.literal_eval("{" + a + "}")
-
-        self.conf_file_content = res
-        print(type(self.conf_file_content))
-        self.conf_lang_info = res["selected_lang"]
-
-    def tabWidgetOnChange(self, i):
-        print("Tab changed")
-
-    def changingInformationMarmaraHoldersList(self, val):
-        self.holder_list_json = val
-        json_array = json.loads(self.holder_list_json)
-
-        print(len(json_array))
-        print(json_array)
-
-        print(self.tableWidget_4.rowCount())
-        count_rows = int(self.tableWidget_4.rowCount())
-
-        for index in range(count_rows):
-            self.tableWidget_4.removeRow(index)
-
-        self.holder_list = []
-        for item in json_array['issuances']:
-            self.holder_list.append(item)
-
-        self.tableWidget_4.setRowCount(len(self.holder_list))
-        print(self.holder_list)
-        print(len(self.holder_list))
-        row_index = 0
-        for item_json in self.holder_list:
-            txid = QTableWidgetItem(item_json)
-            print(txid.text())
-            self.tableWidget_4.setItem(row_index, 0, txid)
-
-            btn_copy = QPushButton('')
-            btn_copy.setStyleSheet(
-            "QPushButton          {image: url("+self.icon_path+"/copy_wallet_icon_.png); border: 0; width: 30px; height: 30px;}"
-            "QPushButton::hover   {image: url("+self.icon_path+"/copy_wallet_icon_hover_.png);border:0px}"
-            "QPushButton::pressed {image: url("+self.icon_path+"/copy_wallet_icon_press_.png);border:0px}")
-            btn_copy.clicked.connect(self.buttonClickBottonTxidCoppy)
-            self.tableWidget_4.setCellWidget(row_index, 1, btn_copy)
-
-            btn_info = QPushButton('')
-            btn_info.setStyleSheet(
-            "QPushButton          {image: url("+self.icon_path+"/details.png); border: 0; width: 30px; height: 30px;}"
-            "QPushButton::hover   {image: url("+self.icon_path+"/details_hover.png);border:0px}"
-            "QPushButton::pressed {image: url("+self.icon_path+"/details_press.png);border:0px}")
-            btn_info.clicked.connect(self.buttonClickHolderDetails)
-            self.tableWidget_4.setCellWidget(row_index, 2, btn_info)
-            row_index = row_index + 1
-
-        self.loading_screen.stopAnimotion()
-
-    def buttonClickBottonTxidCoppy(self):
-        button = self.sender()
-        index = self.tableWidget_4.indexAt(button.pos())
-        if index.isValid():
-            pyperclip.copy(self.tableWidget_4.item(index.row(), 0).text())
-
-    def buttonClickHolderDetails(self):
-        self.thread_holder_details_info = ThreadGui.SearchRequest()
-        button = self.sender()
-        index = self.tableWidget_4.indexAt(button.pos())
-        if index.isValid():
-            self.loading_screen.startAnimation()
-            self.thread_holder_details_info.change_value_information_loop_details.connect(
-                self.changingInformationsHolderDetails)
-
-            self.thread_holder_details_info.command_mcl_credit_loop_search =  self.mcl_install_file_path + self.command_mcl_credit_loop_search + " " + self.tableWidget_4.item(
-                index.row(), 0).text()
-
-            self.thread_holder_details_info.server_username = self.server_username
-            self.thread_holder_details_info.server_hostname = self.server_hostname
-            self.thread_holder_details_info.server_password = self.server_password
-
-            self.thread_holder_details_info.start()
-
-    def changingInformationsHolderDetails(self, val):
-        y = json.loads(val)
-        self.loading_screen.stopAnimotion()
-        matures_date = y['matures'] - int(self.long_chain_blocks)
-        matures_time = datetime.now() + timedelta(minutes=matures_date)
-
-        matures_date_ = str(matures_time.day) + "/" + str(matures_time.month) + "/" + str(matures_time.year)
-        self.showDialogInfo(self.msg_title_info,
-                            "",
-                            "TXID: " + y["createtxid"] + "\n" +
-                            self.amount.upper() + ": " + str(y["amount"]) + "\n" +
-                            self.currency.upper() + ": " + y["currency"] + "\n" +
-                            self.matures.upper() + ": " + matures_date_ + "\n" +
-                            "BATON PUBBKEY: " + y["batonpk"] + "\n",
-                            self.msg_ok)
-
-    def buttonClickMarmaraHolders(self):
-        if not self.checkBox_4.isChecked():
-            date_min = self.dateTimeEdit_3.dateTime().toPyDateTime() - datetime.now()
-            date_max = self.dateTimeEdit_4.dateTime().toPyDateTime() - datetime.now()
-
-            min_mat = int(self.long_chain_blocks) + int(abs(date_min).total_seconds() / 60)
-            max_mat = int(self.long_chain_blocks) + int(abs(date_max).total_seconds() / 60)
-
-            self.command_mcl_marmara_holders_min_matures = str(min_mat)
-            self.command_mcl_marmara_holders_max_matures = str(max_mat)
+        for item in entries:
+            self.lang_comboBox.addItem(item.strip('.qm'))
+            self.lang_comboBox.setItemIcon(entries.index(item), QIcon(
+                self.icon_path + "/lang_icons" + "/" + item.strip('.qm') + ".png"))
+        apply_button.clicked.connect(self.get_lang_selection)
+        apply_button.clicked.connect(languageDialog.close)
+        languageDialog.exec_()
+
+    @QtCore.pyqtSlot()
+    def get_lang_selection(self):
+        data = self.lang_comboBox.currentText()
+        if data:
+            self.change_lang(data)
+            configuration.ApplicationConfig().set_key_value('USER', 'lang', data)
         else:
-            self.command_mcl_marmara_holders_min_matures = "0"
-            self.command_mcl_marmara_holders_max_matures = "0"
+            QtWidgets.QApplication.instance().removeTranslator(self.trans)
 
-        if not self.checkBox_5.isChecked():
-            self.command_mcl_marmara_holders_min_amount = self.lineEdit_29.text()
-            self.command_mcl_marmara_holders_max_amount = self.lineEdit_30.text()
+    def change_lang(self, data):
+        self.trans.load(configuration.configuration_path + '/language/' + data + '.qm')
+        QtWidgets.QApplication.instance().installTranslator(self.trans)
+        self.retranslateUi(MarmaraMain)
+
+    def show_about(self):
+        QMessageBox.about(self,
+                          self.tr("About Marmara Connector"),
+                          self.tr("This is a software written to carry out Marmarachain node operations "
+                                  "on a local or remote machine." + "<br>Version info: ") + configuration.version
+                          )
+
+    def custom_message(self, title, content, message_type, icon=None, detailed_text=None):
+        """ custom_message(str, str, str: message_type = {information, question}, icon = {QMessageBox.Question,
+        QMessageBox.Information, QMessageBox.Warning, QMessageBox.Critical}, str) """
+        messagebox = QMessageBox()
+        messagebox.setWindowTitle(title)
+        messagebox.setText(content)
+        messagebox.setDetailedText(detailed_text)
+        btn_yes = None
+        btn_no = None
+        btn_ok = None
+        if message_type == "information":
+            if icon:
+                messagebox.setIcon(icon)
+            messagebox.setStandardButtons(QMessageBox.Ok)
+            btn_ok = messagebox.button(QMessageBox.Ok)
+            btn_ok.setText(self.tr("Ok"))
+        if message_type == "question":
+            if icon:
+                messagebox.setIcon(icon)
+            messagebox.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+            btn_yes = messagebox.button(QMessageBox.Yes)
+            btn_yes.setText(self.tr("Yes"))
+            btn_no = messagebox.button(QMessageBox.No)
+            btn_no.setText(self.tr("No"))
+        messagebox.exec_()
+        if messagebox.clickedButton() == btn_yes:
+            return QMessageBox.Yes
+        if messagebox.clickedButton() == btn_no:
+            return QMessageBox.No
+        if messagebox.clickedButton() == btn_ok:
+            return QMessageBox.Ok
+
+    def host_selection(self):
+        self.main_tab.setCurrentIndex(0)
+        self.login_stackedWidget.setCurrentIndex(0)
+        self.home_button.setVisible(False)
+        self.login_message_label.clear()
+        self.chain_status = False
+        self.clear_tablewidgets()
+
+    def clear_tablewidgets(self):
+        self.addresses_tableWidget.clear()
+        self.addresses_privkey_tableWidget.clear()
+        self.transactions_tableWidget.clear()
+        self.loop_request_tableWidget.clear()
+        self.transferrequests_tableWidget.clear()
+        self.activeloops_tableWidget.clear()
+        self.transferableloops_tableWidget.clear()
+        self.addresses_tableWidget.setHorizontalHeaderLabels(['', self.tr('Amount'), self.tr('Address'),
+                                                              self.tr('Pubkey')])
+        self.addresses_privkey_tableWidget.setHorizontalHeaderLabels([self.tr('Address'), self.tr('See')])
+        self.transactions_tableWidget.setHorizontalHeaderLabels([self.tr('See on Explorer'), self.tr('Txid')])
+        self.loop_request_tableWidget.setHorizontalHeaderLabels([self.tr('Confirm'), self.tr('TxId'), self.tr('Amount'),
+                                                                 self.tr('Maturity'), self.tr('Receiver Pubkey'), ''])
+        self.transferrequests_tableWidget.setHorizontalHeaderLabels([self.tr('Confirm'), self.tr('TxId'),
+                                                                     self.tr('Amount'), self.tr('Maturity'),
+                                                                     self.tr('Receiver Pubkey'), ''])
+        self.activeloops_tableWidget.setHorizontalHeaderLabels([self.tr('Loop Address'), self.tr('Amount')])
+        self.transferableloops_tableWidget.setHorizontalHeaderLabels([self.tr('Txid'), self.tr('Details')])
+
+    def local_selection(self):
+        marmarachain_rpc.set_connection_local()
+        logging.info('is local connection: ' + str(marmarachain_rpc.is_local))
+        self.check_marmara_path()
+
+    def remote_selection(self):
+        self.login_stackedWidget.setCurrentIndex(1)
+        self.get_server_combobox_names()
+        self.home_button.setVisible(True)
+        marmarachain_rpc.set_connection_remote()
+        logging.info('is local connection: ' + str(marmarachain_rpc.is_local))
+        self.serverpw_lineEdit.clear()
+        if self.server_comboBox.count() != 0:
+            self.serveredit_button.setEnabled(True)
+            self.connect_button.setEnabled(True)
         else:
-            self.command_mcl_marmara_holders_min_amount = "0"
-            self.command_mcl_marmara_holders_max_amount = "0"
+            self.connect_button.setEnabled(False)
+            self.serveredit_button.setEnabled(False)
 
-        self.thread_list_holders = ThreadGui.SearchHolders()
+    def open_debug_console(self):
+        QMessageBox.information(self,
+                          self.tr("Debug Console"),
+                          self.tr("Under development")
+                          )
+        # debugDialog = QDialog()
+        # debugDialog.setWindowTitle(self.tr("Debug Console"))
+        # command_browser = QtWidgets.QTextBrowser()
+        # command_lineEdit = QtWidgets.QLineEdit()
+        # sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Fixed)
+        # sizePolicy.setHorizontalStretch(0)
+        # sizePolicy.setVerticalStretch(0)
+        #
+        # clear_pushButton = QPushButton(qta.icon('ei.remove'), '')
+        # sizePolicy.setHeightForWidth(clear_pushButton.sizePolicy().hasHeightForWidth())
+        # clear_pushButton.setSizePolicy(sizePolicy)
+        # font_plus = QPushButton(qta.icon('mdi.format-font-size-increase'), '')
+        # sizePolicy.setHeightForWidth(font_plus.sizePolicy().hasHeightForWidth())
+        # font_plus.setSizePolicy(sizePolicy)
+        # font_minus = QPushButton(qta.icon('mdi.format-font-size-decrease'), '')
+        # sizePolicy.setHeightForWidth(font_minus.sizePolicy().hasHeightForWidth())
+        # font_minus.setSizePolicy(sizePolicy)
+        # spacer_item = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        # debugDialog.layout = QGridLayout()
+        #
+        # debugDialog.layout.addItem(spacer_item, 0, 0, 1, 2)
+        # debugDialog.layout.addWidget(font_plus, 0, 2, 1, 1)
+        # debugDialog.layout.addWidget(font_minus, 0, 3, 1, 1)
+        # debugDialog.layout.addWidget(clear_pushButton, 0, 4, 1, 1)
+        # debugDialog.layout.addWidget(command_browser, 1, 0, 1, 5)
+        # debugDialog.layout.addWidget(command_lineEdit, 2, 0, 1, 5)
+        # debugDialog.setLayout(debugDialog.layout)
+        #
+        # debugDialog.exec_()
 
-        self.loading_screen.startAnimation()
-        self.thread_list_holders.change_value_information.connect(self.changingInformationMarmaraHoldersList)
+    @pyqtSlot()
+    def open_log_file(self):
+        text_path = configuration.log_file_path
+        webbrowser.open_new(text_path)
 
-        self.thread_list_holders.command_mcl_marmara_holders =  self.mcl_install_file_path + self.command_mcl_marmara_holders + self.command_mcl_marmara_holders_min_matures + " " + self.command_mcl_marmara_holders_max_matures + " " + self.command_mcl_marmara_holders_min_amount + " " + self.command_mcl_marmara_holders_max_amount + " " + self.pubkey
 
-        self.thread_list_holders.server_username = self.server_username
-        self.thread_list_holders.server_hostname = self.server_hostname
-        self.thread_list_holders.server_password = self.server_password
+    @pyqtSlot(int)
+    def mcl_tab_changed(self, index):
+        if self.mcl_tab.currentIndex() == index:
+            logging.info('updating contacts table')
+            self.update_contact_tablewidget()
+        if self.mcl_tab.currentIndex() == index:
+            self.get_contact_names_addresses()
+        if self.mcl_tab.currentIndex() == index:
+            self.creditloop_tabWidget.setCurrentIndex(0)
 
-        self.thread_list_holders.start()
+    @pyqtSlot(int)
+    def credit_tab_changed(self, index):
+        if self.creditloop_tabWidget.currentIndex() == index:
+            self.get_contact_names_pubkeys()
 
-    def changingInformationActiveList(self, val):
-        self.holder_list_json = val
-        json_array = json.loads(self.holder_list_json)
-
-        self.active_loops_list = []
-        count_rows = int(self.tableWidget_3.rowCount())
-
-        for index in range(count_rows):
-            self.tableWidget_3.removeRow(index)
-
-        for item in json_array['Loops']:
-            self.active_loops_list.append(item)
-
-        self.tableWidget_3.setRowCount(len(self.active_loops_list))
-        row_index = 0
-        for item_json in self.active_loops_list:
-            loopAdress = QTableWidgetItem(item_json["LoopAddress"])
-            self.tableWidget_3.setItem(row_index, 0, loopAdress)
-
-            amount = QTableWidgetItem(str(item_json["myAmountLockedInLoop"]))
-            self.tableWidget_3.setItem(row_index, 1, amount)
-            row_index = row_index + 1
-
-        self.loading_screen.stopAnimotion()
-
-    def buttonClickActiveLoops(self):
-        self.thread_active_list = ThreadGui.ActiveLoops()
-
-        self.loading_screen.startAnimation()
-        self.thread_active_list.change_value_information.connect(self.changingInformationActiveList)
-
-        self.thread_active_list.command_mcl_marmara_info =  self.mcl_install_file_path + self.command_mcl_marmara_get_info + self.pubkey
-
-        self.thread_active_list.server_username = self.server_username
-        self.thread_active_list.server_hostname = self.server_hostname
-        self.thread_active_list.server_password = self.server_password
-
-        self.thread_active_list.start()
-
-    def buttonClickRefreshAllCreditRequest(self):
-        if not self.checkBox_2.isChecked():
-            date = self.dateTimeEdit.dateTime()
-            minute_ = date.toPyDateTime().minute
-            hour_ = date.toPyDateTime().hour
-            day_ = date.toPyDateTime().day
-            month_ = date.toPyDateTime().month
-            year_ = date.toPyDateTime().year
-
-            now = datetime.now()
-            minute_ = now.minute - minute_
-            hour_ = now.hour - hour_
-            day_ = now.day - day_
-            month_ = now.month - month_
-            year_ = now.year - year_
-
-            block_count = minute_ + (hour_ * 60) + (day_ * 1440) + (month_ * 30 * 1440) + (year_ * 365 * 1440)
-            self.last_matures_minute = str(block_count)
+    @pyqtSlot()
+    def server_connect(self):
+        server_list = configuration.ServerSettings().read_file()
+        selected_server_info = server_list[self.server_comboBox.currentIndex()]
+        selected_server_info = selected_server_info.split(",")
+        remote_connection.set_server_connection(ip=selected_server_info[2], username=selected_server_info[1],
+                                                pw=self.serverpw_lineEdit.text())
+        validate = remote_connection.check_server_connection()
+        if validate:
+            self.login_page_info(str(validate))
         else:
-            self.last_matures_minute = ""
-
-        self.thread_refresh_credit_request = ThreadGui.RefreshCreditRequest()
-
-        self.loading_screen.startAnimation()
-        self.thread_refresh_credit_request.change_value_information.connect(self.changingInformationCreditRequestList)
-
-        self.thread_refresh_credit_request.command_mcl_credit_request_list =  self.mcl_install_file_path + self.command_mcl_credit_request_list + self.pubkey + " " + self.last_matures_minute
-
-        self.thread_refresh_credit_request.server_username = self.server_username
-        self.thread_refresh_credit_request.server_hostname = self.server_hostname
-        self.thread_refresh_credit_request.server_password = self.server_password
-
-        self.thread_refresh_credit_request.start()
-
-    def buttonClickRefreshAllCreditRequestCiranta(self):
-        self.thread_refresh_credit_request = ThreadGui.RefreshCreditRequest()
-
-        self.loading_screen.startAnimation()
-        self.thread_refresh_credit_request.change_value_information.connect(
-            self.changingInformationCreditRequestListCiranta)
-
-        self.thread_refresh_credit_request.command_mcl_credit_request_list =  self.mcl_install_file_path + self.command_mcl_credit_request_list + self.pubkey
-
-        self.thread_refresh_credit_request.server_username = self.server_username
-        self.thread_refresh_credit_request.server_hostname = self.server_hostname
-        self.thread_refresh_credit_request.server_password = self.server_password
-
-        self.thread_refresh_credit_request.start()
-
-    def changingInformationCreditRequestList(self, val):
-        self.request_credit_out = val
-        json_array = json.loads(self.request_credit_out)
-        count_rows = int(self.tableWidget.rowCount())
-
-        self.first_request_list = []
-
-        for index in range(count_rows):
-            self.tableWidget.removeRow(index)
-
-        for item in json_array:
-            if item["funcid"] == "B":
-                json_details_ = {"txid": None, "amount": None, "matures": None, "receivepk": None}
-                json_details_['txid'] = item['txid']
-                json_details_['amount'] = item['amount']
-                json_details_['matures'] = item['matures']
-                json_details_['receivepk'] = item['receivepk']
-                self.first_request_list.append(json_details_)
-
-        self.tableWidget.setRowCount(len(self.first_request_list))
-
-        row_index = 0
-        for item_json in self.first_request_list:
-            txid = QTableWidgetItem(item_json['txid'])
-            amount = QTableWidgetItem(str(item_json['amount']))
-            # matures = QTableWidgetItem(str(item_json['matures']))
-
-            matures_date = item_json['matures'] - int(self.long_chain_blocks)
-            matures_time = datetime.now() + timedelta(minutes=matures_date)
-
-            matures_date_ = str(matures_time.day) + "/" + str(matures_time.month) + "/" + str(matures_time.year)
-            matures = QTableWidgetItem(matures_date_)
-
-            self.tableWidget.setItem(row_index, 0, txid)
-            self.tableWidget.setItem(row_index, 1, amount)
-            self.tableWidget.setItem(row_index, 2, matures)
-
-            self.btn_review_ = QPushButton(self.review.capitalize())
-            self.btn_review_.setStyleSheet("\
-                                   QPushButton          {background-color: #16A085 ;font: 15pt;color: beige; border: solid; border-style: outset; border-color: blue;border-width: 2px; border-radius: 10px;}\
-                                   QPushButton::hover   {color: lawngreen; border: solid; border-style: outset; border-color: forestgreen ;border-width: 2px; border-radius: 10px;}\
-                                   QPushButton::pressed {color: lawngreen; border: solid; border-style: outset; border-color: lawngreen ;border-width: 2px; border-radius: 10px;}\
-                                   ")
-            self.btn_review_.clicked.connect(self.buttonClickFirstRequestListReview)
-            self.tableWidget.setCellWidget(row_index, 3, self.btn_review_)
-            row_index = row_index + 1
-        self.loading_screen.stopAnimotion()
-
-    def changingInformationCreditRequestListCiranta(self, val):
-        self.request_credit_out = val
-        json_array = json.loads(self.request_credit_out)
-
-        count_rows = int(self.tableWidget_2.rowCount())
-
-        self.request_list_in_loop = []
-
-        for index in range(count_rows):
-            self.tableWidget_2.removeRow(index)
-
-        for item in json_array:
-            if item["funcid"] == "R":
-                json_details = {"txid": None, "receivepk": None, "amount": None, 'matures': None}
-                json_details['txid'] = item['txid']
-                json_details['receivepk'] = item['receivepk']
-                json_details['amount'] = item['amount']
-                json_details['matures'] = item['matures']
-                self.request_list_in_loop.append(json_details)
-
-        self.tableWidget_2.setRowCount(len(self.request_list_in_loop))
-
-        row_index = 0
-        for item_json in self.request_list_in_loop:
-            txid = QTableWidgetItem(item_json['txid'])
-            amount = QTableWidgetItem(str(item_json['amount']))
-
-            matures_date = item_json['matures'] - int(self.long_chain_blocks)
-            matures_time = datetime.now() + timedelta(minutes=matures_date)
-
-            matures_date_ = str(matures_time.day) + "/" + str(matures_time.month) + "/" + str(matures_time.year)
-            matures = QTableWidgetItem(matures_date_)
-
-            self.tableWidget_2.setItem(row_index, 0, txid)
-            self.tableWidget_2.setItem(row_index, 1, amount)
-            self.tableWidget_2.setItem(row_index, 2, matures)
-
-            self.btn_rew_ = QPushButton(self.review)
-            self.btn_rew_.setStyleSheet("\
-                                   QPushButton          {background-color: #16A085 ;font: 15pt;color: beige; border: solid; border-style: outset; border-color: blue;border-width: 2px; border-radius: 10px;}\
-                                   QPushButton::hover   {color: lawngreen; border: solid; border-style: outset; border-color: forestgreen ;border-width: 2px; border-radius: 10px;}\
-                                   QPushButton::pressed {color: lawngreen; border: solid; border-style: outset; border-color: lawngreen ;border-width: 2px; border-radius: 10px;}\
-                                   ")
-            self.btn_rew_.clicked.connect(self.buttonClickRequestListInLoopReview)
-            self.tableWidget_2.setCellWidget(row_index, 3, self.btn_rew_)
-            row_index = row_index + 1
-
-        self.loading_screen.stopAnimotion()
-
-    def buttonClickMining(self):
-
-        ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(str(self.server_hostname), self.server_port, str(self.server_username),
-                    str(self.server_password))
-
-        # cpu_max=0
-        # if os.cpu_count() > 4:
-        #     cpu_max=4
-        # else:
-        #     cpu_max = os.cpu_count() -1
-
-
-        if self.pushButton_6.isChecked():
-            text, ok = QInputDialog.getInt(self, 'CPU For Mining', 'Enter numbur of cpu:', 1, 1, 3, 1)
-            if ok:
-                if self.pushButton_9.isChecked():
-                    self.pushButton_9.setChecked(False)
-                command =  self.mcl_install_file_path + self.command_mcl_set_mining + str(text)
-                self.label_5.setText(str(text))
-                stdin, stdout, stderr = ssh.exec_command(command)
-                self.label_11.setText("MINING")
-            else:
-                self.pushButton_6.setChecked(False)
-        else:
-            self.label_5.setText("0")
-            if not self.pushButton_9.isChecked():
-                self.label_11.setText("(-)")
-                command =  self.mcl_install_file_path + self.command_mcl_set_off_generate
-                stdin, stdout, stderr = ssh.exec_command(command)
-
-
-    def buttonClickStacking(self):
-        ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(str(self.server_hostname), self.server_port, str(self.server_username),
-                    str(self.server_password))
-
-        if self.pushButton_9.isChecked():
-            self.label_5.setText("0")
-            self.label_11.setText("STAKING")
-            if self.pushButton_6.isChecked():
-                self.pushButton_6.setChecked(False)
-            command =  self.mcl_install_file_path + self.command_mcl_set_stacking
-            stdin, stdout, stderr = ssh.exec_command(command)
-        else:
-            if not self.pushButton_6.isChecked():
-                command =  self.mcl_install_file_path + self.command_mcl_set_off_generate
-                self.label_11.setText("(-)")
-                stdin, stdout, stderr = ssh.exec_command(command)
-
-    def buttonClickCreditRequest(self):
-        if (not self.lineEdit_21.text() == "") and not self.lineEdit_2.text() == "":
-            self.showDialogYesNo(self.msg_title_warning, self.msg_do_you_want_to_request, self.msg_yes, self.msg_no)
-            if self.message_button_return_boolean:
-                date_matures = self.dateTimeEdit_2.dateTime().toPyDateTime() - datetime.now()
-                matures_ = int(abs(date_matures).total_seconds() / 60)
-
-                self.thread_credit_request = ThreadGui.CreditRequest()
-
-                self.loading_screen.startAnimation()
-                self.thread_credit_request.change_value_information_credit_request.connect(
-                    self.changingInformationCreditRequest)
-                self.thread_credit_request.change_value_information_get_transactionID.connect(
-                    self.changingInformationTransactionID)
-
-                self.thread_credit_request.command_mcl_credit_request =  self.mcl_install_file_path + self.command_mcl_credit_request + \
-                                                                        self.lineEdit_21.text() + " " + self.lineEdit_2.text() + " " + self.lineEdit_4.text() + " " + str(
-                    matures_) + " " + self.command_mcl_credit_request_countine
-
-                self.thread_credit_request.command_mcl_credit_request_sendrawtransaction =  self.mcl_install_file_path + self.command_mcl_coin_sendrawtransaction
-
-                self.thread_credit_request.server_username = self.server_username
-                self.thread_credit_request.server_hostname = self.server_hostname
-                self.thread_credit_request.server_password = self.server_password
-
-                self.thread_credit_request.start()
-
-        else:
-            self.showDialogInfo(self.msg_title_warning, self.msg_missing_info, self.msg_fill_blank, self.msg_ok)
-
-    def buttonClickRequestCiranta(self):
-        if (not self.lineEdit_24.text() == "") and not self.lineEdit_25.text() == "":
-            self.showDialogYesNo(self.msg_title_warning, self.msg_do_you_want_endorser, self.msg_yes, self.msg_no)
-            if self.message_button_return_boolean:
-                self.thread_credit_request_ciranta = ThreadGui.CreditRequest()
-
-                self.loading_screen.startAnimation()
-                self.thread_credit_request_ciranta.change_value_information_credit_request.connect(
-                    self.changingInformationCreditRequest)
-                self.thread_credit_request_ciranta.change_value_information_get_transactionID.connect(
-                    self.changingInformationTransactionID)
-
-                self.thread_credit_request_ciranta.command_mcl_credit_request =  self.mcl_install_file_path + self.command_mcl_credit_request + \
-                                                                                self.lineEdit_24.text() + " " + self.lineEdit_25.text() + " " + self.command_mcl_credit_request_countine
-
-                self.thread_credit_request_ciranta.command_mcl_credit_request_sendrawtransaction =  self.mcl_install_file_path + self.command_mcl_coin_sendrawtransaction
-
-                self.thread_credit_request_ciranta.server_username = self.server_username
-                self.thread_credit_request_ciranta.server_hostname = self.server_hostname
-                self.thread_credit_request_ciranta.server_password = self.server_password
-
-                self.thread_credit_request_ciranta.start()
-
-        else:
-            self.showDialogInfo(self.msg_title_warning, self.msg_missing_info, self.msg_fill_blank, self.msg_ok)
-
-    def buttonClickFirstRequestListReview(self):
-        button = self.sender()
-        index = self.tableWidget.indexAt(button.pos())
-        if index.isValid():
-            for item in self.first_request_list:
-                if item['txid'] == self.tableWidget.item(index.row(), 0).text():
-                    matures_date = item['matures'] - int(self.long_chain_blocks)
-                    matures_time = datetime.now() + timedelta(minutes=matures_date)
-
-                    matures_date_ = str(matures_time.day) + "/" + str(matures_time.month) + "/" + str(matures_time.year)
-
-                    self.showDialogYesNo(self.msg_credit_confirmation,
-                                         "TXID: " + item['txid'] + "\n" +
-                                         self.amount.upper() + ": " + str(item['amount']) + "\n" +
-                                         self.matures.upper() + ": " + matures_date_ + "\n" +
-                                         self.receiver_pubkey.upper() + ": " + item['receivepk'] + "\n" +
-                                         "\n" + self.msg_do_you_want_to_accept, self.msg_accept, self.msg_no)
-                    if self.message_button_return_boolean:
-                        self.thread_credit_request_accept = ThreadGui.CreditAccept()
-
-                        self.loading_screen.startAnimation()
-                        self.thread_credit_request_accept.change_value_information_accept.connect(
-                            self.changingInformationAcceptCreditRequest)
-                        self.thread_credit_request_accept.change_value_information_get_transactionID.connect(
-                            self.changingInformationTransactionID)
-
-                        self.thread_credit_request_accept.command_mcl_credit_request_accept =  self.mcl_install_file_path + self.command_mcl_credit_request_accept + \
-                                                                                              item[
-                                                                                                  'receivepk'] + self.command_mcl_credit_request_accept_countine + \
-                                                                                              item['txid']
-                        self.thread_credit_request_accept.command_mcl_credit_request_sendrawtransaction =  self.mcl_install_file_path + self.command_mcl_coin_sendrawtransaction
-
-                        self.thread_credit_request_accept.server_username = self.server_username
-                        self.thread_credit_request_accept.server_hostname = self.server_hostname
-                        self.thread_credit_request_accept.server_password = self.server_password
-
-                        self.thread_credit_request_accept.start()
-
-    def buttonClickRequestListInLoopReview(self):
-        button = self.sender()
-        index = self.tableWidget_2.indexAt(button.pos())
-        if index.isValid():
-            for item in self.request_list_in_loop:
-                if item['txid'] == (self.tableWidget_2.item(index.row(), 0)).text():
-                    self.showDialogYesNo(self.msg_credit_confirmation,
-                                         "TXID: " + item['txid'] + "\n" +
-                                         "AMOUNT: " + str(item['amount']) + "\n"
-                                                                            "MATURES: " + str(item['matures']) + "\n"
-                                                                                                                 "RECIVER PEUBKEY: " +
-                                         item['receivepk'] + "\n" +
-                                         "\n" + self.msg_do_you_want_to_accept, self.msg_accept, self.msg_no)
-                    if self.message_button_return_boolean:
-                        self.thread_ciranta_request_accept = ThreadGui.CirantaAccept()
-
-                        self.loading_screen.startAnimation()
-                        self.thread_ciranta_request_accept.change_value_information_accept.connect(
-                            self.changingInformationAcceptCreditRequest)
-                        self.thread_ciranta_request_accept.change_value_information_get_transactionID.connect(
-                            self.changingInformationTransactionID)
-
-                        self.thread_ciranta_request_accept.command_mcl_ciranta_request_accept =  self.mcl_install_file_path + self.command_mcl_marmaratransfer_accept + \
-                                                                                                item[
-                                                                                                    'receivepk'] + " " + self.command_mcl_marmaratransfer_accept_countine + " " + \
-                                                                                                item['txid']
-                        self.thread_ciranta_request_accept.command_mcl_credit_request_sendrawtransaction =  self.mcl_install_file_path + self.command_mcl_coin_sendrawtransaction
-
-                        self.thread_ciranta_request_accept.server_username = self.server_username
-                        self.thread_ciranta_request_accept.server_hostname = self.server_hostname
-                        self.thread_ciranta_request_accept.server_password = self.server_password
-
-                        self.thread_ciranta_request_accept.start()
-
-    def buttonClickSendCoin(self):
-        if (not self.lineEdit_9.text() == "") and not self.lineEdit_15.text() == "":
-            self.showDialogYesNo(self.msg_title_warning, self.msg_do_you_want_to_send_coin, self.msg_yes, self.msg_no)
-            if self.message_button_return_boolean:
-                self.thread_send_coin = ThreadGui.SendCoin()
-                self.loading_screen.startAnimation()
-                self.thread_send_coin.change_value_information_txid.connect(self.changingInformationSendCoin)
-
-                reciever_wallet_adress = self.lineEdit_9.text()
-                number_of_coin = self.lineEdit_15.text()
-
-                self.thread_send_coin.command_mcl_send_coin =  self.mcl_install_file_path + self.command_mcl_send_coin + "\"" + reciever_wallet_adress + "\" " + number_of_coin
-
-                self.thread_send_coin.server_username = self.server_username
-                self.thread_send_coin.server_hostname = self.server_hostname
-                self.thread_send_coin.server_password = self.server_password
-
-                self.thread_send_coin.start()
-
-        else:
-            self.showDialogInfo(self.msg_title_warning, self.msg_missing_info, self.msg_fill_blank, self.msg_ok)
-
-    def changingInformationSendCoin(self, val):
-        if val=="":
-            self.loading_screen.stopAnimotion()
-            self.showDialogInfo(self.msg_title_info, self.msg_not_sended_coin, "", self.msg_ok)
-        else:
-            self.loading_screen.stopAnimotion()
-            self.showDialogInfo(self.msg_title_info, self.msg_sended_coin, "", self.msg_ok)
-
-    def buttonClickLockCoin(self):
-        if not self.lineEdit_12.text() == "":
-            self.showDialogYesNo(self.msg_title_warning, self.msg_do_you_want_to_activate_coins, self.msg_yes,
-                                 self.msg_no)
-            if self.message_button_return_boolean:
-                self.thread_lock_coin = ThreadGui.LockCoin()
-                self.loading_screen.startAnimation()
-                self.thread_lock_coin.change_value_information_get_lock.connect(self.changingInformationLock)
-                self.thread_lock_coin.change_value_information_get_transactionID.connect(
-                    self.changingInformationTransactionID)
-
-                number_of_coin = self.lineEdit_12.text()
-
-                self.thread_lock_coin.command_mcl_lock_coin =  self.mcl_install_file_path + self.command_mcl_lock_coin + number_of_coin
-                self.thread_lock_coin.command_mcl_lock_coin_sendrawtransaction =  self.mcl_install_file_path + self.command_mcl_coin_sendrawtransaction
-
-                self.thread_lock_coin.pubkey = self.pubkey
-                self.thread_lock_coin.server_username = self.server_username
-                self.thread_lock_coin.server_hostname = self.server_hostname
-                self.thread_lock_coin.server_password = self.server_password
-
-                self.thread_lock_coin.start()
-        else:
-            self.showDialogInfo(self.msg_title_warning, self.msg_missing_info, self.msg_fill_blank, self.msg_ok)
-
-    def buttonClickUnlockCoin(self):
-        if not self.lineEdit_16.text() == "":
-            self.showDialogYesNo(self.msg_title_warning, self.msg_do_you_want_to_deactivate_coins, self.msg_yes,
-                                 self.msg_no)
-            if self.message_button_return_boolean:
-                self.thread_unlock_coin = ThreadGui.UnlockCoin()
-                self.loading_screen.startAnimation()
-                self.thread_unlock_coin.change_value_information_get_unlock.connect(self.changingInformationUnlock)
-                self.thread_unlock_coin.change_value_information_get_transactionID.connect(
-                    self.changingInformationTransactionID)
-
-                number_of_coin = self.lineEdit_16.text()
-
-                self.thread_unlock_coin.command_mcl_unlock_coin =  self.mcl_install_file_path + self.command_mcl_unlock_coin + number_of_coin
-                self.thread_unlock_coin.command_mcl_unlock_coin_sendrawtransaction =  self.mcl_install_file_path + self.command_mcl_coin_sendrawtransaction
-
-                self.thread_unlock_coin.pubkey = self.pubkey
-                self.thread_unlock_coin.server_username = self.server_username
-                self.thread_unlock_coin.server_hostname = self.server_hostname
-                self.thread_unlock_coin.server_password = self.server_password
-
-                self.thread_unlock_coin.start()
-        else:
-            self.showDialogInfo(self.msg_title_warning, self.msg_missing_info, self.msg_fill_blank, self.msg_ok)
-
-    def changingInformationLock(self, val):
-        if val:
-            self.loading_screen.stopAnimotion()
-            self.showDialogInfo(self.msg_title_info, self.msg_success_lock, "", self.msg_ok)
-        else:
-            self.loading_screen.stopAnimotion()
-            self.showDialogInfo(self.msg_title_info, self.msg_unsuccess_lock, "", self.msg_ok)
-
-    def changingInformationUnlock(self, val):
-        if val:
-            self.loading_screen.stopAnimotion()
-            self.showDialogInfo(self.msg_title_info, self.msg_success_unlock, "", self.msg_ok)
-        else:
-            self.loading_screen.stopAnimotion()
-            self.showDialogInfo(self.msg_title_info, self.msg_unsuccess_unlock, "", self.msg_ok)
-
-    def changingInformationAcceptCreditRequest(self, val):
-        if val:
-            self.loading_screen.stopAnimotion()
-            self.showDialogInfo(self.msg_title_info, self.msg_success_request_accept, "", self.msg_ok)
-        else:
-            self.loading_screen.stopAnimotion()
-            self.showDialogInfo(self.msg_title_info, self.msg_unsuccess_request_accept, "", self.msg_ok)
-
-    def buttonClickMarmaraCreditLoopDetails(self):
-        if not self.lineEdit_13.text() == "":
-            self.thread_request_search = ThreadGui.SearchRequest()
-
-            self.loading_screen.startAnimation()
-            self.thread_request_search.change_value_information_loop_details.connect(
-                self.changingInformationLoopDetails)
-
-            self.thread_request_search.command_mcl_credit_loop_search =  self.mcl_install_file_path + self.command_mcl_credit_loop_search + " " + self.lineEdit_13.text()
-
-            self.thread_request_search.server_username = self.server_username
-            self.thread_request_search.server_hostname = self.server_hostname
-            self.thread_request_search.server_password = self.server_password
-
-            self.thread_request_search.start()
-
-        else:
-            self.showDialogInfo(self.msg_title_warning, self.msg_missing_info, self.msg_fill_blank, self.msg_ok)
-
-    def changingInformationCreditRequest(self, val):
-
-        if val:
-            self.loading_screen.stopAnimotion()
-            self.showDialogInfo(self.msg_title_info, self.msg_success_request, "", self.msg_ok)
-        else:
-            self.loading_screen.stopAnimotion()
-            self.showDialogInfo(self.msg_title_info, self.msg_unsuccess_request, "", self.msg_ok)
-
-    def changingInformationTransactionID(self, val):
-        print("TransactionID")
-
-    def buttonClickStartChain(self):
-        if not self.lineEdit_14.text() == "":
-            self.showDialogYesNo(self.msg_title_warning, self.msg_start_chain, self.msg_yes, self.msg_no)
-            if self.message_button_return_boolean:
-                current_time = datetime.now()
-                self.label_57.setText(
-                    self.last_update + ":   " + str(current_time.hour) + ":" + str(current_time.minute))
-                self.thread_start_chain = ThreadGui.StartChain()
-                self.loading_screen.startAnimation()
-                self.thread_start_chain.change_value_information_get_info.connect(self.changingInformation1)
-                self.thread_start_chain.change_value_information_get_marmara_info.connect(self.changingInformation2)
-                self.thread_start_chain.change_value_information_get_generate.connect(self.changingInformation3)
-                self.thread_start_chain.change_value_did_run_chain.connect(self.changingInformation4)
-
-                self.pubkey = self.lineEdit_14.text().replace(" ", "")
-                print(self.pubkey)
-
-                self.thread_start_chain.command_mcl_start_chain =  self.mcl_install_file_path + self.command_start_mcl_mining_with_pubkey
-                self.thread_start_chain.command_mcl_get_info =  self.mcl_install_file_path + self.command_mcl_get_info
-                self.thread_start_chain.command_mcl_get_marmara_info =  self.mcl_install_file_path + self.command_mcl_marmara_get_info
-                self.thread_start_chain.command_mcl_get_stacking_and_mining =  self.mcl_install_file_path + self.command_mcl_get_stacking_and_mining
-
-                self.thread_start_chain.pubkey = self.pubkey
-                self.thread_start_chain.server_username = self.server_username
-                self.thread_start_chain.server_hostname = self.server_hostname
-                self.thread_start_chain.server_password = self.server_password
-
-                self.thread_start_chain.start()
-        else:
-            self.showDialogInfo(self.msg_title_warning, self.msg_missing_info, self.msg_fill_blank, self.msg_ok)
-
-    def buttonClickStopChain(self):
-        self.showDialogYesNo(self.msg_title_warning, self.msg_stop_chain, self.msg_yes, self.msg_no)
-        if self.message_button_return_boolean:
-            self.showDialogYesNo(self.msg_title_warning, self.msg_stop_chain_last, self.msg_yes, self.msg_no)
-            if self.message_button_return_boolean:
-                self.thread_stop_chain = ThreadGui.StopChain()
-                self.loading_screen.startAnimation()
-                self.thread_stop_chain.change_value_did_run_chain.connect(self.changingInformation5)
-
-                self.thread_stop_chain.command_mcl_stop_chain =  self.mcl_install_file_path + self.command_mcl_stop_chain
-                self.thread_stop_chain.command_mcl_get_info =  self.mcl_install_file_path + self.command_mcl_get_info
-
-                self.thread_stop_chain.pubkey = self.pubkey
-                self.thread_stop_chain.server_username = self.server_username
-                self.thread_stop_chain.server_hostname = self.server_hostname
-                self.thread_stop_chain.server_password = self.server_password
-
-                self.thread_stop_chain.start()
-
-    def buttonClickRefreshInformations(self):
-        current_time = datetime.now()
-        self.label_57.setText(self.last_update + ":   " + str(current_time.hour) + ":" + str(current_time.minute))
-        self.thread_refresh = ThreadGui.RefreshInformations()
-        self.loading_screen.startAnimation()
-        self.thread_refresh.change_value_information_get_info.connect(self.changingInformation1)
-        # self.thread_refresh.change_value_information_get_marmara_info.connect(self.changingInformation2)
-        self.thread_refresh.change_value_information_get_generate.connect(self.changingInformation3)
-        self.thread_refresh.change_value_did_run_chain.connect(self.changingInformation4)
-
-        self.thread_refresh.command_mcl_get_info =  self.mcl_install_file_path + self.command_mcl_get_info
-        # self.thread_refresh.command_mcl_get_marmara_info =  self.mcl_install_file_path + self.command_mcl_marmara_get_info
-        self.thread_refresh.command_mcl_get_stacking_and_mining =  self.mcl_install_file_path + self.command_mcl_get_stacking_and_mining
-
-        self.thread_refresh.pubkey = self.pubkey
-        self.thread_refresh.server_username = self.server_username
-        self.thread_refresh.server_hostname = self.server_hostname
-        self.thread_refresh.server_password = self.server_password
-
-        self.thread_refresh.start()
-
-    def buttonClickPubkey(self):
-        pyperclip.copy(self.pubkey)
-
-    def buttonClickCopyWalletAdress(self):
-        pyperclip.copy(self.walletAdress)
-
-    def changingInformationLoopDetails(self, val):
-        y = json.loads(val)
-        self.loading_screen.stopAnimotion()
-        try:
-            if y["result"] == "success":
-                b = y["creditloop"]
-                a = b[0]
-                try:
-                    self.lineEdit_22.setText(y["createtxid"])
-                    self.lineEdit_5.setText(str(y["amount"]))
-                    self.lineEdit_23.setText(y["currency"])
-
-                    matures_date = y['matures'] - int(self.long_chain_blocks)
-                    matures_time = datetime.now() + timedelta(minutes=matures_date)
-
-                    matures_date_ = str(matures_time.day) + "/" + str(matures_time.month) + "/" + str(matures_time.year)
-                    self.lineEdit_26.setText(str(matures_date_))
-                    self.lineEdit_27.setText(a["issuerpk"])
-                except:
-                    self.showDialogInfo(self.msg_title_warning, self.msg_error_loop_details,
-                                        self.msg_enter_correct_info, self.msg_ok)
-            else:
-                self.showDialogInfo(self.msg_title_warning, self.msg_error_loop_details, self.msg_enter_correct_info,
-                                    self.msg_ok)
-        except:
-            try:
-                self.lineEdit_22.setText(y["createtxid"])
-                self.lineEdit_5.setText(str(y["amount"]))
-                self.lineEdit_23.setText(y["currency"])
-
-                matures_date = y['matures'] - int(self.long_chain_blocks)
-                matures_time = datetime.now() + timedelta(minutes=matures_date)
-
-                matures_date_ = str(matures_time.day) + "/" + str(matures_time.month) + "/" + str(matures_time.year)
-                self.lineEdit_26.setText(str(matures_date_))
-                self.lineEdit_27.setText(y["issuerpk"])
-            except:
-                self.showDialogInfo(self.msg_title_warning, self.msg_error_loop_details, self.msg_enter_correct_info,
-                                    self.msg_ok)
-
-    def changingInformation1(self, val):
-        y = json.loads(val)
-        try:
-            self.lineEdit_14.setText(y["pubkey"])
-            self.pubkey = y["pubkey"]
-        except:
-            self.loading_screen.stopAnimotion()
-            self.lineEdit_14.setText(self.lineEdit_14_withoutPubkey)
-
-            self.thread_start_chain.quit()
-            self.thread_refresh.quit()
-        if y["synced"]:
-            self.pushButton_3.setIcon(QIcon(self.icon_path+'/circle-active.png'))
-            self.pushButton_3.setText(self.synchronous)
-        else:
-            self.pushButton_3.setIcon(QIcon(self.icon_path+'/circle-inactive.png'))
-            self.pushButton_3.setText(self.asynchronous)
-        self.label_13.setText(y["name"])
-        self.label_52.setText(str(y["longestchain"]))
-        self.long_chain_blocks = str(y["longestchain"])
-        self.label_6.setText(str(y["blocks"]))
-        self.label_58.setText(str(y["balance"]))
-        self.label_79.setText(str(int(y["difficulty"])))
-
-        self.frame_11.setDisabled(False)
-        self.pushButton_15.setIcon(QIcon(self.icon_path+'/circle-active.png'))
-        self.pushButton_15.setText(self.active_text)
-        self.pushButton_16.setIcon(QIcon(self.icon_path+'/circle-active.png'))
-        self.pushButton_16.setText(self.active_text)
-        self.pushButton_17.setDisabled(True)
-        self.pushButton_11.setDisabled(False)
-
-    def changingInformation2(self, val):
-        try:
-            y = json.loads(val)
-
-            self.walletAddress = y["myNormalAddress"]
-            self.lineEdit.setText(self.walletAddress)
-            self.lineEdit_31.setText(self.walletAddress)
-
-            self.label_59.setText(str(y["myActivatedAmount"]))
-            self.label_45.setText(str(y["myWalletNormalAmount"]))
-        except:
-            self.lineEdit_31.setText("")
-
-    def changingInformationWalletInfo(self, val):
-        try:
-            self.loading_screen.stopAnimotion()
-            y = json.loads(val)
-
-            self.walletAddress = y["myNormalAddress"]
-            self.lineEdit.setText(self.walletAddress)
-
-            self.label_59.setText(str(y["myActivatedAmount"]))
-            self.label_45.setText(str(y["myWalletNormalAmount"]))
-        except:
-            print("Error")
-
-
-    def changingInformation3(self, val):
-        y = json.loads(val)
-
-        if y["staking"]:
-            self.label_11.setText("STAKING")
-            self.label_5.setText("0")
-            self.pushButton_9.setChecked(True)
-            self.pushButton_6.setChecked(False)
-
-        if y["generate"]:
-            self.label_11.setText("MINING")
-            self.label_5.setText(str(y["numthreads"]))
-            self.pushButton_6.setChecked(True)
-            self.pushButton_9.setChecked(False)
-
-        if not y["staking"] and not y["generate"]:
-            self.label_11.setText("CLOSED")
-            self.label_5.setText("0")
-            self.pushButton_9.setChecked(False)
-            self.pushButton_9.setChecked(False)
-
-    def changingInformation4(self, val):
-        self.is_chain_run = val
-        if self.is_chain_run:
-            self.frame_11.setDisabled(False)
-            self.pushButton_15.setIcon(QIcon(self.icon_path+'/circle-active.png'))
-            self.pushButton_15.setText(self.active_text)
-            self.pushButton_17.setDisabled(True)
-            self.pushButton_11.setDisabled(False)
-            self.tabWidget_3.setTabEnabled(1, True)
-            self.tabWidget_3.setTabEnabled(2, True)
-            self.tabWidget_3.setTabEnabled(3, True)
-            self.tabWidget_3.setTabEnabled(4, True)
-            self.tabWidget_3.setTabEnabled(5, True)
-            self.tabWidget_3.setTabEnabled(6, True)
-            self.loading_screen.stopAnimotion()
-
-        else:
-            self.frame_11.setDisabled(True)
-            self.pushButton_15.setIcon(QIcon(self.icon_path+'/circle-inactive.png'))
-            self.pushButton_15.setText(self.deactive_text)
-            self.pushButton_11.setDisabled(True)
-            self.pushButton_17.setDisabled(False)
-
-    def changingInformation5(self, val):
-        self.is_chain_run = val
-        if not self.is_chain_run:
-            self.loading_screen.stopAnimotion()
-            self.frame_11.setDisabled(True)
-            self.pushButton_15.setIcon(QIcon(self.icon_path+'/circle-inactive.png'))
-            self.pushButton_15.setText("INACTIVE")
-            self.pushButton_11.setDisabled(True)
-            self.pushButton_17.setDisabled(False)
-
-    def firstLoginController(self):
-        print("First Check")
-        self.checkMclInstall()
-        print("Check MCL")
-        self.checkRunningChain()
-        print("Check run")
-
-        if self.is_mcl_install:
-            print("Chain is installed")
-            if self.is_chain_run:
-                self.count_wallet_list = 0
-                self.listWallet()
-                self.tabWidget_3.setTabEnabled(1, True)
-                self.tabWidget_3.setTabEnabled(2, True)
-                self.tabWidget_3.setTabEnabled(3, True)
-                self.tabWidget_3.setTabEnabled(4, True)
-                self.tabWidget_3.setTabEnabled(5, True)
-                self.tabWidget_3.setTabEnabled(6, True)
-                self.loading_screen.startAnimation()
-                current_time = datetime.now()
-                self.thread_first_get_info = ThreadGui.FirstRefreshInformations()
-                self.label_57.setText(
-                    self.last_update + ":   " + str(current_time.hour) + ":" + str(current_time.minute))
-                self.thread_first_get_info.change_value_information_get_info.connect(self.changingInformation1)
-                self.thread_first_get_info.change_value_information_get_marmara_info.connect(self.changingInformation2)
-                self.thread_first_get_info.change_value_information_get_generate.connect(self.changingInformation3)
-                self.thread_first_get_info.change_value_did_run_chain.connect(self.changingInformation4)
-
-                self.thread_first_get_info.command_mcl_get_info =  self.mcl_install_file_path + self.command_mcl_get_info
-                self.thread_first_get_info.command_mcl_get_marmara_info =  self.mcl_install_file_path + self.command_mcl_marmara_get_info
-                self.thread_first_get_info.command_mcl_get_stacking_and_mining =  self.mcl_install_file_path + self.command_mcl_get_stacking_and_mining
-
-                self.thread_first_get_info.pubkey = self.pubkey
-                self.thread_first_get_info.server_username = self.server_username
-                self.thread_first_get_info.server_hostname = self.server_hostname
-                self.thread_first_get_info.server_password = self.server_password
-
-                self.thread_first_get_info.start()
-                print("MCL is running.")
-
-            elif not self.is_chain_run:
-                # self.label_57.setText(self.last_update + ":   " + "00:00")
-                # print("MCL is not running")
-                # self.frame_11.setDisabled(True)
-                # self.pushButton_15.setIcon(QIcon(self.icon_path+'/circle-inactive.png'))
-                # self.pushButton_15.setText(self.deactive_text)
-                # self.pushButton_11.setDisabled(True)
-                # self.pushButton_17.setDisabled(False)
-
-                # self.thread_start_chain_without_pubkey = ThreadGui.StartChainWithoutPubkey()
-                # self.loading_screen.startAnimation()
-                # self.thread_start_chain_without_pubkey.change_value_information_getinfo_check_chain_with_pubkey.connect(self.changingInformationStartWithoutPubkeyGetInfo)
-                # self.thread_start_chain_without_pubkey.change_value_information_wallet.connect(self.changingInformationWalletList)
-                #
-                # self.thread_start_chain_without_pubkey.command_mcl_start_chain_without_pubkey =  self.mcl_install_file_path + self.command_start_mcl_mining_without_pubkey
-                # self.thread_start_chain_without_pubkey.command_mcl_get_info =  self.mcl_install_file_path + self.command_mcl_get_info
-                #
-                # self.thread_start_chain_without_pubkey.server_username = self.server_username
-                # self.thread_start_chain_without_pubkey.server_hostname = self.server_hostname
-                # self.thread_start_chain_without_pubkey.server_password = self.server_password
-                #
-                # self.thread_start_chain_without_pubkey.start()
-                self.startChainWithoutPubkeyForWalletList()
-
-            self.tabWidget.setCurrentIndex(2)
-            self.tabWidget_3.setCurrentIndex(0)
-        elif not self.is_mcl_install:
-            self.label_57.setText(self.last_update + ":   " + "00:00")
-            print("MCL is not installed.")
-            self.tabWidget.setCurrentIndex(1)
-            self.showDialogInfo(self.msg_title_warning, self.msg_mcl_not_installed, "", self.msg_ok)
-
-    def changingInformationStartWithoutPubkeyGetInfo(self, val):
-        y = json.loads(val)
-        self.lineEdit_14.setText(self.lineEdit_14_withoutPubkey)
-        self.buttonClickRefreshInformations()
-
-    def checkMclInstall(self):
-        tmp_file_check_home = []
-        tmp_file_check_compilier = []
-        # try:
-        ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(str(self.server_hostname), self.server_port, str(self.server_username),
-                    str(self.server_password))
-
-        stdin, stdout, stderr = ssh.exec_command(str("ls"))
-        lines = stdout.readlines()
-        for value in lines:
-            value = value.split("\n")
-            tmp_file_check_home.append(value[0])
-
-        self.is_mcl_install = False
-        if "komodo-cli" in tmp_file_check_home and "komodod" in tmp_file_check_home:
-            con = ServerConnect(self.server_hostname, self.server_username, self.server_password)
-            user_n = con.command("whoami")
-            user_n = user_n.readlines()
-            user_n = user_n[0]
-            user_name = user_n.split("\n")
-            print("-"+user_name[0]+"-")
-            self.mcl_install_file_path = "/home/"+user_name[0]+"/"
-            self.is_mcl_install = True
-
-        else:
-            # MCL Install Compiler Check
-            stdin, stdout, stderr = ssh.exec_command(str("cd komodo/src; ls"))
-            lines = stdout.readlines()
-            for value in lines:
-                value = value.split("\n")
-                tmp_file_check_compilier.append(value[0])
-            print(tmp_file_check_compilier)
-
-            if "komodo-cli" in tmp_file_check_compilier and "komodod" in tmp_file_check_compilier:
-                con = ServerConnect(self.server_hostname, self.server_username, self.server_password)
-                user_n = con.command("whoami")
-                user_n = user_n.readlines()
-                user_n = user_n[0]
-                user_name = user_n.split("\n")
-                print("-" + user_name[0] + "-")
-                self.mcl_install_file_path = "/home/"+user_name[0]+"/komodo/src/"
-                self.is_mcl_install = True
-        # except:
-        #     print("can't get connected")
-
-    def checkRunningChain(self):
-        try:
-            ssh = paramiko.SSHClient()
-            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            ssh.connect(str(self.server_hostname), self.server_port, str(self.server_username),
-                        str(self.server_password))
-
-            asd = self.mcl_install_file_path + self.command_mcl_get_info
-            stdin, stdout, stderr = ssh.exec_command(asd)
-            lines = stdout.readlines()
-            if not lines:
-                self.is_chain_run = False
-                print("MCL is not running.")
-            else:
-                out_ = ""
-                for value in lines:
-                    value = value.split("\n")
-                    out_ = out_ + " " + value[0]
-                self.chainGetInfo(out_)
-                self.is_chain_run = True
-                print("MCL is running.")
-        except:
-            print("Couldn't connect")
-            return False
-
-    def chainGetInfo(self, val):
-        y = json.loads(val)
-        try:
-            self.lineEdit_14.setText(y["pubkey"])
-            self.pubkey = y["pubkey"]
-        except:
-            self.loading_screen.stopAnimotion()
-            self.lineEdit_14.setText(self.lineEdit_14_withoutPubkey)
-
-        if y["synced"]:
-            self.pushButton_3.setIcon(QIcon(self.icon_path+'/circle-active.png'))
-            self.pushButton_3.setText(self.synchronous)
-        else:
-            self.pushButton_3.setIcon(QIcon(self.icon_path+'/circle-inactive.png'))
-            self.pushButton_3.setText(self.asynchronous)
-        self.label_13.setText(y["name"])
-        self.label_52.setText(str(y["longestchain"]))
-        self.label_6.setText(str(y["blocks"]))
-        self.label_58.setText(str(y["balance"]))
-
-        self.frame_11.setDisabled(False)
-        self.pushButton_15.setIcon(QIcon(self.icon_path+'/circle-active.png'))
-        self.pushButton_15.setText(self.active_text)
-        self.pushButton_16.setIcon(QIcon(self.icon_path+'/circle-active.png'))
-        self.pushButton_16.setText(self.active_text)
-        self.pushButton_17.setDisabled(True)
-        self.pushButton_11.setDisabled(False)
-
-    def center(self):
-        frameGm = self.frameGeometry()
-        screen = QtWidgets.QApplication.desktop().screenNumber(QtWidgets.QApplication.desktop().cursor().pos())
-        centerPoint = QtWidgets.QApplication.desktop().screenGeometry(screen).center()
-        frameGm.moveCenter(centerPoint)
-        self.move(frameGm.topLeft())
-
-    def readServersInfo(self):
-        isFilesEmpty = os.stat(self.server_info_file_name).st_size == 0
-        if not isFilesEmpty:
-            if os.path.isfile(self.server_info_file_name):
-                try:
-                    file = open(self.server_info_file_name, "r")
-                    self.server_all_info = file.read().rstrip()
-                    self.server_list = self.server_all_info.split("\n")
-                except IOError:
-                    print("Exception error while reading server file!")
-                finally:
-                    file.close()
-
-            server_list_name = []
-            for list in self.server_list:
-                tmp = list.split(",")
-                server_list_name.append(tmp[0])
-
-            self.comboBox_2.clear()
-            self.comboBox_2.addItem(self.choose_server_text)
-            self.comboBox_2.addItems(server_list_name)
-            self.comboBox_2.setCurrentIndex(0)
-        elif isFilesEmpty:
-            self.comboBox_2.clear()
-            self.comboBox_2.addItem(self.choose_server_text)
-            self.comboBox_2.setCurrentIndex(0)
-
-    def connectSshCheck(self):
-        try:
-            ssh = paramiko.SSHClient()
-            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            ssh.connect(str(self.server_hostname), self.server_port, str(self.server_username),
-                        str(self.server_password))
-
-            stdin, stdout, stderr = ssh.exec_command(str("ls"))
-            lines = stdout.readlines()
-            out_ = ""
-            for value in lines:
-                value = value.split("\n")
-                out_ = out_ + " " + value[0]
-
-            transport = ssh.get_transport()
-            transport.send_ignore()
-            return True
-        except:
-            return False
-
-    def buttonClickExitServer(self):
-        self.tabWidget.setCurrentIndex(0)
-        self.tabWidget_3.setCurrentIndex(0)
-        self.tabWidget_4.setCurrentIndex(0)
-        self.stackedWidget.setCurrentIndex(0)
-        self.server_username = ""
-        self.server_password = ""
-        self.server_hostname = ""
-        self.lineEdit_6.setText("")
-        self.label_59.setText("0")
-        self.label_5.setText("0")
-        self.label_45.setText("0")
-        self.label_58.setText("0")
-        self.lineEdit_16.setText("")
-        self.lineEdit_12.setText("")
-        self.lineEdit_13.setText("")
-        self.lineEdit_21.setText("")
-        self.lineEdit_2.setText("")
-        self.lineEdit_24.setText("")
-        self.lineEdit_25.setText("")
-        self.lineEdit.setText("")
-        self.lineEdit_9.setText("")
-        self.lineEdit_15.setText("")
-        self.lineEdit_31.setText("")
-        self.lineEdit_14.setText("")
-        self.lineEdit_7.setText("")
-        self.lineEdit_3.setText("")
-        self.lineEdit_32.setText("")
-        self.lineEdit_33.setText("")
-        self.lineEdit_22.setText("")
-        self.lineEdit_5.setText("")
-        self.lineEdit_23.setText("")
-        self.lineEdit_26.setText("")
-        self.lineEdit_27.setText("")
-        self.lineEdit_39.setText("")
-        self.lineEdit_10.setText("")
-        self.lineEdit_38.setText("")
-        self.lineEdit_29.setText("0")
-        self.lineEdit_30.setText("0")
-        self.textEdit.setText("")
-        self.checkBox_2.setChecked(True)
-        self.checkBox_4.setChecked(True)
-        self.checkBox_5.setChecked(True)
-        self.checkBox.setChecked(True)
-        self.progressBar_2.setValue(0)
-
-        while self.tableWidget.rowCount() > 0:
-            self.tableWidget.removeRow(0)
-
-        while self.tableWidget_2.rowCount() > 0:
-            self.tableWidget_2.removeRow(0)
-
-        while self.tableWidget_4.rowCount() > 0:
-            self.tableWidget_4.removeRow(0)
-
-        while self.tableWidget_3.rowCount() > 0:
-            self.tableWidget_3.removeRow(0)
-
-        while self.tableWidget_6.rowCount() > 0:
-            self.tableWidget_6.removeRow(0)
-
-        if self.thread_wallet_list.isRunning():
-            self.thread_wallet_list.terminate()
-
-    def buttonClickEditServerPage(self):
-        if 0 == self.comboBox_2.currentIndex():
-            self.showDialogInfo(self.msg_title_warning, self.msg_you_did_not_choose_a_server,
-                                self.msg_please_select_server, self.msg_ok)
-        else:
-            server_info_index = self.comboBox_2.currentIndex()
-            selected_server_info = self.server_list[server_info_index - 1]
-
-            selected_server_info = selected_server_info.split(",")
-
-            self.lineEdit_19.setText(selected_server_info[0])
-            self.lineEdit_20.setText(selected_server_info[1])
-            self.lineEdit_18.setText(selected_server_info[2])
-            self.stackedWidget_2.setCurrentIndex(2)
-
-    def buttonClickEdit(self):
-        if self.lineEdit_19.text() != "" and self.lineEdit_20.text() != "" and self.lineEdit_18.text() != "":
-            self.showDialogYesNo(self.msg_title_warning, self.msg_do_you_want_to_make_changes, self.msg_yes,
-                                 self.msg_no)
-
-            if self.message_button_return_boolean:
-                # Delete Change Item
-                server_info_index = self.comboBox_2.currentIndex()
-                del self.server_list[server_info_index - 1]
-                try:
-                    file = open(self.server_info_file_name, 'w')
-                    for list in self.server_list:
-                        file.write(list + "\n")
-                except IOError:
-                    print("Exception error while reading server file!")
-                finally:
-                    file.close()
-
-                # Again Save
-                try:
-                    file = open(self.server_info_file_name, 'a')
-                    server_infos = self.lineEdit_19.text() + ","
-                    server_infos = server_infos + self.lineEdit_20.text() + ","
-                    server_infos = server_infos + self.lineEdit_18.text() + "\n"
-                    file.write(server_infos)
-                except IOError:
-                    print("Exception error while reading server file!")
-                finally:
-                    file.close()
-
-                msg = QMessageBox()
-                msg.setIcon(QMessageBox.Information)
-                msg.setText("Değişiklikler kaydedildi.")
-                msg.setInformativeText("Please select server!")
-                msg.setWindowTitle("WARNING")
-                msg.setStandardButtons(QMessageBox.Ok)
-                msg.exec_()
-
-                self.readServersInfo()
-                self.lineEdit_19.setText("")
-                self.lineEdit_20.setText("")
-                self.lineEdit_18.setText("")
-
-                self.stackedWidget_2.setCurrentIndex(0)
-                self.comboBox_2.setCurrentIndex(0)
-        else:
-            msg = QMessageBox()
-            msg.setIcon(QMessageBox.Information)
-            msg.setText("The server has not been selected.")
-            msg.setInformativeText("Please select server!")
-            msg.setWindowTitle("WARNING")
-            msg.setStandardButtons(QMessageBox.Ok)
-            msg.exec_()
-
-    def buttonClickDeleteServer(self):
-        if 0 == self.comboBox_2.currentIndex():
-            self.showDialogInfo(self.msg_title_warning, self.msg_you_did_not_choose_a_server,
-                                self.msg_please_select_server, self.msg_ok)
-        else:
-            self.showDialogYesNo(self.msg_title_warning, self.msg_do_you_want_to_make_changes, self.msg_yes,
-                                 self.msg_no)
-            if self.message_button_return_boolean:
-                server_info_index = self.comboBox_2.currentIndex()
-                del self.server_list[server_info_index - 1]
-
-                try:
-                    file = open(self.server_info_file_name, 'w')
-                    for list in self.server_list:
-                        file.write(list + "\n")
-                except IOError:
-                    print("Exception error when reading server file!")
-                finally:
-                    file.close()
-
-                self.readServersInfo()
-                self.comboBox_2.setCurrentIndex(0)
-
-    def buttonClickGoToLogin(self):
-        self.lineEdit_19.setText("")
-        self.lineEdit_20.setText("")
-        self.lineEdit_18.setText("")
-        self.lineEdit_8.setText("")
-        self.lineEdit_11.setText("")
-        self.lineEdit_17.setText("")
-        self.stackedWidget_2.setCurrentIndex(0)
-
-    def buttonClickAddServer(self):
-        self.stackedWidget_2.setCurrentIndex(1)
-
-    def buttonClickNewServerInfoSave(self):
-        if self.lineEdit_8.text() != "" and self.lineEdit_11.text() != "" and self.lineEdit_17.text() != "":
-            try:
-                file = open(self.server_info_file_name, 'a')
-                server_infos = self.lineEdit_8.text() + ","
-                server_infos = server_infos + self.lineEdit_11.text() + ","
-                server_infos = server_infos + self.lineEdit_17.text() + "\n"
-                file.write(server_infos)
-            except IOError:
-                print("Exception error while reading server file!")
-            finally:
-                file.close()
-
-            self.readServersInfo()
-            self.lineEdit_8.setText("")
-            self.lineEdit_11.setText("")
-            self.lineEdit_17.setText("")
-
-            self.showDialogInfo(self.msg_title_info, self.msg_success_to_save, "", self.msg_ok)
-
-        else:
-            self.showDialogInfo(self.msg_title_warning, self.msg_missing_info, self.msg_fill_blank, self.msg_ok)
-
-    def buttonClickSshConnect(self):
-
-        if 0 == self.comboBox_2.currentIndex():
-            self.showDialogInfo(self.msg_title_warning, self.msg_you_did_not_choose_a_server,
-                                self.msg_please_select_server, self.msg_ok)
-        else:
-            if self.lineEdit_6.text() != "":
-                server_info_index = self.comboBox_2.currentIndex()
-                self.server_nickname = self.comboBox_2.currentText()
-                selected_server_info = self.server_list[server_info_index - 1]
-                selected_server_info = selected_server_info.split(",")
-
-                self.server_username = selected_server_info[1]
-                self.server_hostname = selected_server_info[2]
-                self.server_password = self.lineEdit_6.text()
-
-                self.label_20.setText(self.server_nickname)
-                self.label_23.setText(self.server_username)
-                self.label_24.setText(self.server_hostname)
-
-                if self.connectSshCheck():
-                    self.showDialogYesNo(self.msg_title_warning, self.msg_do_you_want_to_connect_server, self.msg_yes,
-                                         self.msg_no)
-                    if self.message_button_return_boolean:
-                        self.firstLoginController()
+            self.check_marmara_path()
+
+    def worker_thread(self, thread, worker, command):
+        self.start_animation()
+        worker.set_command(command)
+        worker.moveToThread(thread)
+        worker.finished.connect(thread.quit)
+        worker.finished.connect(self.stop_animation)
+        thread.started.connect(worker.do_execute_rpc)
+        thread.start()
+        return worker
+
+    @pyqtSlot()
+    def start_animation(self):
+        self.loading.startAnimation()
+
+    @pyqtSlot()
+    def stop_animation(self):
+        self.loading.stopAnimation()
+
+    def check_marmara_path(self):
+        self.worker_check_marmara_path = marmarachain_rpc.RpcHandler()
+        self.worker_check_marmara_path.moveToThread(self.thread_marmarad_path)
+        self.worker_check_marmara_path.finished.connect(self.thread_marmarad_path.quit)
+        self.thread_marmarad_path.started.connect(self.worker_check_marmara_path.check_marmara_path)
+        self.thread_marmarad_path.start()
+        self.worker_check_marmara_path.output.connect(self.check_marmara_path_output)
+
+    @pyqtSlot(str)
+    def check_marmara_path_output(self, output):
+        logging.info('Checking marmara path')
+        logging.info('login:' + output)
+        if output == 'get marmarad path':
+            self.login_page_info(self.tr('Getting marmara chain path from config file'))
+            logging.info('Getting marmara chain path from config file')
+        if str(output).split(' ')[0] == 'marmarad_path':
+            self.login_page_info(self.tr('marmara path from configuration file : ') + str(output).split(' ')[1])
+            logging.info('marmara path from configuration file : ' + str(output).split(' ')[1])
+        if output == 'verifiying path':
+            self.login_page_info(self.tr('Verifiying the Chain location '))
+            logging.info('Verifiying the Chain location ')
+        if output == 'marmarad found.':
+            self.login_page_info(self.tr('Chain location verified.'))
+            logging.info('Chain location verified.')
+            self.chain_init()
+        if output == 'need to install mcl':
+            message_box = self.custom_message(self.tr('Installing Marmarachain'),
+                                              self.tr('Marmarachain is not installed. Would you like to install it?'),
+                                              self.tr("question"), QMessageBox.Question)
+            if message_box == QMessageBox.Yes:
+                logging.info('Auto-install.')
+                self.main_tab.setCurrentIndex(2)
+                if marmarachain_rpc.is_local:
+                    self.sudo_password_lineEdit.setVisible(True)
+                    if platform.system() == 'Windows':
+                        self.sudo_password_lineEdit.setVisible(False)
                 else:
-                    self.showDialogInfo(self.msg_title_warning, self.msg_connection_establish, self.msg_check_info,
-                                        self.msg_ok)
+                    self.sudo_password_lineEdit.setVisible(False)
+            if message_box == QMessageBox.No:
+                self.main_tab.setCurrentIndex(0)
+
+    @pyqtSlot()
+    def start_autoinstall(self):
+        self.worker_autoinstall = marmarachain_rpc.Autoinstall()
+        if marmarachain_rpc.is_local:
+            if platform.system() == 'Windows':
+                start_install = True
             else:
-                self.showDialogInfo(self.msg_title_warning, self.msg_missing_info, self.msg_fill_blank, self.msg_ok)
+                if self.sudo_password_lineEdit.text():
+                    self.worker_autoinstall.set_password(self.sudo_password_lineEdit.text())
+                    start_install = True
+                    self.sudo_password_lineEdit.clear()
+                else:
+                    message_box = self.custom_message(self.tr('Auto-installation does not begin'), self.tr(
+                        'You need to write a password that has admin privileges'), self.tr("information"),
+                                                      QMessageBox.Information)
 
-    def buttonClickAutoInstaller(self):
-        self.pushButton_5.setEnabled(False)
-        self.thread_auto_install = ThreadGui.AutoInstall()
-        self.thread_auto_install.change_value_text_edit.connect(self.autoInstallLogSetTextEdit)
-        self.thread_auto_install.change_value_progressbar.connect(self.autoInstallProgressbarSetValue)
+                    start_install = False
+        else:
+            start_install = True
+        if start_install:
+            self.start_install_button.setEnabled(False)
+            self.install_progress_textBrowser.append(self.tr('Starting Install ...'))
+            logging.info('Starting Install')
 
-        self.thread_auto_install.server_username = self.server_username
-        self.thread_auto_install.server_hostname = self.server_hostname
-        self.thread_auto_install.server_password = self.server_password
-        self.thread_auto_install.withBootstrap = self.checkBox.isChecked()
+            self.worker_autoinstall.moveToThread(self.thread_autoinstall)
+            self.worker_autoinstall.finished.connect(self.thread_autoinstall.quit)
+            self.thread_autoinstall.started.connect(self.worker_autoinstall.start_install)
+            self.thread_autoinstall.start()
+            self.worker_autoinstall.out_text.connect(self.start_autoinstall_textout)
+            self.worker_autoinstall.progress.connect(self.start_autoinstall_progress)
 
-        self.thread_auto_install.start()
+    @pyqtSlot(str)
+    def start_autoinstall_textout(self, output):
+        self.install_progress_textBrowser.append(output)
 
-    def autoInstallLogSetTextEdit(self, val):
-        val = val.replace("b", "")
-        self.output_auto_install = self.output_auto_install + val + "\n"
-        self.textEdit.setText(self.output_auto_install)
-        self.textEdit.verticalScrollBar().setValue(self.textEdit.verticalScrollBar().maximum())
+    @pyqtSlot(int)
+    def start_autoinstall_progress(self, val):
+        self.install_progressBar.setValue(val)
+        if val >= 96:
+            self.install_progressBar.setValue(100)
+            message_box = self.custom_message(self.tr('Installation Completed'), self.tr('Starting Marmarachain'),
+                                              'information', QMessageBox.Information)
+            if message_box == QMessageBox.Ok:
+                self.main_tab.setCurrentIndex(1)
+                self.mcl_tab.setCurrentIndex(0)
+                self.check_marmara_path()
+        if val > 100:
+            self.install_progressBar.setValue(0)
+            message_box = self.custom_message(self.tr('Installation not completed correctly'),
+                                              self.tr('Wrong password input. Please install again'),
+                                              'information', QMessageBox.Information)
 
-    def startChainWithoutPubkeyForWalletList(self):
-        self.count_wallet_list = 0
-        self.thread_start_chain_without_pubkey = ThreadGui.StartChainWithoutPubkey()
-        self.loading_screen.startAnimation()
-        self.thread_start_chain_without_pubkey.change_value_information_getinfo_check_chain_with_pubkey.connect(self.changingInformationStartWithoutPubkeyGetInfo)
-        self.thread_start_chain_without_pubkey.change_value_information_wallet.connect(self.changingInformationWalletList)
+    def bottom_info(self, info):
+        self.bottom_message_label.setText(info)
 
-        self.thread_start_chain_without_pubkey.command_mcl_start_chain_without_pubkey =  self.mcl_install_file_path + self.command_start_mcl_mining_without_pubkey
-        self.thread_start_chain_without_pubkey.command_mcl_get_info =  self.mcl_install_file_path + self.command_mcl_get_info
-        self.thread_start_chain_without_pubkey.command_mcl_all_wallet_list =  self.mcl_install_file_path + self.command_mcl_all_wallet_list
-        self.thread_start_chain_without_pubkey.command_mcl_get_pubkey =  self.mcl_install_file_path + self.command_get_pubkey + " "
+    def bottom_err_info(self, err_msg):
+        err_result = ""
+        for line in str(err_msg).splitlines():
+            err_result = err_result + ' ' + str(line)
+        logging.error(err_result)
+        self.bottom_message_label.setText(err_result)
 
-        self.thread_start_chain_without_pubkey.server_username = self.server_username
-        self.thread_start_chain_without_pubkey.server_hostname = self.server_hostname
-        self.thread_start_chain_without_pubkey.server_password = self.server_password
+    def login_page_info(self, info):
+        self.login_message_label.setText(info)
 
-        self.thread_start_chain_without_pubkey.start()
+    # ---------------------------------------
+    #  Chain initialization
+    # ---------------------------------------
+    @pyqtSlot()
+    def chain_init(self):
+        self.main_tab.setCurrentIndex(1)
+        self.mcl_tab.setCurrentIndex(0)
+        self.chain_stackedWidget.setCurrentIndex(0)
+        logging.info('chain_status ' + str(self.chain_status))
+        self.bottom_info(self.tr('chain_status ' + str(self.chain_status)))
+        time.sleep(0.1)
+        if not self.chain_status:
+            logging.info('Checking marmarachain')
+            self.bottom_info(self.tr('Checking marmarachain'))
+            marmara_pid = marmarachain_rpc.mcl_chain_status()
+            if len(marmara_pid[0]) > 0:
+                self.bottom_info(self.tr('marmarachain has pid'))
+                logging.info('marmarachain has pid')
+            if len(marmara_pid[0]) == 0:
+                logging.info('sending chain start command')
+                self.bottom_info(self.tr('sending chain start command'))
+                marmarachain_rpc.start_chain()
+            self.is_chain_ready()
 
-    def autoInstallProgressbarSetValue(self, val):
-        self.progressBar_2.setValue(val)
-        if val == 100:
-            self.pushButton_5.setEnabled(True)
-            self.showDialogInfo(self.msg_title_info, self.msg_box_end_1, "", self.msg_ok)
-            self.tabWidget.setCurrentIndex(2)
-            self.stackedWidget.setCurrentIndex(0)
-            # self.showDialogInfo(self.msg_title_warning, self.msg_box_end_2, "", self.msg_ok)
-            self.close()
-            # self.startChainWithoutPubkeyForWalletList()
+    def is_chain_ready(self):
+        self.bottom_info(self.tr('Checking if marmarachain is ready for rpc'))
+        logging.info('Checking if marmarachain is ready for rpc')
+        self.start_animation()
+        self.worker_getchain = marmarachain_rpc.RpcHandler()  # worker setting
+        self.worker_getchain.moveToThread(self.thread_getchain)  # move object in to thread
+        self.worker_getchain.finished.connect(self.thread_getchain.quit)  # when finished close thread
+        self.worker_getchain.finished.connect(self.stop_animation)  # when finished close animation
+        self.thread_getchain.started.connect(self.worker_getchain.is_chain_ready)  # executing respective worker func.
+        self.thread_getchain.start()  # start thread
+        self.worker_getchain.command_out.connect(self.chain_ready_result)  # getting results and connecting to socket
+        self.worker_getchain.walletlist_out.connect(self.set_getaddresses_result)
 
-    def showDialogYesNo(self, title, text, button_yes_name, button_no_name):
-        msgBox = QMessageBox()
-        msgBox.setIcon(QMessageBox.Information)
-        msgBox.setText(text)
-        msgBox.setWindowTitle(title)
-        msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
-        buttonY = msgBox.button(QMessageBox.Ok)
-        buttonY.setText(button_yes_name)
-        buttonN = msgBox.button(QMessageBox.Cancel)
-        buttonN.setText(button_no_name)
-        msgBox.exec_()
+    @pyqtSlot(tuple)
+    def chain_ready_result(self, result_out):
+        if result_out[0]:
+            logging.info('chain is ready')
+            self.bottom_info(self.tr('chain ready'))
+            result = json.loads(result_out[0])
+            self.chain_status = True
+            self.chainstatus_button.setIcon(QIcon(self.icon_path + '/circle-active.png'))
+            if result.get('version'):
+                self.set_getinfo_result(result)
+                self.bottom_info(self.tr('getting wallet addresses'))
+                logging.info('getting wallet addresses')
+            else:
+                self.setgenerate_result(result_out)
+                self.bottom_info(self.tr('Chain init completed.'))
+                logging.info('Chain init completed.')
+        elif result_out[1]:
+            err_result = str(result_out[1]).splitlines()
+            if str(result_out[1]).find('error message:') != -1:
+                index = err_result.index('error message:') + 1
+                self.bottom_info(err_result[index])
+                logging.error(err_result[index])
+            else:
+                self.bottom_err_info(result_out[1])
+                logging.error(result_out[1])
 
-        if msgBox.clickedButton() == buttonY:
-            print("Yes")
-            self.message_button_return_boolean = True
-        elif msgBox.clickedButton() == buttonN:
-            print("No")
-            self.message_button_return_boolean = False
+    # --------------------------------------
+    # Stopping Chain
+    # --------------------------------------
+    @pyqtSlot()
+    def stop_chain(self):
+        if self.chain_status:
+            self.start_animation()
+            self.worker_stopchain = marmarachain_rpc.RpcHandler()  # worker setting
+            self.worker_stopchain.moveToThread(self.thread_stopchain)  # putting in to thread
+            self.worker_stopchain.finished.connect(self.thread_stopchain.quit)  # when finished close thread
+            self.worker_stopchain.finished.connect(self.stop_animation)  # when finished close animation
+            self.thread_stopchain.started.connect(self.worker_stopchain.stopping_chain)  # executing worker function
+            self.thread_stopchain.start()
+            self.worker_stopchain.command_out.connect(self.result_stopchain)  # getting results and connecting to socket
+        else:
+            self.bottom_info(self.tr('Marmarachain is not ready'))
+            logging.warning('Marmarachain is not ready')
 
-    def showDialogInfo(self, title, text, explanation, button_text):
+    @pyqtSlot(tuple)
+    def result_stopchain(self, result_out):
+        if result_out[0]:
+            print_result = ""
+            for line in str(result_out[0]).splitlines():
+                print_result = print_result + ' ' + str(line)
+            logging.info("Stopping chain:" + print_result)
+            self.bottom_info(print_result)
+        if len(result_out[0]) == 0:
+            self.bottom_info(self.tr('Marmarachain stopped'))
+            logging.info('Marmarachain stopped')
+            self.chain_status = False
+            self.chainstatus_button.setIcon(QIcon(self.icon_path + '/circle-inactive.png'))
+            self.update_addresses_table()
+        elif result_out[1]:
+            self.bottom_err_info(result_out[1])
+            logging.error(result_out[1])
+
+    # -------------------------------------------------------
+    # Getting getinfo command
+    # -------------------------------------------------------
+    @pyqtSlot()
+    def get_getinfo(self):
+        self.worker_getinfo = marmarachain_rpc.RpcHandler()  # worker setting
+        command = cp.getinfo  # setting command
+        getinfo_thread = self.worker_thread(self.thread_getinfo, self.worker_getinfo, command)  # putting in to thread
+        getinfo_thread.command_out.connect(self.getinfo_result)  # getting results and connecting to socket
+
+    @pyqtSlot(tuple)
+    def getinfo_result(self, result_out):
+        if result_out[0]:
+            getinfo_result = result_out[0]
+            getinfo_result = json.loads(getinfo_result)
+            self.bottom_info(self.tr('loading getinfo values'))
+            logging.info('Loading getinfo values')
+            self.set_getinfo_result(getinfo_result)
+            logging.info('getinfo finished')
+        elif result_out[1]:
+            self.bottom_err_info(result_out[1])
+            logging.error(result_out[1])
+
+    def set_getinfo_result(self, getinfo_result):
+        if getinfo_result.get('synced'):
+            self.chainsync_button.setIcon(QIcon(self.icon_path + '/circle-active.png'))
+        elif not getinfo_result.get('synced'):
+            self.chainsync_button.setIcon(QIcon(self.icon_path + '/circle-inactive.png'))
+        if getinfo_result.get('pubkey'):
+            self.pubkey_status = True
+            self.current_pubkey_value.setText(str(getinfo_result['pubkey']))
+        if getinfo_result.get('pubkey') is None:
+            self.bottom_info(self.tr('pubkey is not set'))
+            logging.warning('pubkey is not set')
+            self.pubkey_status = False
+            self.current_pubkey_value.setText("")
+        self.difficulty_value_label.setText(str(int(getinfo_result['difficulty'])))
+        self.currentblock_value_label.setText(str(getinfo_result['blocks']))
+        self.longestchain_value_label.setText(str(getinfo_result['longestchain']))
+        self.connections_value_label.setText(str(getinfo_result['connections']))
+        self.totalnormal_value_label.setText(str(getinfo_result['balance']))
+        self.bottom_info(self.tr('getinfo finished'))
+        logging.info('getinfo finished')
+
+    # -----------------------------------------------------------
+    # Side panel functions
+    # -----------------------------------------------------------
+    @pyqtSlot()
+    def refresh_side_panel(self):
+        self.start_animation()
+        self.bottom_info(self.tr('getting getinfo'))
+        logging.info('getting getinfo')
+        self.worker_sidepanel = marmarachain_rpc.RpcHandler()
+        self.worker_sidepanel.moveToThread(self.thread_sidepanel)
+        self.worker_sidepanel.finished.connect(self.thread_sidepanel.quit)
+        self.worker_sidepanel.finished.connect(self.stop_animation)
+        self.thread_sidepanel.started.connect(self.worker_sidepanel.refresh_sidepanel)
+        self.thread_sidepanel.start()
+        self.worker_sidepanel.command_out.connect(self.refresh_side_panel_result)
+        last_update = self.tr('Last Update: ')
+        # date = (str(datetime.now().date()))
+        hour = (str(datetime.now().hour))
+        minute = (str(datetime.now().minute))
+        self.last_update_label.setText(last_update + hour + ':' + minute)
+
+    @pyqtSlot(tuple)
+    def refresh_side_panel_result(self, result_out):
+        if result_out[0]:
+            result = json.loads(result_out[0])
+            if result.get('version'):
+                self.set_getinfo_result(result)
+                self.bottom_info(self.tr('checking mining status.'))
+                logging.info('checking mining status.')
+            else:
+                self.setgenerate_result(result_out)
+                self.bottom_info(self.tr('Refresh completed.'))
+                logging.info('Refresh completed.')
+        elif result_out[1]:
+            self.bottom_err_info(result_out[1])
+            logging.error(result_out[1])
+
+    @pyqtSlot()
+    def copyaddress_clipboard(self):
+        address = self.currentaddress_value.text()
+        if address != "":
+            QtWidgets.QApplication.clipboard().setText(address)
+            self.bottom_info(self.tr('copied ') + address)
+            logging.info('copied ' + address)
+        else:
+            self.bottom_info(self.tr('no address value set'))
+            logging.warning('no address value set')
+
+    @pyqtSlot()
+    def copypubkey_clipboard(self):
+        pubkey = self.current_pubkey_value.text()
+        if pubkey != "":
+            QtWidgets.QApplication.clipboard().setText(pubkey)
+            self.bottom_info(self.tr('copied ') + pubkey)
+            logging.info('copied ' + pubkey)
+        else:
+            self.bottom_info(self.tr('no pubkey value set'))
+            logging.warning('no pubkey value set')
+
+    @pyqtSlot()
+    def toggle_staking(self):
+        if self.staking_button.isChecked():  # Staking button status is True.
+            if self.mining_button.isChecked():  # Checking mining is also active
+                message_box = self.custom_message(self.tr('Turning off Mining'),
+                                                  self.tr('Mining is currently on. '
+                                                          'You are about to turn off mining. Are you sure?'),
+                                                  "question",
+                                                  QMessageBox.Question)
+
+                if message_box == QMessageBox.Yes:
+                    self.mining_button.setChecked(False)  # Close mining and set staking mode
+                    self.cpu_core_selection_off()
+                    logging.debug('setgenerate True 0')
+                    self.setgenerate('true 0')
+                if message_box == QMessageBox.No:  # Abort selecting staking and continue mining
+                    self.staking_button.setChecked(False)
+            else:  # set staking mode
+                logging.debug('setgenerate True 0')
+                self.setgenerate('true 0')
+        else:  # Staking button status is False
+            message_box = self.custom_message(self.tr('Turning off Staking'),
+                                              self.tr('You are about to turn off staking. Are you sure?'), "question",
+                                              QMessageBox.Question)
+
+            if message_box == QMessageBox.Yes:
+                logging.debug('setgenerate False')
+                self.setgenerate('false')
+            if message_box == QMessageBox.No:
+                self.staking_button.setChecked(True)  # Abort selecting staking button
+
+    @pyqtSlot()
+    def toggle_mining(self):
+        if self.mining_button.isChecked():  # Mining button status is True.
+            if self.staking_button.isChecked():  # Checking staking is also active
+                message_box = self.custom_message(self.tr('Turning off Staking'),
+                                                  self.tr('Staking is currently active. '
+                                                          'You are about to turn off staking. Are you sure?'),
+                                                  "question",
+                                                  QMessageBox.Question)
+                if message_box == QMessageBox.Yes:
+                    self.staking_button.setChecked(False)  # Close staking and turn on mining
+                    logging.debug('setgenerate True 1')
+                    self.setgenerate('true 1')
+                    self.cpu_core_selection_on()
+                if message_box == QMessageBox.No:  # Abort selecting mining and continue staking
+                    self.mining_button.setChecked(False)
+            else:  # Staking is off turn on Mining mode
+                logging.debug('setgenerate True 1')
+                self.cpu_core_selection_on()
+                self.setgenerate('true 1')
+        else:  # Mining button status is False.
+            message_box = self.custom_message(self.tr('Turning off Mining'),
+                                              self.tr('You are about to turn off mining. Are you sure?'), "question",
+                                              QMessageBox.Question)
+            if message_box == QMessageBox.Yes:
+                logging.debug('setgenerate False')
+                self.cpu_core_selection_off()
+                self.setgenerate('false')
+            if message_box == QMessageBox.No:
+                self.mining_button.setChecked(True)  # Abort selecting mining button
+
+    def cpu_core_selection_on(self):
+        self.cpu_label.setVisible(True)
+        self.cpu_core_lineEdit.setVisible(True)
+        self.cpu_core_set_button.setVisible(True)
+
+    def cpu_core_selection_off(self):
+        self.cpu_label.setVisible(False)
+        self.cpu_core_lineEdit.setVisible(False)
+        self.cpu_core_set_button.setVisible(False)
+
+    def setgenerate(self, arg):
+        self.start_animation()
+        self.worker_setgenerate = marmarachain_rpc.RpcHandler()
+        self.worker_setgenerate.set_command(cp.setgenerate + ' ' + arg)
+        self.worker_setgenerate.moveToThread(self.thread_setgenerate)
+        self.worker_setgenerate.finished.connect(self.thread_setgenerate.quit)
+        self.worker_setgenerate.finished.connect(self.stop_animation)
+        self.thread_setgenerate.started.connect(self.worker_setgenerate.setgenerate)
+        self.thread_setgenerate.start()
+        self.worker_setgenerate.command_out.connect(self.setgenerate_result)
+
+    @pyqtSlot(tuple)
+    def setgenerate_result(self, result_out):
+        if result_out[0]:
+            logging.debug('\n---- getgenerate result------\n' + str(json.loads(result_out[0])))
+            result = json.loads(result_out[0])
+            if result.get('staking') is True and result.get('generate') is False:
+                self.bottom_info(self.tr('Staking ON'))
+                logging.info('Staking ON')
+                self.staking_button.setChecked(True)
+                self.mining_button.setChecked(False)
+            if result.get('staking') is False and result.get('generate') is False:
+                self.bottom_info(self.tr('Mining status is OFF'))
+                logging.info('Mining status is OFF')
+                self.staking_button.setChecked(False)
+                self.mining_button.setChecked(False)
+            if result.get('generate') is True and result.get('staking') is False:
+                self.bottom_info(self.tr('Mining ON with ') + str(result.get('numthreads')))
+                logging.info('Mining ON with ' + str(result.get('numthreads')))
+                self.cpu_core_lineEdit.setText(str(result.get('numthreads')))
+                self.cpu_core_selection_on()
+                self.staking_button.setChecked(False)
+                self.mining_button.setChecked(True)
+        if result_out[1]:
+            self.bottom_err_info(self.tr(result_out[1]))
+            logging.error(result_out[1])
+
+    @pyqtSlot()
+    def setmining_cpu_core(self):
+        cpu_no = self.cpu_core_lineEdit.text()
+        self.setgenerate('true ' + str(cpu_no))
+
+    @pyqtSlot()
+    def calculate_amount(self):
+        number_of_cups = self.cup_lineEdit.text()
+        if number_of_cups == "" or int(number_of_cups) == 0:
+            self.support_pushButton.setEnabled(False)
+            self.support_pushButton.setText(self.tr('Support'))
+        else:
+            amount = int(number_of_cups) * 50
+            self.support_pushButton.setEnabled(True)
+            self.support_pushButton.setText(self.tr('Support') + ' (' + str(amount) + ' MCL)')
+
+    @pyqtSlot()
+    def send_coins_to_team(self):
+        number_of_cups = self.cup_lineEdit.text()
+        amount = int(number_of_cups) * 50
+        team_address = 'RXWqisAoJKEGVyXj46Zo3fDZnZTwQA6kQE'
+        self.support_pushButton.setText(self.tr('Support') + ' (' + str(amount) + ' MCL)')
+        message_box = self.custom_message(self.tr('Confirm Transaction'),
+                                          self.tr(
+                                              f'You are about to send {amount} MCL to Marmara Core Team.'),
+                                          "question",
+                                          QMessageBox.Question)
+        if message_box == QMessageBox.Yes:
+            self.worker_sendtoteam = marmarachain_rpc.RpcHandler()
+            command = cp.sendtoaddress + ' ' + team_address + ' ' + str(amount)
+            sendtoteam_thread = self.worker_thread(self.thread_sendtoteam, self.worker_sendtoteam, command)
+            sendtoteam_thread.command_out.connect(self.sendtoaddress_result)
+        if message_box == QMessageBox.No:
+            self.bottom_info(self.tr('Transaction aborted'))
+            logging.info('Transaction aborted')
+
+    # -----------------------------------------------------------
+    # Chain page functions
+    # -----------------------------------------------------------
+
+    # getting addresses for address table widget
+    @pyqtSlot()
+    def getaddresses(self):
+        self.start_animation()
+        self.bottom_info(self.tr('getting wallet addresses'))
+        logging.info('getting wallet addresses')
+        self.worker_getaddresses = marmarachain_rpc.RpcHandler()
+        self.worker_getaddresses.moveToThread(self.thread_getaddresses)
+        self.worker_getaddresses.finished.connect(self.thread_getaddresses.quit)
+        self.worker_getaddresses.finished.connect(self.stop_animation)
+        self.thread_getaddresses.started.connect(self.worker_getaddresses.get_addresses)
+        self.thread_getaddresses.start()
+        self.worker_getaddresses.walletlist_out.connect(self.set_getaddresses_result)
+
+    @pyqtSlot(list)
+    def set_getaddresses_result(self, result_out):
+        self.bottom_info(self.tr('Loading Addresses ...'))
+        logging.info('Loading Addresses ...')
+        self.addresses_tableWidget.setRowCount(len(result_out))
+        logging.info('\n------wallet address list----- \n' + str(result_out))
+        for row in result_out:
+            row_number = result_out.index(row)
+            if self.pubkey_status:
+                self.addresses_tableWidget.setColumnHidden(0, True)
+            btn_setpubkey = QPushButton('Set pubkey')
+            self.addresses_tableWidget.setCellWidget(row_number, 0, btn_setpubkey)
+            self.addresses_tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+            for item in row:
+                self.addresses_tableWidget.setItem(row_number, (row.index(item) + 1), QTableWidgetItem(str(item)))
+                self.addresses_tableWidget.horizontalHeader().setSectionResizeMode((row.index(item) + 1),
+                                                                                   QHeaderView.ResizeToContents)
+            btn_setpubkey.clicked.connect(self.set_pubkey)
+        self.bottom_info(self.tr('Loading Addresses finished'))
+        logging.info('Loading Addresses finished')
+        self.update_addresses_table()
+
+    @pyqtSlot()
+    def hide_addresses(self):
+        if self.hide_address_checkBox.checkState():
+            rowcount = self.addresses_tableWidget.rowCount()
+            while True:
+                rowcount = rowcount - 1
+                if self.addresses_tableWidget.item(rowcount, 1).text() == "0.0":
+                    self.addresses_tableWidget.setRowHidden(rowcount, True)
+                if rowcount == 0:
+                    break
+        else:
+            rowcount = self.addresses_tableWidget.rowCount()
+            while True:
+                rowcount = rowcount - 1
+                self.addresses_tableWidget.setRowHidden(rowcount, False)
+                if rowcount == 0:
+                    break
+
+    @pyqtSlot(int, int)
+    def addresstable_itemcontext(self, row, column):
+        item = self.addresses_tableWidget.item(row, column).text()
+        QtWidgets.QApplication.clipboard().setText(item)
+        self.bottom_info(self.tr("Copied  ") + str(item))
+
+    def update_addresses_table(self):
+        if self.pubkey_status:
+            self.addresses_tableWidget.setColumnHidden(0, True)
+            if self.current_pubkey_value.text() == "":
+                self.get_getinfo()
+            current_pubkey = self.current_pubkey_value.text()
+            rowcount = self.addresses_tableWidget.rowCount()
+            while True:
+                rowcount = rowcount - 1
+                if current_pubkey == self.addresses_tableWidget.item(rowcount, 3).text():
+                    self.currentaddress_value.setText(self.addresses_tableWidget.item(rowcount, 2).text())
+                if rowcount == 0:
+                    break
+        if not self.chain_status:
+            self.addresses_tableWidget.setColumnHidden(0, False)
+            rowcount = self.addresses_tableWidget.rowCount()
+            self.addresses_tableWidget.setRowCount(rowcount)
+            while True:
+                btn_start = QPushButton('Start')
+                btn_start.setIcon(QIcon(self.icon_path + "/start_icon.png"))
+                rowcount = rowcount - 1
+                self.addresses_tableWidget.setCellWidget(rowcount, 0, btn_start)
+                btn_start.clicked.connect(self.start_chain)
+                if rowcount == 0:
+                    break
+        self.hide_addresses()
+
+    @pyqtSlot()
+    def set_pubkey(self):
+        button = self.sender()
+        index = self.addresses_tableWidget.indexAt(button.pos())
+        if index.isValid():
+            self.worker_setpubkey = marmarachain_rpc.RpcHandler()
+            command = cp.setpubkey + ' ' + self.addresses_tableWidget.item(index.row(), 3).text()
+            setpubkey_thread = self.worker_thread(self.thread_setpubkey, self.worker_setpubkey, command)
+            setpubkey_thread.command_out.connect(self.set_pubkey_result)
+
+    @pyqtSlot(tuple)
+    def set_pubkey_result(self, result_out):
+        if result_out[0]:
+            self.get_getinfo()
+            if str(json.loads(result_out[0])).rfind('error') > -1:
+                pubkey = json.loads(result_out[0])['pubkey']
+                logging.info('this pubkey: ' + pubkey + ' is already set')
+                self.bottom_info(result_out[0])
+                logging.info(result_out[0])
+
+            message_box = self.custom_message(self.tr('Pubkey set'), str(json.loads(result_out[0])['pubkey']),
+                                              "information",
+                                              QMessageBox.Information)
+            if message_box == QMessageBox.Ok:
+                self.update_addresses_table()
+        elif result_out[1]:
+            self.bottom_err_info(result_out[1])
+            logging.error(result_out[1])
+
+    @pyqtSlot()
+    def start_chain(self):
+        button = self.sender()
+        index = self.addresses_tableWidget.indexAt(button.pos())
+        logging.debug(index.row())
+        logging.debug(index.column())
+        if index.isValid():
+            pubkey = self.addresses_tableWidget.item(index.row(), 3).text()
+            logging.info(pubkey)
+            self.bottom_info(self.tr('Chain started with pubkey'))
+            logging.info('Chain started with pubkey')
+            marmarachain_rpc.start_chain(pubkey)
+            time.sleep(0.5)
+            self.addresses_tableWidget.setColumnHidden(0, True)
+            self.is_chain_ready()
+
+    # ------------------
+    # Chain  --- wallet Address Add, import
+    # -------------------
+    @pyqtSlot()
+    def get_address_page(self):
+        self.chain_stackedWidget.setCurrentIndex(1)
+        self.passphrase_TextEdit.clear()
+        self.confirm_passphrase_TextEdit.clear()
+
+    @pyqtSlot()
+    def get_new_address(self):
+        self.worker_get_newaddress = marmarachain_rpc.RpcHandler()
+        message_box = self.custom_message(self.tr('Creating New Address'),
+                                          self.tr("You are about to create a new address. Are you sure?"),
+                                          "question",
+                                          QMessageBox.Question)
+
+        if message_box == QMessageBox.Yes:
+            command = cp.getnewaddress
+            getnewaddress_thread = self.worker_thread(self.thread_getnewaddress, self.worker_get_newaddress, command)
+            getnewaddress_thread.command_out.connect(self.set_getnewaddress_result)
+
+    @pyqtSlot(tuple)
+    def set_getnewaddress_result(self, result_out):
+        if result_out[0]:
+            logging.info(result_out[0])
+            # self.bottom_info('new address = ' + str(result_out[0]))
+        elif result_out[1]:
+            self.bottom_err_info(result_out[1])
+            logging.error(result_out[1])
+
+    @pyqtSlot()
+    def convertpassphrase(self):
+        verified = False
+        seed = self.passphrase_TextEdit.toPlainText()
+        confirm_seed = self.confirm_passphrase_TextEdit.toPlainText()
+        if seed:
+            if seed == confirm_seed:
+                verified = True
+            else:
+                self.bottom_info(self.tr('seed words does not match'))
+                logging.warning('seed words does not match')
+        else:
+            self.bottom_info(self.tr('write some seed words!'))
+            logging.warning('write some seed words!')
+        if verified:
+            self.worker_convert_passphrase = marmarachain_rpc.RpcHandler()
+            command = cp.convertpassphrase + ' "' + seed + '"'
+            convert_passphrase_thread = self.worker_thread(self.thread_convertpassphrase,
+                                                           self.worker_convert_passphrase, command)
+            convert_passphrase_thread.command_out.connect(self.convertpassphrase_result)
+
+    @pyqtSlot(tuple)
+    def convertpassphrase_result(self, result_out):
+        if result_out[0]:
+            result = json.loads(result_out[0])
+            wif = result['wif']
+            message_box = self.custom_message(self.tr('Creating an Address'),
+                                              self.tr("An address has been created with details below. Do you want to "
+                                                      "import this address to the wallet?") +
+                                                      self.tr("<br><b>Seed = </b><br>") + result['agamapassphrase'] +
+                                                      self.tr("<br><b>Private Key = </b><br>") + wif +
+                                                      self.tr("<br><b>Address = </b><br>") + result['address'] +
+                                                      self.tr("<br><b>Pubkey = </b><br>") + result['pubkey'],
+                                              "question",
+                                              QMessageBox.Question)
+            if message_box == QMessageBox.Yes:
+                self.get_importprivkey(wif)
+
+        # for error handling of convertpassphrase method
+        elif result_out[1]:
+            self.bottom_err_info(result_out[1])
+
+    @pyqtSlot()
+    def importprivkey(self):
+        privkey = self.privkey_lineEdit.text()
+        if privkey:
+            self.get_importprivkey(privkey)
+        else:
+            self.bottom_info(self.tr('write private key first'))
+            logging.warning('write private key first')
+
+    def get_importprivkey(self, wif):
+        self.worker_importprivkey = marmarachain_rpc.RpcHandler()
+        command = cp.importprivkey + ' ' + wif
+        importprivkey_thread = self.worker_thread(self.thread_importprivkey, self.worker_importprivkey, command)
+        importprivkey_thread.command_out.connect(self.set_importprivkey_result)
+
+    @pyqtSlot(tuple)
+    def set_importprivkey_result(self, result_out):
+        if result_out[0]:
+            self.bottom_info(str(result_out[0]))
+        elif result_out[1]:
+            self.bottom_err_info(result_out[1])
+
+    @pyqtSlot()
+    def back_chain_widget_index(self):
+        self.chain_stackedWidget.setCurrentIndex(0)
+        if self.chain_status:
+            self.getaddresses()
+        else:
+            self.update_addresses_table()
+
+    @pyqtSlot()
+    def see_privkey_page(self):
+        self.chain_stackedWidget.setCurrentIndex(2)
+        self.get_privkey_table()
+
+    def get_privkey_table(self):
+        self.worker_getaddress_privkey = marmarachain_rpc.RpcHandler()
+        command = cp.getaddressesbyaccount
+        address_privkey_thread = self.worker_thread(self.thread_address_privkey, self.worker_getaddress_privkey,
+                                                    command)
+        address_privkey_thread.command_out.connect(self.set_privkey_table_result)
+
+    @pyqtSlot(tuple)
+    def set_privkey_table_result(self, result_out):
+        if result_out[0]:
+            result = json.loads(result_out[0])
+            self.addresses_privkey_tableWidget.setRowCount(len(result))
+            # self.addresses_privkey_tableWidget.autoScrollMargin()
+            for address in result:
+                row_number = result.index(address)
+                btn_seeprivkey = QPushButton(qta.icon('mdi.shield-key'), '')
+                btn_seeprivkey.setIconSize(QSize(32, 32))
+                self.addresses_privkey_tableWidget.setCellWidget(row_number, 1, btn_seeprivkey)
+                self.addresses_privkey_tableWidget.setItem(row_number, 0, QTableWidgetItem(address))
+                self.addresses_privkey_tableWidget.horizontalHeader().setSectionResizeMode(0,
+                                                                                           QHeaderView.ResizeToContents)
+                self.addresses_privkey_tableWidget.horizontalHeader().setSectionResizeMode(1,
+                                                                                           QHeaderView.ResizeToContents)
+                btn_seeprivkey.clicked.connect(self.set_seeprivkey)
+
+        elif result_out[1]:
+            self.bottom_err_info(result_out[1])
+
+    @pyqtSlot()
+    def set_seeprivkey(self):
+        button = self.sender()
+        index = self.addresses_privkey_tableWidget.indexAt(button.pos())
+        if index.isValid():
+            address = self.addresses_privkey_tableWidget.item(index.row(), 0).text()
+            self.worker_see_privkey = marmarachain_rpc.RpcHandler()
+            command = cp.dumpprivkey + ' ' + address
+            see_privkey_thread = self.worker_thread(self.thread_seeprivkey, self.worker_see_privkey, command)
+            see_privkey_thread.command_out.connect(self.get_seeprivkey_result)
+
+    @pyqtSlot(tuple)
+    def get_seeprivkey_result(self, result_out):
+        if result_out[0]:
+            message_box = self.custom_message(self.tr('Private Key'),
+                                              result_out[0],
+                                              "information",
+                                              QMessageBox.Information)
+        elif result_out[1]:
+            self.bottom_err_info(result_out[1])
+
+    # --------------------------------------------------------------------
+    # Wallet page functions
+    # --------------------------------------------------------------------
+    def marmarainfo(self, pubkey):
+        self.bottom_info(self.tr('getting marmarainfo, please wait'))
+        self.worker_marmarainfo = marmarachain_rpc.RpcHandler()
+        command = cp.marmarainfo + ' 0 0 0 0 ' + pubkey
+        marmarainfo_thread = self.worker_thread(self.thread_marmarainfo, self.worker_marmarainfo, command)
+        return marmarainfo_thread
+
+    @pyqtSlot()
+    def get_address_amounts(self):
+        pubkey = self.current_pubkey_value.text()
+        logging.info('---- current pubkey : ' + pubkey)
+        if pubkey:
+            marmarainfo = self.marmarainfo(pubkey)
+            marmarainfo.command_out.connect(self.marmarinfo_amount_and_loops_result)
+        else:
+            self.bottom_info(self.tr('pubkey is not set!'))
+            logging.warning('pubkey is not set!')
+
+    @pyqtSlot(tuple)
+    def set_address_amounts(self, result_out):
+        if result_out[0]:
+            logging.info(result_out[0])
+            result = json.loads(result_out[0])
+            if result.get('result') == "success":
+                self.normal_amount_value.setText(str(result.get('myPubkeyNormalAmount')))
+                self.wallet_total_normal_value.setText(str(result.get('myWalletNormalAmount')))
+                self.activated_amount_value.setText(str(result.get('myActivatedAmount')))
+                self.wallet_total_activated_value.setText(str(result.get('myTotalAmountOnActivatedAddress')))
+                self.bottom_info('getting address amounts finished')
+            if result.get('result') == "error":
+                self.bottom_info(result.get('error'))
+                logging.error(result.get('error'))
+        elif result_out[1]:
+            logging.error(result_out[1])
+
+    @pyqtSlot()
+    def marmaralock_amount(self):
+        if not self.lock_amount_value.text() == "":
+            self.worker_marmaralock = marmarachain_rpc.RpcHandler()
+            command = cp.marmaralock + ' ' + self.lock_amount_value.text()
+            marmarlock_thread = self.worker_thread(self.thread_marmaralock, self.worker_marmaralock, command)
+            marmarlock_thread.command_out.connect(self.marmaralock_amount_result)
+
+    @pyqtSlot(tuple)
+    def marmaralock_amount_result(self, result_out):
+        if result_out[0]:
+            result = json.loads(result_out[0])
+            logging.info(result)
+            if result['result'] == 'success':
+                message_box = self.custom_message(self.tr('Confirm Transaction'),
+                                                  self.tr('You are about to activate ') + self.lock_amount_value.text()
+                                                  + ' MCL',
+                                                  "question",
+                                                  QMessageBox.Question)
+                if message_box == QMessageBox.Yes:
+                    self.sendrawtransaction(result['hex'])
+                if message_box == QMessageBox.No:
+                    self.bottom_info(self.tr('Transaction aborted'))
+                    logging.info('Transaction aborted')
+            if result.get('error'):
+                self.bottom_info(str(result['error']))
+                logging.error(str(result['error']))
+        elif result_out[1]:
+            if self.chain_status is False:
+                self.bottom_err_info(result_out[1])
+                logging.error(result_out[1])
+            result = str(result_out[1]).splitlines()
+            if str(result_out[1]).find('error message:') != -1:
+                index = result.index('error message:') + 1
+                self.bottom_info(result[index])
+                logging.error(result[index])
+
+    @pyqtSlot()
+    def marmaraunlock_amount(self):
+        if not self.unlock_amount_value.text() == "":
+            self.worker_marmaraunlock = marmarachain_rpc.RpcHandler()
+            command = cp.marmaraunlock + ' ' + self.unlock_amount_value.text()
+            marmarunlock_thread = self.worker_thread(self.thread_marmaraunlock, self.worker_marmaraunlock, command)
+            marmarunlock_thread.command_out.connect(self.marmaraunlock_amount_result)
+
+    @pyqtSlot(tuple)
+    def marmaraunlock_amount_result(self, result_out):
+        if result_out[0]:
+            logging.info(result_out[0])
+            logging.info(str(result_out[0]).find('result'))
+            if str(result_out[0]).find('result') == -1:
+                message_box = self.custom_message(self.tr('Confirm Transaction'),
+                                                  self.tr('You are about to unlock ') +
+                                                  self.unlock_amount_value.text() + ' MCL',
+                                                  "question",
+                                                  QMessageBox.Question)
+                if message_box == QMessageBox.Yes:
+                    self.sendrawtransaction(result_out[0])
+                if message_box == QMessageBox.No:
+                    self.bottom_info(self.tr('Transaction aborted'))
+                    logging.info('Transaction aborted')
+            else:
+                result = json.loads(result_out[0])
+                logging.info(result)
+                if result.get('result') == "error":
+                    self.bottom_info(result.get('error'))
+                    logging.error(result.get('error'))
+        elif result_out[1]:
+            if self.chain_status is False:
+                self.bottom_err_info(result_out[1])
+                logging.error(result_out[1])
+            result = str(result_out[1]).splitlines()
+            if str(result_out[1]).find('error message:') != -1:
+                index = result.index('error message:') + 1
+                self.bottom_info(result[index])
+                logging.error(result[index])
+
+    # --------------------------------------------------------------------
+    # sending raw transaction
+    # --------------------------------------------------------------------
+
+    def sendrawtransaction(self, hex):
+        self.bottom_info(self.tr('Signing transaction'))
+        logging.info('Signing transaction')
+        self.worker_sendrawtransaction = marmarachain_rpc.RpcHandler()
+        command = cp.sendrawtransaction + ' ' + hex
+        time.sleep(0.1)
+        sendrawtransaction_thread = self.worker_thread(self.thread_sendrawtransaction, self.worker_sendrawtransaction,
+                                                       command)
+        sendrawtransaction_thread.command_out.connect(self.sendrawtransaction_result)
+
+    @pyqtSlot(tuple)
+    def sendrawtransaction_result(self, result_out):
+        if result_out[0]:
+            self.bottom_info('txid: ' + str(result_out[0]).replace('\n', ''))
+            logging.info('txid: ' + str(result_out[0]).replace('\n', ''))
+            time.sleep(0.2)  # wait for loading screen disappear
+            self.custom_message(self.tr('Transaction Successful'), self.tr(f'TxId : {result_out[0]}'), "information")
+        elif result_out[1]:
+            self.bottom_err_info(result_out[1])
+            logging.error(result_out[1])
+
+    # --------------------------------------------------------------------
+    # Coin Send-Receive  page functions
+    # --------------------------------------------------------------------
+    @pyqtSlot()
+    def create_currentaddress_qrcode(self):
+        # creating a pix map of qr code
+        qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_H, box_size=7, border=1)
+        qr.add_data(self.currentaddress_value.text())
+        # set image to the Icon
+        qr_image = qr.make_image(image_factory=Image).pixmap()
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Information)
-        msg.setText(text)
-        msg.setInformativeText(explanation)
-        msg.setWindowTitle(title)
-        msg.setStandardButtons(QMessageBox.Ok)
-        buttonY = msg.button(QMessageBox.Ok)
-        buttonY.setText(button_text)
-        if msg.clickedButton() == buttonY:
-            print("Yes")
-        msg.setStandardButtons(QMessageBox.Ok)
+        msg.setIconPixmap(qr_image)
+        msg.setWindowTitle(self.tr('Qr Code'))
         msg.exec_()
 
+    @pyqtSlot()
+    def sendtoaddress(self):
+        if self.receiver_address_lineEdit.text() == "":
+            self.bottom_info(self.tr('enter a receiver address'))
+            logging.info('enter a receiver address')
+        else:
+            if self.sending_amount_lineEdit.text() == "":
+                self.bottom_info(self.tr('enter some amount to send'))
+                logging.warning('enter some amount to send')
+            else:
+                message_box = self.custom_message(self.tr('Confirm Transaction'),
+                                                  self.tr('You are about to send ') +
+                                                  self.sending_amount_lineEdit.text() + self.tr(' MCL to ') +
+                                                  self.receiver_address_lineEdit.text(),
+                                                  "question",
+                                                  QMessageBox.Question)
+                if message_box == QMessageBox.Yes:
+                    self.worker_sendtoaddress = marmarachain_rpc.RpcHandler()
+                    command = cp.sendtoaddress + ' ' + self.receiver_address_lineEdit.text() + ' ' + self.sending_amount_lineEdit.text()
+                    sendtoaddress_thread = self.worker_thread(self.thread_sendtoaddress, self.worker_sendtoaddress,
+                                                              command)
+                    sendtoaddress_thread.command_out.connect(self.sendtoaddress_result)
+                if message_box == QMessageBox.No:
+                    self.bottom_info(self.tr('Transaction aborted'))
+                    logging.info('Transaction aborted')
 
-if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
-    ui = MainClassGUI()
-    ui.show()
-    sys.exit(app.exec_())
+    @pyqtSlot(tuple)
+    def sendtoaddress_result(self, result_out):
+        if result_out[0]:
+            logging.info(result_out[0])
+            self.bottom_info('txid : ' + str(result_out[0]).replace('\n', ''))
+        elif result_out[1]:
+            if self.chain_status is False:
+                self.bottom_err_info(result_out[1])
+                logging.error(result_out[1])
+            result = str(result_out[1]).splitlines()
+            if str(result_out[1]).find('error message:') != -1:
+                index = result.index('error message:') + 1
+                self.bottom_info(result[index])
+                logging.error(result[index])
+
+    @pyqtSlot()
+    def getaddresstxids(self):
+        address = self.currentaddress_value.text()
+        start_date = self.transactions_startdate_dateTimeEdit.dateTime()
+        end_date = self.transactions_endtdate_dateTimeEdit.dateTime()
+        start_height = int(self.currentblock_value_label.text()) - int(self.change_datetime_to_block_age(start_date))
+        end_height = int(self.currentblock_value_label.text()) - int(self.change_datetime_to_block_age(end_date))
+        if address == "":
+            self.bottom_info(self.tr('A pubkey is not set yet! Please set a pubkey first.'))
+            logging.info('A pubkey is not set yet! Please set a pubkey first.')
+        else:
+            self.worker_getaddresstxids = marmarachain_rpc.RpcHandler()
+            command = cp.getaddresstxids + " '" + '{"addresses": ["' + address + '"], "start":' + str(
+                start_height) + ', "end":' + str(end_height) + "}'"
+            gettxids_thread = self.worker_thread(self.thread_getaddresstxids, self.worker_getaddresstxids, command)
+            gettxids_thread.command_out.connect(self.getaddresstxids_result)
+
+    @pyqtSlot(tuple)
+    def getaddresstxids_result(self, result_out):
+        if result_out[0]:
+            txids = json.loads(result_out[0])
+            self.transactions_tableWidget.setRowCount(len(txids))
+            if len(txids) == 0:
+                self.bottom_info(self.tr("No transaction between selected dates."))
+                logging.info("No transaction between selected dates.")
+            else:
+                for txid in txids:
+                    row_number = txids.index(txid)
+                    btn_explorer = QPushButton(qta.icon('mdi.firefox'), '')
+                    btn_explorer.setIconSize(QSize(24, 24))
+                    self.transactions_tableWidget.setCellWidget(row_number, 0, btn_explorer)
+                    self.transactions_tableWidget.setItem(row_number, 1, QTableWidgetItem(str(txid)))
+                    self.transactions_tableWidget.horizontalHeader().setSectionResizeMode(0,
+                                                                                          QHeaderView.ResizeToContents)
+                    self.transactions_tableWidget.horizontalHeader().setSectionResizeMode(1,
+                                                                                          QHeaderView.ResizeToContents)
+                    btn_explorer.clicked.connect(self.open_in_explorer)
+
+        elif result_out[1]:
+            self.bottom_err_info(result_out[1])
+            logging.error(result_out[1])
+
+    @pyqtSlot()
+    def open_in_explorer(self):
+        button = self.sender()
+        index = self.transactions_tableWidget.indexAt(button.pos())
+        if index.isValid():
+            tx_id = self.transactions_tableWidget.item(index.row(), 1).text()
+            url = 'https://explorer.marmara.io/tx/' + tx_id
+            webbrowser.open_new(url)
+
+    @pyqtSlot(int, int)
+    def transaction_itemcontext(self, row, column):
+        item = self.transactions_tableWidget.item(row, column).text()
+        QtWidgets.QApplication.clipboard().setText(item)
+        self.bottom_info(self.tr("Copied ") + str(item))
+
+    # -------------------------------------------------------------------
+    # Credit loops functions
+    # --------------------------------------------------------------------
+
+    # function name: change_datetime_to_block_age
+    # purpose: changes datetime to block age with given args date
+    # usage: Calling function calculates the int value of block age between current datetime and date arg
+    # return: str value of block_age
+    def change_datetime_to_block_age(self, date):
+        selected_datetime = date.toPyDateTime()
+        now = datetime.now()
+        if selected_datetime > now:
+            time_diff = selected_datetime - now
+        if now > selected_datetime:
+            time_diff = now - selected_datetime
+        block_age = int(time_diff.total_seconds() / 60)
+        return str(block_age)
+
+    def change_block_to_date(self, block):
+        block_diff = int(block) - int(self.longestchain_value_label.text())
+        maturity_date = datetime.now() + timedelta(minutes=block_diff)
+        maturity_date_format = str(maturity_date.day) + "/" + str(maturity_date.month) + "/" + str(maturity_date.year)
+        return maturity_date_format
+
+    def check_pubkey_contact_name(self, pubkey):
+        contacts_data = configuration.ContactsSettings().read_csv_file()
+        known_pubkey = pubkey
+        for contact in contacts_data:  # each contact set in contacts_data
+            if contact[2] == pubkey:  # contact[2] contact pubkey
+                known_pubkey = contact[0]  # contact[0] contact name
+                break
+        return known_pubkey
+
+    @pyqtSlot()
+    def set_request_date_state(self):
+        if self.request_date_checkBox.checkState():
+            self.request_dateTimeEdit.setEnabled(False)
+        else:
+            self.request_dateTimeEdit.setEnabled(True)
+            self.request_dateTimeEdit.setDateTime(QDateTime.currentDateTime())
+            self.request_dateTimeEdit.setMaximumDateTime(QDateTime.currentDateTime())
+
+    @pyqtSlot()
+    def search_marmarareceivelist(self):
+        if self.request_date_checkBox.checkState():
+            maxage = '1440'
+        else:
+            date = self.request_dateTimeEdit.dateTime()
+            maxage = self.change_datetime_to_block_age(date)
+            logging.info('maxage ' + str(maxage))
+        self.bottom_info(self.tr('searching incoming loop requests'))
+        logging.info('querying incoming loop requests with marmarareceivelist')
+        self.worker_marmarareceivelist = marmarachain_rpc.RpcHandler()
+        command = cp.marmarareceivelist + ' ' + self.current_pubkey_value.text() + ' ' + str(maxage)
+        marmarareceivelist_thread = self.worker_thread(self.thread_marmarareceivelist, self.worker_marmarareceivelist,
+                                                       command)
+        marmarareceivelist_thread.command_out.connect(self.search_marmarareceivelist_result)
+
+    @pyqtSlot(tuple)
+    def search_marmarareceivelist_result(self, result_out):
+        if result_out[0]:
+            self.bottom_info(self.tr('finished searching incoming loop requests'))
+            logging.info('finished querying incoming loop requests')
+            result = json.loads(result_out[0])
+            self.loop_request_tableWidget.setRowCount(len(result))
+            loop_create_request_list = []
+            loop_transfer_request_list = []
+            for item in result:
+                tx_id = item.get('txid')
+                func_id = item.get('funcid')
+                amount = item.get('amount')
+                matures = item.get('matures')
+                maturity = self.change_block_to_date(matures)
+                receive_pk = item.get('receivepk')
+                receive_pubkey = self.check_pubkey_contact_name(receive_pk)
+                # issuer_pk = item.get('issuerpk')
+                if func_id == 'B':
+                    row = [tx_id, amount, maturity, receive_pubkey, receive_pk]
+                    loop_create_request_list.append(row)
+                if func_id == 'R':
+                    row = [tx_id, amount, maturity, receive_pubkey, receive_pk]
+                    loop_transfer_request_list.append(row)
+            self.set_credit_request_table(loop_create_request_list)
+            self.set_transfer_request_table(loop_transfer_request_list)
+        elif result_out[1]:
+            self.bottom_err_info(result_out[1])
+            logging.error(result_out[1])
+
+    def set_credit_request_table(self, credit_request_list):
+        self.loop_request_tableWidget.setRowCount(len(credit_request_list))
+        self.loop_request_tableWidget.setColumnHidden(5, True)
+        for row in credit_request_list:
+            row_number = credit_request_list.index(row)
+            btn_review = QPushButton(qta.icon('mdi.text-box-check-outline'), '')
+            btn_review.setIconSize(QSize(24, 24))
+            self.loop_request_tableWidget.setCellWidget(row_number, 0, btn_review)
+            self.loop_request_tableWidget.setItem(row_number, 1, QTableWidgetItem(str(row[0])))
+            self.loop_request_tableWidget.setItem(row_number, 2, QTableWidgetItem(str(row[1])))
+            self.loop_request_tableWidget.setItem(row_number, 3, QTableWidgetItem(str(row[2])))
+            self.loop_request_tableWidget.setItem(row_number, 4, QTableWidgetItem(str(row[3])))
+            self.loop_request_tableWidget.setItem(row_number, 5, QTableWidgetItem(str(row[4])))
+            self.loop_request_tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+            self.loop_request_tableWidget.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
+            self.loop_request_tableWidget.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
+            self.loop_request_tableWidget.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
+            self.loop_request_tableWidget.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
+            btn_review.clicked.connect(self.review_creditloop_request)
+
+    @pyqtSlot()
+    def review_creditloop_request(self):
+        button = self.sender()
+        index = self.loop_request_tableWidget.indexAt(button.pos())
+        if index.isValid():
+            tx_id = self.loop_request_tableWidget.item(index.row(), 1).text()
+            receiver_pk = self.loop_request_tableWidget.item(index.row(), 5).text()
+            self.marmaraissue(receiver_pk, tx_id)
+
+    def set_transfer_request_table(self, transfer_request_list):
+        self.transferrequests_tableWidget.setRowCount(len(transfer_request_list))
+        self.transferrequests_tableWidget.setColumnHidden(5, True)
+        for row in transfer_request_list:
+            row_number = transfer_request_list.index(row)
+            btn_review = QPushButton(qta.icon('mdi.text-box-check-outline'), '')
+            btn_review.setIconSize(QSize(24, 24))
+            self.transferrequests_tableWidget.setCellWidget(row_number, 0, btn_review)
+            self.transferrequests_tableWidget.setItem(row_number, 1, QTableWidgetItem(str(row[0])))
+            self.transferrequests_tableWidget.setItem(row_number, 2, QTableWidgetItem(str(row[1])))
+            self.transferrequests_tableWidget.setItem(row_number, 3, QTableWidgetItem(str(row[2])))
+            self.transferrequests_tableWidget.setItem(row_number, 4, QTableWidgetItem(str(row[3])))
+            self.transferrequests_tableWidget.setItem(row_number, 5, QTableWidgetItem(str(row[4])))
+            self.transferrequests_tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+            self.transferrequests_tableWidget.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
+            self.transferrequests_tableWidget.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
+            self.transferrequests_tableWidget.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
+            self.transferrequests_tableWidget.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
+            btn_review.clicked.connect(self.review_credittransfer_request)
+
+    @pyqtSlot()
+    def review_credittransfer_request(self):
+        button = self.sender()
+        index = self.transferrequests_tableWidget.indexAt(button.pos())
+        if index.isValid():
+            tx_id = self.transferrequests_tableWidget.item(index.row(), 1).text()
+            receiver_pk = self.transferrequests_tableWidget.item(index.row(), 5).text()
+            self.marmaratransfer(receiver_pk, tx_id)
+
+    def marmaraissue(self, receiver_pk, txid):
+        command = cp.marmaraissue + ' ' + receiver_pk + " '" + '{"avalcount":"0", "autosettlement":"true", ' \
+                                                               '"autoinsurance":"true", "disputeexpires":"offset", ' \
+                                                               '"EscrowOn":"false", "BlockageAmount":"0" }' + "' " + txid
+        self.worker_marmaraissue = marmarachain_rpc.RpcHandler()
+        marmaraissue_thread = self.worker_thread(self.thread_marmaraissue, self.worker_marmaraissue, command)
+        marmaraissue_thread.command_out.connect(self.marmaraissue_result)
+
+    @pyqtSlot(tuple)
+    def marmaraissue_result(self, result_out):
+        if result_out[0]:
+            logging.info(result_out[0])
+            result = json.loads(result_out[0])
+            if result.get('result') == "success":
+                message_box = self.custom_message(self.tr('Create Credit Loop'),
+                                                  self.tr(
+                                                      "You are about to create credit loop with given details below:") +
+                                                      "<br><b>Tx ID = </b>" + result.get('requesttxid') +
+                                                      "<br><b>Pubkey = </b>" + result.get('receiverpk'), "question",
+                                                  QMessageBox.Question)
+                if message_box == QMessageBox.Yes:
+                    self.sendrawtransaction(result.get('hex'))
+                if message_box == QMessageBox.No:
+                    self.bottom_info(self.tr('Transaction aborted'))
+                    logging.info('Transaction aborted')
+            if result.get('result') == "error":
+                self.bottom_info(result.get('error'))
+                logging.error(result.get('error'))
+        elif result_out[1]:
+            logging.error(result_out[1])
+
+    def marmaratransfer(self, receiver_pk, tx_id):
+        command = cp.marmaratransfer + ' ' + receiver_pk + " '" + '{"avalcount":"0"}' + "' " + tx_id
+        self.worker_marmaratransfer = marmarachain_rpc.RpcHandler()
+        marmaratransfer_thread = self.worker_thread(self.thread_marmaratransfer, self.worker_marmaratransfer, command)
+        marmaratransfer_thread.command_out.connect(self.marmaratransfer_result)
+
+    @pyqtSlot(tuple)
+    def marmaratransfer_result(self, result_out):
+        if result_out[0]:
+            logging.info(result_out[0])
+            result = json.loads(result_out[0])
+            if result.get('result') == "success":
+                message_box = self.custom_message(self.tr('Transfer Credit Loop'),
+                                                  self.tr("You are about to transfer you credit loop with given "
+                                                          "details below:") +
+                                                  "<br><b>baton txid = </b>" + result.get('batontxid') +
+                                                  "<br><b>Pubkey = </b>" + result.get('receiverpk'),
+                                                  "question",
+                                                  QMessageBox.Question)
+                if message_box == QMessageBox.Yes:
+                    self.sendrawtransaction(result.get('hex'))
+                if message_box == QMessageBox.No:
+                    self.bottom_info(self.tr('Transaction aborted'))
+                    logging.info('Transaction aborted')
+            if result.get('result') == "error":
+                self.bottom_info(result.get('error'))
+                logging.error(result.get('error'))
+        elif result_out[1]:
+            self.bottom_err_info(result_out[1])
+            logging.error(result_out[1])
+
+    # --- Create Loop Request page functions ----
+
+    @pyqtSlot()
+    def marmarareceive(self):
+        amount = self.make_credit_loop_amount_lineEdit.text()
+        senderpk = self.make_credit_loop_senderpubkey_lineEdit.text()
+        matures_date = self.make_credit_loop_matures_dateTimeEdit.dateTime()
+        matures = self.change_datetime_to_block_age(matures_date)
+        if amount and senderpk and matures:
+            self.worker_marmarareceive = marmarachain_rpc.RpcHandler()
+            command = cp.marmarareceive + ' ' + senderpk + ' ' + amount + ' ' + \
+                      self.make_credit_loop_currency_value_label.text() + ' ' + \
+                      str(matures) + " '" + '{"avalcount":"0"}' + "'"
+            self.bottom_info(self.tr('preparing loop request'))
+            marmarareceive_thread = self.worker_thread(self.thread_marmarareceive, self.worker_marmarareceive, command)
+            marmarareceive_thread.command_out.connect(self.marmarareceive_result)
+        else:
+            self.bottom_info(self.tr('cannot make a credit loop request with empty fields'))
+            logging.warning('cannot make a credit loop request with empty fields')
+
+    @pyqtSlot(tuple)
+    def marmarareceive_result(self, result_out):
+        if result_out[0]:
+            logging.info(result_out[0])
+            result = json.loads(result_out[0])
+            if result.get('result') == "success":
+                logging.info(result)
+                message_box = self.custom_message(self.tr('Confirm Transaction'),
+                                                  self.tr('You are about to make a credit loop request'),
+                                                  "question",
+                                                  QMessageBox.Question)
+                if message_box == QMessageBox.Yes:
+                    self.sendrawtransaction(result.get('hex'))
+                if message_box == QMessageBox.No:
+                    self.bottom_info('Transaction aborted')
+                    logging.info('Transaction aborted')
+            if result.get('result') == "error":
+                self.bottom_info(result.get('error'))
+                logging.error(result.get('error'))
+        elif result_out[1]:
+            self.bottom_err_info(result_out[1])
+            logging.error(result_out[1])
+
+    # function name: marmararecieve_transfer
+    # purpose:  holder makes a marmarareceive request to the endorser to get the credit for selling the goods/services
+    @pyqtSlot()
+    def marmararecieve_transfer(self):
+        senderpk = self.transfer_senderpubkey_lineEdit.text()
+        baton = self.transfer_baton_lineEdit.text()
+        if senderpk and baton:
+            self.worker_marmarareceive_transfer = marmarachain_rpc.RpcHandler()
+            command = cp.marmarareceive + ' ' + senderpk + ' ' + baton + " '" + '{"avalcount":"0"}' + "'"
+            marmarareceive_transfer_thread = self.worker_thread(self.thread_marmarareceive_transfer,
+                                                                self.worker_marmarareceive_transfer, command)
+            marmarareceive_transfer_thread.command_out.connect(self.marmararecieve_transfer_result)
+        else:
+            self.bottom_info(self.tr('cannot make a receive transfer request with empty fields'))
+            logging.warning('cannot make a receive transfer request with empty fields')
+
+    @pyqtSlot(tuple)
+    def marmararecieve_transfer_result(self, result_out):
+        if result_out[0]:
+            result = json.loads(result_out[0])
+            if result.get('result') == "success":
+                logging.info(result)
+                message_box = self.custom_message(self.tr('Confirm Transaction'),
+                                                  self.tr('You are about to make a request to the endorser'),
+                                                  "question",
+                                                  QMessageBox.Question)
+                if message_box == QMessageBox.Yes:
+                    self.sendrawtransaction(result.get('hex'))
+                if message_box == QMessageBox.No:
+                    self.bottom_info(self.tr('Transaction aborted'))
+                    logging.info('Transaction aborted')
+            if result.get('result') == "error":
+                self.bottom_info(result.get('error'))
+                logging.error(result.get('error'))
+        elif result_out[1]:
+            if self.chain_status is False:
+                self.bottom_err_info(result_out[1])
+            result = str(result_out[1]).splitlines()
+            if str(result_out[1]).find('error message:') != -1:
+                index = result.index('error message:') + 1
+                self.bottom_info(result[index])
+                logging.error(result[index])
+
+    # -------------------------------------------------------------------
+    # Total Credit Loops page functions
+    # --------------------------------------------------------------------
+    @pyqtSlot()
+    def search_active_loops(self):
+        pubkey = self.current_pubkey_value.text()
+        if pubkey:
+            marmarainfo = self.marmarainfo(pubkey)
+            marmarainfo.command_out.connect(self.marmarinfo_amount_and_loops_result)
+        else:
+            self.bottom_info('pubkey not set!')
+            self.clear_search_active_loops_result()
+
+    @pyqtSlot(tuple)
+    def marmarinfo_amount_and_loops_result(self, result_out):
+        if result_out[0]:
+            logging.info(result_out[0])
+            result = json.loads(result_out[0])
+            if result.get('result') == "success":
+                self.normal_amount_value.setText(str(result.get('myPubkeyNormalAmount')))
+                self.wallet_total_normal_value.setText(str(result.get('myWalletNormalAmount')))
+                self.activated_amount_value.setText(str(result.get('myActivatedAmount')))
+                self.wallet_total_activated_value.setText(str(result.get('myTotalAmountOnActivatedAddress')))
+                self.bottom_info(self.tr('getting address amounts finished'))
+                loops = result.get('Loops')
+                self.activeloops_total_amount_value_label.setText(str(result.get('TotalLockedInLoop')))
+                self.closedloops_total_amount_value_label.setText(str(result.get('totalclosed')))
+                self.activeloops_pending_number_value_label.setText(str(result.get('numpending')))
+                self.closedloops_total_number_value_label.setText(str(result.get('numclosed')))
+                self.activeloops_tableWidget.setRowCount(len(loops))
+                for item in loops:
+                    row_number = loops.index(item)
+                    self.activeloops_tableWidget.setItem(row_number, 0, QTableWidgetItem(str(item.get('LoopAddress'))))
+                    self.activeloops_tableWidget.setItem(row_number, 1,
+                                                         QTableWidgetItem(str(item.get('myAmountLockedInLoop'))))
+                    self.activeloops_tableWidget.horizontalHeader().setSectionResizeMode(0,
+                                                                                         QHeaderView.ResizeToContents)
+                    self.activeloops_tableWidget.horizontalHeader().setSectionResizeMode(1,
+                                                                                         QHeaderView.ResizeToContents)
+                self.bottom_info(self.tr('finished searching marmara blockchain for all blocks for the set pubkey'))
+                logging.info('finished searching marmara blockchain for all blocks for the set pubkey')
+            if result.get('result') == "error":
+                self.bottom_info(result.get('error'))
+                logging.error(result.get('error'))
+                self.clear_search_active_loops_result()
+        elif result_out[1]:
+            self.bottom_err_info(result_out[1])
+            logging.error(result_out[1])
+
+    def clear_search_active_loops_result(self):
+        self.activeloops_total_amount_value_label.clear()
+        self.closedloops_total_amount_value_label.clear()
+        self.activeloops_total_number_value_label.clear()
+        self.closedloops_total_number_value_label.clear()
+
+    @pyqtSlot()
+    def set_transferable_mature_date_state(self):
+        if self.transferable_matures_checkBox.checkState():
+            self.transferable_maturesfrom_dateTimeEdit.setEnabled(False)
+            self.transferable_maturesto_dateTimeEdit.setEnabled(False)
+        else:
+            self.transferable_maturesfrom_dateTimeEdit.setEnabled(True)
+            self.transferable_maturesto_dateTimeEdit.setEnabled(True)
+
+    @pyqtSlot()
+    def set_transferable_amount_state(self):
+        if self.transferable_amount_checkBox.checkState():
+            self.transferable_minamount_lineEdit.setEnabled(False)
+            self.transferable_maxamount_lineEdit.setEnabled(False)
+        else:
+            self.transferable_minamount_lineEdit.setEnabled(True)
+            self.transferable_maxamount_lineEdit.setEnabled(True)
+
+    @pyqtSlot()
+    def marmaraholderloops(self):
+        if self.transferable_matures_checkBox.checkState():
+            firstheight = '0'
+            lastheight = '0'
+        else:
+            matures_from_date = self.transferable_maturesfrom_dateTimeEdit.dateTime()
+            matures_to_date = self.transferable_maturesto_dateTimeEdit.dateTime()
+            firstheight = int(self.currentblock_value_label.text()) - int(
+                self.change_datetime_to_block_age(matures_from_date))
+            lastheight = int(self.currentblock_value_label.text()) + int(
+                self.change_datetime_to_block_age(matures_to_date))
+
+        if self.transferable_amount_checkBox.checkState():
+            minamount = '0'
+            maxamount = '0'
+        else:
+            minamount = self.transferable_minamount_lineEdit.text()
+            maxamount = self.transferable_maxamount_lineEdit.text()
+        if minamount > maxamount:
+            maxamount = minamount
+            self.transferable_maxamount_lineEdit.setText(maxamount)
+        if int(firstheight) <= int(lastheight):
+            self.worker_marmaraholderloops = marmarachain_rpc.RpcHandler()
+            command = cp.marmaraholderloops + ' ' + str(firstheight) + ' ' + str(lastheight) + ' ' + str(minamount) + \
+                      ' ' + str(maxamount) + ' ' + self.current_pubkey_value.text()
+            marmaraholderloops_thread = self.worker_thread(self.thread_marmaraholderloops,
+                                                           self.worker_marmaraholderloops,
+                                                           command)
+            marmaraholderloops_thread.command_out.connect(self.marmaraholderloops_result)
+        else:
+            response = self.custom_message(self.tr("Date Selection Warning"),
+                                           self.tr('Make sure that the from and to dates are selected correctly.'),
+                                           "information",
+                                           QMessageBox.Warning)
+
+    @pyqtSlot(tuple)
+    def marmaraholderloops_result(self, result_out):
+        if result_out[0]:
+            result = json.loads(result_out[0])
+            logging.info(result)
+            logging.info("numpending: " + str(result.get('numpending')))
+            issuances = result.get('issuances')
+            self.transferableloops_tableWidget.setRowCount(result.get('numpending'))
+            for item in issuances:
+                row_number = issuances.index(item)
+                btn_detail = QPushButton(qta.icon('mdi.dots-horizontal'), '')
+                btn_detail.setIconSize(QSize(24, 24))
+                self.transferableloops_tableWidget.setItem(row_number, 0, QTableWidgetItem(str(item)))
+                self.transferableloops_tableWidget.setCellWidget(row_number, 1, btn_detail)
+                self.transferableloops_tableWidget.horizontalHeader().setSectionResizeMode(0,
+                                                                                           QHeaderView.ResizeToContents)
+                self.transferableloops_tableWidget.horizontalHeader().setSectionResizeMode(1,
+                                                                                           QHeaderView.ResizeToContents)
+                btn_detail.clicked.connect(self.see_holderloop_detail)
+        elif result_out[1]:
+            logging.error(result_out[1])
+
+    @pyqtSlot()
+    def see_holderloop_detail(self):
+        button = self.sender()
+        index = self.transferableloops_tableWidget.indexAt(button.pos())
+        if index.isValid():
+            tx_id = self.transferableloops_tableWidget.item(index.row(), 0).text()
+            marmaracreditloop = self.marmaracreditloop(tx_id)
+            marmaracreditloop.command_out.connect(self.holderloop_detail_result)
+
+    @pyqtSlot(tuple)
+    def holderloop_detail_result(self, result_out):
+        if result_out[0]:
+            logging.info(result_out[0])
+            result = json.loads(result_out[0])
+            maturity = self.change_block_to_date(result.get('matures'))
+            message_box = self.custom_message(self.tr("Credit loop detail"), self.tr("Credit loop details.") +
+                                              self.tr("<br><b>Tx ID = </b>") + str(result.get('batontxid')) +
+                                              self.tr("<br><b>Amount = </b>") + str(result.get('amount')) +
+                                              self.tr("<br><b>Maturity = </b>") + str(maturity), "information",
+                                              QMessageBox.Information)
+        elif result_out[1]:
+            logging.error(result_out[1])
+            self.bottom_err_info(result_out[1])
+
+    # -------------------------------------------------------------------
+    # Credit Loop Queries functions
+    # --------------------------------------------------------------------
+
+    @pyqtSlot()
+    def search_any_pubkey_loops(self):
+        pubkey = self.loopqueries_pubkey_lineEdit.text()
+        if pubkey:
+            marmarainfo = self.marmarainfo(pubkey)
+            marmarainfo.command_out.connect(self.get_search_any_pubkey_loops_result)
+        else:
+            self.bottom_info('write pubkey to search!')
+            logging.info('write pubkey to search!')
+            self.clear_lq_txid_search_result()
+
+    def get_search_any_pubkey_loops_result(self, result_out):
+        if result_out[0]:
+            logging.info(result_out[0])
+            result = json.loads(result_out[0])
+            if result.get('result') == "success":
+                self.lq_pubkeynormalamount_value_label.setText(str(result.get('myPubkeyNormalAmount')))
+                self.lq_pubkeyactivatedamount_value_label.setText(str(result.get('myActivatedAmount')))
+                self.lq_activeloopno_value_label.setText(str(result.get('numpending')))
+                self.lq_pubkeyloopamount_value_label.setText(str(result.get('TotalLockedInLoop')))
+                self.lq_closedloopno_value_label.setText(str(result.get('numclosed')))
+                self.lq_pubkeyclosedloopamount_value_label.setText(str(result.get('totalclosed')))
+                self.bottom_info(self.tr('finished searching marmarainfo'))
+                logging.info('finished searching marmarainfo')
+            if result.get('result') == "error":
+                self.bottom_info(result.get('error'))
+                logging.error(result.get('error'))
+                self.clear_lq_pubkey_result()
+        elif result_out[1]:
+            self.bottom_err_info(result_out[1])
+            logging.error(result_out[1])
+
+    def clear_lq_pubkey_result(self):
+        self.lq_pubkeynormalamount_value_label.clear()
+        self.lq_pubkeyactivatedamount_value_label.clear()
+        self.lq_activeloopno_value_label.clear()
+        self.lq_pubkeyloopamount_value_label.clear()
+        self.lq_closedloopno_value_label.clear()
+        self.lq_pubkeyclosedloopamount_value_label.clear()
+
+    def marmaracreditloop(self, txid):
+        self.bottom_info(self.tr('getting credit loop info, please wait'))
+        logging.info('getting credit loop info, please wait')
+        self.worker_marmaracreditloop = marmarachain_rpc.RpcHandler()
+        command = cp.marmaracreditloop + ' ' + txid
+        marmaracreditloop_thread = self.worker_thread(self.thread_marmaracreditloop, self.worker_marmaracreditloop,
+                                                      command)
+        return marmaracreditloop_thread
+
+    @pyqtSlot()
+    def search_loop_txid(self):
+        txid = self.loopsearch_txid_lineEdit.text()
+        if txid:
+            marmaracreditloop = self.marmaracreditloop(txid)
+            marmaracreditloop.command_out.connect(self.search_loop_txid_result)
+        else:
+            self.bottom_info(self.tr('write loop transaction id to search!'))
+            logging.info('write loop transaction id to search!')
+            self.clear_lq_txid_search_result()
+
+    @pyqtSlot(tuple)
+    def search_loop_txid_result(self, result_out):
+        if result_out[0]:
+            result = json.loads(result_out[0])
+            logging.info(result)
+            if result.get('result') == "error":
+                self.bottom_info(result.get('error'))
+                self.clear_lq_txid_search_result()
+            if result.get('result') == "success":
+                self.loopquery_baton_value.setText(str(result.get('batontxid')))
+                self.loopquery_amount_value.setText(str(result.get('amount')))
+                self.loopquery_currency_value.setText(result.get('currency'))
+                self.loopquery_matures_value.setText(str(result.get('matures')))
+                self.loopquery_issuer_value.setText(str(result.get('batonpk')))
+                self.bottom_info(self.tr('credit loop info finished'))
+                logging.info('credit loop info finished')
+        elif result_out[1]:
+            self.bottom_err_info(result_out[1])
+            logging.error(result_out[1])
+
+    def clear_lq_txid_search_result(self):
+        self.loopquery_baton_value.clear()
+        self.loopquery_amount_value.clear()
+        self.loopquery_currency_value.clear()
+        self.loopquery_matures_value.clear()
+        self.loopquery_issuer_value.clear()
+
+    # -------------------------------------------------------------------
+    # Getting Contacts into comboboxes
+    # --------------------------------------------------------------------
+    def get_contact_names_addresses(self):
+        self.contacts_address_comboBox.clear()
+        self.receiver_address_lineEdit.clear()
+        self.contacts_address_comboBox.addItem(self.tr('Contacts'))
+        contacts_data = configuration.ContactsSettings().read_csv_file()
+        for name in contacts_data:
+            if name[0] != 'Name':
+                self.contacts_address_comboBox.addItem(name[0])
+
+    @pyqtSlot()
+    def get_selected_contact_address(self):
+        contacts_data = configuration.ContactsSettings().read_csv_file()
+        selected_contact_address = contacts_data[self.contacts_address_comboBox.currentIndex()]
+        if selected_contact_address[1] != 'Address':
+            self.receiver_address_lineEdit.setText(selected_contact_address[1])
+        if selected_contact_address[1] == 'Address':
+            self.receiver_address_lineEdit.clear()
+
+    def get_contact_names_pubkeys(self):
+        self.contactpubkey_makeloop_comboBox.clear()
+        self.contactpubkey_transferrequest_comboBox.clear()
+        self.make_credit_loop_senderpubkey_lineEdit.clear()
+        self.transfer_senderpubkey_lineEdit.clear()
+        self.contactpubkey_makeloop_comboBox.addItem(self.tr('Contacts'))
+        self.contactpubkey_transferrequest_comboBox.addItem(self.tr('Contacts'))
+        contacts_data = configuration.ContactsSettings().read_csv_file()
+        for name in contacts_data:
+            if name[0] != 'Name':
+                self.contactpubkey_makeloop_comboBox.addItem(name[0])
+                self.contactpubkey_transferrequest_comboBox.addItem(name[0])
+
+    @pyqtSlot()
+    def get_selected_contact_loop_pubkey(self):
+        contacts_data = configuration.ContactsSettings().read_csv_file()
+        selected_contactpubkey_loop = contacts_data[self.contactpubkey_makeloop_comboBox.currentIndex()]
+        if selected_contactpubkey_loop[2] != 'Pubkey':
+            self.make_credit_loop_senderpubkey_lineEdit.setText(selected_contactpubkey_loop[2])
+        if selected_contactpubkey_loop[2] == 'Pubkey':
+            self.make_credit_loop_senderpubkey_lineEdit.clear()
+
+    @pyqtSlot()
+    def get_selected_contact_transfer_pubkey(self):
+        contacts_data = configuration.ContactsSettings().read_csv_file()
+        selected_contactpubkey_transfer = contacts_data[self.contactpubkey_transferrequest_comboBox.currentIndex()]
+        if selected_contactpubkey_transfer[2] != 'Pubkey':
+            self.transfer_senderpubkey_lineEdit.setText(selected_contactpubkey_transfer[2])
+        if selected_contactpubkey_transfer[2] == 'Pubkey':
+            self.transfer_senderpubkey_lineEdit.clear()
+
+    # -------------------------------------------------------------------
+    # Adding contacts editing and deleting
+    # --------------------------------------------------------------------
+    @pyqtSlot()
+    def add_contact(self):
+        contact_name = self.contactname_lineEdit.text()
+        contact_address = self.contactaddress_lineEdit.text()
+        contact_pubkey = self.contactpubkey_lineEdit.text()
+        new_record = [contact_name, contact_address, contact_pubkey]
+        unique_record = self.unique_contacts(contact_name, contact_address, contact_pubkey)
+        if unique_record:
+            response = self.custom_message(self.tr("Error Adding Contact"),
+                                           unique_record.get('error'),
+                                           "information",
+                                           QMessageBox.Warning)
+        if not unique_record:
+            configuration.ContactsSettings().add_csv_file(new_record)
+            read_contacts_data = configuration.ContactsSettings().read_csv_file()
+            self.update_contact_tablewidget(read_contacts_data)
+            self.clear_contacts_line_edit()
+            response = self.custom_message(self.tr('Added Contact'),
+                                           self.tr('It is your responsibility that the information you have entered '
+                                                   'are correct and valid.'),
+                                           "information",
+                                           QMessageBox.Information)
+
+    def unique_contacts(self, name, address, pubkey, contacts_data=None):
+        if contacts_data:
+            pass
+        elif not contacts_data:
+            contacts_data = configuration.ContactsSettings().read_csv_file()
+        if name == address:
+            return {'error': self.tr('Name and Address cannot be the same!')}
+        if name == pubkey:
+            return {'error': self.tr('Name and Pubkey cannot be the same!')}
+        if pubkey == address:
+            return {'error': self.tr('Pubkey and Address cannot be the same!')}
+        for row in contacts_data:
+            if row[0] == name:
+                logging.error('same contact name exists')
+                return {'error': self.tr('Same name exists')}
+            if row[1] == address:
+                logging.error('same address exists')
+                return {'error': self.tr('Same address exists')}
+            if row[2] == pubkey:
+                logging.error('same pubkey exists')
+                return {'error': self.tr('Same pubkey exists')}
+            if not name or not address or not pubkey:
+                logging.error('empty record')
+                return {'error': self.tr('cannot be an empty record')}
+            # is_valid_address = row[1] # check if address is valid
+            # if is_valid_address == False:
+            #     return {'error': self.tr('address is not valid')}
+            # is_valid_pubkey = row[2] #  check if pubkey is valid
+            # if is_valid_pubkey == False:
+            #     return {'error': self.tr('pubkey is not valid')}
+
+    @pyqtSlot()
+    def clear_contacts_line_edit(self):
+        self.contactname_lineEdit.clear()
+        self.contactaddress_lineEdit.clear()
+        self.contactpubkey_lineEdit.clear()
+        self.contact_editing_row = None
+
+    def update_contact_tablewidget(self, contacts_data=None):
+        if contacts_data:
+            pass
+        elif not contacts_data:
+            contacts_data = configuration.ContactsSettings().read_csv_file()
+        self.contacts_tableWidget.setRowCount(len(contacts_data) - 1)  # -1 for exclude header
+        self.contacts_tableWidget.autoScrollMargin()
+        for row in contacts_data:
+            if not row[0] == 'Name':
+                row_number = contacts_data.index(row) - 1  # -1 for exclude header
+                for item in row:
+                    self.contacts_tableWidget.setItem(row_number, row.index(item), QTableWidgetItem(str(item)))
+                    self.contacts_tableWidget.horizontalHeader().setSectionResizeMode(row.index(item),
+                                                                                      QHeaderView.ResizeToContents)
+
+    @pyqtSlot(int, int)
+    def get_contact_info(self, row, column):
+        contact_name = ""
+        contact_address = ""
+        contact_pubkey = ""
+        if self.contacts_tableWidget.item(row, 0):
+            contact_name = self.contacts_tableWidget.item(row, 0).text()
+        if self.contacts_tableWidget.item(row, 1):
+            contact_address = self.contacts_tableWidget.item(row, 1).text()
+        if self.contacts_tableWidget.item(row, 2):
+            contact_pubkey = self.contacts_tableWidget.item(row, 2).text()
+        self.contactname_lineEdit.setText(contact_name)
+        self.contactaddress_lineEdit.setText(contact_address)
+        self.contactpubkey_lineEdit.setText(contact_pubkey)
+        self.contact_editing_row = row
+
+    @pyqtSlot()
+    def update_contact(self):
+        if self.contact_editing_row is not None:
+            read_contacts_data = configuration.ContactsSettings().read_csv_file()
+            contact_name = self.contactname_lineEdit.text()
+            contact_address = self.contactaddress_lineEdit.text()
+            contact_pubkey = self.contactpubkey_lineEdit.text()
+            contact_data = configuration.ContactsSettings().read_csv_file()
+            del contact_data[self.contact_editing_row + 1]  # removing editing record to don't check same record
+            unique_record = self.unique_contacts(contact_name, contact_address, contact_pubkey, contact_data)
+            if unique_record:
+                self.bottom_info(unique_record.get('error'))
+                logging.error(unique_record.get('error'))
+            if not unique_record:
+                read_contacts_data[self.contact_editing_row + 1][0] = contact_name  # +1 for exclude header
+                read_contacts_data[self.contact_editing_row + 1][1] = contact_address  # +1 for exclude header
+                read_contacts_data[self.contact_editing_row + 1][2] = contact_pubkey  # +1 for exclude header
+                configuration.ContactsSettings().update_csv_file(read_contacts_data)
+                self.update_contact_tablewidget()
+                self.clear_contacts_line_edit()
+        else:
+            message_box = self.custom_message(self.tr('Error Updating Contact'),
+                                              self.tr('You did not select a contact from table.'),
+                                              "information",
+                                              QMessageBox.Information)
+
+    @pyqtSlot()
+    def delete_contact(self):
+        if self.contact_editing_row is not None:
+            message_box = self.custom_message(self.tr('Deleting Contact'),
+                                              self.tr('Are you sure to delete the contact from the list?'),
+                                              "question",
+                                              QMessageBox.Question)
+            if message_box == QMessageBox.Yes:
+                read_contacts_data = configuration.ContactsSettings().read_csv_file()
+                del read_contacts_data[self.contact_editing_row + 1]  # +1 for exclude header
+                configuration.ContactsSettings().update_csv_file(read_contacts_data)
+                self.update_contact_tablewidget()
+                self.clear_contacts_line_edit()
+            else:
+                self.clear_contacts_line_edit()
+        else:
+            message_box = self.custom_message(self.tr('Error Deleting Contact'),
+                                              self.tr('You did not select a contact from table.'),
+                                              "information",
+                                              QMessageBox.Information)
+
+    # -------------------------------------------------------------------
+    # Remote Host adding , editing, deleting and  saving in conf file
+    # --------------------------------------------------------------------
+    @pyqtSlot()
+    def server_add_selected(self):
+        self.login_stackedWidget.setCurrentIndex(2)
+
+    @pyqtSlot()
+    def add_cancel_selected(self):
+        self.add_servername_lineEdit.setText("")
+        self.add_serverusername_lineEdit.setText("")
+        self.add_serverip_lineEdit.setText("")
+        self.remote_selection()
+
+    @pyqtSlot()
+    def server_edit_selected(self):
+        self.login_stackedWidget.setCurrentIndex(3)
+        server_list = configuration.ServerSettings().read_file()
+        selected_server_info = server_list[self.server_comboBox.currentIndex()]
+        selected_server_info = selected_server_info.split(",")
+        self.edit_servername_lineEdit.setText(selected_server_info[0])
+        self.edit_serverusername_lineEdit.setText(selected_server_info[1])
+        self.edit_serverip_lineEdit.setText(selected_server_info[2])
+
+
+    @pyqtSlot()
+    def save_server_settings(self):
+        if self.add_servername_lineEdit.text() != "" and self.add_serverusername_lineEdit.text() != "" and self.add_serverip_lineEdit.text() != "":
+            configuration.ServerSettings().save_file(server_name=self.add_servername_lineEdit.text(),
+                                                     server_username=self.add_serverusername_lineEdit.text(),
+                                                     server_ip=self.add_serverip_lineEdit.text())
+            self.add_servername_lineEdit.setText("")
+            self.add_serverusername_lineEdit.setText("")
+            self.add_serverip_lineEdit.setText("")
+            # self.get_server_combobox_names()
+            # self.login_stackedWidget.setCurrentIndex(1)
+            self.remote_selection()
+        else:
+            self.login_message_label.setText(self.tr('please insert all values'))
+
+    def get_server_combobox_names(self):
+        server_name_list = []
+        server_settings_list = configuration.ServerSettings().read_file()
+        self.server_comboBox.clear()
+        for setting_list in server_settings_list:
+            server_name_list.append(setting_list.split(",")[0])
+        self.server_comboBox.addItems(server_name_list)
+
+    @pyqtSlot()
+    def edit_server_settings(self):
+        if self.edit_servername_lineEdit.text() != "" and self.edit_serverusername_lineEdit.text() != "" and self.edit_serverip_lineEdit.text() != "":
+            server_list = configuration.ServerSettings().read_file()
+            del server_list[self.server_comboBox.currentIndex()]
+            configuration.ServerSettings().delete_record(server_list)
+            configuration.ServerSettings().save_file(server_name=self.edit_servername_lineEdit.text(),
+                                                     server_username=self.edit_serverusername_lineEdit.text(),
+                                                     server_ip=self.edit_serverip_lineEdit.text())
+            self.login_stackedWidget.setCurrentIndex(1)
+            self.edit_servername_lineEdit.setText("")
+            self.edit_serverusername_lineEdit.setText("")
+            self.edit_serverip_lineEdit.setText("")
+            self.get_server_combobox_names()
+            self.login_stackedWidget.setCurrentIndex(1)
+        else:
+            self.login_message_label.setText(self.tr('please insert all values'))
+
+    @pyqtSlot()
+    def delete_server_setting(self):
+        server_list = configuration.ServerSettings().read_file()
+        del server_list[self.server_comboBox.currentIndex()]
+        configuration.ServerSettings().delete_record(server_list)
+        self.remote_selection()
+
+
+class AppContext(ApplicationContext):
+
+    def run(self):
+        version = self.build_settings['version']
+        app = QtWidgets.QApplication(sys.argv)
+        app.setOrganizationDomain('marmara.io')
+        ui = MarmaraMain()
+        ui.show()
+        return self.app.exec_()
+
+
+if __name__ == '__main__':
+    appcontext = AppContext()
+    exit_code = appcontext.run()
+    sys.exit(exit_code)
