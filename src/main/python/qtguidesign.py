@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'qtguidesign.ui'
+# Form implementation generated from reading ui file 'python/qtguidesign.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -2066,8 +2066,8 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         self.main_tab.setCurrentIndex(1)
         self.login_stackedWidget.setCurrentIndex(0)
-        self.mcl_tab.setCurrentIndex(1)
-        self.chain_stackedWidget.setCurrentIndex(2)
+        self.mcl_tab.setCurrentIndex(0)
+        self.chain_stackedWidget.setCurrentIndex(0)
         self.creditloop_tabWidget.setCurrentIndex(2)
         self.actionQuit.triggered.connect(MainWindow.close)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -2310,7 +2310,7 @@ class Ui_MainWindow(object):
         self.closedloops_total_amount_value_label.setText(_translate("MainWindow", "0"))
         self.activeloops_pending_number_value_label.setText(_translate("MainWindow", "0"))
         self.closedloops_total_number_value_label.setText(_translate("MainWindow", "0"))
-        self.creditloop_tabWidget.setTabText(self.creditloop_tabWidget.indexOf(self.totalloops_tab), _translate("MainWindow", "Total Credit Loops"))
+        self.creditloop_tabWidget.setTabText(self.creditloop_tabWidget.indexOf(self.totalloops_tab), _translate("MainWindow", "Credit Loops"))
         self.loopqueries_pubkey_label.setText(_translate("MainWindow", "Pubkey"))
         self.lq_pubkey_search_button.setText(_translate("MainWindow", "Search"))
         self.lq_pubkeynormalamount_label.setText(_translate("MainWindow", "Normal amount"))
