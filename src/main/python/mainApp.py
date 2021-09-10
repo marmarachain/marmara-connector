@@ -49,7 +49,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.actionLanguage_Selection.triggered.connect(self.show_languages)
         self.actionConsole.triggered.connect(self.open_debug_console)
         self.actionSee_Log_File.triggered.connect(self.open_log_file)
-        self.actionCkeck_for_Update.triggered.connect(self.check_app_version)
+        self.actionCheck_for_Update.triggered.connect(self.check_app_version)
         #   Login page Host Selection
         self.local_button.clicked.connect(self.local_selection)
         self.remote_button.clicked.connect(self.remote_selection)
@@ -263,7 +263,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         QMessageBox.about(self,
                           self.tr("About Marmara Connector"),
                           self.tr("This is a software written to carry out Marmarachain node operations "
-                                  "on a local or remote machine." + "<br>Version info: " + configuration.version)
+                                  "on a local or remote machine." + "<br>Version info: ") + configuration.version
                           )
 
     def custom_message(self, title, content, message_type, icon=None, detailed_text=None):
