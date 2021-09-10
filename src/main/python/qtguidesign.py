@@ -2050,6 +2050,8 @@ class Ui_MainWindow(object):
         self.actionQuit = QtWidgets.QAction(MainWindow)
         self.actionQuit.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
         self.actionQuit.setObjectName("actionQuit")
+        self.actionCkeck_for_Update = QtWidgets.QAction(MainWindow)
+        self.actionCkeck_for_Update.setObjectName("actionCkeck_for_Update")
         self.menuSettings.addAction(self.actionLanguage_Selection)
         self.menuSettings.addAction(self.actionLogout)
         self.menuSettings.addSeparator()
@@ -2058,6 +2060,7 @@ class Ui_MainWindow(object):
         self.menuDebug.addAction(self.actionSee_Log_File)
         self.menuHelp.addAction(self.menuDebug.menuAction())
         self.menuHelp.addAction(self.actionAbout)
+        self.menuHelp.addAction(self.actionCkeck_for_Update)
         self.menuBar.addAction(self.menuSettings.menuAction())
         self.menuBar.addAction(self.menuHelp.menuAction())
 
@@ -2354,4 +2357,5 @@ class Ui_MainWindow(object):
         self.actionSee_Log_File.setText(_translate("MainWindow", "See Log File"))
         self.actionAbout.setText(_translate("MainWindow", "About"))
         self.actionQuit.setText(_translate("MainWindow", "Quit"))
+        self.actionCkeck_for_Update.setText(_translate("MainWindow", "Ckeck for Update"))
 

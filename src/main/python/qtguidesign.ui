@@ -5340,6 +5340,7 @@
     </widget>
     <addaction name="menuDebug"/>
     <addaction name="actionAbout"/>
+    <addaction name="actionCkeck_for_Update"/>
    </widget>
    <addaction name="menuSettings"/>
    <addaction name="menuHelp"/>
@@ -5384,6 +5385,11 @@
    </property>
    <property name="shortcutContext">
     <enum>Qt::WidgetWithChildrenShortcut</enum>
+   </property>
+  </action>
+  <action name="actionCkeck_for_Update">
+   <property name="text">
+    <string>Ckeck for Update</string>
    </property>
   </action>
  </widget>

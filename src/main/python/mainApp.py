@@ -41,7 +41,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.chain_status = False
         self.pubkey_status = False
         self.center_ui()
-        self.check_app_version()
         self.read_lang_setting()
         # paths settings
         # Menu Actions
@@ -50,7 +49,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.actionLanguage_Selection.triggered.connect(self.show_languages)
         self.actionConsole.triggered.connect(self.open_debug_console)
         self.actionSee_Log_File.triggered.connect(self.open_log_file)
-
+        self.actionCkeck_for_Update.triggered.connect(self.check_app_version)
         #   Login page Host Selection
         self.local_button.clicked.connect(self.local_selection)
         self.remote_button.clicked.connect(self.remote_selection)
@@ -209,7 +208,10 @@ class MarmaraMain(QMainWindow, GuiStyle):
                                               self.tr('A new update is available. <br>Follow the link ')
                                                       + "<a href='" + latest_app_version + "'" + self.tr(">here</a>"),
                                               'information', QMessageBox.Information)
-
+        else:
+            message_box = self.custom_message(self.tr('No Update Available'),
+                                              self.tr('Current App version is ') + base_version,
+                                              'information', QMessageBox.Information)
     def read_lang_setting(self):
         language = configuration.ApplicationConfig().get_value('USER', 'lang')
         if language:
