@@ -616,7 +616,7 @@
     <message>
         <location filename="qtguidesign.py" line="2313"/>
         <source>Issuer pubkey</source>
-        <translation type="unfinished"></translation>
+        <translation>Keşideci pubkey</translation>
     </message>
     <message>
         <location filename="qtguidesign.py" line="2314"/>
@@ -724,542 +724,542 @@
     <message>
         <location filename="mainApp.py" line="78"/>
         <source>Copy pubkey</source>
-        <translation type="unfinished"></translation>
+        <translation>Pubkeyi Kopyala</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="89"/>
         <source>Treat Marmara Core Team cups of coffee</source>
-        <translation type="unfinished"></translation>
+        <translation>Marmara Çekirdek Ekibine Kahve Ismarla</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="209"/>
         <source>Software Update Available</source>
-        <translation type="unfinished"></translation>
+        <translation>Yazılım Güncellemesi Mevcut</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="209"/>
         <source>A new update is available. &lt;br&gt;Follow the link &lt;a href=&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Yeni bir güncelleme bulunmaktadır. &lt;br&gt;Lütfen linki takip edin &lt;a href=&apos;</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="226"/>
         <source>Choose a language</source>
-        <translation type="unfinished"></translation>
+        <translation>Dil seçiniz</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="262"/>
         <source>About Marmara Connector</source>
-        <translation type="unfinished"></translation>
+        <translation>Yazılım Hakkında</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="262"/>
         <source>This is a software written to carry out Marmarachain node operations on a local or remote machine.&lt;br&gt;Version info: </source>
-        <translation type="unfinished"></translation>
+        <translation>İşbu yazılım lokal veya sunucu bilgisayarınızda Marmara zinciri düğüm operasyonlarınızı gerçekleştirmeniz için grafik bir arayüz sağlamaktadır.&lt;br&gt;Versiyon bilgisi: </translation>
     </message>
     <message>
         <location filename="mainApp.py" line="283"/>
         <source>Ok</source>
-        <translation type="unfinished"></translation>
+        <translation>Tamam</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="289"/>
         <source>Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>Evet</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="291"/>
         <source>No</source>
-        <translation type="unfinished"></translation>
+        <translation>Hayır</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="340"/>
         <source>Debug Console</source>
-        <translation type="unfinished"></translation>
+        <translation>Debug Konsol Ekranı</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="340"/>
         <source>Under development</source>
-        <translation type="unfinished"></translation>
+        <translation>Geliştirme aşamasında</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="442"/>
         <source>Getting marmara chain path from config file</source>
-        <translation type="unfinished"></translation>
+        <translation>Konfigürasyon dosyasından marmara zincirine ait dizin yolu alınmaktadır</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="445"/>
         <source>marmara path from configuration file : </source>
-        <translation type="unfinished"></translation>
+        <translation>Konfigürasyon dosyasından alınan marmara dizini : </translation>
     </message>
     <message>
         <location filename="mainApp.py" line="448"/>
         <source>Verifiying the Chain location </source>
-        <translation type="unfinished"></translation>
+        <translation>Zincirin bulunduğu yer doğrulanıyor </translation>
     </message>
     <message>
         <location filename="mainApp.py" line="451"/>
         <source>Chain location verified.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zincirin bulunduğu yer doğrulandı.</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="455"/>
         <source>Installing Marmarachain</source>
-        <translation type="unfinished"></translation>
+        <translation>Marmara zinciri yükleniyor</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="455"/>
         <source>Marmarachain is not installed. Would you like to install it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Marmara zinciri yüklü değildir. Yüklemek ister misiniz?</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="455"/>
         <source>question</source>
-        <translation type="unfinished"></translation>
+        <translation>soru</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="482"/>
         <source>Auto-installation does not begin</source>
-        <translation type="unfinished"></translation>
+        <translation>Oto yükleme başlayamıyor</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="482"/>
         <source>You need to write a password that has admin privileges</source>
-        <translation type="unfinished"></translation>
+        <translation>Yönetici haklarına sahip bir şifre girmelisiniz</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="482"/>
         <source>information</source>
-        <translation type="unfinished"></translation>
+        <translation>bilgi</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="510"/>
         <source>Installation Completed</source>
-        <translation type="unfinished"></translation>
+        <translation>Yükleme Tamamlandı</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="510"/>
         <source>Starting Marmarachain</source>
-        <translation type="unfinished"></translation>
+        <translation>Marmara zinciri Başlatılıyor</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="518"/>
         <source>Installation not completed correctly</source>
-        <translation type="unfinished"></translation>
+        <translation>Yükleme doğru bir şekilde tamamlanamadı</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="518"/>
         <source>Wrong password input. Please install again</source>
-        <translation type="unfinished"></translation>
+        <translation>Yanlış şifre girişi. Lütfen yeniden yükleme yapınız</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="545"/>
         <source>chain_status </source>
-        <translation type="unfinished"></translation>
+        <translation>zincir_durumu </translation>
     </message>
     <message>
         <location filename="mainApp.py" line="549"/>
         <source>Checking marmarachain</source>
-        <translation type="unfinished"></translation>
+        <translation>Marmara zinciri kontrol ediliyor</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="552"/>
         <source>marmarachain has pid</source>
-        <translation type="unfinished"></translation>
+        <translation>marmara zinciri arka planda çalışmaktadır</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="556"/>
         <source>sending chain start command</source>
-        <translation type="unfinished"></translation>
+        <translation>zincire başlama komutu gönderiliyor</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="561"/>
         <source>Checking if marmarachain is ready for rpc</source>
-        <translation type="unfinished"></translation>
+        <translation>marmara zincirinin sorgular için hazır olup olmadığı kontrol ediliyor</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="573"/>
         <source>chain ready</source>
-        <translation type="unfinished"></translation>
+        <translation>marmara zinciri hazır</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="876"/>
         <source>getting wallet addresses</source>
-        <translation type="unfinished"></translation>
+        <translation>cüzdan adresi alınıyor</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="583"/>
         <source>Chain init completed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zincirin başlatılması tamamlandı.</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="606"/>
         <source>Marmarachain is not ready</source>
-        <translation type="unfinished"></translation>
+        <translation>Marmara zinciri hazır değildir</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="619"/>
         <source>Marmarachain stopped</source>
-        <translation type="unfinished"></translation>
+        <translation>Marmara zinciri durduruldu</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="643"/>
         <source>loading getinfo values</source>
-        <translation type="unfinished"></translation>
+        <translation>getinfo sorgusunun cevapları yükleniyor</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="660"/>
         <source>pubkey is not set</source>
-        <translation type="unfinished"></translation>
+        <translation>pubkey ile başlatılmamış</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="669"/>
         <source>getinfo finished</source>
-        <translation type="unfinished"></translation>
+        <translation>getinfo komutu tamamlandı</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="677"/>
         <source>getting getinfo</source>
-        <translation type="unfinished"></translation>
+        <translation>getinfo sorgusu gönderiliyor</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="683"/>
         <source>Last Update: </source>
-        <translation type="unfinished"></translation>
+        <translation>Son Güncelleme: </translation>
     </message>
     <message>
         <location filename="mainApp.py" line="696"/>
         <source>checking mining status.</source>
-        <translation type="unfinished"></translation>
+        <translation>madencilik durumu kontrol ediliyor.</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="700"/>
         <source>Refresh completed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Yenileme tamamlandı.</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="722"/>
         <source>copied </source>
-        <translation type="unfinished"></translation>
+        <translation>kopyalandı </translation>
     </message>
     <message>
         <location filename="mainApp.py" line="714"/>
         <source>no address value set</source>
-        <translation type="unfinished"></translation>
+        <translation>adres değeri seçilmemiş</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="725"/>
         <source>no pubkey value set</source>
-        <translation type="unfinished"></translation>
+        <translation>pubkey değeri seçilmemiş</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="780"/>
         <source>Turning off Mining</source>
-        <translation type="unfinished"></translation>
+        <translation>Madencilik kapatılıyor</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="732"/>
         <source>Mining is currently on. You are about to turn off mining. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Mevcutta zincir madencilik ayarında çalışmakta. Bunu kapatmak istediğinizden emin misiniz?</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="763"/>
         <source>Turning off Staking</source>
-        <translation type="unfinished"></translation>
+        <translation>Staking modu kapatılıyor</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="749"/>
         <source>You are about to turn off staking. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Zincirin staking modunda çalışması kapatılacaktır. Emin misiniz?</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="763"/>
         <source>Staking is currently active. You are about to turn off staking. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Zincir staking modunda çalışmaktadır. Bu modu kapatmak istediğinizden emin misiniz?</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="780"/>
         <source>You are about to turn off mining. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Madencilik modunda çalışma kapatılacaktır. Emin misiniz?</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="813"/>
         <source>Staking ON</source>
-        <translation type="unfinished"></translation>
+        <translation>Staking AÇIK</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="818"/>
         <source>Mining status is OFF</source>
-        <translation type="unfinished"></translation>
+        <translation>Madencilik durumu KAPALIDIR</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="823"/>
         <source>Mining ON with </source>
-        <translation type="unfinished"></translation>
+        <translation>Madencilik AÇIK </translation>
     </message>
     <message>
         <location filename="mainApp.py" line="847"/>
         <source>Support</source>
-        <translation type="unfinished"></translation>
+        <translation>Destekle</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="854"/>
         <source>Support (</source>
-        <translation type="unfinished"></translation>
+        <translation>Destekle (</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="1684"/>
         <source>Confirm Transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>İşlemi Onaylayın</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="1691"/>
         <source>Transaction aborted</source>
-        <translation type="unfinished"></translation>
+        <translation>İşlem durduruldu</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="885"/>
         <source>Loading Addresses ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Adresler yükleniyor ...</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="901"/>
         <source>Loading Addresses finished</source>
-        <translation type="unfinished"></translation>
+        <translation>Adreslerin yüklenmesi tamamlandı</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="927"/>
         <source>Copied  </source>
-        <translation type="unfinished"></translation>
+        <translation>Kopyalandı  </translation>
     </message>
     <message>
         <location filename="mainApp.py" line="976"/>
         <source>Pubkey set</source>
-        <translation type="unfinished"></translation>
+        <translation>Pubkey ile başlatıldı</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="994"/>
         <source>Chain started with pubkey</source>
-        <translation type="unfinished"></translation>
+        <translation>Zincir pubkey ile başlatıldı</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="1013"/>
         <source>Creating New Address</source>
-        <translation type="unfinished"></translation>
+        <translation>Yeni adres oluşturuluyor</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="1013"/>
         <source>You are about to create a new address. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Yeni bir adres oluşturmak üzeresiniz. Emin misiniz?</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="1041"/>
         <source>seed words does not match</source>
-        <translation type="unfinished"></translation>
+        <translation>anahtar kelimeler uyuşmuyor</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="1044"/>
         <source>write some seed words!</source>
-        <translation type="unfinished"></translation>
+        <translation>anahtar kelimeleri giriniz!</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="1058"/>
         <source>Creating an Address</source>
-        <translation type="unfinished"></translation>
+        <translation>Yeni bir adres oluşturuluyor</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="1058"/>
         <source>An address has been created with details below. Do you want to import this address to the wallet?&lt;br&gt;&lt;b&gt;Seed = &lt;/b&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Aşağıdaki ayrıntılara sahip bir adres oluşturuldu. Bu adresi cüzdana almak ister misiniz?&lt;br&gt;&lt;b&gt;Anahtar Kelimeler = &lt;/b&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="1152"/>
         <source>Private Key</source>
-        <translation type="unfinished"></translation>
+        <translation>Özel Anahtar</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="1278"/>
         <source>Signing transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>İşlem gerçekleştiriliyor</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="1293"/>
         <source>Transaction Successful</source>
-        <translation type="unfinished"></translation>
+        <translation>İşlem başarıyla gerçekleştirildi</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="1317"/>
         <source>enter a receiver address</source>
-        <translation type="unfinished"></translation>
+        <translation>Alıcı adresi giriniz</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="1321"/>
         <source>enter some amount to send</source>
-        <translation type="unfinished"></translation>
+        <translation>gönderilecek miktarı giriniz</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="1362"/>
         <source>A pubkey is not set yet! Please set a pubkey first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zincir pubkey ile başlatılmadı. Lütfen zinciri önce pubkey ile başlatınız.</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="1377"/>
         <source>No transaction between selected dates.</source>
-        <translation type="unfinished"></translation>
+        <translation>Belirtilen tarihler arasında herhangi bir işlem bulunmamaktadır.</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="1409"/>
         <source>Copied </source>
-        <translation type="unfinished"></translation>
+        <translation>Kopyalandı </translation>
     </message>
     <message>
         <location filename="mainApp.py" line="1461"/>
         <source>searching incoming loop requests</source>
-        <translation type="unfinished"></translation>
+        <translation>gelen döngü istekleri aranmaktadır</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="1472"/>
         <source>finished searching incoming loop requests</source>
-        <translation type="unfinished"></translation>
+        <translation>gelen döngü isteklerine ait arama tamamlanmıştır</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="1571"/>
         <source>Create Credit Loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Kredi Döngüsü Oluşturun</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="1571"/>
         <source>You are about to create credit loop with given details below:&lt;br&gt;&lt;b&gt;Tx ID = &lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Aşağıdaki ayrıntılara sahip bir kredi döngüsü oluşturmak üzeresiniz:&lt;br&gt;&lt;b&gt;Tx ID = &lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="1600"/>
         <source>Transfer Credit Loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Krediyi Aktar</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="1600"/>
         <source>You are about to transfer you credit loop with given details below:</source>
-        <translation type="unfinished"></translation>
+        <translation>Aşağıdaki ayrıntılara sahip krediyi aktarmak üzeresiniz:</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="1632"/>
         <source>preparing loop request</source>
-        <translation type="unfinished"></translation>
+        <translation>döngü isteği hazırlanıyor</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="1636"/>
         <source>cannot make a credit loop request with empty fields</source>
-        <translation type="unfinished"></translation>
+        <translation>boş olan alanları doldurmadan kredi döngü isteğinde bulunamazsınız</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="1646"/>
         <source>You are about to make a credit loop request</source>
-        <translation type="unfinished"></translation>
+        <translation>Bir kredi döngü isteğinde bulunmak üzeresiniz</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="1675"/>
         <source>cannot make a receive transfer request with empty fields</source>
-        <translation type="unfinished"></translation>
+        <translation>kredi aktarma isteği yapabilmek için boş alanların doldurulması gerekmektedir</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="1684"/>
         <source>You are about to make a request to the endorser</source>
-        <translation type="unfinished"></translation>
+        <translation>Cirantaya,krediyi aktaran kişiye, istek yapmak üzeresiniz</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="1809"/>
         <source>Date Selection Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Tarih Seçimi Uyarısı</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="1809"/>
         <source>Make sure that the from and to dates are selected correctly.</source>
-        <translation type="unfinished"></translation>
+        <translation>Başlangıç ve bitiş tarihlerinin doğru seçildiğinden emin olunuz.</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="1851"/>
         <source>Credit loop detail</source>
-        <translation type="unfinished"></translation>
+        <translation>Kredi döngü detayı</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="1851"/>
         <source>Credit loop details.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kredi Döngüsü detayları.</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="2014"/>
         <source>Error Adding Contact</source>
-        <translation type="unfinished"></translation>
+        <translation>Kişiyi Eklemede Hata</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="2023"/>
         <source>Added Contact</source>
-        <translation type="unfinished"></translation>
+        <translation>Kişi Eklenmiştir</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="2023"/>
         <source>It is your responsibility that the information you have entered are correct and valid.</source>
-        <translation type="unfinished"></translation>
+        <translation>Girdiğiniz bilgilerin doğru ve geçerli olması sizin sorumluluğunuzdadır.</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="2035"/>
         <source>Name and Address cannot be the same!</source>
-        <translation type="unfinished"></translation>
+        <translation>İsim ve adress aynı olamaz!</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="2037"/>
         <source>Name and Pubkey cannot be the same!</source>
-        <translation type="unfinished"></translation>
+        <translation>İsim ve pubkey aynı olamaz!</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="2039"/>
         <source>Pubkey and Address cannot be the same!</source>
-        <translation type="unfinished"></translation>
+        <translation>Pubkey ve adres aynı olamaz!</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="2043"/>
         <source>Same name exists</source>
-        <translation type="unfinished"></translation>
+        <translation>Aynı isim bulunmakta</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="2046"/>
         <source>Same address exists</source>
-        <translation type="unfinished"></translation>
+        <translation>Aynı adresten bir tane daha bulunmakta</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="2049"/>
         <source>Same pubkey exists</source>
-        <translation type="unfinished"></translation>
+        <translation>Aynı pubkeyden bir tane daha bulunmakta</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="2052"/>
         <source>cannot be an empty record</source>
-        <translation type="unfinished"></translation>
+        <translation>boş kayıt açılamaz</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="2122"/>
         <source>Error Updating Contact</source>
-        <translation type="unfinished"></translation>
+        <translation>Kişileri Güncellemede Hata</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="2143"/>
         <source>You did not select a contact from table.</source>
-        <translation type="unfinished"></translation>
+        <translation>Listeden bir kişi seçmediniz.</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="2130"/>
         <source>Deleting Contact</source>
-        <translation type="unfinished"></translation>
+        <translation>Kişi Siliniyor</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="2130"/>
         <source>Are you sure to delete the contact from the list?</source>
-        <translation type="unfinished"></translation>
+        <translation>Listeden ilgili kişiyi silmek istediğinizden emin misiniz?</translation>
     </message>
     <message>
         <location filename="mainApp.py" line="2143"/>
         <source>Error Deleting Contact</source>
-        <translation type="unfinished"></translation>
+        <translation>Kişiyi Silmede Hata</translation>
     </message>
 </context>
 </TS>
