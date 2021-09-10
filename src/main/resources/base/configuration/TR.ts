@@ -4,1287 +4,1297 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2131"/>
+        <location filename="../../../python/qtguidesign.py" line="2133"/>
         <source>Local</source>
         <translation>Lokal</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2132"/>
+        <location filename="../../../python/qtguidesign.py" line="2134"/>
         <source>Remote</source>
         <translation>Sunucu</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2133"/>
+        <location filename="../../../python/qtguidesign.py" line="2135"/>
         <source>Select Host </source>
         <translation>Bağlantı Türü Seçiniz </translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2331"/>
+        <location filename="../../../python/qtguidesign.py" line="2334"/>
         <source>Add</source>
         <translation>Ekle</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2135"/>
+        <location filename="../../../python/qtguidesign.py" line="2137"/>
         <source>Edit</source>
         <translation>Düzenle</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2136"/>
+        <location filename="../../../python/qtguidesign.py" line="2138"/>
         <source>Server Login password</source>
         <translation>Sunucu Giriş Şifresi</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2137"/>
+        <location filename="../../../python/qtguidesign.py" line="2139"/>
         <source>Login Remote Host</source>
         <translation>Sunucuya Giriş</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2138"/>
+        <location filename="../../../python/qtguidesign.py" line="2140"/>
         <source>Connect</source>
         <translation>Bağlan</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2139"/>
+        <location filename="../../../python/qtguidesign.py" line="2141"/>
         <source>Add Remote Host</source>
         <translation>Sunucu Ekleyiniz</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2154"/>
+        <location filename="../../../python/qtguidesign.py" line="2156"/>
         <source>Save</source>
         <translation>Kaydet</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2141"/>
+        <location filename="../../../python/qtguidesign.py" line="2143"/>
         <source>Cancel</source>
         <translation>İptal</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2338"/>
+        <location filename="../../../python/qtguidesign.py" line="2341"/>
         <source>Name</source>
         <translation>İsim</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2150"/>
+        <location filename="../../../python/qtguidesign.py" line="2152"/>
         <source>Username</source>
         <translation>Kullanıcı Adı</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2152"/>
+        <location filename="../../../python/qtguidesign.py" line="2154"/>
         <source>Server Username</source>
         <translation>Sunucu Kullanıcı Adı</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2149"/>
+        <location filename="../../../python/qtguidesign.py" line="2151"/>
         <source>IP Address</source>
         <translation>İP Adresi</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2148"/>
+        <location filename="../../../python/qtguidesign.py" line="2150"/>
         <source>000.000.000.000</source>
         <translation>000.000.000.000</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2335"/>
+        <location filename="../../../python/qtguidesign.py" line="2338"/>
         <source>Delete</source>
         <translation>Sil</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2156"/>
+        <location filename="../../../python/qtguidesign.py" line="2158"/>
         <source>Edit Remote Host</source>
         <translation>Sunucu Bilgilerini Güncelle</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2157"/>
+        <location filename="../../../python/qtguidesign.py" line="2159"/>
         <source>Home</source>
         <translation>Giriş</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2158"/>
+        <location filename="../../../python/qtguidesign.py" line="2160"/>
         <source>Login</source>
         <translation>Giriş</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2215"/>
+        <location filename="../../../python/qtguidesign.py" line="2218"/>
         <source>Wallet Balance</source>
         <translation>Cüzdan Bakiyesi</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2216"/>
+        <location filename="../../../python/qtguidesign.py" line="2219"/>
         <source>Total Normal</source>
-        <translation>Toplan Normal Bakiye</translation>
+        <translation>Toplam Normal</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2161"/>
+        <location filename="../../../python/qtguidesign.py" line="2163"/>
         <source>Chain Sync</source>
         <translation>Zincir Senkron</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2162"/>
+        <location filename="../../../python/qtguidesign.py" line="2164"/>
         <source>Current Block</source>
         <translation>Mevcut Blok</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2163"/>
+        <location filename="../../../python/qtguidesign.py" line="2165"/>
         <source>Difficulty</source>
         <translation>Zorluk</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2164"/>
+        <location filename="../../../python/qtguidesign.py" line="2166"/>
         <source>Longest Chain</source>
-        <translation>En uzun Zincir Yüksekliği</translation>
+        <translation>En uzun Zincir</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2165"/>
+        <location filename="../../../python/qtguidesign.py" line="2167"/>
         <source>Connections</source>
         <translation>Bağlantılar</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2166"/>
+        <location filename="../../../python/qtguidesign.py" line="2168"/>
         <source>Chain Status</source>
         <translation>Zincir Durumu</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2212"/>
+        <location filename="../../../python/qtguidesign.py" line="2215"/>
         <source>Refresh</source>
         <translation>Güncelle</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2168"/>
+        <location filename="../../../python/qtguidesign.py" line="2170"/>
         <source>Last Update:  00:00</source>
         <translation>Son Güncelleme</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2169"/>
+        <location filename="../../../python/qtguidesign.py" line="2171"/>
         <source>Staking</source>
         <translation>Staking</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2170"/>
+        <location filename="../../../python/qtguidesign.py" line="2172"/>
         <source>Mining</source>
         <translation>Madencilik</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2171"/>
+        <location filename="../../../python/qtguidesign.py" line="2173"/>
         <source>CPU</source>
         <translation>CPU</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2176"/>
+        <location filename="../../../python/qtguidesign.py" line="2179"/>
         <source>1</source>
         <translation>1</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2173"/>
+        <location filename="../../../python/qtguidesign.py" line="2175"/>
         <source>Set</source>
         <translation>Ayarla</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2174"/>
+        <location filename="../../../python/qtguidesign.py" line="2176"/>
         <source>Mining Status</source>
         <translation>Madencilik Durumu</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2175"/>
+        <location filename="../../../python/qtguidesign.py" line="2178"/>
         <source>x</source>
         <translation>x</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2177"/>
+        <location filename="../../../python/qtguidesign.py" line="2180"/>
         <source>Stop Chain</source>
         <translation>Zinciri Durdur</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2178"/>
+        <location filename="../../../python/qtguidesign.py" line="2181"/>
         <source>Private Key</source>
         <translation>Özel Anahtar</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2179"/>
+        <location filename="../../../python/qtguidesign.py" line="2182"/>
         <source>Hide zero amount addresses</source>
         <translation>Sıfır Bakiyeli Hesaplı Gizle</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2320"/>
+        <location filename="../../../python/qtguidesign.py" line="2323"/>
         <source>Amount</source>
         <translation>Miktar</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2340"/>
+        <location filename="../../../python/qtguidesign.py" line="2343"/>
         <source>Address</source>
         <translation>Adres</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2342"/>
+        <location filename="../../../python/qtguidesign.py" line="2345"/>
         <source>Pubkey</source>
         <translation>Pubkey</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2186"/>
+        <location filename="../../../python/qtguidesign.py" line="2189"/>
         <source>Wallet Addresses</source>
         <translation>Cüzdan Adresi</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2187"/>
+        <location filename="../../../python/qtguidesign.py" line="2190"/>
         <source>Add New Address</source>
         <translation>Yeni Adres Ekle</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2190"/>
+        <location filename="../../../python/qtguidesign.py" line="2193"/>
         <source>Create Address</source>
         <translation>Yeni Adres Oluştur</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2189"/>
+        <location filename="../../../python/qtguidesign.py" line="2192"/>
         <source>Create New Address</source>
         <translation>Yeni Adres Oluştur</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2191"/>
+        <location filename="../../../python/qtguidesign.py" line="2194"/>
         <source>Confirm Passphrase</source>
         <translation>Anahtar Kelimeleri Teyit Ediniz</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2192"/>
+        <location filename="../../../python/qtguidesign.py" line="2195"/>
         <source>Create Address with Passphrase</source>
         <translation>Anahtar Kelimelerle Adres Oluştur</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2193"/>
+        <location filename="../../../python/qtguidesign.py" line="2196"/>
         <source>Enter 12 words with spaces between them. Do not input any special character. </source>
         <translation>Aralarında boşluk bırakarak 12 adet özel karakter içermeyen anahtar kelime giriniz. </translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2195"/>
+        <location filename="../../../python/qtguidesign.py" line="2198"/>
         <source>Back</source>
         <translation>Geri</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2196"/>
+        <location filename="../../../python/qtguidesign.py" line="2199"/>
         <source>See current address private key</source>
         <translation>Mevcut özel anahtar adresini gör</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2200"/>
+        <location filename="../../../python/qtguidesign.py" line="2203"/>
         <source>See</source>
         <translation>Gör</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2201"/>
+        <location filename="../../../python/qtguidesign.py" line="2204"/>
         <source>Import Private key</source>
         <translation>Özel anahtarı içeri aktar</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2202"/>
+        <location filename="../../../python/qtguidesign.py" line="2205"/>
         <source>import</source>
         <translation>İçeri aktar</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2203"/>
+        <location filename="../../../python/qtguidesign.py" line="2206"/>
         <source>Chain</source>
         <translation>Zincir</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2205"/>
+        <location filename="../../../python/qtguidesign.py" line="2208"/>
         <source>Unlock</source>
         <translation>Kilidi Aç</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2207"/>
+        <location filename="../../../python/qtguidesign.py" line="2210"/>
         <source>Lock</source>
         <translation>Kilitle</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2208"/>
+        <location filename="../../../python/qtguidesign.py" line="2211"/>
         <source>Unlock Active Amount</source>
         <translation>Aktif Miktarın Kilidini Aç</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2209"/>
+        <location filename="../../../python/qtguidesign.py" line="2212"/>
         <source>Lock Normal Amount</source>
         <translation>Normal Bakiyeden Kilitle</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2309"/>
+        <location filename="../../../python/qtguidesign.py" line="2312"/>
         <source>0</source>
         <translation>0</translation>
     </message>
     <message>
-        <location filename="qtguidesign.py" line="2204"/>
-        <source>Normal Amount</source>
-        <translation type="obsolete">Normal Miktar</translation>
-    </message>
-    <message>
-        <location filename="../../../python/qtguidesign.py" line="2214"/>
+        <location filename="../../../python/qtguidesign.py" line="2217"/>
         <source>Total Activated</source>
         <translation>Toplam Aktif</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2316"/>
+        <location filename="../../../python/qtguidesign.py" line="2319"/>
         <source>Activated Amount</source>
         <translation>Aktif Miktar</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2222"/>
+        <location filename="../../../python/qtguidesign.py" line="2225"/>
         <source>Address </source>
         <translation>Adres </translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2223"/>
+        <location filename="../../../python/qtguidesign.py" line="2226"/>
         <source>Wallet</source>
         <translation>Cüzdan</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2225"/>
+        <location filename="../../../python/qtguidesign.py" line="2228"/>
         <source>See on Explorer</source>
         <translation>Explorer&apos;da Gör</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2326"/>
+        <location filename="../../../python/qtguidesign.py" line="2329"/>
         <source>txid</source>
         <translation>txid</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2228"/>
+        <location filename="../../../python/qtguidesign.py" line="2231"/>
         <source>Start Date</source>
         <translation>Başlangıç Tarihi</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2229"/>
+        <location filename="../../../python/qtguidesign.py" line="2232"/>
         <source>End Date</source>
         <translation>Bitiş Tarihi</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2327"/>
+        <location filename="../../../python/qtguidesign.py" line="2330"/>
         <source>Search</source>
         <translation>Ara</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2231"/>
+        <location filename="../../../python/qtguidesign.py" line="2234"/>
         <source>Transactions</source>
         <translation>İşlemler</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2232"/>
+        <location filename="../../../python/qtguidesign.py" line="2235"/>
         <source>Receive</source>
         <translation>Al</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2233"/>
+        <location filename="../../../python/qtguidesign.py" line="2236"/>
         <source>Write an mcl address to send </source>
         <translation>Gönderim için MCL Adresi Giriniz </translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2234"/>
+        <location filename="../../../python/qtguidesign.py" line="2237"/>
         <source>Amount </source>
         <translation>Miktar </translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2235"/>
+        <location filename="../../../python/qtguidesign.py" line="2238"/>
         <source>Amount to Send</source>
         <translation>Gönderilecek Miktar</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2278"/>
+        <location filename="../../../python/qtguidesign.py" line="2281"/>
         <source>Send</source>
         <translation>Gönder</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2343"/>
+        <location filename="../../../python/qtguidesign.py" line="2346"/>
         <source>Contacts</source>
         <translation>Kişiler</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2238"/>
+        <location filename="../../../python/qtguidesign.py" line="2241"/>
         <source>Receiver Address</source>
         <translation>Alıcı Adresi</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2239"/>
+        <location filename="../../../python/qtguidesign.py" line="2242"/>
         <source>Send </source>
         <translation>Gönder </translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2240"/>
+        <location filename="../../../python/qtguidesign.py" line="2243"/>
         <source>QR code</source>
         <translation>QR Kodu</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2241"/>
+        <location filename="../../../python/qtguidesign.py" line="2244"/>
         <source>Coin Send-Receive</source>
         <translation>MCL Gönder Al</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2243"/>
+        <location filename="../../../python/qtguidesign.py" line="2246"/>
         <source>Request date</source>
         <translation>İstek Tarihi</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2244"/>
+        <location filename="../../../python/qtguidesign.py" line="2247"/>
         <source>last 24 Hours</source>
         <translation>son 24 saat</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2245"/>
+        <location filename="../../../python/qtguidesign.py" line="2248"/>
         <source>Credit Loop Requests  </source>
         <translation>Kredi Döngü İstekleri  </translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2258"/>
+        <location filename="../../../python/qtguidesign.py" line="2261"/>
         <source>Confirm</source>
         <translation>Teyit Et</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2284"/>
+        <location filename="../../../python/qtguidesign.py" line="2287"/>
         <source>TxId</source>
         <translation>Txid</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2264"/>
+        <location filename="../../../python/qtguidesign.py" line="2267"/>
         <source>Maturity</source>
         <translation>Vade</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2266"/>
+        <location filename="../../../python/qtguidesign.py" line="2269"/>
         <source>Receiver Pubkey</source>
         <translation>Alıcı Pubkeyi</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2256"/>
+        <location filename="../../../python/qtguidesign.py" line="2259"/>
         <source>Credit Loop transfer Requests </source>
         <translation>Kredi Döngüsü Transfer İsteği </translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2267"/>
+        <location filename="../../../python/qtguidesign.py" line="2270"/>
         <source>Incoming Loop Requests </source>
         <translation>Gelen Döngü İstekleri </translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2268"/>
+        <location filename="../../../python/qtguidesign.py" line="2271"/>
         <source>Make Credit Loop Request </source>
         <translation>Kredi Döngüsü İsteğinde Bulunun </translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2270"/>
+        <location filename="../../../python/qtguidesign.py" line="2273"/>
         <source>Amount :</source>
         <translation>Miktar :</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2271"/>
+        <location filename="../../../python/qtguidesign.py" line="2274"/>
         <source>Matures : </source>
         <translation>Vade : </translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2272"/>
+        <location filename="../../../python/qtguidesign.py" line="2275"/>
         <source>Currency : </source>
         <translation>Para Birimi : </translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2273"/>
+        <location filename="../../../python/qtguidesign.py" line="2276"/>
         <source>MARMARA</source>
         <translation>MARMARA</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2277"/>
+        <location filename="../../../python/qtguidesign.py" line="2280"/>
         <source>Sender Pubkey</source>
         <translation>Gönderici Pubkeyi</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2276"/>
+        <location filename="../../../python/qtguidesign.py" line="2279"/>
         <source>Make Transfer Request </source>
         <translation>Transfer İsteğinde Bulunun </translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2279"/>
+        <location filename="../../../python/qtguidesign.py" line="2282"/>
         <source>Baton (txid) </source>
         <translation>Baton (txid) </translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2281"/>
+        <location filename="../../../python/qtguidesign.py" line="2284"/>
         <source>Make Loop Request</source>
         <translation>Döngü İsteğinde Bulunun</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2282"/>
+        <location filename="../../../python/qtguidesign.py" line="2285"/>
         <source>Transferrable Loops</source>
         <translation>Transfer edilebilir Döngüler</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2286"/>
+        <location filename="../../../python/qtguidesign.py" line="2289"/>
         <source>Details</source>
         <translation>Ayrıntılar</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2287"/>
+        <location filename="../../../python/qtguidesign.py" line="2290"/>
         <source>To</source>
         <translation>Bitiş</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2322"/>
+        <location filename="../../../python/qtguidesign.py" line="2325"/>
         <source>Matures</source>
         <translation>Vade</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2290"/>
+        <location filename="../../../python/qtguidesign.py" line="2293"/>
         <source>From</source>
         <translation>Başlangıç</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2291"/>
+        <location filename="../../../python/qtguidesign.py" line="2294"/>
         <source>Min Amount : </source>
         <translation>Min Miktar : </translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2292"/>
+        <location filename="../../../python/qtguidesign.py" line="2295"/>
         <source>Max Amount : </source>
         <translation>Maks Miktar : </translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2294"/>
+        <location filename="../../../python/qtguidesign.py" line="2297"/>
         <source>All</source>
         <translation>Hepsi</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2297"/>
+        <location filename="../../../python/qtguidesign.py" line="2300"/>
         <source>Loop address</source>
         <translation>Döngü adresi</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2300"/>
+        <location filename="../../../python/qtguidesign.py" line="2303"/>
         <source>Active Loops</source>
         <translation>AKtif Döngüler</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2301"/>
+        <location filename="../../../python/qtguidesign.py" line="2304"/>
         <source>Number of Pending </source>
         <translation>Keşideci olunan Döngüler </translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2302"/>
+        <location filename="../../../python/qtguidesign.py" line="2305"/>
         <source>Amount In Closed Loops</source>
         <translation>Kapanmış Döngülerdeki Miktar</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2303"/>
+        <location filename="../../../python/qtguidesign.py" line="2306"/>
         <source>Number of Closed </source>
         <translation>Kapanmış Döngü Sayısı </translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2304"/>
+        <location filename="../../../python/qtguidesign.py" line="2307"/>
         <source>Amount In Active Loops  </source>
         <translation>Aktif Döngülerdeki Miktar  </translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2310"/>
+        <location filename="../../../python/qtguidesign.py" line="2313"/>
         <source>Total Credit Loops</source>
         <translation>Toplam Kredi Döngüsü</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2313"/>
+        <location filename="../../../python/qtguidesign.py" line="2316"/>
         <source>Normal amount</source>
         <translation>Normal Miktar</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2314"/>
+        <location filename="../../../python/qtguidesign.py" line="2317"/>
         <source>Total Amount in Closed loops </source>
         <translation>Kapanmış Döngülerdeki Toplam Miktar </translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2315"/>
+        <location filename="../../../python/qtguidesign.py" line="2318"/>
         <source>Number of Loops </source>
         <translation>Toplam Döngü Sayısı </translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2317"/>
+        <location filename="../../../python/qtguidesign.py" line="2320"/>
         <source>Number of Closed Loops</source>
         <translation>Kapanmış Döngü Sayısı</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2318"/>
+        <location filename="../../../python/qtguidesign.py" line="2321"/>
         <source>Total Amount in Loops </source>
         <translation>Döngülerdeki Toplam Miktar </translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2319"/>
+        <location filename="../../../python/qtguidesign.py" line="2322"/>
         <source>Txid (baton)</source>
         <translation>Txid (baton)</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2321"/>
+        <location filename="../../../python/qtguidesign.py" line="2324"/>
         <source>Currency </source>
         <translation>Para Birimi </translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2323"/>
+        <location filename="../../../python/qtguidesign.py" line="2326"/>
         <source>Issuer pubkey</source>
         <translation>Keşideci pubkey</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2324"/>
+        <location filename="../../../python/qtguidesign.py" line="2327"/>
         <source>Detailed Information About Credit Loop</source>
         <translation>Kredi Döngüsü Ayrıntılı Bilgileri</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2325"/>
+        <location filename="../../../python/qtguidesign.py" line="2328"/>
         <source>Txid </source>
         <translation>Txid </translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2328"/>
+        <location filename="../../../python/qtguidesign.py" line="2331"/>
         <source>Loop Queries</source>
         <translation>Döngü Sorguları</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2329"/>
+        <location filename="../../../python/qtguidesign.py" line="2332"/>
         <source>Credit Loops</source>
         <translation>Kredi Döngüleri</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2330"/>
+        <location filename="../../../python/qtguidesign.py" line="2333"/>
         <source>Update</source>
         <translation>Güncelle</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2336"/>
+        <location filename="../../../python/qtguidesign.py" line="2339"/>
         <source>Clear</source>
         <translation>Temizle</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2344"/>
+        <location filename="../../../python/qtguidesign.py" line="2347"/>
         <source>Marmara</source>
         <translation>Marmara</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2345"/>
+        <location filename="../../../python/qtguidesign.py" line="2348"/>
         <source>Password</source>
         <translation>Şifre</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2346"/>
+        <location filename="../../../python/qtguidesign.py" line="2349"/>
         <source>Start Install</source>
         <translation>Yüklemeyi Başlat</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2347"/>
+        <location filename="../../../python/qtguidesign.py" line="2350"/>
         <source>Install</source>
         <translation>Yükle</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2348"/>
+        <location filename="../../../python/qtguidesign.py" line="2351"/>
         <source>Settings</source>
         <translation>Ayarlar</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2349"/>
+        <location filename="../../../python/qtguidesign.py" line="2352"/>
         <source>Help</source>
         <translation>Yardım</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2350"/>
+        <location filename="../../../python/qtguidesign.py" line="2353"/>
         <source>Debug</source>
         <translation>Debug</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2351"/>
+        <location filename="../../../python/qtguidesign.py" line="2354"/>
         <source>Language Selection</source>
         <translation>Dil Seçimi</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2352"/>
+        <location filename="../../../python/qtguidesign.py" line="2355"/>
         <source>Console</source>
         <translation>Konsol</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2353"/>
+        <location filename="../../../python/qtguidesign.py" line="2356"/>
         <source>Logout</source>
         <translation>Bağlantıyı-kapat</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2354"/>
+        <location filename="../../../python/qtguidesign.py" line="2357"/>
         <source>See Log File</source>
         <translation>Log Dosyasını Aç</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2355"/>
+        <location filename="../../../python/qtguidesign.py" line="2358"/>
         <source>About</source>
         <translation>Hakkında</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2356"/>
+        <location filename="../../../python/qtguidesign.py" line="2359"/>
         <source>Quit</source>
         <translation>Çıkış</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2213"/>
+        <location filename="../../../python/qtguidesign.py" line="2216"/>
         <source> Normal</source>
         <translation> Normal</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2219"/>
+        <location filename="../../../python/qtguidesign.py" line="2222"/>
         <source>Activated</source>
         <translation>Aktif</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2220"/>
+        <location filename="../../../python/qtguidesign.py" line="2223"/>
         <source>Pubkey Balance</source>
         <translation>Pubkey Bakiyesi</translation>
+    </message>
+    <message>
+        <location filename="../../../python/qtguidesign.py" line="2177"/>
+        <source>Support</source>
+        <translation>Destekle</translation>
+    </message>
+    <message>
+        <location filename="../../../python/qtguidesign.py" line="2360"/>
+        <source>Check for Update</source>
+        <translation>Güncelleme</translation>
     </message>
 </context>
 <context>
     <name>MarmaraMain</name>
     <message>
-        <location filename="../../../python/mainApp.py" line="76"/>
+        <location filename="../../../python/mainApp.py" line="75"/>
         <source>Copy address</source>
         <translation>Adresi Kopyala</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="78"/>
+        <location filename="../../../python/mainApp.py" line="77"/>
         <source>Copy pubkey</source>
         <translation>Pubkeyi Kopyala</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="89"/>
+        <location filename="../../../python/mainApp.py" line="88"/>
         <source>Treat Marmara Core Team cups of coffee</source>
         <translation>Marmara Çekirdek Ekibine Kahve Ismarla</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="209"/>
+        <location filename="../../../python/mainApp.py" line="208"/>
         <source>Software Update Available</source>
         <translation>Yazılım Güncellemesi Mevcut</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="209"/>
-        <source>A new update is available. &lt;br&gt;Follow the link &lt;a href=&apos;</source>
-        <translation type="obsolete">Yeni bir güncelleme bulunmaktadır. &lt;br&gt;Lütfen linki takip edin &lt;a href=&apos;</translation>
-    </message>
-    <message>
-        <location filename="../../../python/mainApp.py" line="226"/>
+        <location filename="../../../python/mainApp.py" line="228"/>
         <source>Choose a language</source>
         <translation>Dil seçiniz</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="262"/>
+        <location filename="../../../python/mainApp.py" line="264"/>
         <source>About Marmara Connector</source>
         <translation>Yazılım Hakkında</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="262"/>
+        <location filename="../../../python/mainApp.py" line="264"/>
         <source>This is a software written to carry out Marmarachain node operations on a local or remote machine.&lt;br&gt;Version info: </source>
         <translation>İşbu yazılım lokal veya sunucu bilgisayarınızda Marmara zinciri düğüm operasyonlarınızı gerçekleştirmeniz için grafik bir arayüz sağlamaktadır.&lt;br&gt;Versiyon bilgisi: </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="283"/>
+        <location filename="../../../python/mainApp.py" line="285"/>
         <source>Ok</source>
         <translation>Tamam</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="289"/>
+        <location filename="../../../python/mainApp.py" line="291"/>
         <source>Yes</source>
         <translation>Evet</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="291"/>
+        <location filename="../../../python/mainApp.py" line="293"/>
         <source>No</source>
         <translation>Hayır</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="340"/>
+        <location filename="../../../python/mainApp.py" line="342"/>
         <source>Debug Console</source>
         <translation>Debug Konsol Ekranı</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="340"/>
+        <location filename="../../../python/mainApp.py" line="342"/>
         <source>Under development</source>
         <translation>Geliştirme aşamasında</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="439"/>
+        <location filename="../../../python/mainApp.py" line="441"/>
         <source>Getting marmara chain path from config file</source>
         <translation>Konfigürasyon dosyasından marmara zincirine ait dizin yolu alınmaktadır</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="442"/>
+        <location filename="../../../python/mainApp.py" line="444"/>
         <source>marmara path from configuration file : </source>
         <translation>Konfigürasyon dosyasından alınan marmara dizini : </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="445"/>
+        <location filename="../../../python/mainApp.py" line="447"/>
         <source>Verifiying the Chain location </source>
         <translation>Zincirin bulunduğu yer doğrulanıyor </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="448"/>
+        <location filename="../../../python/mainApp.py" line="450"/>
         <source>Chain location verified.</source>
         <translation>Zincirin bulunduğu yer doğrulandı.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="452"/>
+        <location filename="../../../python/mainApp.py" line="454"/>
         <source>Installing Marmarachain</source>
         <translation>Marmara zinciri yükleniyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="452"/>
+        <location filename="../../../python/mainApp.py" line="454"/>
         <source>Marmarachain is not installed. Would you like to install it?</source>
         <translation>Marmara zinciri yüklü değildir. Yüklemek ister misiniz?</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="452"/>
+        <location filename="../../../python/mainApp.py" line="454"/>
         <source>question</source>
         <translation>soru</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="479"/>
+        <location filename="../../../python/mainApp.py" line="481"/>
         <source>Auto-installation does not begin</source>
         <translation>Oto yükleme başlayamıyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="479"/>
+        <location filename="../../../python/mainApp.py" line="481"/>
         <source>You need to write a password that has admin privileges</source>
         <translation>Yönetici haklarına sahip bir şifre girmelisiniz</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="479"/>
+        <location filename="../../../python/mainApp.py" line="481"/>
         <source>information</source>
         <translation>bilgi</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="507"/>
+        <location filename="../../../python/mainApp.py" line="509"/>
         <source>Installation Completed</source>
         <translation>Yükleme Tamamlandı</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="507"/>
+        <location filename="../../../python/mainApp.py" line="509"/>
         <source>Starting Marmarachain</source>
         <translation>Marmara zinciri Başlatılıyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="515"/>
+        <location filename="../../../python/mainApp.py" line="517"/>
         <source>Installation not completed correctly</source>
         <translation>Yükleme doğru bir şekilde tamamlanamadı</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="515"/>
+        <location filename="../../../python/mainApp.py" line="517"/>
         <source>Wrong password input. Please install again</source>
         <translation>Yanlış şifre girişi. Lütfen yeniden yükleme yapınız</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="542"/>
+        <location filename="../../../python/mainApp.py" line="544"/>
         <source>chain_status </source>
         <translation>zincir_durumu </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="546"/>
+        <location filename="../../../python/mainApp.py" line="548"/>
         <source>Checking marmarachain</source>
         <translation>Marmara zinciri kontrol ediliyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="549"/>
+        <location filename="../../../python/mainApp.py" line="551"/>
         <source>marmarachain has pid</source>
         <translation>marmara zinciri arka planda çalışmaktadır</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="553"/>
+        <location filename="../../../python/mainApp.py" line="555"/>
         <source>sending chain start command</source>
         <translation>zincire başlama komutu gönderiliyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="558"/>
+        <location filename="../../../python/mainApp.py" line="560"/>
         <source>Checking if marmarachain is ready for rpc</source>
         <translation>marmara zincirinin sorgular için hazır olup olmadığı kontrol ediliyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="574"/>
+        <location filename="../../../python/mainApp.py" line="576"/>
         <source>chain ready</source>
         <translation>marmara zinciri hazır</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="889"/>
+        <location filename="../../../python/mainApp.py" line="891"/>
         <source>getting wallet addresses</source>
         <translation>cüzdan adresi alınıyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="584"/>
+        <location filename="../../../python/mainApp.py" line="586"/>
         <source>Chain init completed.</source>
         <translation>Zincirin başlatılması tamamlandı.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="611"/>
+        <location filename="../../../python/mainApp.py" line="613"/>
         <source>Marmarachain is not ready</source>
         <translation>Marmara zinciri hazır değildir</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="624"/>
+        <location filename="../../../python/mainApp.py" line="626"/>
         <source>Marmarachain stopped</source>
         <translation>Marmara zinciri durduruldu</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="648"/>
+        <location filename="../../../python/mainApp.py" line="650"/>
         <source>loading getinfo values</source>
         <translation>getinfo sorgusunun cevapları yükleniyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="665"/>
+        <location filename="../../../python/mainApp.py" line="667"/>
         <source>pubkey is not set</source>
         <translation>pubkey ile başlatılmamış</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="674"/>
+        <location filename="../../../python/mainApp.py" line="676"/>
         <source>getinfo finished</source>
         <translation>getinfo komutu tamamlandı</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="683"/>
+        <location filename="../../../python/mainApp.py" line="685"/>
         <source>getting getinfo</source>
         <translation>getinfo sorgusu gönderiliyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="692"/>
+        <location filename="../../../python/mainApp.py" line="694"/>
         <source>Last Update: </source>
         <translation>Son Güncelleme: </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="704"/>
+        <location filename="../../../python/mainApp.py" line="706"/>
         <source>checking mining status.</source>
         <translation>madencilik durumu kontrol ediliyor.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="708"/>
+        <location filename="../../../python/mainApp.py" line="710"/>
         <source>Refresh completed.</source>
         <translation>Yenileme tamamlandı.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="730"/>
+        <location filename="../../../python/mainApp.py" line="732"/>
         <source>copied </source>
         <translation>kopyalandı </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="722"/>
+        <location filename="../../../python/mainApp.py" line="724"/>
         <source>no address value set</source>
         <translation>adres değeri seçilmemiş</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="733"/>
+        <location filename="../../../python/mainApp.py" line="735"/>
         <source>no pubkey value set</source>
         <translation>pubkey değeri seçilmemiş</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="788"/>
+        <location filename="../../../python/mainApp.py" line="790"/>
         <source>Turning off Mining</source>
         <translation>Madencilik kapatılıyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="740"/>
+        <location filename="../../../python/mainApp.py" line="742"/>
         <source>Mining is currently on. You are about to turn off mining. Are you sure?</source>
         <translation>Mevcutta zincir madencilik ayarında çalışmakta. Bunu kapatmak istediğinizden emin misiniz?</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="771"/>
+        <location filename="../../../python/mainApp.py" line="773"/>
         <source>Turning off Staking</source>
         <translation>Staking modu kapatılıyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="757"/>
+        <location filename="../../../python/mainApp.py" line="759"/>
         <source>You are about to turn off staking. Are you sure?</source>
         <translation>Zincirin staking modunda çalışması kapatılacaktır. Emin misiniz?</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="771"/>
+        <location filename="../../../python/mainApp.py" line="773"/>
         <source>Staking is currently active. You are about to turn off staking. Are you sure?</source>
         <translation>Zincir staking modunda çalışmaktadır. Bu modu kapatmak istediğinizden emin misiniz?</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="788"/>
+        <location filename="../../../python/mainApp.py" line="790"/>
         <source>You are about to turn off mining. Are you sure?</source>
         <translation>Madencilik modunda çalışma kapatılacaktır. Emin misiniz?</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="825"/>
+        <location filename="../../../python/mainApp.py" line="827"/>
         <source>Staking ON</source>
         <translation>Staking AÇIK</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="830"/>
+        <location filename="../../../python/mainApp.py" line="832"/>
         <source>Mining status is OFF</source>
         <translation>Madencilik durumu KAPALIDIR</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="835"/>
+        <location filename="../../../python/mainApp.py" line="837"/>
         <source>Mining ON with </source>
         <translation>Madencilik AÇIK </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="859"/>
+        <location filename="../../../python/mainApp.py" line="868"/>
         <source>Support</source>
         <translation>Destekle</translation>
     </message>
     <message>
         <location filename="../../../python/mainApp.py" line="866"/>
         <source>Support (</source>
-        <translation>Destekle (</translation>
+        <translation type="obsolete">Destekle (</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1700"/>
+        <location filename="../../../python/mainApp.py" line="1702"/>
         <source>Confirm Transaction</source>
         <translation>İşlemi Onaylayın</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1707"/>
+        <location filename="../../../python/mainApp.py" line="1709"/>
         <source>Transaction aborted</source>
         <translation>İşlem durduruldu</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="901"/>
+        <location filename="../../../python/mainApp.py" line="903"/>
         <source>Loading Addresses ...</source>
         <translation>Adresler yükleniyor ...</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="917"/>
+        <location filename="../../../python/mainApp.py" line="919"/>
         <source>Loading Addresses finished</source>
         <translation>Adreslerin yüklenmesi tamamlandı</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="943"/>
+        <location filename="../../../python/mainApp.py" line="945"/>
         <source>Copied  </source>
         <translation>Kopyalandı  </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="992"/>
+        <location filename="../../../python/mainApp.py" line="994"/>
         <source>Pubkey set</source>
         <translation>Pubkey ile başlatıldı</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1010"/>
+        <location filename="../../../python/mainApp.py" line="1012"/>
         <source>Chain started with pubkey</source>
         <translation>Zincir pubkey ile başlatıldı</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1029"/>
+        <location filename="../../../python/mainApp.py" line="1031"/>
         <source>Creating New Address</source>
         <translation>Yeni adres oluşturuluyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1029"/>
+        <location filename="../../../python/mainApp.py" line="1031"/>
         <source>You are about to create a new address. Are you sure?</source>
         <translation>Yeni bir adres oluşturmak üzeresiniz. Emin misiniz?</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1057"/>
+        <location filename="../../../python/mainApp.py" line="1059"/>
         <source>seed words does not match</source>
         <translation>anahtar kelimeler uyuşmuyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1060"/>
+        <location filename="../../../python/mainApp.py" line="1062"/>
         <source>write some seed words!</source>
         <translation>anahtar kelimeleri giriniz!</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1074"/>
+        <location filename="../../../python/mainApp.py" line="1076"/>
         <source>Creating an Address</source>
         <translation>Yeni bir adres oluşturuluyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1074"/>
+        <location filename="../../../python/mainApp.py" line="1076"/>
         <source>An address has been created with details below. Do you want to import this address to the wallet?&lt;br&gt;&lt;b&gt;Seed = &lt;/b&gt;&lt;br&gt;</source>
         <translation>Aşağıdaki ayrıntılara sahip bir adres oluşturuldu. Bu adresi cüzdana almak ister misiniz?&lt;br&gt;&lt;b&gt;Anahtar Kelimeler = &lt;/b&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1168"/>
+        <location filename="../../../python/mainApp.py" line="1170"/>
         <source>Private Key</source>
         <translation>Özel Anahtar</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1294"/>
+        <location filename="../../../python/mainApp.py" line="1296"/>
         <source>Signing transaction</source>
         <translation>İşlem gerçekleştiriliyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1309"/>
+        <location filename="../../../python/mainApp.py" line="1311"/>
         <source>Transaction Successful</source>
         <translation>İşlem başarıyla gerçekleştirildi</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1333"/>
+        <location filename="../../../python/mainApp.py" line="1335"/>
         <source>enter a receiver address</source>
         <translation>Alıcı adresi giriniz</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1337"/>
+        <location filename="../../../python/mainApp.py" line="1339"/>
         <source>enter some amount to send</source>
         <translation>gönderilecek miktarı giriniz</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1378"/>
+        <location filename="../../../python/mainApp.py" line="1380"/>
         <source>A pubkey is not set yet! Please set a pubkey first.</source>
         <translation>Zincir pubkey ile başlatılmadı. Lütfen zinciri önce pubkey ile başlatınız.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1393"/>
+        <location filename="../../../python/mainApp.py" line="1395"/>
         <source>No transaction between selected dates.</source>
         <translation>Belirtilen tarihler arasında herhangi bir işlem bulunmamaktadır.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1425"/>
+        <location filename="../../../python/mainApp.py" line="1427"/>
         <source>Copied </source>
         <translation>Kopyalandı </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1477"/>
+        <location filename="../../../python/mainApp.py" line="1479"/>
         <source>searching incoming loop requests</source>
         <translation>gelen döngü istekleri aranmaktadır</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1488"/>
+        <location filename="../../../python/mainApp.py" line="1490"/>
         <source>finished searching incoming loop requests</source>
         <translation>gelen döngü isteklerine ait arama tamamlanmıştır</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1587"/>
+        <location filename="../../../python/mainApp.py" line="1589"/>
         <source>Create Credit Loop</source>
         <translation>Kredi Döngüsü Oluşturun</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1587"/>
+        <location filename="../../../python/mainApp.py" line="1589"/>
         <source>You are about to create credit loop with given details below:&lt;br&gt;&lt;b&gt;Tx ID = &lt;/b&gt;</source>
         <translation>Aşağıdaki ayrıntılara sahip bir kredi döngüsü oluşturmak üzeresiniz:&lt;br&gt;&lt;b&gt;Tx ID = &lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1616"/>
+        <location filename="../../../python/mainApp.py" line="1618"/>
         <source>Transfer Credit Loop</source>
         <translation>Krediyi Aktar</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1616"/>
+        <location filename="../../../python/mainApp.py" line="1618"/>
         <source>You are about to transfer you credit loop with given details below:</source>
         <translation>Aşağıdaki ayrıntılara sahip krediyi aktarmak üzeresiniz:</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1648"/>
+        <location filename="../../../python/mainApp.py" line="1650"/>
         <source>preparing loop request</source>
         <translation>döngü isteği hazırlanıyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1652"/>
+        <location filename="../../../python/mainApp.py" line="1654"/>
         <source>cannot make a credit loop request with empty fields</source>
         <translation>boş olan alanları doldurmadan kredi döngü isteğinde bulunamazsınız</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1662"/>
+        <location filename="../../../python/mainApp.py" line="1664"/>
         <source>You are about to make a credit loop request</source>
         <translation>Bir kredi döngü isteğinde bulunmak üzeresiniz</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1691"/>
+        <location filename="../../../python/mainApp.py" line="1693"/>
         <source>cannot make a receive transfer request with empty fields</source>
         <translation>kredi aktarma isteği yapabilmek için boş alanların doldurulması gerekmektedir</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1700"/>
+        <location filename="../../../python/mainApp.py" line="1702"/>
         <source>You are about to make a request to the endorser</source>
         <translation>Cirantaya,krediyi aktaran kişiye, istek yapmak üzeresiniz</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1825"/>
+        <location filename="../../../python/mainApp.py" line="1827"/>
         <source>Date Selection Warning</source>
         <translation>Tarih Seçimi Uyarısı</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1825"/>
+        <location filename="../../../python/mainApp.py" line="1827"/>
         <source>Make sure that the from and to dates are selected correctly.</source>
         <translation>Başlangıç ve bitiş tarihlerinin doğru seçildiğinden emin olunuz.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1867"/>
+        <location filename="../../../python/mainApp.py" line="1869"/>
         <source>Credit loop detail</source>
         <translation>Kredi döngü detayı</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1867"/>
+        <location filename="../../../python/mainApp.py" line="1869"/>
         <source>Credit loop details.</source>
         <translation>Kredi Döngüsü detayları.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2030"/>
+        <location filename="../../../python/mainApp.py" line="2032"/>
         <source>Error Adding Contact</source>
         <translation>Kişiyi Eklemede Hata</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2039"/>
+        <location filename="../../../python/mainApp.py" line="2041"/>
         <source>Added Contact</source>
         <translation>Kişi Eklenmiştir</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2039"/>
+        <location filename="../../../python/mainApp.py" line="2041"/>
         <source>It is your responsibility that the information you have entered are correct and valid.</source>
         <translation>Girdiğiniz bilgilerin doğru ve geçerli olması sizin sorumluluğunuzdadır.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2051"/>
+        <location filename="../../../python/mainApp.py" line="2053"/>
         <source>Name and Address cannot be the same!</source>
         <translation>İsim ve adress aynı olamaz!</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2053"/>
+        <location filename="../../../python/mainApp.py" line="2055"/>
         <source>Name and Pubkey cannot be the same!</source>
         <translation>İsim ve pubkey aynı olamaz!</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2055"/>
+        <location filename="../../../python/mainApp.py" line="2057"/>
         <source>Pubkey and Address cannot be the same!</source>
         <translation>Pubkey ve adres aynı olamaz!</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2059"/>
+        <location filename="../../../python/mainApp.py" line="2061"/>
         <source>Same name exists</source>
         <translation>Aynı isim bulunmakta</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2062"/>
+        <location filename="../../../python/mainApp.py" line="2064"/>
         <source>Same address exists</source>
         <translation>Aynı adresten bir tane daha bulunmakta</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2065"/>
+        <location filename="../../../python/mainApp.py" line="2067"/>
         <source>Same pubkey exists</source>
         <translation>Aynı pubkeyden bir tane daha bulunmakta</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2068"/>
+        <location filename="../../../python/mainApp.py" line="2070"/>
         <source>cannot be an empty record</source>
         <translation>boş kayıt açılamaz</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2138"/>
+        <location filename="../../../python/mainApp.py" line="2140"/>
         <source>Error Updating Contact</source>
         <translation>Kişileri Güncellemede Hata</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2159"/>
+        <location filename="../../../python/mainApp.py" line="2161"/>
         <source>You did not select a contact from table.</source>
         <translation>Listeden bir kişi seçmediniz.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2146"/>
+        <location filename="../../../python/mainApp.py" line="2148"/>
         <source>Deleting Contact</source>
         <translation>Kişi Siliniyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2146"/>
+        <location filename="../../../python/mainApp.py" line="2148"/>
         <source>Are you sure to delete the contact from the list?</source>
         <translation>Listeden ilgili kişiyi silmek istediğinizden emin misiniz?</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2159"/>
+        <location filename="../../../python/mainApp.py" line="2161"/>
         <source>Error Deleting Contact</source>
         <translation>Kişiyi Silmede Hata</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="209"/>
+        <location filename="../../../python/mainApp.py" line="208"/>
         <source>A new update is available. &lt;br&gt;Follow the link </source>
-        <translation>Yeni yazılım güncellemesi bulunmaktadır. &lt;br&gt;Ilgili link </translation>
+        <translation>Yeni yazılım güncellemesi bulunmaktadır. &lt;br&gt;İlgili link </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="209"/>
+        <location filename="../../../python/mainApp.py" line="208"/>
         <source>&gt;here&lt;/a&gt;</source>
         <translation>&gt;burada&lt;/a&gt;</translation>
+    </message>
+    <message>
+        <location filename="../../../python/mainApp.py" line="213"/>
+        <source>No Update Available</source>
+        <translation>Güncelleme bulunmamakta</translation>
+    </message>
+    <message>
+        <location filename="../../../python/mainApp.py" line="213"/>
+        <source>Current App version is </source>
+        <translation>Mevcut Uygulama versiyonu </translation>
     </message>
 </context>
 </TS>
