@@ -1296,5 +1296,10 @@
         <source>Current App version is </source>
         <translation>Mevcut Uygulama versiyonu </translation>
     </message>
+    <message>
+        <location filename="../../../python/mainApp.py" line="2228"/>
+        <source>please insert all values</source>
+        <translation>lütfen bütün değerleri giriniz</translation>
+    </message>
 </context>
 </TS>

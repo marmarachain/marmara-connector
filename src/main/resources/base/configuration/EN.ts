@@ -1296,5 +1296,10 @@
         <source>Current App version is </source>
         <translation>Current App version is </translation>
     </message>
+    <message>
+        <location filename="../../../python/mainApp.py" line="2228"/>
+        <source>please insert all values</source>
+        <translation>please insert all values</translation>
+    </message>
 </context>
 </TS>
