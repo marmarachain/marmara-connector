@@ -2193,7 +2193,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             self.get_server_combobox_names()
             self.login_stackedWidget.setCurrentIndex(1)
         else:
-            self.login_message_label.setText('please insert all values')
+            self.login_message_label.setText(self.tr('please insert all values'))
 
     def get_server_combobox_names(self):
         server_name_list = []
@@ -2219,7 +2219,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             self.get_server_combobox_names()
             self.login_stackedWidget.setCurrentIndex(1)
         else:
-            self.login_message_label.setText('please insert all values')
+            self.login_message_label.setText(self.tr('please insert all values'))
 
     @pyqtSlot()
     def delete_server_setting(self):
