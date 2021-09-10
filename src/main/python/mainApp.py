@@ -206,8 +206,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
 
         if base_version != latest_app_tag:
             message_box = self.custom_message(self.tr('Software Update Available'),
-                                              self.tr('A new update is available. <br>Follow the link '
-                                                      + "<a href='" + latest_app_version + "'>here</a>"),
+                                              self.tr('A new update is available. <br>Follow the link ')
+                                                      + "<a href='" + latest_app_version + "'" + self.tr(">here</a>"),
                                               'information', QMessageBox.Information)
 
     def read_lang_setting(self):
@@ -860,7 +860,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         number_of_cups = self.cup_lineEdit.text()
         amount = int(number_of_cups) * 50
         team_address = 'RXWqisAoJKEGVyXj46Zo3fDZnZTwQA6kQE'
-        self.support_pushButton.setText(self.tr('Support (') + str(amount) + ' MCL)')
+        self.support_pushButton.setText(self.tr('Support') + ' (' + str(amount) + ' MCL)')
         message_box = self.custom_message(self.tr('Confirm Transaction'),
                                           self.tr(
                                               f'You are about to send {amount} MCL to Marmara Core Team.'),
