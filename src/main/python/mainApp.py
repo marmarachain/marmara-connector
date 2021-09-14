@@ -61,6 +61,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.serveredit_button.clicked.connect(self.server_edit_selected)
         # install page
         self.start_install_button.clicked.connect(self.start_autoinstall)
+        self.sudo_password_lineEdit.returnPressed.connect(self.start_autoinstall)
         #  Add Server Settings page
         self.add_serversave_button.clicked.connect(self.save_server_settings)
         self.servercancel_button.clicked.connect(self.add_cancel_selected)
@@ -202,16 +203,20 @@ class MarmaraMain(QMainWindow, GuiStyle):
         base_version = configuration.version
         latest_app_tag = version.git_request_tag(version.app_api_url)
         latest_app_version = version.latest_app_release_url()
-
-        if base_version != latest_app_tag:
-            message_box = self.custom_message(self.tr('Software Update Available'),
-                                              self.tr('A new update is available. <br>Follow the link ')
-                                                      + "<a href='" + latest_app_version + "'" + self.tr(">here</a>"),
+        if latest_app_tag == 'Connection Error' or latest_app_version == 'Connection Error':
+            message_box = self.custom_message(self.tr('Connection Error'),
+                                              self.tr('Check your internet Connection '),
                                               'information', QMessageBox.Information)
         else:
-            message_box = self.custom_message(self.tr('No Update Available'),
-                                              self.tr('Current App version is ') + base_version,
-                                              'information', QMessageBox.Information)
+            if base_version != latest_app_tag:
+                message_box = self.custom_message(self.tr('Software Update Available'),
+                                                  self.tr('A new update is available. <br>Follow the link ')
+                                                          + "<a href='" + latest_app_version + "'" + self.tr(">here</a>"),
+                                                  'information', QMessageBox.Information)
+            else:
+                message_box = self.custom_message(self.tr('No Update Available'),
+                                                  self.tr('Current App version is ') + base_version,
+                                                  'information', QMessageBox.Information)
     def read_lang_setting(self):
         language = configuration.ApplicationConfig().get_value('USER', 'lang')
         if language:
@@ -506,12 +511,17 @@ class MarmaraMain(QMainWindow, GuiStyle):
 
     @pyqtSlot(str)
     def start_autoinstall_textout(self, output):
+        if str(output).find('Something Went Wrong') > -1:
+            message_box = self.custom_message(self.tr('Installation not completed correctly'),
+                                              self.tr(output),
+                                              'information', QMessageBox.Information)
         self.install_progress_textBrowser.append(output)
 
     @pyqtSlot(int)
     def start_autoinstall_progress(self, val):
+        print(val)
         self.install_progressBar.setValue(val)
-        if val >= 96:
+        if 96 <= val < 100:
             self.install_progressBar.setValue(100)
             message_box = self.custom_message(self.tr('Installation Completed'), self.tr('Starting Marmarachain'),
                                               'information', QMessageBox.Information)
@@ -521,6 +531,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 self.check_marmara_path()
         if val > 100:
             self.install_progressBar.setValue(0)
+            self.start_install_button.setEnabled(True)
             message_box = self.custom_message(self.tr('Installation not completed correctly'),
                                               self.tr('Wrong password input. Please install again'),
                                               'information', QMessageBox.Information)

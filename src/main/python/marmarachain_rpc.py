@@ -92,6 +92,7 @@ def search_marmarad_path():  # will be added for windows search
         logging.info('pwd local :' + pwd)
         if platform.system() == 'Windows':
             windows = True
+            pwd = pwd.replace(' ', '` ')
         else:
             windows = False
     else:
@@ -146,7 +147,7 @@ def check_path_windows(search_list):
         if not path[0] == ['']:
             out = str(path[0]).replace('.exe', '').replace('\r', '')
             if 'komodod' in out and 'komodo-cli' in out:
-                out_path = search_path
+                out_path = search_path.replace('` ', ' ')
                 out_path = out_path.replace('PowerShell ls ', '').replace(' -name', '') + '\\'
                 logging.info('out_path :' + out_path)
                 break
@@ -428,7 +429,7 @@ class Autoinstall(QtCore.QObject):
         self.linux_command_list = ['sudo apt-get update', 'sudo apt-get install libgomp1 -y',
                                    'sudo wget ' + str(self.mcl_download_url) + '/' + self.mcl_linux_zipname +
                                    " -O " + self.mcl_linux_zipname, 'sudo apt-get install unzip -y',
-                                   'unzip MCL-linux.zip', 'sudo chmod +x komodod komodo-cli fetch-params.sh',
+                                   'unzip -o MCL-linux.zip', 'sudo chmod +x komodod komodo-cli fetch-params.sh',
                                    './fetch-params.sh']
 
         self.mcl_win_zipname = 'MCL-win.zip'
@@ -476,7 +477,8 @@ class Autoinstall(QtCore.QObject):
                         i = len(self.linux_command_list)
                     if not out:
                         proc.stdout.close()
-                exit_status = proc.returncode
+                exit_status = proc.poll()
+                print('exit_status  ' + str(exit_status))
                 logging.debug(exit_status)
                 proc.terminate()
                 i = i + 1
@@ -507,8 +509,13 @@ class Autoinstall(QtCore.QObject):
                 logging.info(exit_status)
                 session.close()
                 sshclient.close()
-            i = i + 1
-            self.progress.emit(int(i * 14))
+                i = i + 1
+            if exit_status == 0:
+                self.progress.emit(int(i * 14))
+            else:
+                self.out_text.emit('Something Went Wrong ' + cmd)
+                self.finished.emit()
+                break
         self.finished.emit()
 
     def windows_install(self):
@@ -534,13 +541,18 @@ class Autoinstall(QtCore.QObject):
                 self.out_text.emit(out_d)
                 if not out:
                     proc.stdout.close()
-            exit_status = proc.returncode
+            exit_status = proc.poll()
             logging.info(exit_status)
             proc.terminate()
             i = i + 1
             if i >= len(self.win_command_list):
                 self.progress.emit(int(i * 24))
                 break
-            self.progress.emit(int(i * 24))
+            if exit_status == 0:
+                self.progress.emit(int(i * 24))
+            else:
+                self.out_text.emit('Something Went Wrong ' + cmd)
+                self.finished.emit()
+                break
         self.finished.emit()
         # update = subprocess.Popen

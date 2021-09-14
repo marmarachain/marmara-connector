@@ -1570,7 +1570,7 @@
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>3</number>
           </property>
           <property name="iconSize">
            <size>
@@ -3909,7 +3909,7 @@
                    <widget class="QFrame" name="transferable_serchlimit_frame">
                     <property name="maximumSize">
                      <size>
-                      <width>300</width>
+                      <width>350</width>
                       <height>16777215</height>
                      </size>
                     </property>
@@ -3920,6 +3920,106 @@
                      <enum>QFrame::Raised</enum>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_15">
+                     <item row="3" column="1">
+                      <widget class="QDateTimeEdit" name="transferable_maturesto_dateTimeEdit">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                       <property name="date">
+                        <date>
+                         <year>2021</year>
+                         <month>1</month>
+                         <day>16</day>
+                        </date>
+                       </property>
+                       <property name="minimumDate">
+                        <date>
+                         <year>2020</year>
+                         <month>1</month>
+                         <day>16</day>
+                        </date>
+                       </property>
+                       <property name="calendarPopup">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QLabel" name="transferable_maturesto_label">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="text">
+                        <string>To</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="1">
+                      <widget class="QCheckBox" name="transferable_amount_checkBox">
+                       <property name="styleSheet">
+                        <string notr="true"/>
+                       </property>
+                       <property name="text">
+                        <string>All</string>
+                       </property>
+                       <property name="checked">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="0">
+                      <widget class="QLabel" name="transferable_serchlimit_amount_label">
+                       <property name="text">
+                        <string>Amount</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="6" column="0">
+                      <widget class="QLabel" name="transferable_minamount_label">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="text">
+                        <string>Min Amount : </string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="6" column="1">
+                      <widget class="QLabel" name="transferable_maxamount_label">
+                       <property name="text">
+                        <string>Max Amount : </string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="transferable_serchlimit_matures_label">
+                       <property name="text">
+                        <string>Matures</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="7" column="1">
+                      <widget class="QLineEdit" name="transferable_maxamount_lineEdit">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>16777215</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
                      <item row="3" column="0">
                       <widget class="QDateTimeEdit" name="transferable_maturesfrom_dateTimeEdit">
                        <property name="enabled">
@@ -3954,148 +4054,6 @@
                        </property>
                       </widget>
                      </item>
-                     <item row="7" column="0">
-                      <widget class="QLineEdit" name="transferable_minamount_lineEdit">
-                       <property name="enabled">
-                        <bool>false</bool>
-                       </property>
-                       <property name="maximumSize">
-                        <size>
-                         <width>16777215</width>
-                         <height>16777215</height>
-                        </size>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="1">
-                      <widget class="QLabel" name="transferable_maturesto_label">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="text">
-                        <string>To</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="0">
-                      <widget class="QLabel" name="transferable_serchlimit_matures_label">
-                       <property name="text">
-                        <string>Matures</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="5" column="0">
-                      <widget class="QLabel" name="transferable_serchlimit_amount_label">
-                       <property name="text">
-                        <string>Amount</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="7" column="1">
-                      <widget class="QLineEdit" name="transferable_maxamount_lineEdit">
-                       <property name="enabled">
-                        <bool>false</bool>
-                       </property>
-                       <property name="maximumSize">
-                        <size>
-                         <width>16777215</width>
-                         <height>16777215</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="0">
-                      <widget class="QLabel" name="transferable_maturesfrom_label">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="text">
-                        <string>From</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="6" column="0">
-                      <widget class="QLabel" name="transferable_minamount_label">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="text">
-                        <string>Min Amount : </string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="3" column="1">
-                      <widget class="QDateTimeEdit" name="transferable_maturesto_dateTimeEdit">
-                       <property name="enabled">
-                        <bool>false</bool>
-                       </property>
-                       <property name="date">
-                        <date>
-                         <year>2021</year>
-                         <month>1</month>
-                         <day>16</day>
-                        </date>
-                       </property>
-                       <property name="minimumDate">
-                        <date>
-                         <year>2020</year>
-                         <month>1</month>
-                         <day>16</day>
-                        </date>
-                       </property>
-                       <property name="calendarPopup">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="6" column="1">
-                      <widget class="QLabel" name="transferable_maxamount_label">
-                       <property name="text">
-                        <string>Max Amount : </string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="1">
-                      <widget class="QCheckBox" name="transferable_matures_checkBox">
-                       <property name="enabled">
-                        <bool>true</bool>
-                       </property>
-                       <property name="styleSheet">
-                        <string notr="true"/>
-                       </property>
-                       <property name="text">
-                        <string>All</string>
-                       </property>
-                       <property name="checked">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="5" column="1">
-                      <widget class="QCheckBox" name="transferable_amount_checkBox">
-                       <property name="styleSheet">
-                        <string notr="true"/>
-                       </property>
-                       <property name="text">
-                        <string>All</string>
-                       </property>
-                       <property name="checked">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
                      <item row="0" column="0" colspan="2">
                       <layout class="QGridLayout" name="gridLayout_25">
                        <item row="0" column="0">
@@ -4119,6 +4077,48 @@
                         </widget>
                        </item>
                       </layout>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QCheckBox" name="transferable_matures_checkBox">
+                       <property name="enabled">
+                        <bool>true</bool>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true"/>
+                       </property>
+                       <property name="text">
+                        <string>All</string>
+                       </property>
+                       <property name="checked">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="transferable_maturesfrom_label">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="text">
+                        <string>From</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="7" column="0">
+                      <widget class="QLineEdit" name="transferable_minamount_lineEdit">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>16777215</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
+                      </widget>
                      </item>
                     </layout>
                    </widget>
@@ -4252,7 +4252,7 @@
                    <widget class="QFrame" name="frame">
                     <property name="maximumSize">
                      <size>
-                      <width>280</width>
+                      <width>16777215</width>
                       <height>16777215</height>
                      </size>
                     </property>
@@ -4336,7 +4336,7 @@
                         <enum>QFrame::Sunken</enum>
                        </property>
                        <property name="text">
-                        <string>0</string>
+                        <string/>
                        </property>
                        <property name="textInteractionFlags">
                         <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
@@ -4364,7 +4364,7 @@
                         <enum>QFrame::Sunken</enum>
                        </property>
                        <property name="text">
-                        <string>0</string>
+                        <string/>
                        </property>
                        <property name="textInteractionFlags">
                         <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
@@ -4386,7 +4386,7 @@
                         <enum>QFrame::Sunken</enum>
                        </property>
                        <property name="text">
-                        <string>0</string>
+                        <string/>
                        </property>
                        <property name="textInteractionFlags">
                         <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
@@ -4420,7 +4420,7 @@
                         <enum>QFrame::Sunken</enum>
                        </property>
                        <property name="text">
-                        <string>0</string>
+                        <string/>
                        </property>
                        <property name="textInteractionFlags">
                         <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
