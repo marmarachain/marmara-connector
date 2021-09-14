@@ -1,4 +1,5 @@
 import json
+import os
 import platform
 import time
 import subprocess
@@ -526,6 +527,11 @@ class Autoinstall(QtCore.QObject):
             self.out_text.emit(cmd)
             if i == 0:
                 cwd = str(pathlib.Path.home())
+                if os.path.isdir(cwd + '\marmara'):
+                    cwd = cwd + '\marmara'
+                    i = 1
+                    cmd = self.win_command_list[i]
+                    self.progress.emit(10)
             else:
                 cwd = str(pathlib.Path.home()) + '\marmara'
             logging.debug(cwd)
@@ -542,13 +548,14 @@ class Autoinstall(QtCore.QObject):
                 if not out:
                     proc.stdout.close()
             exit_status = proc.poll()
+            print('exit_status  ' + str(exit_status))
             logging.info(exit_status)
             proc.terminate()
             i = i + 1
             if i >= len(self.win_command_list):
                 self.progress.emit(int(i * 24))
                 break
-            if exit_status == 0:
+            if exit_status == 0 or exit_status is None:
                 self.progress.emit(int(i * 24))
             else:
                 self.out_text.emit('Something Went Wrong ' + cmd)
