@@ -220,7 +220,6 @@ def handle_rpc(command):
             logging.info('------sending command----- \n ' + command.split(' ')[0])
         try:
             proc = subprocess.Popen(cmd, cwd=marmara_path, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            proc.wait()
             retvalue = proc.poll()
             result = ""
             err_out = ""
