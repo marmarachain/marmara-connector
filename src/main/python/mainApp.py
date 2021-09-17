@@ -600,7 +600,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 self.set_getinfo_result(result)
                 self.bottom_info(self.tr('getting wallet addresses'))
                 logging.info('getting wallet addresses')
-            elif result.get('WalletActivatedAddresses'):
+            elif result.get('WalletActivatedAddresses') or result.get('WalletActivatedAddresses') == []:
                 TotalAmountOnActivated = 0.0
                 for activated in result.get('WalletActivatedAddresses'):
                     TotalAmountOnActivated = TotalAmountOnActivated + activated.get('amount')
@@ -704,7 +704,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
     # -----------------------------------------------------------
     @pyqtSlot()
     def refresh_side_panel(self):
-        # self.start_animation()
+        self.start_animation()
         self.bottom_info(self.tr('getting getinfo'))
         logging.info('getting getinfo')
         # self.get_getinfo()
