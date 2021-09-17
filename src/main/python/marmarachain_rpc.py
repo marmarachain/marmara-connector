@@ -222,7 +222,19 @@ def handle_rpc(command):
             proc = subprocess.Popen(cmd, cwd=marmara_path, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             proc.wait()
             retvalue = proc.poll()
-            return proc.stdout.read().decode("utf8"), proc.stderr.read().decode("utf8"), retvalue
+            result = ""
+            err_out = ""
+            while True:
+                stdout = proc.stdout.readline().replace(b'\n', b'').decode()
+                result = result + stdout
+                if not stdout:
+                    break
+            while True:
+                stderr = proc.stderr.readline().replace(b'\n', b'').decode()
+                err_out = err_out + stderr
+                if not stderr:
+                    break
+            return result, err_out, retvalue
         except Exception as error:
             logging.error(error)
     else:
@@ -246,7 +258,7 @@ class RpcHandler(QtCore.QObject):
     finished = pyqtSignal()
 
     def __init__(self):
-        super().__init__()
+        super(RpcHandler, self).__init__()
         self.command = ""
         self.bottom_info_obj = object
 
@@ -318,6 +330,9 @@ class RpcHandler(QtCore.QObject):
                 time.sleep(0.1)
                 if type(addresses) == list:
                     self.walletlist_out.emit(addresses)
+                    activated_address_list = handle_rpc(cp.marmaralistactivatedaddresses)
+                    time.sleep(0.1)
+                    self.command_out.emit(activated_address_list)
                     getgenerate = handle_rpc(cp.getgenerate)
                     time.sleep(0.1)
                     self.command_out.emit(getgenerate)
@@ -392,14 +407,12 @@ class RpcHandler(QtCore.QObject):
 
     @pyqtSlot()
     def refresh_sidepanel(self):
-        # print('side panel here')
         getinfo = handle_rpc(cp.getinfo)
         if getinfo[0]:
             self.command_out.emit(getinfo)
             time.sleep(0.1)
-            getgenerate = handle_rpc(cp.getgenerate)
-            time.sleep(0.1)
-            self.command_out.emit(getgenerate)
+            activated_address_list = handle_rpc(cp.marmaralistactivatedaddresses)
+            self.command_out.emit(activated_address_list)
             self.finished.emit()
         elif getinfo[1]:
             self.command_out.emit(getinfo)
@@ -417,6 +430,19 @@ class RpcHandler(QtCore.QObject):
             self.finished.emit()
             self.command_out.emit(setgenerate)
 
+    @pyqtSlot()
+    def get_balances(self):
+        getbalance = handle_rpc(cp.getbalance)
+        listaddressgroupings = handle_rpc(cp.listaddressgroupings)
+        activated_address_list = handle_rpc(cp.marmaralistactivatedaddresses)
+        if getbalance[0] and listaddressgroupings[0] and activated_address_list[0]:
+            result = getbalance[0].replace('\n', ''), json.loads(listaddressgroupings[0])[0], json.loads(activated_address_list[0]), 0
+            self.command_out.emit(result)
+            self.finished.emit()
+        elif getbalance[1] and listaddressgroupings[1] and activated_address_list[1]:
+            result = getbalance[1], listaddressgroupings[1], activated_address_list[1], 1
+            self.command_out.emit(result)
+            self.finished.emit()
 
 class Autoinstall(QtCore.QObject):
     out_text = pyqtSignal(str)
@@ -424,7 +450,7 @@ class Autoinstall(QtCore.QObject):
     finished = pyqtSignal()
 
     def __init__(self):
-        super().__init__()
+        super(Autoinstall, self).__init__()
         self.mcl_download_url = version.latest_marmara_download_url()
         self.mcl_linux_zipname = 'MCL-linux.zip'
         self.linux_command_list = ['sudo apt-get update', 'sudo apt-get install libgomp1 -y',

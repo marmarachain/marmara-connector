@@ -946,6 +946,29 @@
                </property>
               </widget>
              </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="totalactivated_label">
+               <property name="text">
+                <string>Total Activated</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLabel" name="totalactivated_value_label">
+               <property name="frameShape">
+                <enum>QFrame::WinPanel</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Sunken</enum>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
             </layout>
            </widget>
           </item>
@@ -1570,7 +1593,7 @@
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>3</number>
+           <number>1</number>
           </property>
           <property name="iconSize">
            <size>
@@ -3859,8 +3882,8 @@
                     </property>
                     <property name="maximumSize">
                      <size>
-                      <width>800</width>
-                      <height>300</height>
+                      <width>16777215</width>
+                      <height>310</height>
                      </size>
                     </property>
                     <property name="sizeIncrement">
@@ -4195,8 +4218,8 @@
                     </property>
                     <property name="maximumSize">
                      <size>
-                      <width>800</width>
-                      <height>300</height>
+                      <width>16777215</width>
+                      <height>310</height>
                      </size>
                     </property>
                     <property name="sizeIncrement">

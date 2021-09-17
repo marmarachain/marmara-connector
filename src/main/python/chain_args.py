@@ -32,3 +32,4 @@ marmaraissue = 'marmaraissue'  # receiverpk + '{"avalcount":"n", "autosettlement
 # + requesttxid
 marmaraholderloops = 'marmaraholderloops'  # firstheight + lastheight + minamount + maxamount + pk + [currency]
 getaddresstxids = 'getaddresstxids' #  '{"addresses": ["address"], "start": 799712,  "end": 799734}'
+marmaralistactivatedaddresses = 'marmaralistactivatedaddresses'
