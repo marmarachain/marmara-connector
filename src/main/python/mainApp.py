@@ -86,7 +86,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.cpu_core_set_button.clicked.connect(self.setmining_cpu_core)
         self.mining_button.clicked.connect(self.toggle_mining)
         self.getinfo_refresh_button.clicked.connect(self.refresh_side_panel)
-        self.support_pushButton.setToolTip(self.tr("Treat Marmara Core Team cups of coffee"))
+        self.support_pushButton.setToolTip(self.tr("Gift Marmara Core Team cups of coffee"))
         self.cup_lineEdit.setValidator(self.validator)
         self.cup_lineEdit.textChanged.connect(self.calculate_amount)
         self.cup_lineEdit.returnPressed.connect(self.send_coins_to_team)
@@ -883,14 +883,14 @@ class MarmaraMain(QMainWindow, GuiStyle):
             self.support_pushButton.setEnabled(False)
             self.support_pushButton.setText(self.tr('Support'))
         else:
-            amount = int(number_of_cups) * 50
+            amount = int(number_of_cups) * 30
             self.support_pushButton.setEnabled(True)
             self.support_pushButton.setText(self.tr('Support') + ' (' + str(amount) + ' MCL)')
 
     @pyqtSlot()
     def send_coins_to_team(self):
         number_of_cups = self.cup_lineEdit.text()
-        amount = int(number_of_cups) * 50
+        amount = int(number_of_cups) * 30
         team_address = 'RXWqisAoJKEGVyXj46Zo3fDZnZTwQA6kQE'
         self.support_pushButton.setText(self.tr('Support') + ' (' + str(amount) + ' MCL)')
         message_box = self.custom_message(self.tr('Confirm Transaction'),
