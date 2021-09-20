@@ -285,7 +285,7 @@ class RpcHandler(QtCore.QObject):
         if marmarad_path:  # if these is path in configuration
             self.output.emit('marmarad_path :' + marmarad_path)
             if platform.system() == 'Windows':
-                ls_cmd = 'PowerShell ls ' + marmarad_path + ' -name'
+                ls_cmd = 'PowerShell ls ' + marmarad_path.replace(' ', '` ') + ' -name'
             else:
                 ls_cmd = 'ls ' + marmarad_path
             self.output.emit('verifiying path')
