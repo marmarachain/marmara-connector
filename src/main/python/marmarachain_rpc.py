@@ -229,7 +229,7 @@ def handle_rpc(command):
                 if not stdout:
                     break
             while True:
-                stderr = proc.stderr.readline().replace(b'\n', b'').decode()
+                stderr = proc.stderr.readline().decode()
                 err_out = err_out + stderr
                 if not stderr:
                     break
