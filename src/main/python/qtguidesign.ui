@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>1024</width>
-    <height>768</height>
+    <height>770</height>
    </rect>
   </property>
   <property name="font">
@@ -4483,7 +4483,7 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>400</width>
+            <width>16777215</width>
             <height>16777215</height>
            </size>
           </property>
@@ -4511,7 +4511,7 @@
                  </font>
                 </property>
                 <property name="text">
-                 <string>Wallet Balance</string>
+                 <string>Total Wallet Balance</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -4526,7 +4526,7 @@
                  </font>
                 </property>
                 <property name="text">
-                 <string>Total Normal</string>
+                 <string>Normal</string>
                 </property>
                </widget>
               </item>
@@ -4554,7 +4554,7 @@
               <item row="2" column="0">
                <widget class="QLabel" name="totalactivated_label">
                 <property name="text">
-                 <string>Total Activated</string>
+                 <string>Activated</string>
                 </property>
                </widget>
               </item>

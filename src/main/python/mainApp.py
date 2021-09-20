@@ -79,7 +79,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.staking_button.setChecked(False)
         self.staking_button.clicked.connect(self.toggle_staking)
         self.mining_button.setChecked(False)
-        self.regex = QRegExp("[1-90_]+")
+        self.regex = QRegExp("[1-90_]{1,5}")
         self.validator = QRegExpValidator(self.regex)
         self.cpu_core_lineEdit.setValidator(self.validator)
         self.cpu_core_selection_off()
