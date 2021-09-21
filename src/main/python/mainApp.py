@@ -61,6 +61,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.serveredit_button.clicked.connect(self.server_edit_selected)
         # install page
         self.start_install_button.clicked.connect(self.start_autoinstall)
+        self.sudo_password_lineEdit.returnPressed.connect(self.start_autoinstall)
         #  Add Server Settings page
         self.add_serversave_button.clicked.connect(self.save_server_settings)
         self.servercancel_button.clicked.connect(self.add_cancel_selected)
@@ -78,14 +79,14 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.staking_button.setChecked(False)
         self.staking_button.clicked.connect(self.toggle_staking)
         self.mining_button.setChecked(False)
-        self.regex = QRegExp("[1-90_]+")
+        self.regex = QRegExp("[1-90_]{1,5}")
         self.validator = QRegExpValidator(self.regex)
         self.cpu_core_lineEdit.setValidator(self.validator)
         self.cpu_core_selection_off()
         self.cpu_core_set_button.clicked.connect(self.setmining_cpu_core)
         self.mining_button.clicked.connect(self.toggle_mining)
         self.getinfo_refresh_button.clicked.connect(self.refresh_side_panel)
-        self.support_pushButton.setToolTip(self.tr("Treat Marmara Core Team cups of coffee"))
+        self.support_pushButton.setToolTip(self.tr("Gift Marmara Core Team cups of coffee"))
         self.cup_lineEdit.setValidator(self.validator)
         self.cup_lineEdit.textChanged.connect(self.calculate_amount)
         self.cup_lineEdit.returnPressed.connect(self.send_coins_to_team)
@@ -104,6 +105,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.importprivkey_button.clicked.connect(self.importprivkey)
         self.privatekeypage_back_button.clicked.connect(self.back_chain_widget_index)
         # Wallet page
+        self.myCCActivatedAddress = None
         self.addressamount_refresh_button.clicked.connect(self.get_address_amounts)
         self.lock_button.clicked.connect(self.marmaralock_amount)
         self.unlock_button.clicked.connect(self.marmaraunlock_amount)
@@ -127,8 +129,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
 
         # -----Make credit Loop Request
         self.contactpubkey_makeloop_comboBox.currentTextChanged.connect(self.get_selected_contact_loop_pubkey)
-        self.contactpubkey_transferrequest_comboBox.currentTextChanged.connect(
-            self.get_selected_contact_transfer_pubkey)
+        self.contactpubkey_transferrequest_comboBox.currentTextChanged.connect(self.get_selected_contact_transfer_pubkey)
         self.make_credit_loop_matures_dateTimeEdit.setMinimumDateTime(QDateTime.currentDateTime())
         self.send_loop_request_button.clicked.connect(self.marmarareceive)
         self.send_transfer_request_button.clicked.connect(self.marmararecieve_transfer)
@@ -159,6 +160,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.thread_marmarad_path = QThread()
         self.thread_autoinstall = QThread()
         self.thread_getinfo = QThread()
+        self.worker_getinfo = marmarachain_rpc.RpcHandler()  # worker setting
         self.thread_getchain = QThread()
         self.thread_stopchain = QThread()
         self.thread_getaddresses = QThread()
@@ -186,6 +188,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.thread_marmaratransfer = QThread()
         self.thread_getaddresstxids = QThread()
         self.thread_sendtoteam = QThread()
+        self.thread_get_address_amounts = QThread()
 
         # Loading Gif
         # --------------------------------------------------
@@ -202,16 +205,20 @@ class MarmaraMain(QMainWindow, GuiStyle):
         base_version = configuration.version
         latest_app_tag = version.git_request_tag(version.app_api_url)
         latest_app_version = version.latest_app_release_url()
-
-        if base_version != latest_app_tag:
-            message_box = self.custom_message(self.tr('Software Update Available'),
-                                              self.tr('A new update is available. <br>Follow the link ')
-                                                      + "<a href='" + latest_app_version + "'" + self.tr(">here</a>"),
+        if latest_app_tag == 'Connection Error' or latest_app_version == 'Connection Error':
+            message_box = self.custom_message(self.tr('Connection Error'),
+                                              self.tr('Check your internet Connection '),
                                               'information', QMessageBox.Information)
         else:
-            message_box = self.custom_message(self.tr('No Update Available'),
-                                              self.tr('Current App version is ') + base_version,
-                                              'information', QMessageBox.Information)
+            if base_version != latest_app_tag:
+                message_box = self.custom_message(self.tr('Software Update Available'),
+                                                  self.tr('A new update is available. <br>Follow the link ')
+                                                          + "<a href='" + latest_app_version + "'" + self.tr(">here</a>"),
+                                                  'information', QMessageBox.Information)
+            else:
+                message_box = self.custom_message(self.tr('No Update Available'),
+                                                  self.tr('Current App version is ') + base_version,
+                                                  'information', QMessageBox.Information)
     def read_lang_setting(self):
         language = configuration.ApplicationConfig().get_value('USER', 'lang')
         if language:
@@ -421,7 +428,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         worker.finished.connect(thread.quit)
         worker.finished.connect(self.stop_animation)
         thread.started.connect(worker.do_execute_rpc)
-        thread.start()
+        thread.start(priority=4)
         return worker
 
     @pyqtSlot()
@@ -437,7 +444,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.worker_check_marmara_path.moveToThread(self.thread_marmarad_path)
         self.worker_check_marmara_path.finished.connect(self.thread_marmarad_path.quit)
         self.thread_marmarad_path.started.connect(self.worker_check_marmara_path.check_marmara_path)
-        self.thread_marmarad_path.start()
+        self.thread_marmarad_path.start(priority=4)
         self.worker_check_marmara_path.output.connect(self.check_marmara_path_output)
 
     @pyqtSlot(str)
@@ -506,12 +513,17 @@ class MarmaraMain(QMainWindow, GuiStyle):
 
     @pyqtSlot(str)
     def start_autoinstall_textout(self, output):
+        if str(output).find('Something Went Wrong') > -1:
+            message_box = self.custom_message(self.tr('Installation not completed correctly'),
+                                              self.tr(output),
+                                              'information', QMessageBox.Information)
         self.install_progress_textBrowser.append(output)
 
     @pyqtSlot(int)
     def start_autoinstall_progress(self, val):
+        print(val)
         self.install_progressBar.setValue(val)
-        if val >= 96:
+        if 96 <= val < 100:
             self.install_progressBar.setValue(100)
             message_box = self.custom_message(self.tr('Installation Completed'), self.tr('Starting Marmarachain'),
                                               'information', QMessageBox.Information)
@@ -521,6 +533,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 self.check_marmara_path()
         if val > 100:
             self.install_progressBar.setValue(0)
+            self.start_install_button.setEnabled(True)
             message_box = self.custom_message(self.tr('Installation not completed correctly'),
                                               self.tr('Wrong password input. Please install again'),
                                               'information', QMessageBox.Information)
@@ -587,6 +600,11 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 self.set_getinfo_result(result)
                 self.bottom_info(self.tr('getting wallet addresses'))
                 logging.info('getting wallet addresses')
+            elif result.get('WalletActivatedAddresses') or result.get('WalletActivatedAddresses') == []:
+                TotalAmountOnActivated = 0.0
+                for activated in result.get('WalletActivatedAddresses'):
+                    TotalAmountOnActivated = TotalAmountOnActivated + activated.get('amount')
+                self.totalactivated_value_label.setText(str(TotalAmountOnActivated))
             else:
                 self.setgenerate_result(result_out)
                 self.bottom_info(self.tr('Chain init completed.'))
@@ -689,6 +707,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.start_animation()
         self.bottom_info(self.tr('getting getinfo'))
         logging.info('getting getinfo')
+        # self.get_getinfo()
         self.worker_sidepanel = marmarachain_rpc.RpcHandler()
         self.worker_sidepanel.moveToThread(self.thread_sidepanel)
         self.worker_sidepanel.finished.connect(self.thread_sidepanel.quit)
@@ -708,10 +727,13 @@ class MarmaraMain(QMainWindow, GuiStyle):
             result = json.loads(result_out[0])
             if result.get('version'):
                 self.set_getinfo_result(result)
-                self.bottom_info(self.tr('checking mining status.'))
-                logging.info('checking mining status.')
+                self.bottom_info(self.tr('getting activated balance.'))
+                logging.info('getting activated balance.')
             else:
-                self.setgenerate_result(result_out)
+                TotalAmountOnActivated = 0.0
+                for activated in json.loads(result_out[0]).get('WalletActivatedAddresses'):
+                    TotalAmountOnActivated = TotalAmountOnActivated + activated.get('amount')
+                self.totalactivated_value_label.setText(str(TotalAmountOnActivated))
                 self.bottom_info(self.tr('Refresh completed.'))
                 logging.info('Refresh completed.')
         elif result_out[1]:
@@ -861,14 +883,14 @@ class MarmaraMain(QMainWindow, GuiStyle):
             self.support_pushButton.setEnabled(False)
             self.support_pushButton.setText(self.tr('Support'))
         else:
-            amount = int(number_of_cups) * 50
+            amount = int(number_of_cups) * 30
             self.support_pushButton.setEnabled(True)
             self.support_pushButton.setText(self.tr('Support') + ' (' + str(amount) + ' MCL)')
 
     @pyqtSlot()
     def send_coins_to_team(self):
         number_of_cups = self.cup_lineEdit.text()
-        amount = int(number_of_cups) * 50
+        amount = int(number_of_cups) * 30
         team_address = 'RXWqisAoJKEGVyXj46Zo3fDZnZTwQA6kQE'
         self.support_pushButton.setText(self.tr('Support') + ' (' + str(amount) + ' MCL)')
         message_box = self.custom_message(self.tr('Confirm Transaction'),
@@ -1192,29 +1214,42 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def get_address_amounts(self):
         pubkey = self.current_pubkey_value.text()
         logging.info('---- current pubkey : ' + pubkey)
-        if pubkey:
+        if pubkey and self.myCCActivatedAddress is None:
             marmarainfo = self.marmarainfo(pubkey)
             marmarainfo.command_out.connect(self.marmarinfo_amount_and_loops_result)
+        elif pubkey and self.myCCActivatedAddress:
+            self.start_animation()
+            self.worker_get_address_amounts = marmarachain_rpc.RpcHandler()
+            self.worker_get_address_amounts.moveToThread(self.thread_get_address_amounts)
+            self.worker_get_address_amounts.finished.connect(self.thread_get_address_amounts.quit)
+            self.worker_get_address_amounts.finished.connect(self.stop_animation)
+            self.thread_get_address_amounts.started.connect(self.worker_get_address_amounts.get_balances)
+            self.thread_get_address_amounts.start(priority=4)
+            self.worker_get_address_amounts.command_out.connect(self.set_address_amounts)
         else:
             self.bottom_info(self.tr('pubkey is not set!'))
             logging.warning('pubkey is not set!')
 
     @pyqtSlot(tuple)
     def set_address_amounts(self, result_out):
-        if result_out[0]:
-            logging.info(result_out[0])
-            result = json.loads(result_out[0])
-            if result.get('result') == "success":
-                self.normal_amount_value.setText(str(result.get('myPubkeyNormalAmount')))
-                self.wallet_total_normal_value.setText(str(result.get('myWalletNormalAmount')))
-                self.activated_amount_value.setText(str(result.get('myActivatedAmount')))
-                self.wallet_total_activated_value.setText(str(result.get('myTotalAmountOnActivatedAddress')))
-                self.bottom_info('getting address amounts finished')
-            if result.get('result') == "error":
-                self.bottom_info(result.get('error'))
-                logging.error(result.get('error'))
-        elif result_out[1]:
-            logging.error(result_out[1])
+        if result_out[3] == 0:
+            self.wallet_total_normal_value.setText(str(result_out[0]))
+            for address in result_out[1]:
+                if address[0] == self.currentaddress_value.text():
+                    self.normal_amount_value.setText(str(address[1]))
+            TotalAmountOnActivated = 0.0
+            for activated in result_out[2].get('WalletActivatedAddresses'):
+                TotalAmountOnActivated = TotalAmountOnActivated + activated.get('amount')
+                if activated.get('activatedaddress') == self.myCCActivatedAddress:
+                    self.activated_amount_value.setText(str(activated.get('amount')))
+            self.wallet_total_activated_value.setText(str(TotalAmountOnActivated))
+        elif result_out[3] == 1:
+            self.bottom_info(self.tr('Error getting address amounts'))
+            logging.warning(str(result_out[0]))
+            logging.warning(str(result_out[1]))
+            logging.warning(str(result_out[2]))
+
+
 
     @pyqtSlot()
     def marmaralock_amount(self):
@@ -1745,6 +1780,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             logging.info(result_out[0])
             result = json.loads(result_out[0])
             if result.get('result') == "success":
+                self.myCCActivatedAddress = str(result.get('myCCActivatedAddress'))
                 self.normal_amount_value.setText(str(result.get('myPubkeyNormalAmount')))
                 self.wallet_total_normal_value.setText(str(result.get('myWalletNormalAmount')))
                 self.activated_amount_value.setText(str(result.get('myActivatedAmount')))

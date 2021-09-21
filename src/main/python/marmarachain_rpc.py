@@ -1,4 +1,5 @@
 import json
+import os
 import platform
 import time
 import subprocess
@@ -92,6 +93,7 @@ def search_marmarad_path():  # will be added for windows search
         logging.info('pwd local :' + pwd)
         if platform.system() == 'Windows':
             windows = True
+            pwd = pwd.replace(' ', '` ')
         else:
             windows = False
     else:
@@ -146,7 +148,7 @@ def check_path_windows(search_list):
         if not path[0] == ['']:
             out = str(path[0]).replace('.exe', '').replace('\r', '')
             if 'komodod' in out and 'komodo-cli' in out:
-                out_path = search_path
+                out_path = search_path.replace('` ', ' ')
                 out_path = out_path.replace('PowerShell ls ', '').replace(' -name', '') + '\\'
                 logging.info('out_path :' + out_path)
                 break
@@ -218,9 +220,20 @@ def handle_rpc(command):
             logging.info('------sending command----- \n ' + command.split(' ')[0])
         try:
             proc = subprocess.Popen(cmd, cwd=marmara_path, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            proc.wait()
             retvalue = proc.poll()
-            return proc.stdout.read().decode("utf8"), proc.stderr.read().decode("utf8"), retvalue
+            result = ""
+            err_out = ""
+            while True:
+                stdout = proc.stdout.readline().replace(b'\n', b'').decode()
+                result = result + stdout
+                if not stdout:
+                    break
+            while True:
+                stderr = proc.stderr.readline().decode()
+                err_out = err_out + stderr
+                if not stderr:
+                    break
+            return result, err_out, retvalue
         except Exception as error:
             logging.error(error)
     else:
@@ -244,7 +257,7 @@ class RpcHandler(QtCore.QObject):
     finished = pyqtSignal()
 
     def __init__(self):
-        super().__init__()
+        super(RpcHandler, self).__init__()
         self.command = ""
         self.bottom_info_obj = object
 
@@ -272,7 +285,7 @@ class RpcHandler(QtCore.QObject):
         if marmarad_path:  # if these is path in configuration
             self.output.emit('marmarad_path :' + marmarad_path)
             if platform.system() == 'Windows':
-                ls_cmd = 'PowerShell ls ' + marmarad_path + ' -name'
+                ls_cmd = 'PowerShell ls ' + marmarad_path.replace(' ', '` ') + ' -name'
             else:
                 ls_cmd = 'ls ' + marmarad_path
             self.output.emit('verifiying path')
@@ -316,6 +329,9 @@ class RpcHandler(QtCore.QObject):
                 time.sleep(0.1)
                 if type(addresses) == list:
                     self.walletlist_out.emit(addresses)
+                    activated_address_list = handle_rpc(cp.marmaralistactivatedaddresses)
+                    time.sleep(0.1)
+                    self.command_out.emit(activated_address_list)
                     getgenerate = handle_rpc(cp.getgenerate)
                     time.sleep(0.1)
                     self.command_out.emit(getgenerate)
@@ -390,14 +406,12 @@ class RpcHandler(QtCore.QObject):
 
     @pyqtSlot()
     def refresh_sidepanel(self):
-        # print('side panel here')
         getinfo = handle_rpc(cp.getinfo)
         if getinfo[0]:
             self.command_out.emit(getinfo)
             time.sleep(0.1)
-            getgenerate = handle_rpc(cp.getgenerate)
-            time.sleep(0.1)
-            self.command_out.emit(getgenerate)
+            activated_address_list = handle_rpc(cp.marmaralistactivatedaddresses)
+            self.command_out.emit(activated_address_list)
             self.finished.emit()
         elif getinfo[1]:
             self.command_out.emit(getinfo)
@@ -415,6 +429,19 @@ class RpcHandler(QtCore.QObject):
             self.finished.emit()
             self.command_out.emit(setgenerate)
 
+    @pyqtSlot()
+    def get_balances(self):
+        getbalance = handle_rpc(cp.getbalance)
+        listaddressgroupings = handle_rpc(cp.listaddressgroupings)
+        activated_address_list = handle_rpc(cp.marmaralistactivatedaddresses)
+        if getbalance[0] and listaddressgroupings[0] and activated_address_list[0]:
+            result = getbalance[0].replace('\n', ''), json.loads(listaddressgroupings[0])[0], json.loads(activated_address_list[0]), 0
+            self.command_out.emit(result)
+            self.finished.emit()
+        elif getbalance[1] and listaddressgroupings[1] and activated_address_list[1]:
+            result = getbalance[1], listaddressgroupings[1], activated_address_list[1], 1
+            self.command_out.emit(result)
+            self.finished.emit()
 
 class Autoinstall(QtCore.QObject):
     out_text = pyqtSignal(str)
@@ -422,13 +449,13 @@ class Autoinstall(QtCore.QObject):
     finished = pyqtSignal()
 
     def __init__(self):
-        super().__init__()
+        super(Autoinstall, self).__init__()
         self.mcl_download_url = version.latest_marmara_download_url()
         self.mcl_linux_zipname = 'MCL-linux.zip'
         self.linux_command_list = ['sudo apt-get update', 'sudo apt-get install libgomp1 -y',
                                    'sudo wget ' + str(self.mcl_download_url) + '/' + self.mcl_linux_zipname +
                                    " -O " + self.mcl_linux_zipname, 'sudo apt-get install unzip -y',
-                                   'unzip MCL-linux.zip', 'sudo chmod +x komodod komodo-cli fetch-params.sh',
+                                   'unzip -o MCL-linux.zip', 'sudo chmod +x komodod komodo-cli fetch-params.sh',
                                    './fetch-params.sh']
 
         self.mcl_win_zipname = 'MCL-win.zip'
@@ -476,7 +503,8 @@ class Autoinstall(QtCore.QObject):
                         i = len(self.linux_command_list)
                     if not out:
                         proc.stdout.close()
-                exit_status = proc.returncode
+                exit_status = proc.poll()
+                print('exit_status  ' + str(exit_status))
                 logging.debug(exit_status)
                 proc.terminate()
                 i = i + 1
@@ -507,8 +535,13 @@ class Autoinstall(QtCore.QObject):
                 logging.info(exit_status)
                 session.close()
                 sshclient.close()
-            i = i + 1
-            self.progress.emit(int(i * 14))
+                i = i + 1
+            if exit_status == 0:
+                self.progress.emit(int(i * 14))
+            else:
+                self.out_text.emit('Something Went Wrong ' + cmd)
+                self.finished.emit()
+                break
         self.finished.emit()
 
     def windows_install(self):
@@ -519,6 +552,11 @@ class Autoinstall(QtCore.QObject):
             self.out_text.emit(cmd)
             if i == 0:
                 cwd = str(pathlib.Path.home())
+                if os.path.isdir(cwd + '\marmara'):
+                    cwd = cwd + '\marmara'
+                    i = 1
+                    cmd = self.win_command_list[i]
+                    self.progress.emit(10)
             else:
                 cwd = str(pathlib.Path.home()) + '\marmara'
             logging.debug(cwd)
@@ -534,13 +572,19 @@ class Autoinstall(QtCore.QObject):
                 self.out_text.emit(out_d)
                 if not out:
                     proc.stdout.close()
-            exit_status = proc.returncode
+            exit_status = proc.poll()
+            print('exit_status  ' + str(exit_status))
             logging.info(exit_status)
             proc.terminate()
             i = i + 1
             if i >= len(self.win_command_list):
                 self.progress.emit(int(i * 24))
                 break
-            self.progress.emit(int(i * 24))
+            if exit_status == 0 or exit_status is None:
+                self.progress.emit(int(i * 24))
+            else:
+                self.out_text.emit('Something Went Wrong ' + cmd)
+                self.finished.emit()
+                break
         self.finished.emit()
         # update = subprocess.Popen
