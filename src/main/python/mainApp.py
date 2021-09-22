@@ -993,7 +993,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 btn_start.setIcon(QIcon(self.icon_path + "/start_icon.png"))
                 rowcount = rowcount - 1
                 self.addresses_tableWidget.setCellWidget(rowcount, 0, btn_start)
-                btn_start.clicked.connect(self.start_chain)
+                btn_start.clicked.connect(self.start_chain_with_pubkey)
                 if rowcount == 0:
                     break
         self.hide_addresses()
@@ -1028,21 +1028,77 @@ class MarmaraMain(QMainWindow, GuiStyle):
             logging.error(result_out[1])
 
     @pyqtSlot()
-    def start_chain(self):
+    def start_chain_with_pubkey(self):
         button = self.sender()
         index = self.addresses_tableWidget.indexAt(button.pos())
         logging.debug(index.row())
         logging.debug(index.column())
         if index.isValid():
             pubkey = self.addresses_tableWidget.item(index.row(), 3).text()
-            logging.info(pubkey)
-            self.bottom_info(self.tr('Chain started with pubkey'))
-            logging.info('Chain started with pubkey')
-            marmarachain_rpc.start_chain(pubkey)
-            time.sleep(0.5)
-            self.addresses_tableWidget.setColumnHidden(0, True)
-            self.is_chain_ready()
+            self.start_chain_settings(pubkey)
 
+    def start_chain_settings(self, pubkey):
+        self.bottom_info(self.tr('Chain started with pubkey'))
+        logging.info('Chain started with pubkey')
+        self.start_pubkey = pubkey
+        startchainDialog = QDialog(self)
+        startchainDialog.setWindowTitle(self.tr('Settings for Chain Start'))
+        startchainDialog.layout = QVBoxLayout()
+
+        apply_button = QDialogButtonBox(QDialogButtonBox.Apply)
+        self.reindex = QtWidgets.QCheckBox('reindex' + self.tr(' (starts from begining and re-indexes currently '
+                                                               'synced blockchain data)'))
+        self.reindex.setChecked(False)
+        self.rescan = QtWidgets.QCheckBox('rescan' + self.tr(' (starts scanning wallet data in blockchain data)'))
+        self.rescan.setChecked(False)
+
+        startchainDialog.setLayout(startchainDialog.layout)
+        startchainDialog.layout.addWidget(self.reindex)
+        startchainDialog.layout.addWidget(self.rescan)
+        startchainDialog.layout.addWidget(apply_button)
+
+        apply_button.clicked.connect(self.start_chain_with_settings)
+        apply_button.clicked.connect(startchainDialog.close)
+        startchainDialog.exec_()
+
+    @pyqtSlot()
+    def start_chain_with_settings(self):
+        reindex_param = ''
+        rescan_param = ''
+        if self.reindex.checkState():
+            reindex_param = ' -reindex'
+        if self.rescan.checkState():
+            rescan_param = ' -rescan'
+        start_param = self.start_pubkey + reindex_param + rescan_param
+        print(start_param)
+        marmarachain_rpc.start_chain(start_param)
+        time.sleep(0.5)
+        self.addresses_tableWidget.setColumnHidden(0, True)
+        self.is_chain_ready()
+
+
+        # def show_languages(self):
+        #     languageDialog = QDialog(self)
+        #     languageDialog.setWindowTitle(self.tr("Choose a language"))
+        #
+        #     apply_button = QDialogButtonBox(QDialogButtonBox.Apply)
+        #     self.lang_comboBox = QtWidgets.QComboBox()
+        #
+        #     languageDialog.layout = QVBoxLayout()
+        #     languageDialog.layout.addWidget(self.lang_comboBox)
+        #     languageDialog.layout.addWidget(apply_button)
+        #     languageDialog.setLayout(languageDialog.layout)
+        #
+        #     entries = os.listdir(configuration.configuration_path + '/language')
+        #     entries.sort()
+        #
+        #     for item in entries:
+        #         self.lang_comboBox.addItem(item.strip('.qm'))
+        #         self.lang_comboBox.setItemIcon(entries.index(item), QIcon(
+        #             self.icon_path + "/lang_icons" + "/" + item.strip('.qm') + ".png"))
+        #     apply_button.clicked.connect(self.get_lang_selection)
+        #     apply_button.clicked.connect(languageDialog.close)
+        #     languageDialog.exec_()
     # ------------------
     # Chain  --- wallet Address Add, import
     # -------------------
@@ -1990,11 +2046,14 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 self.bottom_info(result.get('error'))
                 self.clear_lq_txid_search_result()
             if result.get('result') == "success":
+                creditloop = result.get('creditloop')
                 self.loopquery_baton_value.setText(str(result.get('batontxid')))
                 self.loopquery_amount_value.setText(str(result.get('amount')))
                 self.loopquery_currency_value.setText(result.get('currency'))
                 self.loopquery_matures_value.setText(str(result.get('matures')))
-                self.loopquery_issuer_value.setText(str(result.get('batonpk')))
+                self.loopquery_batonpk_value.setText(str(result.get('batonpk')))
+                self.loopquery_issuer_value.setText(str((creditloop[0]).get('issuerpk')))
+                self.loopquery_transfercount_value.setText(str(result.get('n')))
                 self.bottom_info(self.tr('credit loop info finished'))
                 logging.info('credit loop info finished')
         elif result_out[1]:

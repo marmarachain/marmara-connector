@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>1024</width>
-    <height>770</height>
+    <height>768</height>
    </rect>
   </property>
   <property name="font">
@@ -908,7 +908,7 @@
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <property name="iconSize">
            <size>
@@ -972,18 +972,65 @@
                <layout class="QGridLayout" name="gridLayout_26">
                 <item row="0" column="0">
                  <layout class="QGridLayout" name="chainaddresses_Layout">
-                  <item row="6" column="1">
-                   <spacer name="verticalSpacer_15">
+                  <item row="1" column="0" rowspan="5">
+                   <spacer name="horizontalSpacer_61">
                     <property name="orientation">
-                     <enum>Qt::Vertical</enum>
+                     <enum>Qt::Horizontal</enum>
                     </property>
                     <property name="sizeHint" stdset="0">
                      <size>
-                      <width>20</width>
-                      <height>40</height>
+                      <width>40</width>
+                      <height>20</height>
                      </size>
                     </property>
                    </spacer>
+                  </item>
+                  <item row="1" column="1">
+                   <layout class="QGridLayout" name="gridLayout_29">
+                    <item row="1" column="3">
+                     <widget class="QPushButton" name="privkey_page_button">
+                      <property name="text">
+                       <string>Private Key</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="2">
+                     <widget class="QPushButton" name="addaddress_page_button">
+                      <property name="text">
+                       <string>Add New Address</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="1">
+                     <spacer name="horizontalSpacer_17">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item row="1" column="0">
+                     <widget class="QLabel" name="label_16">
+                      <property name="font">
+                       <font>
+                        <pointsize>14</pointsize>
+                        <underline>false</underline>
+                       </font>
+                      </property>
+                      <property name="text">
+                       <string>Wallet Addresses</string>
+                      </property>
+                      <property name="alignment">
+                       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
                   </item>
                   <item row="5" column="1">
                    <layout class="QGridLayout" name="chain_stop_Layout">
@@ -1009,53 +1056,6 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="4" column="1">
-                   <spacer name="verticalSpacer_33">
-                    <property name="orientation">
-                     <enum>Qt::Vertical</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>20</width>
-                      <height>40</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="3" column="1">
-                   <layout class="QGridLayout" name="create_privkey_buttons_Layout">
-                    <item row="1" column="1">
-                     <spacer name="horizontalSpacer_11">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                    <item row="1" column="2">
-                     <widget class="QPushButton" name="privkey_page_button">
-                      <property name="text">
-                       <string>Private Key</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="0">
-                     <widget class="QCheckBox" name="hide_address_checkBox">
-                      <property name="text">
-                       <string>Hide zero amount addresses</string>
-                      </property>
-                      <property name="checked">
-                       <bool>false</bool>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
                   <item row="2" column="1">
                    <widget class="QTableWidget" name="addresses_tableWidget">
                     <property name="sizePolicy">
@@ -1067,6 +1067,12 @@
                     <property name="minimumSize">
                      <size>
                       <width>0</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
                       <height>250</height>
                      </size>
                     </property>
@@ -1080,7 +1086,7 @@
                      <enum>Qt::ScrollBarAsNeeded</enum>
                     </property>
                     <property name="sizeAdjustPolicy">
-                     <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
+                     <enum>QAbstractScrollArea::AdjustToContents</enum>
                     </property>
                     <property name="editTriggers">
                      <set>QAbstractItemView::NoEditTriggers</set>
@@ -1158,33 +1164,20 @@
                     </column>
                    </widget>
                   </item>
-                  <item row="1" column="1">
-                   <layout class="QGridLayout" name="gridLayout_29">
+                  <item row="3" column="1">
+                   <layout class="QGridLayout" name="create_privkey_buttons_Layout">
                     <item row="1" column="0">
-                     <widget class="QLabel" name="label_16">
-                      <property name="font">
-                       <font>
-                        <pointsize>14</pointsize>
-                        <underline>false</underline>
-                       </font>
-                      </property>
+                     <widget class="QCheckBox" name="hide_address_checkBox">
                       <property name="text">
-                       <string>Wallet Addresses</string>
+                       <string>Hide zero amount addresses</string>
                       </property>
-                      <property name="alignment">
-                       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="2">
-                     <widget class="QPushButton" name="addaddress_page_button">
-                      <property name="text">
-                       <string>Add New Address</string>
+                      <property name="checked">
+                       <bool>false</bool>
                       </property>
                      </widget>
                     </item>
                     <item row="1" column="1">
-                     <spacer name="horizontalSpacer_17">
+                     <spacer name="horizontalSpacer_11">
                       <property name="orientation">
                        <enum>Qt::Horizontal</enum>
                       </property>
@@ -1207,6 +1200,45 @@
                      <size>
                       <width>20</width>
                       <height>40</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="6" column="1">
+                   <spacer name="verticalSpacer_15">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="4" column="1">
+                   <spacer name="verticalSpacer_33">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="1" column="2" rowspan="5">
+                   <spacer name="horizontalSpacer_62">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
                      </size>
                     </property>
                    </spacer>
@@ -1504,9 +1536,18 @@
                    <widget class="QTableWidget" name="addresses_privkey_tableWidget">
                     <property name="minimumSize">
                      <size>
-                      <width>600</width>
+                      <width>0</width>
                       <height>0</height>
                      </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>250</height>
+                     </size>
+                    </property>
+                    <property name="sizeAdjustPolicy">
+                     <enum>QAbstractScrollArea::AdjustToContents</enum>
                     </property>
                     <attribute name="horizontalHeaderDefaultSectionSize">
                      <number>150</number>
@@ -1978,6 +2019,12 @@
                  </item>
                  <item row="3" column="4">
                   <widget class="QLabel" name="wallet_total_normal_value">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="minimumSize">
                     <size>
                      <width>120</width>
@@ -2073,9 +2120,15 @@
                </item>
                <item row="1" column="1" colspan="2">
                 <widget class="QLabel" name="current_pubkey_value">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="minimumSize">
                   <size>
-                   <width>600</width>
+                   <width>0</width>
                    <height>0</height>
                   </size>
                  </property>
@@ -2104,7 +2157,7 @@
                 <widget class="QLabel" name="currentaddress_value">
                  <property name="minimumSize">
                   <size>
-                   <width>323</width>
+                   <width>0</width>
                    <height>0</height>
                   </size>
                  </property>
@@ -2178,6 +2231,9 @@
                 <width>0</width>
                 <height>0</height>
                </size>
+              </property>
+              <property name="sizeAdjustPolicy">
+               <enum>QAbstractScrollArea::AdjustToContents</enum>
               </property>
               <attribute name="horizontalHeaderDefaultSectionSize">
                <number>150</number>
@@ -2299,19 +2355,6 @@
                <string>Transactions</string>
               </property>
              </widget>
-            </item>
-            <item row="0" column="2" rowspan="6">
-             <spacer name="horizontalSpacer_51">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
             </item>
             <item row="1" column="1">
              <layout class="QGridLayout" name="send_receive_Layout">
@@ -2475,8 +2518,21 @@
               </property>
              </spacer>
             </item>
-            <item row="0" column="0" rowspan="6">
-             <spacer name="horizontalSpacer_50">
+            <item row="6" column="1">
+             <spacer name="verticalSpacer_11">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="0" column="2" rowspan="7">
+             <spacer name="horizontalSpacer_51">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
@@ -2488,15 +2544,15 @@
               </property>
              </spacer>
             </item>
-            <item row="6" column="1">
-             <spacer name="verticalSpacer_11">
+            <item row="0" column="0" rowspan="7">
+             <spacer name="horizontalSpacer_50">
               <property name="orientation">
-               <enum>Qt::Vertical</enum>
+               <enum>Qt::Horizontal</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
-                <width>20</width>
-                <height>40</height>
+                <width>40</width>
+                <height>20</height>
                </size>
               </property>
              </spacer>
@@ -2523,7 +2579,7 @@
                <enum>QTabWidget::Rounded</enum>
               </property>
               <property name="currentIndex">
-               <number>2</number>
+               <number>3</number>
               </property>
               <widget class="QWidget" name="looprequests_tab">
                <attribute name="title">
@@ -2647,14 +2703,14 @@
                 </item>
                 <item>
                  <layout class="QGridLayout" name="received_looprequests_Layout">
-                  <item row="0" column="0">
+                  <item row="0" column="1">
                    <widget class="QLabel" name="loop_request_label">
                     <property name="text">
                      <string>Credit Loop Requests  </string>
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="0">
+                  <item row="1" column="1">
                    <widget class="QTableWidget" name="loop_request_tableWidget">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -2665,13 +2721,13 @@
                     <property name="minimumSize">
                      <size>
                       <width>0</width>
-                      <height>175</height>
+                      <height>0</height>
                      </size>
                     </property>
                     <property name="maximumSize">
                      <size>
                       <width>16777215</width>
-                      <height>200</height>
+                      <height>16777215</height>
                      </size>
                     </property>
                     <property name="sizeIncrement">
@@ -2735,6 +2791,32 @@
                      </property>
                     </column>
                    </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <spacer name="horizontalSpacer_63">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="1" column="2">
+                   <spacer name="horizontalSpacer_64">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
                   </item>
                  </layout>
                 </item>
@@ -2771,13 +2853,13 @@
                     <property name="minimumSize">
                      <size>
                       <width>0</width>
-                      <height>175</height>
+                      <height>0</height>
                      </size>
                     </property>
                     <property name="maximumSize">
                      <size>
                       <width>16777215</width>
-                      <height>150</height>
+                      <height>16777215</height>
                      </size>
                     </property>
                     <property name="sizeIncrement">
@@ -2841,6 +2923,32 @@
                      </property>
                     </column>
                    </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <spacer name="horizontalSpacer_65">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="2" column="2">
+                   <spacer name="horizontalSpacer_66">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
                   </item>
                  </layout>
                 </item>
@@ -2903,7 +3011,7 @@
                     <property name="maximumSize">
                      <size>
                       <width>900</width>
-                      <height>280</height>
+                      <height>16777215</height>
                      </size>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_49">
@@ -3055,7 +3163,7 @@
                     <property name="maximumSize">
                      <size>
                       <width>900</width>
-                      <height>250</height>
+                      <height>16777215</height>
                      </size>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_50">
@@ -3184,7 +3292,7 @@
                   <item row="1" column="1" rowspan="2">
                    <widget class="QTableWidget" name="transferableloops_tableWidget">
                     <property name="sizePolicy">
-                     <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                       <horstretch>0</horstretch>
                       <verstretch>0</verstretch>
                      </sizepolicy>
@@ -3198,7 +3306,7 @@
                     <property name="maximumSize">
                      <size>
                       <width>16777215</width>
-                      <height>310</height>
+                      <height>16777215</height>
                      </size>
                     </property>
                     <property name="sizeIncrement">
@@ -3520,7 +3628,7 @@
                   <item row="1" column="1" rowspan="2" colspan="2">
                    <widget class="QTableWidget" name="activeloops_tableWidget">
                     <property name="sizePolicy">
-                     <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                       <horstretch>0</horstretch>
                       <verstretch>0</verstretch>
                      </sizepolicy>
@@ -3534,7 +3642,7 @@
                     <property name="maximumSize">
                      <size>
                       <width>16777215</width>
-                      <height>310</height>
+                      <height>16777215</height>
                      </size>
                     </property>
                     <property name="sizeIncrement">
@@ -3858,7 +3966,7 @@
                     <property name="maximumSize">
                      <size>
                       <width>815</width>
-                      <height>200</height>
+                      <height>16777215</height>
                      </size>
                     </property>
                     <property name="frameShape">
@@ -4043,19 +4151,12 @@
                     <property name="maximumSize">
                      <size>
                       <width>815</width>
-                      <height>200</height>
+                      <height>16777215</height>
                      </size>
                     </property>
-                    <layout class="QFormLayout" name="formLayout_2">
-                     <item row="0" column="0">
-                      <widget class="QLabel" name="loopquery_baton_label">
-                       <property name="text">
-                        <string>Txid (baton)</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="1">
-                      <widget class="QLabel" name="loopquery_baton_value">
+                    <layout class="QGridLayout" name="gridLayout_28">
+                     <item row="3" column="9">
+                      <widget class="QLabel" name="loopquery_transfercount_value">
                        <property name="frameShape">
                         <enum>QFrame::WinPanel</enum>
                        </property>
@@ -4065,65 +4166,16 @@
                        <property name="text">
                         <string/>
                        </property>
-                       <property name="textInteractionFlags">
-                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-                       </property>
                       </widget>
                      </item>
-                     <item row="1" column="0">
-                      <widget class="QLabel" name="loopquery_amount_label">
+                     <item row="3" column="8">
+                      <widget class="QLabel" name="loopquery_transfercount_label">
                        <property name="text">
-                        <string>Amount</string>
+                        <string>Transfer count</string>
                        </property>
                       </widget>
                      </item>
-                     <item row="1" column="1">
-                      <widget class="QLabel" name="loopquery_amount_value">
-                       <property name="frameShape">
-                        <enum>QFrame::WinPanel</enum>
-                       </property>
-                       <property name="frameShadow">
-                        <enum>QFrame::Sunken</enum>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                       <property name="textInteractionFlags">
-                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="0">
-                      <widget class="QLabel" name="loopquery_currency_label">
-                       <property name="text">
-                        <string>Currency </string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="1">
-                      <widget class="QLabel" name="loopquery_currency_value">
-                       <property name="frameShape">
-                        <enum>QFrame::WinPanel</enum>
-                       </property>
-                       <property name="frameShadow">
-                        <enum>QFrame::Sunken</enum>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                       <property name="textInteractionFlags">
-                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="3" column="0">
-                      <widget class="QLabel" name="loopquery_matures_label">
-                       <property name="text">
-                        <string>Matures</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="3" column="1">
+                     <item row="3" column="7">
                       <widget class="QLabel" name="loopquery_matures_value">
                        <property name="frameShape">
                         <enum>QFrame::WinPanel</enum>
@@ -4139,14 +4191,69 @@
                        </property>
                       </widget>
                      </item>
-                     <item row="4" column="0">
-                      <widget class="QLabel" name="loopquery_issuer_label">
+                     <item row="3" column="6">
+                      <widget class="QLabel" name="loopquery_matures_label">
                        <property name="text">
-                        <string>Issuer pubkey</string>
+                        <string>Matures</string>
+                       </property>
+                       <property name="alignment">
+                        <set>Qt::AlignCenter</set>
                        </property>
                       </widget>
                      </item>
-                     <item row="4" column="1">
+                     <item row="3" column="5">
+                      <widget class="QLabel" name="loopquery_currency_value">
+                       <property name="frameShape">
+                        <enum>QFrame::WinPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Sunken</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="textInteractionFlags">
+                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="4">
+                      <widget class="QLabel" name="loopquery_currency_label">
+                       <property name="text">
+                        <string>Currency </string>
+                       </property>
+                       <property name="alignment">
+                        <set>Qt::AlignCenter</set>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="3">
+                      <widget class="QLabel" name="loopquery_amount_value">
+                       <property name="frameShape">
+                        <enum>QFrame::WinPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Sunken</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="textInteractionFlags">
+                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="2">
+                      <widget class="QLabel" name="loopquery_amount_label">
+                       <property name="text">
+                        <string>Amount</string>
+                       </property>
+                       <property name="alignment">
+                        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="3" colspan="7">
                       <widget class="QLabel" name="loopquery_issuer_value">
                        <property name="frameShape">
                         <enum>QFrame::WinPanel</enum>
@@ -4159,6 +4266,62 @@
                        </property>
                        <property name="textInteractionFlags">
                         <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="2">
+                      <widget class="QLabel" name="loopquery_issuer_label">
+                       <property name="text">
+                        <string>Issuer pubkey</string>
+                       </property>
+                       <property name="alignment">
+                        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="3" colspan="7">
+                      <widget class="QLabel" name="loopquery_baton_value">
+                       <property name="frameShape">
+                        <enum>QFrame::WinPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Sunken</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="textInteractionFlags">
+                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="3" colspan="7">
+                      <widget class="QLabel" name="loopquery_batonpk_value">
+                       <property name="frameShape">
+                        <enum>QFrame::WinPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Sunken</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="2">
+                      <widget class="QLabel" name="loopquery_baton_label">
+                       <property name="text">
+                        <string>Txid (baton)</string>
+                       </property>
+                       <property name="alignment">
+                        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="2">
+                      <widget class="QLabel" name="loopquery_batonpk_label">
+                       <property name="text">
+                        <string>baton pubkey</string>
                        </property>
                       </widget>
                      </item>
@@ -4323,7 +4486,7 @@
                 <widget class="QLineEdit" name="contactpubkey_lineEdit">
                  <property name="minimumSize">
                   <size>
-                   <width>600</width>
+                   <width>0</width>
                    <height>0</height>
                   </size>
                  </property>
@@ -4339,19 +4502,6 @@
               </property>
              </widget>
             </item>
-            <item row="1" column="0" rowspan="4">
-             <spacer name="horizontalSpacer_23">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
             <item row="5" column="1" colspan="6">
              <spacer name="verticalSpacer_21">
               <property name="orientation">
@@ -4361,19 +4511,6 @@
                <size>
                 <width>20</width>
                 <height>40</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="1" column="7" rowspan="4">
-             <spacer name="horizontalSpacer_34">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
                </size>
               </property>
              </spacer>
@@ -4411,16 +4548,32 @@
               </property>
              </spacer>
             </item>
-            <item row="7" column="0" colspan="8">
+            <item row="1" column="7" rowspan="7">
+             <spacer name="horizontalSpacer_34">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="7" column="1" colspan="6">
              <widget class="QTableWidget" name="contacts_tableWidget">
               <property name="minimumSize">
                <size>
                 <width>0</width>
-                <height>300</height>
+                <height>0</height>
                </size>
               </property>
               <property name="mouseTracking">
                <bool>false</bool>
+              </property>
+              <property name="sizeAdjustPolicy">
+               <enum>QAbstractScrollArea::AdjustToContents</enum>
               </property>
               <property name="editTriggers">
                <set>QAbstractItemView::NoEditTriggers</set>
@@ -4468,6 +4621,19 @@
                </property>
               </column>
              </widget>
+            </item>
+            <item row="1" column="0" rowspan="7">
+             <spacer name="horizontalSpacer_23">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
             </item>
            </layout>
           </widget>
@@ -4813,7 +4979,7 @@
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>12</pointsize>
+                  <pointsize>10</pointsize>
                  </font>
                 </property>
                 <property name="text">
@@ -4837,7 +5003,7 @@
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>12</pointsize>
+                  <pointsize>11</pointsize>
                  </font>
                 </property>
                 <property name="text">
@@ -4917,7 +5083,7 @@
                <widget class="QLabel" name="last_update_label">
                 <property name="font">
                  <font>
-                  <pointsize>11</pointsize>
+                  <pointsize>10</pointsize>
                  </font>
                 </property>
                 <property name="text">
