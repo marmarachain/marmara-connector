@@ -3944,7 +3944,7 @@
                    <widget class="QFrame" name="loopqueries_pubkey_frame">
                     <property name="maximumSize">
                      <size>
-                      <width>700</width>
+                      <width>815</width>
                       <height>16777215</height>
                      </size>
                     </property>
@@ -4376,7 +4376,7 @@
                    <widget class="QFrame" name="loopquery_seach_frame">
                     <property name="maximumSize">
                      <size>
-                      <width>700</width>
+                      <width>815</width>
                       <height>16777215</height>
                      </size>
                     </property>
