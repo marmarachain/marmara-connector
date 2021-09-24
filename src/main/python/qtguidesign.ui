@@ -1034,14 +1034,14 @@
                   </item>
                   <item row="5" column="1">
                    <layout class="QGridLayout" name="chain_stop_Layout">
-                    <item row="0" column="1">
+                    <item row="0" column="2">
                      <widget class="QPushButton" name="stopchain_button">
                       <property name="text">
                        <string>Stop Chain</string>
                       </property>
                      </widget>
                     </item>
-                    <item row="0" column="0">
+                    <item row="0" column="1">
                      <spacer name="horizontalSpacer_15">
                       <property name="orientation">
                        <enum>Qt::Horizontal</enum>
@@ -1053,6 +1053,13 @@
                        </size>
                       </property>
                      </spacer>
+                    </item>
+                    <item row="0" column="0">
+                     <widget class="QPushButton" name="download_blocks_button">
+                      <property name="text">
+                       <string>Blocks</string>
+                      </property>
+                     </widget>
                     </item>
                    </layout>
                   </item>

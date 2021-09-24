@@ -1,5 +1,6 @@
 import json
 import os
+import pathlib
 import platform
 import sys
 import time
@@ -97,6 +98,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.addresses_tableWidget.cellClicked.connect(self.addresstable_itemcontext)
         self.privkey_page_button.clicked.connect(self.see_privkey_page)
         self.hide_address_checkBox.clicked.connect(self.hide_addresses)
+        self.download_blocks_button.setToolTip(self.tr("Download Blocks bootstrap"))
+        self.download_blocks_button.clicked.connect(self.download_blocks)
         # - add address page ----
         self.newaddress_button.clicked.connect(self.get_new_address)
         self.address_seed_button.clicked.connect(self.convertpassphrase)
@@ -355,37 +358,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def open_debug_console(self):
         QMessageBox.information(self,
                           self.tr("Debug Console"),
-                          self.tr("Under development")
-                          )
-        # debugDialog = QDialog()
-        # debugDialog.setWindowTitle(self.tr("Debug Console"))
-        # command_browser = QtWidgets.QTextBrowser()
-        # command_lineEdit = QtWidgets.QLineEdit()
-        # sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Fixed)
-        # sizePolicy.setHorizontalStretch(0)
-        # sizePolicy.setVerticalStretch(0)
-        #
-        # clear_pushButton = QPushButton(qta.icon('ei.remove'), '')
-        # sizePolicy.setHeightForWidth(clear_pushButton.sizePolicy().hasHeightForWidth())
-        # clear_pushButton.setSizePolicy(sizePolicy)
-        # font_plus = QPushButton(qta.icon('mdi.format-font-size-increase'), '')
-        # sizePolicy.setHeightForWidth(font_plus.sizePolicy().hasHeightForWidth())
-        # font_plus.setSizePolicy(sizePolicy)
-        # font_minus = QPushButton(qta.icon('mdi.format-font-size-decrease'), '')
-        # sizePolicy.setHeightForWidth(font_minus.sizePolicy().hasHeightForWidth())
-        # font_minus.setSizePolicy(sizePolicy)
-        # spacer_item = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        # debugDialog.layout = QGridLayout()
-        #
-        # debugDialog.layout.addItem(spacer_item, 0, 0, 1, 2)
-        # debugDialog.layout.addWidget(font_plus, 0, 2, 1, 1)
-        # debugDialog.layout.addWidget(font_minus, 0, 3, 1, 1)
-        # debugDialog.layout.addWidget(clear_pushButton, 0, 4, 1, 1)
-        # debugDialog.layout.addWidget(command_browser, 1, 0, 1, 5)
-        # debugDialog.layout.addWidget(command_lineEdit, 2, 0, 1, 5)
-        # debugDialog.setLayout(debugDialog.layout)
-        #
-        # debugDialog.exec_()
+                          self.tr("Under development"))
 
     @pyqtSlot()
     def open_log_file(self):
@@ -1076,29 +1049,47 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.addresses_tableWidget.setColumnHidden(0, True)
         self.is_chain_ready()
 
+    @pyqtSlot()
+    def download_blocks(self):
+        blocksDialog = QDialog(self)
+        blocksDialog.setWindowTitle(self.tr('Download Blocks bootstrap'))
+        blocksDialog.layout = QGridLayout()
 
-        # def show_languages(self):
-        #     languageDialog = QDialog(self)
-        #     languageDialog.setWindowTitle(self.tr("Choose a language"))
-        #
-        #     apply_button = QDialogButtonBox(QDialogButtonBox.Apply)
-        #     self.lang_comboBox = QtWidgets.QComboBox()
-        #
-        #     languageDialog.layout = QVBoxLayout()
-        #     languageDialog.layout.addWidget(self.lang_comboBox)
-        #     languageDialog.layout.addWidget(apply_button)
-        #     languageDialog.setLayout(languageDialog.layout)
-        #
-        #     entries = os.listdir(configuration.configuration_path + '/language')
-        #     entries.sort()
-        #
-        #     for item in entries:
-        #         self.lang_comboBox.addItem(item.strip('.qm'))
-        #         self.lang_comboBox.setItemIcon(entries.index(item), QIcon(
-        #             self.icon_path + "/lang_icons" + "/" + item.strip('.qm') + ".png"))
-        #     apply_button.clicked.connect(self.get_lang_selection)
-        #     apply_button.clicked.connect(languageDialog.close)
-        #     languageDialog.exec_()
+        description_label = QtWidgets.QLabel()
+        spacer_item = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        browse_button = QtWidgets.QPushButton('Browse ..')
+        download_button = QtWidgets.QPushButton('Download')
+        description_label.setText(self.tr('You can either download or browse previously downloaded bootstrap.'))
+
+        blocksDialog.setLayout(blocksDialog.layout)
+        blocksDialog.layout.addWidget(description_label, 0, 0, 1, 3)
+        blocksDialog.layout.addItem(spacer_item, 1, 0, 1, 1)
+        blocksDialog.layout.addWidget(download_button, 1, 1, 1, 1)
+        blocksDialog.layout.addWidget(browse_button, 1, 2, 1, 1)
+
+        # if self.download_button.clicked():
+        download_button.clicked.connect(self.download_bootstrap_via_webbrowser)
+        download_button.clicked.connect(blocksDialog.close)
+        browse_button.clicked.connect(self.browse_bootstrap)
+        browse_button.clicked.connect(blocksDialog.close)
+
+
+        blocksDialog.exec_()
+
+    @pyqtSlot()
+    def download_bootstrap_via_webbrowser(self):
+        webbrowser.open_new('https://eu.bootstrap.dexstats.info/MCL-bootstrap.tar.gz')
+
+    @pyqtSlot()
+    def browse_bootstrap(self):
+        home_path = str(pathlib.Path.home())
+        bootstrap_path = QtWidgets.QFileDialog.getOpenFileName(caption=self.tr('select bootstrap.tar.gz'),
+                                                               directory=home_path, filter='*.tar.gz')
+        print(bootstrap_path)
+        print(str(bootstrap_path).split(',')[0].replace('(', '').replace("'", ''))
+
+    #     to do extract bootstrap
+
     # ------------------
     # Chain  --- wallet Address Add, import
     # -------------------

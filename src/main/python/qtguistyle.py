@@ -18,6 +18,8 @@ class GuiStyle(Ui_MainWindow):
         # stop button style
         self.stopchain_button.setIcon(QtGui.QIcon(self.icon_path + "/stop_icon.png"))
         self.stopchain_button.setIconSize(QtCore.QSize(32, 32))
+        self.download_blocks_button.setIcon(qta.icon('mdi.cloud-download-outline'))
+        self.download_blocks_button.setIconSize(QtCore.QSize(24, 24))
         # menubar
         self.actionQuit.setIcon(QtGui.QIcon(self.icon_path + '/exit_icon.png'))
         # mcl tab
