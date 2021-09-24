@@ -100,6 +100,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.hide_address_checkBox.clicked.connect(self.hide_addresses)
         self.download_blocks_button.setToolTip(self.tr("Download Blocks bootstrap"))
         self.download_blocks_button.clicked.connect(self.download_blocks)
+        self.refresh_walletaddresses_button.clicked.connect(self.getaddresses)
         # - add address page ----
         self.newaddress_button.clicked.connect(self.get_new_address)
         self.address_seed_button.clicked.connect(self.convertpassphrase)
@@ -1984,6 +1985,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             logging.info(result_out[0])
             result = json.loads(result_out[0])
             if result.get('result') == "success":
+                self.lq_pubkey_address_label_value.setText(str(result.get('myNormalAddress')))
                 self.lq_pubkeynormalamount_value_label.setText(str(result.get('myPubkeyNormalAmount')))
                 self.lq_pubkeyactivatedamount_value_label.setText(str(result.get('myActivatedAmount')))
                 self.lq_activeloopno_value_label.setText(str(result.get('numpending')))

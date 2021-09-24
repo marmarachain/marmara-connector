@@ -20,6 +20,8 @@ class GuiStyle(Ui_MainWindow):
         self.stopchain_button.setIconSize(QtCore.QSize(32, 32))
         self.download_blocks_button.setIcon(qta.icon('mdi.cloud-download-outline'))
         self.download_blocks_button.setIconSize(QtCore.QSize(24, 24))
+        self.refresh_walletaddresses_button.setIcon(qta.icon('mdi.refresh'))
+        self.refresh_walletaddresses_button.setIconSize(QtCore.QSize(24, 24))
         # menubar
         self.actionQuit.setIcon(QtGui.QIcon(self.icon_path + '/exit_icon.png'))
         # mcl tab
