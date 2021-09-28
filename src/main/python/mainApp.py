@@ -159,6 +159,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.contacts_tableWidget.cellClicked.connect(self.get_contact_info)
         self.clear_contact_button.clicked.connect(self.clear_contacts_line_edit)
         self.contact_editing_row = ""
+        # Stats Page
+        self.mcl_tab.removeTab(5)
 
         # Thread setup
         self.thread_marmarad_path = QThread()
@@ -193,6 +195,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.thread_getaddresstxids = QThread()
         self.thread_sendtoteam = QThread()
         self.thread_get_address_amounts = QThread()
+        self.thread_extract_bootstrap = QThread()
 
         # Loading Gif
         # --------------------------------------------------
@@ -342,6 +345,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         marmarachain_rpc.set_connection_local()
         logging.info('is local connection: ' + str(marmarachain_rpc.is_local))
         self.check_marmara_path()
+        self.download_blocks_button.show()
 
     def remote_selection(self):
         self.login_stackedWidget.setCurrentIndex(1)
@@ -350,6 +354,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         marmarachain_rpc.set_connection_remote()
         logging.info('is local connection: ' + str(marmarachain_rpc.is_local))
         self.serverpw_lineEdit.clear()
+        self.download_blocks_button.hide()
         if self.server_comboBox.count() != 0:
             self.serveredit_button.setEnabled(True)
             self.connect_button.setEnabled(True)
@@ -370,17 +375,16 @@ class MarmaraMain(QMainWindow, GuiStyle):
 
     @pyqtSlot(int)
     def mcl_tab_changed(self, index):
-        if self.mcl_tab.currentIndex() == index:
-            logging.info('updating contacts table')
+        if index == 4:
             self.update_contact_tablewidget()
-        if self.mcl_tab.currentIndex() == index:
+        if index == 2:
             self.get_contact_names_addresses()
-        if self.mcl_tab.currentIndex() == index:
+        if index == 3:
             self.creditloop_tabWidget.setCurrentIndex(0)
 
     @pyqtSlot(int)
     def credit_tab_changed(self, index):
-        if self.creditloop_tabWidget.currentIndex() == index:
+        if index == 1:
             self.get_contact_names_pubkeys()
 
     @pyqtSlot()
@@ -601,16 +605,27 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def stop_chain(self):
         if self.chain_status:
             self.start_animation()
-            self.worker_stopchain = marmarachain_rpc.RpcHandler()  # worker setting
-            self.worker_stopchain.moveToThread(self.thread_stopchain)  # putting in to thread
-            self.worker_stopchain.finished.connect(self.thread_stopchain.quit)  # when finished close thread
-            self.worker_stopchain.finished.connect(self.stop_animation)  # when finished close animation
-            self.thread_stopchain.started.connect(self.worker_stopchain.stopping_chain)  # executing worker function
-            self.thread_stopchain.start()
-            self.worker_stopchain.command_out.connect(self.result_stopchain)  # getting results and connecting to socket
+            stop_chain_thread = self.stop_chain_thread()
+            # self.worker_stopchain = marmarachain_rpc.RpcHandler()  # worker setting
+            # self.worker_stopchain.moveToThread(self.thread_stopchain)  # putting in to thread
+            # self.worker_stopchain.finished.connect(self.thread_stopchain.quit)  # when finished close thread
+            stop_chain_thread.finished.connect(self.stop_animation)  # when finished close animation
+            # self.thread_stopchain.started.connect(self.worker_stopchain.stopping_chain)  # executing worker function
+            # self.thread_stopchain.start()
+            # self.worker_stopchain.command_out.connect(self.result_stopchain)  # getting results and connecting to socket
         else:
             self.bottom_info(self.tr('Marmarachain is not ready'))
             logging.warning('Marmarachain is not ready')
+
+    def stop_chain_thread(self):
+        self.worker_stopchain = marmarachain_rpc.RpcHandler()  # worker setting
+        self.worker_stopchain.moveToThread(self.thread_stopchain)  # putting in to thread
+        self.worker_stopchain.finished.connect(self.thread_stopchain.quit)  # when finished close thread
+        # self.worker_stopchain.finished.connect(self.stop_animation)  # when finished close animation
+        self.thread_stopchain.started.connect(self.worker_stopchain.stopping_chain)  # executing worker function
+        self.thread_stopchain.start()
+        self.worker_stopchain.command_out.connect(self.result_stopchain)
+        return self.worker_stopchain
 
     @pyqtSlot(tuple)
     def result_stopchain(self, result_out):
@@ -692,9 +707,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.worker_sidepanel.command_out.connect(self.refresh_side_panel_result)
         last_update = self.tr('Last Update: ')
         # date = (str(datetime.now().date()))
-        hour = (str(datetime.now().hour))
-        minute = (str(datetime.now().minute))
-        self.last_update_label.setText(last_update + hour + ':' + minute)
+        last_update_time = str(datetime.now().time().replace(microsecond=0))
+        self.last_update_label.setText(last_update + last_update_time)
 
     @pyqtSlot(tuple)
     def refresh_side_panel_result(self, result_out):
@@ -1080,17 +1094,49 @@ class MarmaraMain(QMainWindow, GuiStyle):
 
     @pyqtSlot()
     def download_bootstrap_via_webbrowser(self):
-        webbrowser.open_new('https://eu.bootstrap.dexstats.info/MCL-bootstrap.tar.gz')
+        if marmarachain_rpc.is_local:
+            webbrowser.open_new('https://eu.bootstrap.dexstats.info/MCL-bootstrap.tar.gz')
+        else:
+            pass
 
     @pyqtSlot()
     def browse_bootstrap(self):
         home_path = str(pathlib.Path.home())
-        bootstrap_path = QtWidgets.QFileDialog.getOpenFileName(caption=self.tr('select bootstrap.tar.gz'),
+        get_bootstrap_path = QtWidgets.QFileDialog.getOpenFileName(caption=self.tr('select bootstrap.tar.gz'),
                                                                directory=home_path, filter='*.tar.gz')
-        print(bootstrap_path)
-        print(str(bootstrap_path).split(',')[0].replace('(', '').replace("'", ''))
+        bootstrap_path = str(get_bootstrap_path).split(',')[0].replace('(', '').replace("'", '')
+        if platform.system() == 'Darwin':
+            destination_path = os.environ['HOME'] + '/Library/Application Support/Komodo/MCL/'
+        elif platform.system() == 'Linux':
+            destination_path = os.environ['HOME'] + '/.komodo/MCL/'
+        elif platform.system() == 'Win64' or platform.system() == 'Windows':
+            destination_path = '%s/komodo/MCL/' % os.environ['APPDATA']
+        messagebox = self.custom_message(self.tr("Extracting blocks"),
+                                         self.tr("Marmara chain will be closed if it's running"), 'question',
+                                         QMessageBox.Question)
 
-    #     to do extract bootstrap
+        if messagebox == QMessageBox.Yes:
+            print(destination_path)
+            self.start_animation()
+            stopchain_thread = self.stop_chain_thread()
+            self.worker_extract_bootstrap = marmarachain_rpc.RpcHandler()  # worker setting
+            self.worker_extract_bootstrap.set_command('tar -zvxf ' + bootstrap_path + ' -C ' + destination_path)
+            self.worker_extract_bootstrap.moveToThread(self.thread_extract_bootstrap)  # putting in to thread
+            self.worker_extract_bootstrap.finished.connect(self.thread_extract_bootstrap.quit)
+            self.worker_extract_bootstrap.finished.connect(self.stop_animation)  # when finished close animation
+            self.thread_extract_bootstrap.started.connect(self.worker_extract_bootstrap.extract_bootstrap)
+            stopchain_thread.finished.connect(self.thread_extract_bootstrap.start)
+            self.worker_extract_bootstrap.output.connect(self.extract_bootstrap_out)
+        if messagebox == QMessageBox.No:
+            self.bottom_info(self.tr('Bootstrap extracting cancelled'))
+
+    @pyqtSlot(str)
+    def extract_bootstrap_out(self, output):
+        self.bottom_info(output)
+        if output == 'None':
+            self.bottom_info(self.tr('Extracting blocks finished'))
+
+    #     to do extract bootstrap on remote server
 
     # ------------------
     # Chain  --- wallet Address Add, import
