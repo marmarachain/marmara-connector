@@ -283,6 +283,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         messagebox = QMessageBox()
         messagebox.setWindowTitle(title)
         messagebox.setText(content)
+        messagebox.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
         messagebox.setDetailedText(detailed_text)
         btn_yes = None
         btn_no = None
