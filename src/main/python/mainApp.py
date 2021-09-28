@@ -1106,11 +1106,11 @@ class MarmaraMain(QMainWindow, GuiStyle):
                                                                directory=home_path, filter='*.tar.gz')
         bootstrap_path = str(get_bootstrap_path).split(',')[0].replace('(', '').replace("'", '')
         if platform.system() == 'Darwin':
-            destination_path = os.environ['HOME'] + '/Library/Application Support/Komodo/MCL/'
+            destination_path = os.environ['HOME'] + '/Library/Application Support/Komodo/MCL'
         elif platform.system() == 'Linux':
-            destination_path = os.environ['HOME'] + '/.komodo/MCL/'
+            destination_path = os.environ['HOME'] + '/.komodo/MCL'
         elif platform.system() == 'Win64' or platform.system() == 'Windows':
-            destination_path = '%s/komodo/MCL/' % os.environ['APPDATA']
+            destination_path = '%s\Komodo\MCL' % os.environ['APPDATA']
         messagebox = self.custom_message(self.tr("Extracting blocks"),
                                          self.tr("Marmara chain will be closed if it's running"), 'question',
                                          QMessageBox.Question)
