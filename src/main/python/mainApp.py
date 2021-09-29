@@ -46,8 +46,9 @@ class MarmaraMain(QMainWindow, GuiStyle):
         # paths settings
         # Menu Actions
         self.actionAbout.triggered.connect(self.show_about)
-        self.actionLogout.triggered.connect(self.host_selection)
+        self.actionLogout.triggered.connect(self.logout_host)
         self.actionLanguage_Selection.triggered.connect(self.show_languages)
+        self.actionConsole.setVisible(False)
         self.actionConsole.triggered.connect(self.open_debug_console)
         self.actionSee_Log_File.triggered.connect(self.open_log_file)
         self.actionCheck_for_Update.triggered.connect(self.check_app_version)
@@ -236,7 +237,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
             for item in entries:
                 if item.strip('.qm') == language:
                     self.change_lang(language)
-
     @pyqtSlot()
     def show_languages(self):
 
@@ -322,9 +322,12 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.home_button.setVisible(False)
         self.login_message_label.clear()
         self.chain_status = False
-        self.clear_tablewidgets()
 
-    def clear_tablewidgets(self):
+    def logout_host(self):
+        self.current_pubkey_value = ""
+        self.currentaddress_value = ""
+        self.pubkey_status = False
+        self.myCCActivatedAddress = None
         self.addresses_tableWidget.clear()
         self.addresses_privkey_tableWidget.clear()
         self.transactions_tableWidget.clear()
@@ -343,6 +346,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                                                                      self.tr('Receiver Pubkey'), ''])
         self.activeloops_tableWidget.setHorizontalHeaderLabels([self.tr('Loop Address'), self.tr('Amount')])
         self.transferableloops_tableWidget.setHorizontalHeaderLabels([self.tr('Txid'), self.tr('Details')])
+        self.host_selection()
 
     def local_selection(self):
         marmarachain_rpc.set_connection_local()

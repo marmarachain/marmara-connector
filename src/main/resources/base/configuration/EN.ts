@@ -753,11 +753,6 @@
         <translation>baton pubkey</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2549"/>
-        <source>Estimated Staking Income</source>
-        <translation type="obsolete">Estimated Staking Income</translation>
-    </message>
-    <message>
         <location filename="../../../python/qtguidesign.py" line="2622"/>
         <source>0.0</source>
         <translation>0.0</translation>

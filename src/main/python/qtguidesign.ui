@@ -1329,7 +1329,7 @@
                  </font>
                 </property>
                 <property name="text">
-                 <string>Last Update:  00:00</string>
+                 <string>Last Update:  00:00:00</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -1619,7 +1619,7 @@
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>5</number>
+           <number>0</number>
           </property>
           <property name="iconSize">
            <size>
@@ -3354,7 +3354,7 @@
                <enum>QTabWidget::Rounded</enum>
               </property>
               <property name="currentIndex">
-               <number>0</number>
+               <number>3</number>
               </property>
               <widget class="QWidget" name="looprequests_tab">
                <attribute name="title">

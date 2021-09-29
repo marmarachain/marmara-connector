@@ -47,6 +47,7 @@ class ApplicationConfig:
             with open(self.config_file_path, 'w') as configfile:
                 self.config.add_section('PATHS')
                 self.config.add_section('USER')
+                self.config.set('USER', 'lang', 'EN')
                 self.config.write(configfile)
 
     def set_key_value(self, section, key, value):
