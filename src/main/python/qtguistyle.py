@@ -30,6 +30,8 @@ class GuiStyle(Ui_MainWindow):
         self.mcl_tab.setTabIcon(2, QtGui.QIcon(self.icon_path + '/credit.png'))
         self.mcl_tab.setTabIcon(3, QtGui.QIcon(qta.icon('fa5b.hornbill')))
         self.mcl_tab.setTabIcon(4, QtGui.QIcon(self.icon_path + '/persons.png'))
+        self.mcl_tab.setTabIcon(5, QtGui.QIcon(qta.icon("mdi.chart-areaspline")))
+        # self.mcl_tab.setIconSize(QtCore.QSize(24,24))
         # Side panel
         self.getinfo_refresh_button.setIcon(QtGui.QIcon(self.icon_path + '/refresh_icon.png'))
         self.getinfo_refresh_button.setIconSize(QtCore.QSize(32, 32))
@@ -85,6 +87,8 @@ class GuiStyle(Ui_MainWindow):
         # Stats
         self.stats_refresh_pushButton.setIcon(qta.icon('mdi.refresh'))
         self.stats_refresh_pushButton.setIconSize(QtCore.QSize(24, 24))
+        self.stats_calculate_pushButton.setIcon(qta.icon('mdi.calculator-variant-outline'))
+        self.stats_calculate_pushButton.setIconSize(QtCore.QSize(24, 24))
 
 
 class ToggleSwitch(QtWidgets.QPushButton):

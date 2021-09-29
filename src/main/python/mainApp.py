@@ -161,6 +161,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.contact_editing_row = ""
         # Stats Page
         self.stats_refresh_pushButton.clicked.connect(self.get_marmara_stats)
+        self.stats_refresh_pushButton.setToolTip(self.tr("can be refreshed once in a minute"))
         self.stats_calculate_pushButton.setEnabled(False)
         self.stats_calculate_pushButton.clicked.connect(self.calculate_estimated_stake)
 
