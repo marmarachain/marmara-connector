@@ -82,14 +82,9 @@ class GuiStyle(Ui_MainWindow):
         self.activeloops_search_button.setIconSize(QtCore.QSize(24, 24))
         self.transferableloops_search_button.setIcon(qta.icon('fa.search'))
         self.transferableloops_search_button.setIconSize(QtCore.QSize(24, 24))
-        # line edit cursor focus
-        self.serverpw_lineEdit.setFocus()
-        self.add_serverip_lineEdit.setFocus()
-        self.add_servername_lineEdit.setFocus()
-        self.add_serverusername_lineEdit.setFocus()
-        self.edit_serverip_lineEdit.setFocus()
-        self.edit_servername_lineEdit.setFocus()
-        self.edit_serverusername_lineEdit.setFocus()
+        # Stats
+        self.stats_refresh_pushButton.setIcon(qta.icon('mdi.refresh'))
+        self.stats_refresh_pushButton.setIconSize(QtCore.QSize(24, 24))
 
 
 class ToggleSwitch(QtWidgets.QPushButton):

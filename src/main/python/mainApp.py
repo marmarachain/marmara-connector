@@ -160,7 +160,9 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.clear_contact_button.clicked.connect(self.clear_contacts_line_edit)
         self.contact_editing_row = ""
         # Stats Page
-        self.mcl_tab.removeTab(5)
+        self.stats_refresh_pushButton.clicked.connect(self.get_marmara_stats)
+        self.stats_calculate_pushButton.setEnabled(False)
+        self.stats_calculate_pushButton.clicked.connect(self.calculate_estimated_stake)
 
         # Thread setup
         self.thread_marmarad_path = QThread()
@@ -1035,7 +1037,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         startchainDialog.layout = QVBoxLayout()
 
         apply_button = QDialogButtonBox(QDialogButtonBox.Apply)
-        self.reindex = QtWidgets.QCheckBox('reindex' + self.tr(' (starts from begining and re-indexes currently '
+        self.reindex = QtWidgets.QCheckBox('reindex' + self.tr(' (starts from beginning and re-indexes currently '
                                                                'synced blockchain data)'))
         self.reindex.setChecked(False)
         self.rescan = QtWidgets.QCheckBox('rescan' + self.tr(' (starts scanning wallet data in blockchain data)'))
@@ -1103,7 +1105,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def browse_bootstrap(self):
         home_path = str(pathlib.Path.home())
         get_bootstrap_path = QtWidgets.QFileDialog.getOpenFileName(caption=self.tr('select bootstrap.tar.gz'),
-                                                               directory=home_path, filter='*.tar.gz')
+                                                                   directory=home_path, filter='*.tar.gz')
         bootstrap_path = str(get_bootstrap_path).split(',')[0].replace('(', '').replace("'", '')
         if platform.system() == 'Darwin':
             destination_path = os.environ['HOME'] + '/Library/Application Support/Komodo/MCL'
@@ -1112,7 +1114,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         elif platform.system() == 'Win64' or platform.system() == 'Windows':
             destination_path = '%s\Komodo\MCL' % os.environ['APPDATA']
         messagebox = self.custom_message(self.tr("Extracting blocks"),
-                                         self.tr("Marmara chain will be closed if it's running"), 'question',
+                                         self.tr("Marmara chain will be closed if it is running"), 'question',
                                          QMessageBox.Question)
 
         if messagebox == QMessageBox.Yes:
@@ -2300,6 +2302,48 @@ class MarmaraMain(QMainWindow, GuiStyle):
                                               self.tr('You did not select a contact from table.'),
                                               "information",
                                               QMessageBox.Information)
+    # ------------------------
+    # Stats Page
+    # ------------------------
+
+    @pyqtSlot()
+    def get_marmara_stats(self):
+        self.bottom_info(self.tr('getting stats values'))
+        mcl_stats = version.get_marmara_stats()
+        if mcl_stats != 'error':
+            mcl_stats_info = mcl_stats.get('info')
+            self.stats_height_value_label.setText(str(mcl_stats_info.get('height')))
+            self.stats_normal_label_value.setText(str(mcl_stats_info.get('TotalNormals')))
+            self.stats_activated_label_value.setText(str(mcl_stats_info.get('TotalActivated')))
+            self.stats_in_loops_label_value.setText(str(mcl_stats_info.get('TotalLockedInLoops')))
+            self.bottom_info(self.tr('stats values retrieved'))
+            self.stats_refresh_pushButton.setEnabled(False)
+            self.stats_calculate_pushButton.setEnabled(True)
+            QtCore.QTimer.singleShot(60000, self.stat_refresh_enable)  # after 60 second it will enable button
+        else:
+            self.bottom_err_info(self.tr('Error in getting stats values'))
+
+    @pyqtSlot()
+    def stat_refresh_enable(self):
+        self.stats_refresh_pushButton.setEnabled(True)
+
+    @pyqtSlot()
+    def calculate_estimated_stake(self):
+        total_activated = float(self.stats_activated_label_value.text())
+        total_inloops = float(self.stats_in_loops_label_value.text())
+        if self.stats_amount_in_activated_lineEdit.text():
+            amount_activated = float(self.stats_amount_in_activated_lineEdit.text())
+        else:
+            amount_activated = 0
+            self.stats_amount_in_activated_lineEdit.setText('0')
+        if self.stats_amount_in_loops_lineEdit.text():
+            amount_inloops = float(self.stats_amount_in_loops_lineEdit.text())
+        else:
+            amount_inloops = 0
+            self.stats_amount_in_loops_lineEdit.setText('0')
+        calculation = (((amount_activated/total_activated) + (amount_inloops/total_inloops)*3)/4)*32400
+        self.stats_estimated_staking_label_value.setText(str(calculation))
+        # 30 * 60 * 24 * 0,75  = 32400
 
     # -------------------------------------------------------------------
     # Remote Host adding , editing, deleting and  saving in conf file
