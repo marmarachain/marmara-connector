@@ -800,7 +800,7 @@
     <message>
         <location filename="../../../python/qtguidesign.py" line="2619"/>
         <source>Estimated Daily Staking Income</source>
-        <translation type="unfinished"></translation>
+        <translation>Estimated Daily Staking Income</translation>
     </message>
 </context>
 <context>
@@ -821,804 +821,809 @@
         <translation>Gift Marmara Core Team cups of coffee</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="224"/>
+        <location filename="../../../python/mainApp.py" line="225"/>
         <source>Software Update Available</source>
         <translation>Software Update Available</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="244"/>
+        <location filename="../../../python/mainApp.py" line="245"/>
         <source>Choose a language</source>
         <translation>Choose a language</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="280"/>
+        <location filename="../../../python/mainApp.py" line="281"/>
         <source>About Marmara Connector</source>
         <translation>About Marmara Connector</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="280"/>
+        <location filename="../../../python/mainApp.py" line="281"/>
         <source>This is a software written to carry out Marmarachain node operations on a local or remote machine.&lt;br&gt;Version info: </source>
         <translation>This is a software written to carry out Marmarachain node operations on a local or remote machine.&lt;br&gt;Version info: </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="302"/>
+        <location filename="../../../python/mainApp.py" line="303"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="308"/>
+        <location filename="../../../python/mainApp.py" line="309"/>
         <source>Yes</source>
         <translation>Yes</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="310"/>
+        <location filename="../../../python/mainApp.py" line="311"/>
         <source>No</source>
         <translation>No</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="369"/>
+        <location filename="../../../python/mainApp.py" line="370"/>
         <source>Debug Console</source>
         <translation>Debug Console</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="369"/>
+        <location filename="../../../python/mainApp.py" line="370"/>
         <source>Under development</source>
         <translation>Under development</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="437"/>
+        <location filename="../../../python/mainApp.py" line="438"/>
         <source>Getting marmara chain path from config file</source>
         <translation>Getting marmara chain path from config file</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="440"/>
+        <location filename="../../../python/mainApp.py" line="441"/>
         <source>marmara path from configuration file : </source>
         <translation>marmara path from configuration file : </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="443"/>
+        <location filename="../../../python/mainApp.py" line="444"/>
         <source>Verifiying the Chain location </source>
         <translation>Verifiying the Chain location </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="446"/>
+        <location filename="../../../python/mainApp.py" line="447"/>
         <source>Chain location verified.</source>
         <translation>Chain location verified.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="450"/>
+        <location filename="../../../python/mainApp.py" line="451"/>
         <source>Installing Marmarachain</source>
         <translation>Installing Marmarachain</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="450"/>
+        <location filename="../../../python/mainApp.py" line="451"/>
         <source>Marmarachain is not installed. Would you like to install it?</source>
         <translation>Marmarachain is not installed. Would you like to install it?</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="450"/>
+        <location filename="../../../python/mainApp.py" line="451"/>
         <source>question</source>
         <translation>question</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="477"/>
+        <location filename="../../../python/mainApp.py" line="478"/>
         <source>Auto-installation does not begin</source>
         <translation>Auto-installation does not begin</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="477"/>
+        <location filename="../../../python/mainApp.py" line="478"/>
         <source>You need to write a password that has admin privileges</source>
         <translation>You need to write a password that has admin privileges</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="477"/>
+        <location filename="../../../python/mainApp.py" line="478"/>
         <source>information</source>
         <translation>information</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="510"/>
+        <location filename="../../../python/mainApp.py" line="511"/>
         <source>Installation Completed</source>
         <translation>Installation Completed</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="510"/>
+        <location filename="../../../python/mainApp.py" line="511"/>
         <source>Starting Marmarachain</source>
         <translation>Starting Marmarachain</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="519"/>
+        <location filename="../../../python/mainApp.py" line="520"/>
         <source>Installation not completed correctly</source>
         <translation>Installation not completed correctly</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="519"/>
+        <location filename="../../../python/mainApp.py" line="520"/>
         <source>Wrong password input. Please install again</source>
         <translation>Wrong password input. Please install again</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="546"/>
+        <location filename="../../../python/mainApp.py" line="547"/>
         <source>chain_status </source>
         <translation>chain_status </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="550"/>
+        <location filename="../../../python/mainApp.py" line="551"/>
         <source>Checking marmarachain</source>
         <translation>Checking marmarachain</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="553"/>
+        <location filename="../../../python/mainApp.py" line="554"/>
         <source>marmarachain has pid</source>
         <translation>marmarachain has pid</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="557"/>
+        <location filename="../../../python/mainApp.py" line="558"/>
         <source>sending chain start command</source>
         <translation>sending chain start command</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="562"/>
+        <location filename="../../../python/mainApp.py" line="563"/>
         <source>Checking if marmarachain is ready for rpc</source>
         <translation>Checking if marmarachain is ready for rpc</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="578"/>
+        <location filename="../../../python/mainApp.py" line="579"/>
         <source>chain ready</source>
         <translation>chain ready</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="912"/>
+        <location filename="../../../python/mainApp.py" line="913"/>
         <source>getting wallet addresses</source>
         <translation>getting wallet addresses</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="593"/>
+        <location filename="../../../python/mainApp.py" line="594"/>
         <source>Chain init completed.</source>
         <translation>Chain init completed.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="621"/>
+        <location filename="../../../python/mainApp.py" line="622"/>
         <source>Marmarachain is not ready</source>
         <translation>Marmarachain is not ready</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="644"/>
+        <location filename="../../../python/mainApp.py" line="645"/>
         <source>Marmarachain stopped</source>
         <translation>Marmarachain stopped</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="668"/>
+        <location filename="../../../python/mainApp.py" line="669"/>
         <source>loading getinfo values</source>
         <translation>loading getinfo values</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="685"/>
+        <location filename="../../../python/mainApp.py" line="686"/>
         <source>pubkey is not set</source>
         <translation>pubkey is not set</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="694"/>
+        <location filename="../../../python/mainApp.py" line="695"/>
         <source>getinfo finished</source>
         <translation>getinfo finished</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="703"/>
+        <location filename="../../../python/mainApp.py" line="704"/>
         <source>getting getinfo</source>
         <translation>getting getinfo</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="713"/>
+        <location filename="../../../python/mainApp.py" line="714"/>
         <source>Last Update: </source>
         <translation>Last Update: </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="731"/>
+        <location filename="../../../python/mainApp.py" line="732"/>
         <source>Refresh completed.</source>
         <translation>Refresh completed.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="753"/>
+        <location filename="../../../python/mainApp.py" line="754"/>
         <source>copied </source>
         <translation>copied </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="745"/>
+        <location filename="../../../python/mainApp.py" line="746"/>
         <source>no address value set</source>
         <translation>no address value set</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="756"/>
+        <location filename="../../../python/mainApp.py" line="757"/>
         <source>no pubkey value set</source>
         <translation>no pubkey value set</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="811"/>
+        <location filename="../../../python/mainApp.py" line="812"/>
         <source>Turning off Mining</source>
         <translation>Turning off Mining</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="763"/>
+        <location filename="../../../python/mainApp.py" line="764"/>
         <source>Mining is currently on. You are about to turn off mining. Are you sure?</source>
         <translation>Mining is currently on. You are about to turn off mining. Are you sure?</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="794"/>
+        <location filename="../../../python/mainApp.py" line="795"/>
         <source>Turning off Staking</source>
         <translation>Turning off Staking</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="780"/>
+        <location filename="../../../python/mainApp.py" line="781"/>
         <source>You are about to turn off staking. Are you sure?</source>
         <translation>You are about to turn off staking. Are you sure?</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="794"/>
+        <location filename="../../../python/mainApp.py" line="795"/>
         <source>Staking is currently active. You are about to turn off staking. Are you sure?</source>
         <translation>Staking is currently active. You are about to turn off staking. Are you sure?</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="811"/>
+        <location filename="../../../python/mainApp.py" line="812"/>
         <source>You are about to turn off mining. Are you sure?</source>
         <translation>You are about to turn off mining. Are you sure?</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="848"/>
+        <location filename="../../../python/mainApp.py" line="849"/>
         <source>Staking ON</source>
         <translation>Staking ON</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="853"/>
+        <location filename="../../../python/mainApp.py" line="854"/>
         <source>Mining status is OFF</source>
         <translation>Mining status is OFF</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="858"/>
+        <location filename="../../../python/mainApp.py" line="859"/>
         <source>Mining ON with </source>
         <translation>Mining ON with </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="889"/>
+        <location filename="../../../python/mainApp.py" line="890"/>
         <source>Support</source>
         <translation>Support</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1845"/>
+        <location filename="../../../python/mainApp.py" line="1846"/>
         <source>Confirm Transaction</source>
         <translation>Confirm Transaction</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1852"/>
+        <location filename="../../../python/mainApp.py" line="1853"/>
         <source>Transaction aborted</source>
         <translation>Transaction aborted</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="924"/>
+        <location filename="../../../python/mainApp.py" line="925"/>
         <source>Loading Addresses ...</source>
         <translation>Loading Addresses ...</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="940"/>
+        <location filename="../../../python/mainApp.py" line="941"/>
         <source>Loading Addresses finished</source>
         <translation>Loading Addresses finished</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="966"/>
+        <location filename="../../../python/mainApp.py" line="967"/>
         <source>Copied  </source>
         <translation>Copied  </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1015"/>
+        <location filename="../../../python/mainApp.py" line="1016"/>
         <source>Pubkey set</source>
         <translation>Pubkey set</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1035"/>
+        <location filename="../../../python/mainApp.py" line="1036"/>
         <source>Chain started with pubkey</source>
         <translation>Chain started with pubkey</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1160"/>
+        <location filename="../../../python/mainApp.py" line="1161"/>
         <source>Creating New Address</source>
         <translation>Creating New Address</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1160"/>
+        <location filename="../../../python/mainApp.py" line="1161"/>
         <source>You are about to create a new address. Are you sure?</source>
         <translation>You are about to create a new address. Are you sure?</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1188"/>
+        <location filename="../../../python/mainApp.py" line="1189"/>
         <source>seed words does not match</source>
         <translation>seed words does not match</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1191"/>
+        <location filename="../../../python/mainApp.py" line="1192"/>
         <source>write some seed words!</source>
         <translation>write some seed words!</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1205"/>
+        <location filename="../../../python/mainApp.py" line="1206"/>
         <source>Creating an Address</source>
         <translation>Creating an Address</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1298"/>
+        <location filename="../../../python/mainApp.py" line="1299"/>
         <source>Private Key</source>
         <translation>Private Key</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1438"/>
+        <location filename="../../../python/mainApp.py" line="1439"/>
         <source>Signing transaction</source>
         <translation>Signing transaction</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1453"/>
+        <location filename="../../../python/mainApp.py" line="1454"/>
         <source>Transaction Successful</source>
         <translation>Transaction Successful</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1477"/>
+        <location filename="../../../python/mainApp.py" line="1478"/>
         <source>enter a receiver address</source>
         <translation>enter a receiver address</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1481"/>
+        <location filename="../../../python/mainApp.py" line="1482"/>
         <source>enter some amount to send</source>
         <translation>enter some amount to send</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1523"/>
+        <location filename="../../../python/mainApp.py" line="1524"/>
         <source>A pubkey is not set yet! Please set a pubkey first.</source>
         <translation>A pubkey is not set yet! Please set a pubkey first.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1538"/>
+        <location filename="../../../python/mainApp.py" line="1539"/>
         <source>No transaction between selected dates.</source>
         <translation>No transaction between selected dates.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1570"/>
+        <location filename="../../../python/mainApp.py" line="1571"/>
         <source>Copied </source>
         <translation>Copied </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1622"/>
+        <location filename="../../../python/mainApp.py" line="1623"/>
         <source>searching incoming loop requests</source>
         <translation>searching incoming loop requests</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1633"/>
+        <location filename="../../../python/mainApp.py" line="1634"/>
         <source>finished searching incoming loop requests</source>
         <translation>finished searching incoming loop requests</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1732"/>
+        <location filename="../../../python/mainApp.py" line="1733"/>
         <source>Create Credit Loop</source>
         <translation>Create Credit Loop</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1761"/>
+        <location filename="../../../python/mainApp.py" line="1762"/>
         <source>Transfer Credit Loop</source>
         <translation>Transfer Credit Loop</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1761"/>
+        <location filename="../../../python/mainApp.py" line="1762"/>
         <source>You are about to transfer you credit loop with given details below:</source>
         <translation>You are about to transfer you credit loop with given details below:</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1793"/>
+        <location filename="../../../python/mainApp.py" line="1794"/>
         <source>preparing loop request</source>
         <translation>preparing loop request</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1797"/>
+        <location filename="../../../python/mainApp.py" line="1798"/>
         <source>cannot make a credit loop request with empty fields</source>
         <translation>cannot make a credit loop request with empty fields</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1807"/>
+        <location filename="../../../python/mainApp.py" line="1808"/>
         <source>You are about to make a credit loop request</source>
         <translation>You are about to make a credit loop request</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1836"/>
+        <location filename="../../../python/mainApp.py" line="1837"/>
         <source>cannot make a receive transfer request with empty fields</source>
         <translation>cannot make a receive transfer request with empty fields</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1845"/>
+        <location filename="../../../python/mainApp.py" line="1846"/>
         <source>You are about to make a request to the endorser</source>
         <translation>You are about to make a request to the endorser</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1971"/>
+        <location filename="../../../python/mainApp.py" line="1972"/>
         <source>Date Selection Warning</source>
         <translation>Date Selection Warning</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1971"/>
+        <location filename="../../../python/mainApp.py" line="1972"/>
         <source>Make sure that the from and to dates are selected correctly.</source>
         <translation>Make sure that the from and to dates are selected correctly.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2013"/>
+        <location filename="../../../python/mainApp.py" line="2014"/>
         <source>Credit loop detail</source>
         <translation>Credit loop detail</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2013"/>
+        <location filename="../../../python/mainApp.py" line="2014"/>
         <source>Credit loop details.</source>
         <translation>Credit loop details.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2180"/>
+        <location filename="../../../python/mainApp.py" line="2181"/>
         <source>Error Adding Contact</source>
         <translation>Error Adding Contact</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2189"/>
+        <location filename="../../../python/mainApp.py" line="2190"/>
         <source>Added Contact</source>
         <translation>Added Contact</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2189"/>
+        <location filename="../../../python/mainApp.py" line="2190"/>
         <source>It is your responsibility that the information you have entered are correct and valid.</source>
         <translation>It is your responsibility that the information you have entered are correct and valid.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2201"/>
+        <location filename="../../../python/mainApp.py" line="2202"/>
         <source>Name and Address cannot be the same!</source>
         <translation>Name and Address cannot be the same!</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2203"/>
+        <location filename="../../../python/mainApp.py" line="2204"/>
         <source>Name and Pubkey cannot be the same!</source>
         <translation>Name and Pubkey cannot be the same!</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2205"/>
+        <location filename="../../../python/mainApp.py" line="2206"/>
         <source>Pubkey and Address cannot be the same!</source>
         <translation>Pubkey and Address cannot be the same!</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2209"/>
+        <location filename="../../../python/mainApp.py" line="2210"/>
         <source>Same name exists</source>
         <translation>Same name exists</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2212"/>
+        <location filename="../../../python/mainApp.py" line="2213"/>
         <source>Same address exists</source>
         <translation>Same address exists</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2215"/>
+        <location filename="../../../python/mainApp.py" line="2216"/>
         <source>Same pubkey exists</source>
         <translation>Same pubkey exists</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2218"/>
+        <location filename="../../../python/mainApp.py" line="2219"/>
         <source>cannot be an empty record</source>
         <translation>cannot be an empty record</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2288"/>
+        <location filename="../../../python/mainApp.py" line="2289"/>
         <source>Error Updating Contact</source>
         <translation>Error Updating Contact</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2309"/>
+        <location filename="../../../python/mainApp.py" line="2310"/>
         <source>You did not select a contact from table.</source>
         <translation>You did not select a contact from table.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2296"/>
+        <location filename="../../../python/mainApp.py" line="2297"/>
         <source>Deleting Contact</source>
         <translation>Deleting Contact</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2296"/>
+        <location filename="../../../python/mainApp.py" line="2297"/>
         <source>Are you sure to delete the contact from the list?</source>
         <translation>Are you sure to delete the contact from the list?</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2309"/>
+        <location filename="../../../python/mainApp.py" line="2310"/>
         <source>Error Deleting Contact</source>
         <translation>Error Deleting Contact</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="224"/>
+        <location filename="../../../python/mainApp.py" line="225"/>
         <source>A new update is available. &lt;br&gt;Follow the link </source>
         <translation>A new update is available. &lt;br&gt;Follow the link </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="224"/>
+        <location filename="../../../python/mainApp.py" line="225"/>
         <source>&gt;here&lt;/a&gt;</source>
         <translation>&gt;here&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="229"/>
+        <location filename="../../../python/mainApp.py" line="230"/>
         <source>No Update Available</source>
         <translation>No Update Available</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="229"/>
+        <location filename="../../../python/mainApp.py" line="230"/>
         <source>Current App version is </source>
         <translation>Current App version is </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2420"/>
+        <location filename="../../../python/mainApp.py" line="2421"/>
         <source>please insert all values</source>
         <translation>please insert all values</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2144"/>
+        <location filename="../../../python/mainApp.py" line="2145"/>
         <source>Contacts</source>
         <translation>Contacts</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="344"/>
+        <location filename="../../../python/mainApp.py" line="345"/>
         <source>Amount</source>
         <translation>Amount</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="337"/>
+        <location filename="../../../python/mainApp.py" line="338"/>
         <source>Address</source>
         <translation>Address</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="335"/>
+        <location filename="../../../python/mainApp.py" line="336"/>
         <source>Pubkey</source>
         <translation>Pubkey</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="337"/>
+        <location filename="../../../python/mainApp.py" line="338"/>
         <source>See</source>
         <translation>See</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="338"/>
+        <location filename="../../../python/mainApp.py" line="339"/>
         <source>See on Explorer</source>
         <translation>See on Explorer</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="345"/>
+        <location filename="../../../python/mainApp.py" line="346"/>
         <source>Txid</source>
         <translation>Txid</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="341"/>
+        <location filename="../../../python/mainApp.py" line="342"/>
         <source>Confirm</source>
         <translation>Confirm</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="341"/>
+        <location filename="../../../python/mainApp.py" line="342"/>
         <source>TxId</source>
         <translation>TxId</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="341"/>
+        <location filename="../../../python/mainApp.py" line="342"/>
         <source>Maturity</source>
         <translation>Maturity</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="341"/>
+        <location filename="../../../python/mainApp.py" line="342"/>
         <source>Receiver Pubkey</source>
         <translation>Receiver Pubkey</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="344"/>
+        <location filename="../../../python/mainApp.py" line="345"/>
         <source>Loop Address</source>
         <translation>Loop Address</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="345"/>
+        <location filename="../../../python/mainApp.py" line="346"/>
         <source>Details</source>
         <translation>Details</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="486"/>
+        <location filename="../../../python/mainApp.py" line="487"/>
         <source>Starting Install ...</source>
         <translation>Starting Install ...</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1205"/>
+        <location filename="../../../python/mainApp.py" line="1206"/>
         <source>An address has been created with details below. Do you want to import this address to the wallet?</source>
         <translation>An address has been created with details below. Do you want to import this address to the wallet?</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1205"/>
+        <location filename="../../../python/mainApp.py" line="1206"/>
         <source>&lt;br&gt;&lt;b&gt;Seed = &lt;/b&gt;&lt;br&gt;</source>
         <translation>&lt;br&gt;&lt;b&gt;Seed = &lt;/b&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1205"/>
+        <location filename="../../../python/mainApp.py" line="1206"/>
         <source>&lt;br&gt;&lt;b&gt;Private Key = &lt;/b&gt;&lt;br&gt;</source>
         <translation>&lt;br&gt;&lt;b&gt;Private Key = &lt;/b&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1205"/>
+        <location filename="../../../python/mainApp.py" line="1206"/>
         <source>&lt;br&gt;&lt;b&gt;Address = &lt;/b&gt;&lt;br&gt;</source>
         <translation>&lt;br&gt;&lt;b&gt;Address = &lt;/b&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1205"/>
+        <location filename="../../../python/mainApp.py" line="1206"/>
         <source>&lt;br&gt;&lt;b&gt;Pubkey = &lt;/b&gt;&lt;br&gt;</source>
         <translation>&lt;br&gt;&lt;b&gt;Pubkey = &lt;/b&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1227"/>
+        <location filename="../../../python/mainApp.py" line="1228"/>
         <source>write private key first</source>
         <translation>write private key first</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1309"/>
+        <location filename="../../../python/mainApp.py" line="1310"/>
         <source>getting marmarainfo, please wait</source>
         <translation>getting marmarainfo, please wait</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1332"/>
+        <location filename="../../../python/mainApp.py" line="1333"/>
         <source>pubkey is not set!</source>
         <translation>pubkey is not set!</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1370"/>
+        <location filename="../../../python/mainApp.py" line="1371"/>
         <source>You are about to activate </source>
         <translation>You are about to activate </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1484"/>
+        <location filename="../../../python/mainApp.py" line="1485"/>
         <source>You are about to send </source>
         <translation>You are about to send </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1484"/>
+        <location filename="../../../python/mainApp.py" line="1485"/>
         <source> MCL to </source>
         <translation> MCL to </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1732"/>
+        <location filename="../../../python/mainApp.py" line="1733"/>
         <source>You are about to create credit loop with given details below:</source>
         <translation>You are about to create credit loop with given details below:</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1890"/>
+        <location filename="../../../python/mainApp.py" line="1891"/>
         <source>getting address amounts finished</source>
         <translation>getting address amounts finished</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1906"/>
+        <location filename="../../../python/mainApp.py" line="1907"/>
         <source>finished searching marmara blockchain for all blocks for the set pubkey</source>
         <translation>finished searching marmara blockchain for all blocks for the set pubkey</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2013"/>
+        <location filename="../../../python/mainApp.py" line="2014"/>
         <source>&lt;br&gt;&lt;b&gt;Tx ID = &lt;/b&gt;</source>
         <translation>&lt;br&gt;&lt;b&gt;Tx ID = &lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2013"/>
+        <location filename="../../../python/mainApp.py" line="2014"/>
         <source>&lt;br&gt;&lt;b&gt;Amount = &lt;/b&gt;</source>
         <translation>&lt;br&gt;&lt;b&gt;Amount = &lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2013"/>
+        <location filename="../../../python/mainApp.py" line="2014"/>
         <source>&lt;br&gt;&lt;b&gt;Maturity = &lt;/b&gt;</source>
         <translation>&lt;br&gt;&lt;b&gt;Maturity = &lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2049"/>
+        <location filename="../../../python/mainApp.py" line="2050"/>
         <source>finished searching marmarainfo</source>
         <translation>finished searching marmarainfo</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2068"/>
+        <location filename="../../../python/mainApp.py" line="2069"/>
         <source>getting credit loop info, please wait</source>
         <translation>getting credit loop info, please wait</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2083"/>
+        <location filename="../../../python/mainApp.py" line="2084"/>
         <source>write loop transaction id to search!</source>
         <translation>write loop transaction id to search!</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2104"/>
+        <location filename="../../../python/mainApp.py" line="2105"/>
         <source>credit loop info finished</source>
         <translation>credit loop info finished</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1407"/>
+        <location filename="../../../python/mainApp.py" line="1408"/>
         <source>You are about to unlock </source>
         <translation>You are about to unlock </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1471"/>
+        <location filename="../../../python/mainApp.py" line="1472"/>
         <source>Qr Code</source>
         <translation>Qr Code</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="219"/>
+        <location filename="../../../python/mainApp.py" line="220"/>
         <source>Connection Error</source>
         <translation>Connection Error</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="219"/>
+        <location filename="../../../python/mainApp.py" line="220"/>
         <source>Check your internet Connection </source>
         <translation>Check your internet Connection </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="724"/>
+        <location filename="../../../python/mainApp.py" line="725"/>
         <source>getting activated balance.</source>
         <translation>getting activated balance.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1349"/>
+        <location filename="../../../python/mainApp.py" line="1350"/>
         <source>Error getting address amounts</source>
         <translation>Error getting address amounts</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1078"/>
+        <location filename="../../../python/mainApp.py" line="1079"/>
         <source>Download Blocks bootstrap</source>
         <translation>Download Blocks bootstrap</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1039"/>
+        <location filename="../../../python/mainApp.py" line="1040"/>
         <source>Settings for Chain Start</source>
         <translation>Settings for Chain Start</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1046"/>
+        <location filename="../../../python/mainApp.py" line="1047"/>
         <source> (starts scanning wallet data in blockchain data)</source>
         <translation> (starts scanning wallet data in blockchain data)</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1085"/>
+        <location filename="../../../python/mainApp.py" line="1086"/>
         <source>You can either download or browse previously downloaded bootstrap.</source>
         <translation>You can either download or browse previously downloaded bootstrap.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1112"/>
+        <location filename="../../../python/mainApp.py" line="1113"/>
         <source>select bootstrap.tar.gz</source>
         <translation>select bootstrap.tar.gz</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1121"/>
+        <location filename="../../../python/mainApp.py" line="1122"/>
         <source>Extracting blocks</source>
         <translation>Extracting blocks</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1138"/>
+        <location filename="../../../python/mainApp.py" line="1139"/>
         <source>Bootstrap extracting cancelled</source>
         <translation>Bootstrap extracting cancelled</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1144"/>
+        <location filename="../../../python/mainApp.py" line="1145"/>
         <source>Extracting blocks finished</source>
         <translation>Extracting blocks finished</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1043"/>
+        <location filename="../../../python/mainApp.py" line="1044"/>
         <source> (starts from beginning and re-indexes currently synced blockchain data)</source>
         <translation> (starts from beginning and re-indexes currently synced blockchain data)</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1121"/>
+        <location filename="../../../python/mainApp.py" line="1122"/>
         <source>Marmara chain will be closed if it is running</source>
         <translation>Marmara chain will be closed if it is running</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2319"/>
+        <location filename="../../../python/mainApp.py" line="2320"/>
         <source>getting stats values</source>
-        <translation type="unfinished"></translation>
+        <translation>getting stats values</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2327"/>
+        <location filename="../../../python/mainApp.py" line="2328"/>
         <source>stats values retrieved</source>
-        <translation type="unfinished"></translation>
+        <translation>stats values retrieved</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2332"/>
+        <location filename="../../../python/mainApp.py" line="2333"/>
         <source>Error in getting stats values</source>
-        <translation type="unfinished"></translation>
+        <translation>Error in getting stats values</translation>
+    </message>
+    <message>
+        <location filename="../../../python/mainApp.py" line="165"/>
+        <source>can be refreshed once in a minute</source>
+        <translation>can be refreshed once in a minute</translation>
     </message>
 </context>
 </TS>
