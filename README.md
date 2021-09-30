@@ -8,8 +8,13 @@
 ![MarmaraCreditLoops Logo](https://raw.githubusercontent.com/marmarachain/marmara/master/MCL-Logo.png "Marmara Credit Loops Logo")
 
 ## Marmara Connector
-Marmara Connector is an easy to use GUI application for installing Marmara Chain and conducting credit loops on a Linux platform which can be both in your local machine or located on a remote server. 
-The developed platform establishes a connection to a Linux platform through SSH technology.
+Marmara Connector is an easy to use GUI application for installing Marmara Chain and conducting credit loops on your local machine or on a remote server. 
+
+The app is designed to handle Marmara Credit loop operations as well as wallet operations.
+
+The local platform is either Linux, Windows or MacOS based OS. The remote platform is Linux based OS.
+
+The developed platform establishes a connection to a remote platform through SSH technology.
 
 For more detailed information on creating Marmara credit loops, kindly refer to [Making Marmara Credit Loops](https://github.com/marmarachain/marmara/wiki/How-to-make-Marmara-Credit-Loops?). 
 
