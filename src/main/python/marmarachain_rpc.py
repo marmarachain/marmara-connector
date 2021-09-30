@@ -4,7 +4,7 @@ import platform
 import time
 import subprocess
 import pathlib
-import version
+import api_request
 import logging
 
 from PyQt5 import QtCore
@@ -259,7 +259,6 @@ class RpcHandler(QtCore.QObject):
     def __init__(self):
         super(RpcHandler, self).__init__()
         self.command = ""
-        self.bottom_info_obj = object
 
     @pyqtSlot(str)
     def set_command(self, value):
@@ -443,6 +442,21 @@ class RpcHandler(QtCore.QObject):
             self.command_out.emit(result)
             self.finished.emit()
 
+    @pyqtSlot()
+    def extract_bootstrap(self):
+        pwd_home = str(pathlib.Path.home())
+        print(self.command)
+        proc = subprocess.Popen(self.command, cwd=pwd_home, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        retvalue = proc.poll()
+        while True:
+            stdout = proc.stdout.readline().replace(b'\n', b'').decode()
+            self.output.emit(str(stdout))
+            if not stdout:
+                break
+        self.output.emit(str(retvalue))
+        self.finished.emit()
+
+
 class Autoinstall(QtCore.QObject):
     out_text = pyqtSignal(str)
     progress = pyqtSignal(int)
@@ -450,7 +464,7 @@ class Autoinstall(QtCore.QObject):
 
     def __init__(self):
         super(Autoinstall, self).__init__()
-        self.mcl_download_url = version.latest_marmara_download_url()
+        self.mcl_download_url = api_request.latest_marmara_download_url()
         self.mcl_linux_zipname = 'MCL-linux.zip'
         self.linux_command_list = ['sudo apt-get update', 'sudo apt-get install libgomp1 -y',
                                    'sudo wget ' + str(self.mcl_download_url) + '/' + self.mcl_linux_zipname +

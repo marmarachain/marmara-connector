@@ -30,8 +30,7 @@ stream_handler = logging.StreamHandler()  # create stream handler and set level 
 stream_handler.setLevel(logging.DEBUG)  # set stream handler level to debug
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s %(levelname)s %(name)s:%(module)s %(funcName)s:%(lineno)s %(message)s',
-                    handlers=[logging.FileHandler(filename=log_file_path, mode='a+'),
-                              stream_handler])
+                    handlers=[logging.FileHandler(filename=log_file_path, mode='a+')])
 
 
 class ApplicationConfig:
@@ -47,6 +46,7 @@ class ApplicationConfig:
             with open(self.config_file_path, 'w') as configfile:
                 self.config.add_section('PATHS')
                 self.config.add_section('USER')
+                self.config.set('USER', 'lang', 'EN')
                 self.config.write(configfile)
 
     def set_key_value(self, section, key, value):

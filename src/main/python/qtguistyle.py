@@ -18,6 +18,10 @@ class GuiStyle(Ui_MainWindow):
         # stop button style
         self.stopchain_button.setIcon(QtGui.QIcon(self.icon_path + "/stop_icon.png"))
         self.stopchain_button.setIconSize(QtCore.QSize(32, 32))
+        self.download_blocks_button.setIcon(qta.icon('mdi.cloud-download-outline'))
+        self.download_blocks_button.setIconSize(QtCore.QSize(24, 24))
+        self.refresh_walletaddresses_button.setIcon(qta.icon('mdi.refresh'))
+        self.refresh_walletaddresses_button.setIconSize(QtCore.QSize(24, 24))
         # menubar
         self.actionQuit.setIcon(QtGui.QIcon(self.icon_path + '/exit_icon.png'))
         # mcl tab
@@ -26,6 +30,9 @@ class GuiStyle(Ui_MainWindow):
         self.mcl_tab.setTabIcon(2, QtGui.QIcon(self.icon_path + '/credit.png'))
         self.mcl_tab.setTabIcon(3, QtGui.QIcon(qta.icon('fa5b.hornbill')))
         self.mcl_tab.setTabIcon(4, QtGui.QIcon(self.icon_path + '/persons.png'))
+        self.mcl_tab.setTabIcon(5, QtGui.QIcon(qta.icon("mdi.chart-areaspline")))
+        self.mcl_tab.setTabIcon(6, QtGui.QIcon(qta.icon("mdi.bulletin-board")))
+        # self.mcl_tab.setIconSize(QtCore.QSize(24,24))
         # Side panel
         self.getinfo_refresh_button.setIcon(QtGui.QIcon(self.icon_path + '/refresh_icon.png'))
         self.getinfo_refresh_button.setIconSize(QtCore.QSize(32, 32))
@@ -78,14 +85,18 @@ class GuiStyle(Ui_MainWindow):
         self.activeloops_search_button.setIconSize(QtCore.QSize(24, 24))
         self.transferableloops_search_button.setIcon(qta.icon('fa.search'))
         self.transferableloops_search_button.setIconSize(QtCore.QSize(24, 24))
-        # line edit cursor focus
-        self.serverpw_lineEdit.setFocus()
-        self.add_serverip_lineEdit.setFocus()
-        self.add_servername_lineEdit.setFocus()
-        self.add_serverusername_lineEdit.setFocus()
-        self.edit_serverip_lineEdit.setFocus()
-        self.edit_servername_lineEdit.setFocus()
-        self.edit_serverusername_lineEdit.setFocus()
+        # Stats
+        self.stats_refresh_pushButton.setIcon(qta.icon('mdi.refresh'))
+        self.stats_refresh_pushButton.setIconSize(QtCore.QSize(24, 24))
+        self.stats_calculate_pushButton.setIcon(qta.icon('mdi.calculator-variant-outline'))
+        self.stats_calculate_pushButton.setIconSize(QtCore.QSize(24, 24))
+        self.stats_pie_frame.setContentsMargins(0, 0, 0, 0)
+        self.stats_layout = QtWidgets.QHBoxLayout(self.stats_pie_frame)
+        self.stats_layout.setContentsMargins(0, 0, 0, 0)
+        # Market
+        self.exchange_market_request_button.setIcon(qta.icon('mdi.arrow-bottom-left-thick'))
+        self.exchange_market_request_button.setIconSize(QtCore.QSize(24, 24))
+
 
 
 class ToggleSwitch(QtWidgets.QPushButton):
