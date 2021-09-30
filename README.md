@@ -1,3 +1,4 @@
+[![Discord](https://img.shields.io/discord/591914197219016707.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/eMJ5yjyJVM)
 [![downloads](https://img.shields.io/github/downloads/marmarachain/marmara-connector/total?color=brightgreen&style=plastic)]()
 ![last commit](https://img.shields.io/github/last-commit/marmarachain/marmara-connector?color=blue)
 [![issues](https://img.shields.io/github/issues/marmarachain/marmara-connector?color=yellow)](https://github.com/marmarachain/marmara-connector/issues)
