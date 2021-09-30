@@ -9,18 +9,18 @@ import logging
 import qrcode
 from datetime import datetime, timedelta
 from qr_code_gen import Image
-from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtGui import QIcon, QRegExpValidator, QFont
+from PyQt5 import QtWidgets, QtCore, QtChart
+from PyQt5.QtGui import QIcon, QRegExpValidator, QFont, QPainter
+from PyQt5.QtChart import QChart, QChartView, QPieSeries
 from PyQt5.QtCore import QThread, pyqtSlot, QDateTime, QSize, Qt, QTranslator, QRegExp
 from PyQt5.QtWidgets import QMainWindow, QPushButton, QTableWidgetItem, QMessageBox, QDesktopWidget, QHeaderView, \
-    QDialog, QDialogButtonBox, QVBoxLayout, QComboBox, QWidget, QGridLayout, QToolTip
+    QDialog, QDialogButtonBox, QVBoxLayout, QGridLayout, QToolTip
 import configuration
 import marmarachain_rpc
-import version
+import api_request
 import remote_connection
 import chain_args as cp
 from qtguistyle import GuiStyle
-import qtguistyle
 from Loading import LoadingScreen
 import qtawesome as qta
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
@@ -131,7 +131,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.looprequest_search_button.clicked.connect(self.search_marmarareceivelist)
         self.request_date_checkBox.clicked.connect(self.set_request_date_state)
         self.request_dateTimeEdit.setDateTime(QDateTime.currentDateTime())
-
+        self.loop_request_tableWidget.setColumnHidden(5, True)
+        self.transferrequests_tableWidget.setColumnHidden(5, True)
         # -----Make credit Loop Request
         self.contactpubkey_makeloop_comboBox.currentTextChanged.connect(self.get_selected_contact_loop_pubkey)
         self.contactpubkey_transferrequest_comboBox.currentTextChanged.connect(self.get_selected_contact_transfer_pubkey)
@@ -164,7 +165,12 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.stats_refresh_pushButton.clicked.connect(self.get_marmara_stats)
         self.stats_refresh_pushButton.setToolTip(self.tr("can be refreshed once in a minute"))
         self.stats_calculate_pushButton.setEnabled(False)
+        self.stats_amount_in_activated_lineEdit.setEnabled(False)
+        self.stats_amount_in_loops_lineEdit.setEnabled(False)
         self.stats_calculate_pushButton.clicked.connect(self.calculate_estimated_stake)
+        # Market Page
+        self.exchange_market_request_button.clicked.connect(self.get_mcl_exchange_market)
+        self.exchange_market_request_button.setToolTip(self.tr("can be refreshed once in 20 seconds"))
 
         # Thread setup
         self.thread_marmarad_path = QThread()
@@ -214,18 +220,17 @@ class MarmaraMain(QMainWindow, GuiStyle):
 
     def check_app_version(self):
         base_version = configuration.version
-        latest_app_tag = version.git_request_tag(version.app_api_url)
-        latest_app_version = version.latest_app_release_url()
+        latest_app_tag = api_request.git_request_tag(api_request.app_api_url)
+        latest_app_version = api_request.latest_app_release_url()
         if latest_app_tag == 'Connection Error' or latest_app_version == 'Connection Error':
             message_box = self.custom_message(self.tr('Connection Error'),
                                               self.tr('Check your internet Connection '),
                                               'information', QMessageBox.Information)
         else:
             if base_version != latest_app_tag:
-                message_box = self.custom_message(self.tr('Software Update Available'),
-                                                  self.tr('A new update is available. <br>Follow the link ')
-                                                          + "<a href='" + latest_app_version + "'" + self.tr(">here</a>"),
-                                                  'information', QMessageBox.Information)
+                QMessageBox.information(self, self.tr('Software Update Available'),
+                                        self.tr('A new update is available. <br>Follow the link ')
+                                        + "<a href='" + latest_app_version + "'" + self.tr(">here</a>"))
             else:
                 message_box = self.custom_message(self.tr('No Update Available'),
                                                   self.tr('Current App version is ') + base_version,
@@ -388,6 +393,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
             self.get_contact_names_addresses()
         if index == 3:
             self.creditloop_tabWidget.setCurrentIndex(0)
+        if index == 6:
+            self.update_exchange_market_combobox()
 
     @pyqtSlot(int)
     def credit_tab_changed(self, index):
@@ -2314,7 +2321,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
     @pyqtSlot()
     def get_marmara_stats(self):
         self.bottom_info(self.tr('getting stats values'))
-        mcl_stats = version.get_marmara_stats()
+        mcl_stats = api_request.get_marmara_stats()
         if mcl_stats != 'error':
             mcl_stats_info = mcl_stats.get('info')
             self.stats_height_value_label.setText(str(mcl_stats_info.get('height')))
@@ -2323,14 +2330,54 @@ class MarmaraMain(QMainWindow, GuiStyle):
             self.stats_in_loops_label_value.setText(str(mcl_stats_info.get('TotalLockedInLoops')))
             self.bottom_info(self.tr('stats values retrieved'))
             self.stats_refresh_pushButton.setEnabled(False)
-            self.stats_calculate_pushButton.setEnabled(True)
             QtCore.QTimer.singleShot(60000, self.stat_refresh_enable)  # after 60 second it will enable button
+            self.stats_calculate_pushButton.setEnabled(True)
+            self.stats_amount_in_activated_lineEdit.setEnabled(True)
+            self.stats_amount_in_loops_lineEdit.setEnabled(True)
+            total_supply = int(mcl_stats_info.get('TotalNormals')) + int(mcl_stats_info.get('TotalActivated')) + int(mcl_stats_info.get('TotalLockedInLoops'))
+            total_normal_percentage = (int(mcl_stats_info.get('TotalNormals'))*100)/total_supply
+            total_activated_percentage = (int(mcl_stats_info.get('TotalActivated'))*100)/total_supply
+            total_inloops_percentage = (int(mcl_stats_info.get('TotalLockedInLoops'))*100)/total_supply
+            total_normal_per = round(total_normal_percentage, 2)
+            total_activated_per = round(total_activated_percentage, 2)
+            total_inloops_per = round(total_inloops_percentage, 2)
+            self.stat_pie_chart(total_normal_per, total_activated_per, total_inloops_per)
         else:
             self.bottom_err_info(self.tr('Error in getting stats values'))
+
+    def stat_pie_chart(self, normal, activated, inloops):
+        if self.stats_layout.count() != 0:
+            self.stats_layout.removeWidget(self.chartview)
+        series = QPieSeries()
+        series.append("Normal", normal)
+        series.append("Activated", activated)
+        series.append("In Loops", inloops)
+
+        series.setLabelsVisible(True)
+        # color = [Qt.green, Qt.gray, Qt.magenta]
+        series.setLabelsPosition(QtChart.QPieSlice.LabelOutside)
+        for qslice in series.slices():
+            qslice.setLabel("{:.2f}%".format(100 * qslice.percentage()))
+            # qslice.setBrush(color[series.slices().index(qslice)])
+
+        chart = QChart()
+        chart.legend().hide()
+        chart.addSeries(series)
+        chart.createDefaultAxes()
+        chart.setAnimationOptions(QChart.SeriesAnimations)
+        chart.legend().setVisible(True)
+        chart.legend().setAlignment(Qt.AlignRight)
+        chart.legend().markers(series)[0].setLabel("Total Normal")
+        chart.legend().markers(series)[1].setLabel("Total Activated")
+        chart.legend().markers(series)[2].setLabel("Total In Loops")
+        self.chartview = QChartView(chart)
+        self.chartview.setRenderHint(QPainter.Antialiasing)
+        self.stats_layout.addWidget(self.chartview)
 
     @pyqtSlot()
     def stat_refresh_enable(self):
         self.stats_refresh_pushButton.setEnabled(True)
+
 
     @pyqtSlot()
     def calculate_estimated_stake(self):
@@ -2349,7 +2396,41 @@ class MarmaraMain(QMainWindow, GuiStyle):
         calculation = (((amount_activated/total_activated) + (amount_inloops/total_inloops)*3)/4)*32400
         self.stats_estimated_staking_label_value.setText(str(calculation))
         # 30 * 60 * 24 * 0,75  = 32400
+    # -----------------
+    # Market Page
+    # -----------------
 
+    def update_exchange_market_combobox(self):
+        self.exchange_market_comboBox.clear()
+        api_list = api_request.exchange_market_api_list
+        for item in api_list:
+            self.exchange_market_comboBox.addItem(str(item))
+
+    @pyqtSlot()
+    def get_mcl_exchange_market(self):
+        self.exchange_market_request_button.setEnabled(False)
+        QtCore.QTimer.singleShot(20000, self.enable_market_request)  # after 20 second it will enable button
+        index = self.exchange_market_comboBox.currentIndex()
+        key = self.exchange_market_comboBox.itemText(index)
+        mcl_market_values = api_request.mcl_exchange_market(key)
+        print(len(mcl_market_values))
+        self.exchange_market_tableWidget.setRowCount(len(mcl_market_values))
+        for row in mcl_market_values:
+            row_number = mcl_market_values.index(row)
+            self.exchange_market_tableWidget.setItem(row_number, 0, QTableWidgetItem(str(row.get('exchange_name'))))
+            self.exchange_market_tableWidget.setItem(row_number, 1, QTableWidgetItem(str(row.get('pair'))))
+            self.exchange_market_tableWidget.setItem(row_number, 2, QTableWidgetItem(str(row.get('quotes').get('USD').get('price'))))
+            self.exchange_market_tableWidget.setItem(row_number, 3, QTableWidgetItem(str(row.get('quotes').get('USD').get('volume_24h'))))
+            self.exchange_market_tableWidget.setItem(row_number, 4, QTableWidgetItem(str(row.get('last_updated')).replace('T', ' ').replace('Z', '')))
+            self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+            self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
+            self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
+            self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
+            self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
+
+    @pyqtSlot()
+    def enable_market_request(self):
+        self.exchange_market_request_button.setEnabled(True)
     # -------------------------------------------------------------------
     # Remote Host adding , editing, deleting and  saving in conf file
     # --------------------------------------------------------------------

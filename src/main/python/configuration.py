@@ -30,8 +30,7 @@ stream_handler = logging.StreamHandler()  # create stream handler and set level 
 stream_handler.setLevel(logging.DEBUG)  # set stream handler level to debug
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s %(levelname)s %(name)s:%(module)s %(funcName)s:%(lineno)s %(message)s',
-                    handlers=[logging.FileHandler(filename=log_file_path, mode='a+'),
-                              stream_handler])
+                    handlers=[logging.FileHandler(filename=log_file_path, mode='a+')])
 
 
 class ApplicationConfig:

@@ -4,7 +4,7 @@ import platform
 import time
 import subprocess
 import pathlib
-import version
+import api_request
 import logging
 
 from PyQt5 import QtCore
@@ -464,7 +464,7 @@ class Autoinstall(QtCore.QObject):
 
     def __init__(self):
         super(Autoinstall, self).__init__()
-        self.mcl_download_url = version.latest_marmara_download_url()
+        self.mcl_download_url = api_request.latest_marmara_download_url()
         self.mcl_linux_zipname = 'MCL-linux.zip'
         self.linux_command_list = ['sudo apt-get update', 'sudo apt-get install libgomp1 -y',
                                    'sudo wget ' + str(self.mcl_download_url) + '/' + self.mcl_linux_zipname +
