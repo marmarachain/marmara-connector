@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="tr" sourcelanguage="en">
+<!DOCTYPE TS>
+<TS version="2.1" language="tr" sourcelanguage="en">
 <context>
     <name>MainWindow</name>
     <message>
@@ -146,11 +147,6 @@
         <location filename="../../../python/qtguidesign.py" line="2542"/>
         <source>Refresh</source>
         <translation>Güncelle</translation>
-    </message>
-    <message>
-        <location filename="../../../python/qtguidesign.py" line="2435"/>
-        <source>Last Update:  00:00</source>
-        <translation type="obsolete">Son Güncelleme</translation>
     </message>
     <message>
         <location filename="../../../python/qtguidesign.py" line="2497"/>
@@ -753,24 +749,9 @@
         <translation>baton-pubkey</translation>
     </message>
     <message>
-        <location filename="../../../python/qtguidesign.py" line="2622"/>
-        <source>0.0</source>
-        <translation type="obsolete">0.0</translation>
-    </message>
-    <message>
-        <location filename="../../../python/qtguidesign.py" line="2617"/>
-        <source>Amount to be in Activated (1x)</source>
-        <translation type="obsolete">Aktif Edilecek Miktar (1x)</translation>
-    </message>
-    <message>
         <location filename="../../../python/qtguidesign.py" line="2678"/>
         <source>In Loops</source>
         <translation>Döngülerdeki Miktar</translation>
-    </message>
-    <message>
-        <location filename="../../../python/qtguidesign.py" line="2618"/>
-        <source>Amount to be locked in Loops (3x)</source>
-        <translation type="obsolete">Döngülerde Kilitlenecek Miktar (3x)</translation>
     </message>
     <message>
         <location filename="../../../python/qtguidesign.py" line="2677"/>
@@ -800,52 +781,52 @@
     <message>
         <location filename="../../../python/qtguidesign.py" line="2496"/>
         <source>Last Update:  00:00:00</source>
-        <translation type="unfinished"></translation>
+        <translation>Son Güncelleme:  00:00:00</translation>
     </message>
     <message>
         <location filename="../../../python/qtguidesign.py" line="2673"/>
         <source>Amount to be in Activated</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktifleştirilecek Miktar</translation>
     </message>
     <message>
         <location filename="../../../python/qtguidesign.py" line="2674"/>
         <source>Amount to be locked in Loops</source>
-        <translation type="unfinished"></translation>
+        <translation>Döngülerde Kilitlenecek Miktar</translation>
     </message>
     <message>
         <location filename="../../../python/qtguidesign.py" line="2684"/>
         <source>Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaynak</translation>
     </message>
     <message>
         <location filename="../../../python/qtguidesign.py" line="2686"/>
         <source>Pairs</source>
-        <translation type="unfinished"></translation>
+        <translation>Parite</translation>
     </message>
     <message>
         <location filename="../../../python/qtguidesign.py" line="2688"/>
         <source>Price, $</source>
-        <translation type="unfinished"></translation>
+        <translation>Fiyat, $</translation>
     </message>
     <message>
         <location filename="../../../python/qtguidesign.py" line="2690"/>
         <source>Volume 24H, $</source>
-        <translation type="unfinished"></translation>
+        <translation>Hacim 24S, $</translation>
     </message>
     <message>
         <location filename="../../../python/qtguidesign.py" line="2692"/>
         <source>Updated</source>
-        <translation type="unfinished"></translation>
+        <translation>Son Güncelleme</translation>
     </message>
     <message>
         <location filename="../../../python/qtguidesign.py" line="2693"/>
         <source>Exchange Market</source>
-        <translation type="unfinished"></translation>
+        <translation>Borsa</translation>
     </message>
     <message>
         <location filename="../../../python/qtguidesign.py" line="2694"/>
         <source>Market</source>
-        <translation type="unfinished"></translation>
+        <translation>Borsa</translation>
     </message>
 </context>
 <context>
@@ -1673,7 +1654,7 @@
     <message>
         <location filename="../../../python/mainApp.py" line="174"/>
         <source>can be refreshed once in 20 seconds</source>
-        <translation type="unfinished"></translation>
+        <translation>yalnızca 20 saniyede bir yenilenebilir</translation>
     </message>
 </context>
 </TS>
