@@ -6,6 +6,7 @@ protobuf==3.0.0
 PyInstaller==3.4
 pyperclip==1.8.1
 PyQt5==5.9.2
+PyQtChart==15.5.4
 requests==2.25.1
 simplejson==3.13.2
 webdriver-manager==3.2.2
