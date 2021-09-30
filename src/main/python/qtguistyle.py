@@ -31,6 +31,7 @@ class GuiStyle(Ui_MainWindow):
         self.mcl_tab.setTabIcon(3, QtGui.QIcon(qta.icon('fa5b.hornbill')))
         self.mcl_tab.setTabIcon(4, QtGui.QIcon(self.icon_path + '/persons.png'))
         self.mcl_tab.setTabIcon(5, QtGui.QIcon(qta.icon("mdi.chart-areaspline")))
+        self.mcl_tab.setTabIcon(6, QtGui.QIcon(qta.icon("mdi.bulletin-board")))
         # self.mcl_tab.setIconSize(QtCore.QSize(24,24))
         # Side panel
         self.getinfo_refresh_button.setIcon(QtGui.QIcon(self.icon_path + '/refresh_icon.png'))
@@ -89,6 +90,13 @@ class GuiStyle(Ui_MainWindow):
         self.stats_refresh_pushButton.setIconSize(QtCore.QSize(24, 24))
         self.stats_calculate_pushButton.setIcon(qta.icon('mdi.calculator-variant-outline'))
         self.stats_calculate_pushButton.setIconSize(QtCore.QSize(24, 24))
+        self.stats_pie_frame.setContentsMargins(0, 0, 0, 0)
+        self.stats_layout = QtWidgets.QHBoxLayout(self.stats_pie_frame)
+        self.stats_layout.setContentsMargins(0, 0, 0, 0)
+        # Market
+        self.exchange_market_request_button.setIcon(qta.icon('mdi.arrow-bottom-left-thick'))
+        self.exchange_market_request_button.setIconSize(QtCore.QSize(24, 24))
+
 
 
 class ToggleSwitch(QtWidgets.QPushButton):

@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1024</width>
-    <height>768</height>
+    <width>1107</width>
+    <height>767</height>
    </rect>
   </property>
   <property name="font">
@@ -1596,7 +1596,7 @@
          <widget class="QTabWidget" name="mcl_tab">
           <property name="minimumSize">
            <size>
-            <width>728</width>
+            <width>0</width>
             <height>0</height>
            </size>
           </property>
@@ -3191,6 +3191,9 @@
                  </item>
                  <item row="0" column="2">
                   <widget class="QComboBox" name="contacts_address_comboBox">
+                   <property name="sizeAdjustPolicy">
+                    <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+                   </property>
                    <item>
                     <property name="text">
                      <string>Contacts</string>
@@ -3354,7 +3357,7 @@
                <enum>QTabWidget::Rounded</enum>
               </property>
               <property name="currentIndex">
-               <number>3</number>
+               <number>0</number>
               </property>
               <widget class="QWidget" name="looprequests_tab">
                <attribute name="title">
@@ -3533,7 +3536,10 @@
                      <bool>false</bool>
                     </property>
                     <attribute name="horizontalHeaderDefaultSectionSize">
-                     <number>150</number>
+                     <number>130</number>
+                    </attribute>
+                    <attribute name="verticalHeaderCascadingSectionResizes">
+                     <bool>true</bool>
                     </attribute>
                     <column>
                      <property name="text">
@@ -3665,7 +3671,7 @@
                      <bool>false</bool>
                     </property>
                     <attribute name="horizontalHeaderDefaultSectionSize">
-                     <number>150</number>
+                     <number>130</number>
                     </attribute>
                     <column>
                      <property name="text">
@@ -5440,21 +5446,8 @@
             <string>Stats</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_43">
-            <item row="0" column="0">
-             <spacer name="horizontalSpacer_69">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="1" column="1">
-             <spacer name="verticalSpacer_44">
+            <item row="4" column="1">
+             <spacer name="verticalSpacer_45">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
               </property>
@@ -5466,206 +5459,21 @@
               </property>
              </spacer>
             </item>
-            <item row="0" column="1">
-             <layout class="QVBoxLayout" name="verticalLayout">
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout">
-                <item>
-                 <widget class="QLabel" name="stats_label">
-                  <property name="text">
-                   <string>Marmara Stats</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignCenter</set>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <spacer name="horizontalSpacer_71">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="stats_refresh_pushButton">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item>
-               <layout class="QGridLayout" name="gridLayout_44">
-                <item row="1" column="0">
-                 <widget class="QLabel" name="stats_height_value_label">
-                  <property name="frameShape">
-                   <enum>QFrame::WinPanel</enum>
-                  </property>
-                  <property name="frameShadow">
-                   <enum>QFrame::Sunken</enum>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="textInteractionFlags">
-                   <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="0">
-                 <widget class="QLabel" name="stats_height_label">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="text">
-                   <string>Height</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignCenter</set>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="3">
-                 <widget class="QLabel" name="stats_in_loops_label">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="text">
-                   <string>In Loops</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignCenter</set>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="1">
-                 <widget class="QLabel" name="stats_normal_label">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="text">
-                   <string>Normal</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignCenter</set>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="2">
-                 <widget class="QLabel" name="stats_activated_label">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="text">
-                   <string>Activated</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignCenter</set>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="1">
-                 <widget class="QLabel" name="stats_normal_label_value">
-                  <property name="frameShape">
-                   <enum>QFrame::WinPanel</enum>
-                  </property>
-                  <property name="frameShadow">
-                   <enum>QFrame::Sunken</enum>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="textInteractionFlags">
-                   <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="2">
-                 <widget class="QLabel" name="stats_activated_label_value">
-                  <property name="frameShape">
-                   <enum>QFrame::WinPanel</enum>
-                  </property>
-                  <property name="frameShadow">
-                   <enum>QFrame::Sunken</enum>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="textInteractionFlags">
-                   <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="3">
-                 <widget class="QLabel" name="stats_in_loops_label_value">
-                  <property name="frameShape">
-                   <enum>QFrame::WinPanel</enum>
-                  </property>
-                  <property name="frameShadow">
-                   <enum>QFrame::Sunken</enum>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="textInteractionFlags">
-                   <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item>
-               <widget class="Line" name="line">
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>10</height>
-                 </size>
-                </property>
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-               </widget>
-              </item>
-              <item>
+            <item row="3" column="0" colspan="3">
+             <layout class="QGridLayout" name="gridLayout_46">
+              <item row="3" column="1">
                <layout class="QGridLayout" name="gridLayout_42">
                 <item row="0" column="0">
                  <widget class="QLabel" name="stats_amount_in_activated_label">
                   <property name="text">
-                   <string>Amount to be in Activated (1x)</string>
+                   <string>Amount to be in Activated</string>
                   </property>
                  </widget>
                 </item>
                 <item row="1" column="0">
                  <widget class="QLabel" name="stats_amount_in_loops_label">
                   <property name="text">
-                   <string>Amount to be locked in Loops (3x)</string>
+                   <string>Amount to be locked in Loops</string>
                   </property>
                  </widget>
                 </item>
@@ -5714,7 +5522,7 @@
                    </sizepolicy>
                   </property>
                   <property name="text">
-                   <string>0.0</string>
+                   <string/>
                   </property>
                  </widget>
                 </item>
@@ -5727,16 +5535,377 @@
                    </sizepolicy>
                   </property>
                   <property name="text">
-                   <string>0.0</string>
+                   <string/>
                   </property>
                  </widget>
                 </item>
                </layout>
               </item>
+              <item row="0" column="0" rowspan="4">
+               <spacer name="horizontalSpacer_70">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="1" column="1">
+               <layout class="QGridLayout" name="gridLayout_44">
+                <item row="1" column="1">
+                 <widget class="QLabel" name="stats_normal_label_value">
+                  <property name="frameShape">
+                   <enum>QFrame::WinPanel</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Sunken</enum>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="textInteractionFlags">
+                   <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="3">
+                 <widget class="QLabel" name="stats_in_loops_label_value">
+                  <property name="frameShape">
+                   <enum>QFrame::WinPanel</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Sunken</enum>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="textInteractionFlags">
+                   <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="stats_height_value_label">
+                  <property name="frameShape">
+                   <enum>QFrame::WinPanel</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Sunken</enum>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="textInteractionFlags">
+                   <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="stats_height_label">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Height</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="3">
+                 <widget class="QLabel" name="stats_in_loops_label">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>In Loops</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="2">
+                 <widget class="QLabel" name="stats_activated_label">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Activated</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="2">
+                 <widget class="QLabel" name="stats_activated_label_value">
+                  <property name="frameShape">
+                   <enum>QFrame::WinPanel</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Sunken</enum>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="textInteractionFlags">
+                   <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QLabel" name="stats_normal_label">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Normal</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item row="0" column="1">
+               <layout class="QHBoxLayout" name="horizontalLayout">
+                <item>
+                 <widget class="QLabel" name="stats_label">
+                  <property name="text">
+                   <string>Marmara Stats</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_71">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="stats_refresh_pushButton">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item row="2" column="1">
+               <layout class="QHBoxLayout" name="horizontalLayout_3">
+                <item>
+                 <widget class="QFrame" name="stats_pie_frame">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>200</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item row="0" column="2" rowspan="4">
+               <spacer name="horizontalSpacer_73">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
              </layout>
             </item>
-            <item row="0" column="2">
-             <spacer name="horizontalSpacer_70">
+            <item row="0" column="0" colspan="3">
+             <spacer name="verticalSpacer_46">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="market_tab">
+           <attribute name="title">
+            <string>Market</string>
+           </attribute>
+           <layout class="QGridLayout" name="gridLayout_48">
+            <item row="2" column="1">
+             <spacer name="verticalSpacer_43">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="1" column="1">
+             <layout class="QGridLayout" name="gridLayout_45">
+              <item row="1" column="2">
+               <spacer name="horizontalSpacer_72">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="2" column="0" colspan="4">
+               <widget class="QTableWidget" name="exchange_market_tableWidget">
+                <property name="sizeAdjustPolicy">
+                 <enum>QAbstractScrollArea::AdjustToContents</enum>
+                </property>
+                <attribute name="horizontalHeaderDefaultSectionSize">
+                 <number>120</number>
+                </attribute>
+                <column>
+                 <property name="text">
+                  <string>Source</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Pairs</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Price, $</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Volume 24H, $</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Updated</string>
+                 </property>
+                </column>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="exchange_market_label">
+                <property name="text">
+                 <string>Exchange Market</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QComboBox" name="exchange_market_comboBox">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="sizeAdjustPolicy">
+                 <enum>QComboBox::AdjustToContents</enum>
+                </property>
+                <item>
+                 <property name="text">
+                  <string/>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="1" column="3">
+               <widget class="QPushButton" name="exchange_market_request_button">
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="0" column="1">
+             <spacer name="verticalSpacer_44">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="1" column="0">
+             <spacer name="horizontalSpacer_69">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="1" column="2">
+             <spacer name="horizontalSpacer_74">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
@@ -5913,7 +6082,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1024</width>
+     <width>1107</width>
      <height>24</height>
     </rect>
    </property>
