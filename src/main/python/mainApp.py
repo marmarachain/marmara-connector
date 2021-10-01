@@ -2506,18 +2506,9 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.remote_selection()
 
 
-class AppContext(ApplicationContext):
-
-    def run(self):
-        version = self.build_settings['version']
-        app = QtWidgets.QApplication(sys.argv)
-        app.setOrganizationDomain('marmara.io')
-        ui = MarmaraMain()
-        ui.show()
-        return self.app.exec_()
-
-
 if __name__ == '__main__':
-    appcontext = AppContext()
-    exit_code = appcontext.run()
+    appctxt = ApplicationContext()
+    ui = MarmaraMain()
+    ui.show()
+    exit_code = appctxt.app.exec_()
     sys.exit(exit_code)
