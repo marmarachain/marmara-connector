@@ -11,7 +11,7 @@ class LoadingScreen(QWidget):
         self.setFixedSize(200, 200)
         self.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint)
         self.setAttribute(Qt.WA_TranslucentBackground)
-        # self.setWindowModality(Qt.ApplicationModal)
+        self.setWindowModality(Qt.ApplicationModal)
         self.move(QDesktopWidget().availableGeometry().center() - QtCore.QPoint(100, 100))
         self.label_animation = QLabel(self)
         # self.label_animation.setStyleSheet("background: transparent;")
