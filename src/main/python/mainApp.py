@@ -1343,7 +1343,11 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def set_address_amounts(self, result_out):
         if result_out[3] == 0:
             self.wallet_total_normal_value.setText(str(result_out[0]))
-            for address in result_out[1]:
+            if len(result_out[1]) > 0:
+                address_result_out = result_out[1][0]
+            else:
+                address_result_out = result_out[1]
+            for address in address_result_out:
                 if address[0] == self.currentaddress_value.text():
                     self.normal_amount_value.setText(str(address[1]))
             TotalAmountOnActivated = 0.0
