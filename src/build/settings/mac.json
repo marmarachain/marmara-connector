@@ -1,3 +1,5 @@
 {
+    "freeze_dir": "target/${app_name}-${version}-osx.app",
+    "installer": "${app_name}-${version}-osx.dmg",
     "mac_bundle_identifier": ""
 }

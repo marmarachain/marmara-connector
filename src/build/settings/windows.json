@@ -1,0 +1,6 @@
+{
+    "freeze_dir": "target/${app_name}-${version}-Windows.app",
+    "installer": "${app_name}-${version}-Windows.exe",
+    "show_console_window": false,
+    "url": "https://marmara.io/"
+}

@@ -1,6 +1,7 @@
 {
     "app_name": "MarmaraConnector",
-    "author": "Marmara Credit Loops",
+    "author": "Marmara Credit Loops Team",
     "main_module": "src/main/python/mainApp.py",
-    "version": "0.2.3-alpha"
+    "version": "0.2.3-alpha",
+    "public_settings": ["app_name", "author", "version"]
 }
