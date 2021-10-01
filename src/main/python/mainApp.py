@@ -1546,6 +1546,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 logging.info("No transaction between selected dates.")
             else:
                 for txid in txids:
+                    self.bottom_info(self.tr("fetched transactions between selected dates."))
                     row_number = txids.index(txid)
                     btn_explorer = QPushButton(qta.icon('mdi.firefox'), '')
                     btn_explorer.setIconSize(QSize(24, 24))
