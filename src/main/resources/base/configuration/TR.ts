@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="tr" sourcelanguage="en">
+<!DOCTYPE TS>
+<TS version="2.1" language="tr" sourcelanguage="en">
 <context>
     <name>MainWindow</name>
     <message>
@@ -1678,17 +1679,17 @@
     <message>
         <location filename="../../../python/mainApp.py" line="2383"/>
         <source>Total In Loops</source>
-        <translation type="unfinished"></translation>
+        <translation>Toplam Döngülerde Kilitli</translation>
     </message>
     <message>
         <location filename="../../../python/mainApp.py" line="2441"/>
         <source>fetched exchange values</source>
-        <translation type="unfinished"></translation>
+        <translation>borsadan veriler çekildi</translation>
     </message>
     <message>
         <location filename="../../../python/mainApp.py" line="2443"/>
         <source>Error in getting exchange values</source>
-        <translation type="unfinished"></translation>
+        <translation>borsadan verilerin alınmasında hata alındı</translation>
     </message>
 </context>
 </TS>
