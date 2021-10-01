@@ -421,7 +421,7 @@
     <message>
         <location filename="../../../python/qtguidesign.py" line="2588"/>
         <source>Confirm</source>
-        <translation>Teyit Et</translation>
+        <translation>Onayla</translation>
     </message>
     <message>
         <location filename="../../../python/qtguidesign.py" line="2614"/>
@@ -1414,7 +1414,7 @@
     <message>
         <location filename="../../../python/mainApp.py" line="352"/>
         <source>Confirm</source>
-        <translation>Teyit Et</translation>
+        <translation>Onayla</translation>
     </message>
     <message>
         <location filename="../../../python/mainApp.py" line="352"/>
