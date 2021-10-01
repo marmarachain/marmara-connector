@@ -219,12 +219,13 @@ def handle_rpc(command):
         else:
             logging.info('------sending command----- \n ' + command.split(' ')[0])
         try:
-            proc = subprocess.Popen(cmd, cwd=marmara_path, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            proc = subprocess.Popen(cmd, cwd=marmara_path, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                    bufsize=8192)
             retvalue = proc.poll()
             result = ""
             err_out = ""
             while True:
-                stdout = proc.stdout.readline().replace(b'\n', b'').decode()
+                stdout = proc.stdout.readline().replace(b'\n', b'').replace(b'\r', b'').decode()
                 result = result + stdout
                 if not stdout:
                     break
@@ -434,10 +435,10 @@ class RpcHandler(QtCore.QObject):
         listaddressgroupings = handle_rpc(cp.listaddressgroupings)
         activated_address_list = handle_rpc(cp.marmaralistactivatedaddresses)
         if getbalance[0] and listaddressgroupings[0] and activated_address_list[0]:
-            result = getbalance[0].replace('\n', ''), json.loads(listaddressgroupings[0])[0], json.loads(activated_address_list[0]), 0
+            result = getbalance[0].replace('\n', ''), json.loads(listaddressgroupings[0]), json.loads(activated_address_list[0]), 0
             self.command_out.emit(result)
             self.finished.emit()
-        elif getbalance[1] and listaddressgroupings[1] and activated_address_list[1]:
+        elif getbalance[1] or listaddressgroupings[1] or activated_address_list[1]:
             result = getbalance[1], listaddressgroupings[1], activated_address_list[1], 1
             self.command_out.emit(result)
             self.finished.emit()

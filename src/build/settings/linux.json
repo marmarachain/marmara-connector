@@ -1,6 +1,9 @@
 {
+    "freeze_dir": "target/${app_name}-${version}-Linux",
+    "installer": "${app_name}-${version}-Linux.deb",
     "categories": "Utility;",
-    "description": "Interact with Marmara Blockchain on local or remote server",
+    "description": "Interact with Marmara Blockchain on a local machine or a remote server",
     "author_email": "marmarachain@gmail.com",
-    "url": "marmara.io"
+    "url": "https://marmara.io/",
+    "public_settings": ["categories", "description", "author_email", "url"]
 }

@@ -17,7 +17,7 @@ requests to get the latest releases' tag_name of a git api url
 
 def git_request_tag(api_url):
     try:
-        response = requests.get(api_url)
+        response = requests.get(api_url, timeout=5)
         tag_name = response.json()["tag_name"]
         return tag_name
     except Exception as e:
@@ -54,15 +54,15 @@ def latest_app_release_url():
 
 def get_marmara_stats():
     try:
-        response = requests.get('https://explorer3.marmara.io/insight-api-komodo/stats')
+        response = requests.get('https://explorer3.marmara.io/insight-api-komodo/stats', timeout=5)
         return response.json()
     except Exception:
         try:
-            response = requests.get('https://explorer2.marmara.io/insight-api-komodo/stats')
+            response = requests.get('https://explorer2.marmara.io/insight-api-komodo/stats', timeout=5)
             return response.json()
         except Exception:
             try:
-                response = requests.get('https://explorer.marmara.io/insight-api-komodo/stats')
+                response = requests.get('https://explorer.marmara.io/insight-api-komodo/stats', timeout=5)
                 return response.json()
             except Exception as e:
                 logging.error(e)
@@ -71,7 +71,8 @@ def get_marmara_stats():
 
 def mcl_exchange_market(api_list_key):
     try:
-        response = requests.get(exchange_market_api_list.get(api_list_key))
+        response = requests.get(exchange_market_api_list.get(api_list_key), timeout=5)
         return response.json()
     except Exception as e:
         logging.error(e)
+        return 'error'

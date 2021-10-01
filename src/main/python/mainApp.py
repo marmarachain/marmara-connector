@@ -1343,7 +1343,11 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def set_address_amounts(self, result_out):
         if result_out[3] == 0:
             self.wallet_total_normal_value.setText(str(result_out[0]))
-            for address in result_out[1]:
+            if len(result_out[1]) > 0:
+                address_result_out = result_out[1][0]
+            else:
+                address_result_out = result_out[1]
+            for address in address_result_out:
                 if address[0] == self.currentaddress_value.text():
                     self.normal_amount_value.setText(str(address[1]))
             TotalAmountOnActivated = 0.0
@@ -1457,7 +1461,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             self.bottom_info('txid: ' + str(result_out[0]).replace('\n', ''))
             logging.info('txid: ' + str(result_out[0]).replace('\n', ''))
             time.sleep(0.2)  # wait for loading screen disappear
-            self.custom_message(self.tr('Transaction Successful'), self.tr(f'TxId : {result_out[0]}'), "information")
+            self.custom_message(self.tr('Transaction Successful'), self.tr('TxId :') + str(result_out[0]), "information")
         elif result_out[1]:
             self.bottom_err_info(result_out[1])
             logging.error(result_out[1])
@@ -1546,6 +1550,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 logging.info("No transaction between selected dates.")
             else:
                 for txid in txids:
+                    self.bottom_info(self.tr("fetched transactions between selected dates."))
                     row_number = txids.index(txid)
                     btn_explorer = QPushButton(qta.icon('mdi.firefox'), '')
                     btn_explorer.setIconSize(QSize(24, 24))
@@ -2367,9 +2372,9 @@ class MarmaraMain(QMainWindow, GuiStyle):
         chart.setAnimationOptions(QChart.SeriesAnimations)
         chart.legend().setVisible(True)
         chart.legend().setAlignment(Qt.AlignRight)
-        chart.legend().markers(series)[0].setLabel("Total Normal")
-        chart.legend().markers(series)[1].setLabel("Total Activated")
-        chart.legend().markers(series)[2].setLabel("Total In Loops")
+        chart.legend().markers(series)[0].setLabel(self.tr("Total Normal"))
+        chart.legend().markers(series)[1].setLabel(self.tr("Total Activated"))
+        chart.legend().markers(series)[2].setLabel(self.tr("Total In Loops"))
         self.chartview = QChartView(chart)
         self.chartview.setRenderHint(QPainter.Antialiasing)
         self.stats_layout.addWidget(self.chartview)
@@ -2413,20 +2418,23 @@ class MarmaraMain(QMainWindow, GuiStyle):
         index = self.exchange_market_comboBox.currentIndex()
         key = self.exchange_market_comboBox.itemText(index)
         mcl_market_values = api_request.mcl_exchange_market(key)
-        print(len(mcl_market_values))
-        self.exchange_market_tableWidget.setRowCount(len(mcl_market_values))
-        for row in mcl_market_values:
-            row_number = mcl_market_values.index(row)
-            self.exchange_market_tableWidget.setItem(row_number, 0, QTableWidgetItem(str(row.get('exchange_name'))))
-            self.exchange_market_tableWidget.setItem(row_number, 1, QTableWidgetItem(str(row.get('pair'))))
-            self.exchange_market_tableWidget.setItem(row_number, 2, QTableWidgetItem(str(row.get('quotes').get('USD').get('price'))))
-            self.exchange_market_tableWidget.setItem(row_number, 3, QTableWidgetItem(str(row.get('quotes').get('USD').get('volume_24h'))))
-            self.exchange_market_tableWidget.setItem(row_number, 4, QTableWidgetItem(str(row.get('last_updated')).replace('T', ' ').replace('Z', '')))
-            self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
-            self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
-            self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
-            self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
-            self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
+        if mcl_market_values != 'error':
+            self.exchange_market_tableWidget.setRowCount(len(mcl_market_values))
+            for row in mcl_market_values:
+                row_number = mcl_market_values.index(row)
+                self.exchange_market_tableWidget.setItem(row_number, 0, QTableWidgetItem(str(row.get('exchange_name'))))
+                self.exchange_market_tableWidget.setItem(row_number, 1, QTableWidgetItem(str(row.get('pair'))))
+                self.exchange_market_tableWidget.setItem(row_number, 2, QTableWidgetItem(str(row.get('quotes').get('USD').get('price'))))
+                self.exchange_market_tableWidget.setItem(row_number, 3, QTableWidgetItem(str(row.get('quotes').get('USD').get('volume_24h'))))
+                self.exchange_market_tableWidget.setItem(row_number, 4, QTableWidgetItem(str(row.get('last_updated')).replace('T', ' ').replace('Z', '')))
+                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
+                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
+                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
+                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
+                self.bottom_info(self.tr('fetched exchange values'))
+        else:
+            self.bottom_err_info(self.tr('Error in getting exchange values'))
 
     @pyqtSlot()
     def enable_market_request(self):
@@ -2505,18 +2513,9 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.remote_selection()
 
 
-class AppContext(ApplicationContext):
-
-    def run(self):
-        version = self.build_settings['version']
-        app = QtWidgets.QApplication(sys.argv)
-        app.setOrganizationDomain('marmara.io')
-        ui = MarmaraMain()
-        ui.show()
-        return self.app.exec_()
-
-
 if __name__ == '__main__':
-    appcontext = AppContext()
-    exit_code = appcontext.run()
+    appctxt = ApplicationContext()
+    ui = MarmaraMain()
+    ui.show()
+    exit_code = appctxt.app.exec_()
     sys.exit(exit_code)

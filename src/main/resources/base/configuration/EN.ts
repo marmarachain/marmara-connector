@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="en_US">
+<!DOCTYPE TS><TS version="2.0" language="en_US" sourcelanguage="">
 <context>
     <name>MainWindow</name>
     <message>
@@ -1107,12 +1106,12 @@
         <translation>Support</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1859"/>
+        <location filename="../../../python/mainApp.py" line="1860"/>
         <source>Confirm Transaction</source>
         <translation>Confirm Transaction</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1866"/>
+        <location filename="../../../python/mainApp.py" line="1867"/>
         <source>Transaction aborted</source>
         <translation>Transaction aborted</translation>
     </message>
@@ -1202,152 +1201,152 @@
         <translation>No transaction between selected dates.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1584"/>
+        <location filename="../../../python/mainApp.py" line="1585"/>
         <source>Copied </source>
         <translation>Copied </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1636"/>
+        <location filename="../../../python/mainApp.py" line="1637"/>
         <source>searching incoming loop requests</source>
         <translation>searching incoming loop requests</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1647"/>
+        <location filename="../../../python/mainApp.py" line="1648"/>
         <source>finished searching incoming loop requests</source>
         <translation>finished searching incoming loop requests</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1746"/>
+        <location filename="../../../python/mainApp.py" line="1747"/>
         <source>Create Credit Loop</source>
         <translation>Create Credit Loop</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1775"/>
+        <location filename="../../../python/mainApp.py" line="1776"/>
         <source>Transfer Credit Loop</source>
         <translation>Transfer Credit Loop</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1775"/>
+        <location filename="../../../python/mainApp.py" line="1776"/>
         <source>You are about to transfer you credit loop with given details below:</source>
         <translation>You are about to transfer you credit loop with given details below:</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1807"/>
+        <location filename="../../../python/mainApp.py" line="1808"/>
         <source>preparing loop request</source>
         <translation>preparing loop request</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1811"/>
+        <location filename="../../../python/mainApp.py" line="1812"/>
         <source>cannot make a credit loop request with empty fields</source>
         <translation>cannot make a credit loop request with empty fields</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1821"/>
+        <location filename="../../../python/mainApp.py" line="1822"/>
         <source>You are about to make a credit loop request</source>
         <translation>You are about to make a credit loop request</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1850"/>
+        <location filename="../../../python/mainApp.py" line="1851"/>
         <source>cannot make a receive transfer request with empty fields</source>
         <translation>cannot make a receive transfer request with empty fields</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1859"/>
+        <location filename="../../../python/mainApp.py" line="1860"/>
         <source>You are about to make a request to the endorser</source>
         <translation>You are about to make a request to the endorser</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1985"/>
+        <location filename="../../../python/mainApp.py" line="1986"/>
         <source>Date Selection Warning</source>
         <translation>Date Selection Warning</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1985"/>
+        <location filename="../../../python/mainApp.py" line="1986"/>
         <source>Make sure that the from and to dates are selected correctly.</source>
         <translation>Make sure that the from and to dates are selected correctly.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2027"/>
+        <location filename="../../../python/mainApp.py" line="2028"/>
         <source>Credit loop detail</source>
         <translation>Credit loop detail</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2027"/>
+        <location filename="../../../python/mainApp.py" line="2028"/>
         <source>Credit loop details.</source>
         <translation>Credit loop details.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2194"/>
+        <location filename="../../../python/mainApp.py" line="2195"/>
         <source>Error Adding Contact</source>
         <translation>Error Adding Contact</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2203"/>
+        <location filename="../../../python/mainApp.py" line="2204"/>
         <source>Added Contact</source>
         <translation>Added Contact</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2203"/>
+        <location filename="../../../python/mainApp.py" line="2204"/>
         <source>It is your responsibility that the information you have entered are correct and valid.</source>
         <translation>It is your responsibility that the information you have entered are correct and valid.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2215"/>
+        <location filename="../../../python/mainApp.py" line="2216"/>
         <source>Name and Address cannot be the same!</source>
         <translation>Name and Address cannot be the same!</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2217"/>
+        <location filename="../../../python/mainApp.py" line="2218"/>
         <source>Name and Pubkey cannot be the same!</source>
         <translation>Name and Pubkey cannot be the same!</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2219"/>
+        <location filename="../../../python/mainApp.py" line="2220"/>
         <source>Pubkey and Address cannot be the same!</source>
         <translation>Pubkey and Address cannot be the same!</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2223"/>
+        <location filename="../../../python/mainApp.py" line="2224"/>
         <source>Same name exists</source>
         <translation>Same name exists</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2226"/>
+        <location filename="../../../python/mainApp.py" line="2227"/>
         <source>Same address exists</source>
         <translation>Same address exists</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2229"/>
+        <location filename="../../../python/mainApp.py" line="2230"/>
         <source>Same pubkey exists</source>
         <translation>Same pubkey exists</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2232"/>
+        <location filename="../../../python/mainApp.py" line="2233"/>
         <source>cannot be an empty record</source>
         <translation>cannot be an empty record</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2302"/>
+        <location filename="../../../python/mainApp.py" line="2303"/>
         <source>Error Updating Contact</source>
         <translation>Error Updating Contact</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2323"/>
+        <location filename="../../../python/mainApp.py" line="2324"/>
         <source>You did not select a contact from table.</source>
         <translation>You did not select a contact from table.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2310"/>
+        <location filename="../../../python/mainApp.py" line="2311"/>
         <source>Deleting Contact</source>
         <translation>Deleting Contact</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2310"/>
+        <location filename="../../../python/mainApp.py" line="2311"/>
         <source>Are you sure to delete the contact from the list?</source>
         <translation>Are you sure to delete the contact from the list?</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2323"/>
+        <location filename="../../../python/mainApp.py" line="2324"/>
         <source>Error Deleting Contact</source>
         <translation>Error Deleting Contact</translation>
     </message>
@@ -1372,12 +1371,12 @@
         <translation>Current App version is </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2508"/>
+        <location filename="../../../python/mainApp.py" line="2512"/>
         <source>please insert all values</source>
         <translation>please insert all values</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2158"/>
+        <location filename="../../../python/mainApp.py" line="2159"/>
         <source>Contacts</source>
         <translation>Contacts</translation>
     </message>
@@ -1502,52 +1501,52 @@
         <translation> MCL to </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1746"/>
+        <location filename="../../../python/mainApp.py" line="1747"/>
         <source>You are about to create credit loop with given details below:</source>
         <translation>You are about to create credit loop with given details below:</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1904"/>
+        <location filename="../../../python/mainApp.py" line="1905"/>
         <source>getting address amounts finished</source>
         <translation>getting address amounts finished</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1920"/>
+        <location filename="../../../python/mainApp.py" line="1921"/>
         <source>finished searching marmara blockchain for all blocks for the set pubkey</source>
         <translation>finished searching marmara blockchain for all blocks for the set pubkey</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2027"/>
+        <location filename="../../../python/mainApp.py" line="2028"/>
         <source>&lt;br&gt;&lt;b&gt;Tx ID = &lt;/b&gt;</source>
         <translation>&lt;br&gt;&lt;b&gt;Tx ID = &lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2027"/>
+        <location filename="../../../python/mainApp.py" line="2028"/>
         <source>&lt;br&gt;&lt;b&gt;Amount = &lt;/b&gt;</source>
         <translation>&lt;br&gt;&lt;b&gt;Amount = &lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2027"/>
+        <location filename="../../../python/mainApp.py" line="2028"/>
         <source>&lt;br&gt;&lt;b&gt;Maturity = &lt;/b&gt;</source>
         <translation>&lt;br&gt;&lt;b&gt;Maturity = &lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2063"/>
+        <location filename="../../../python/mainApp.py" line="2064"/>
         <source>finished searching marmarainfo</source>
         <translation>finished searching marmarainfo</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2082"/>
+        <location filename="../../../python/mainApp.py" line="2083"/>
         <source>getting credit loop info, please wait</source>
         <translation>getting credit loop info, please wait</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2097"/>
+        <location filename="../../../python/mainApp.py" line="2098"/>
         <source>write loop transaction id to search!</source>
         <translation>write loop transaction id to search!</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2118"/>
+        <location filename="../../../python/mainApp.py" line="2119"/>
         <source>credit loop info finished</source>
         <translation>credit loop info finished</translation>
     </message>
@@ -1632,17 +1631,17 @@
         <translation>Marmara chain will be closed if it is running</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2333"/>
+        <location filename="../../../python/mainApp.py" line="2334"/>
         <source>getting stats values</source>
         <translation>getting stats values</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2341"/>
+        <location filename="../../../python/mainApp.py" line="2342"/>
         <source>stats values retrieved</source>
         <translation>stats values retrieved</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2356"/>
+        <location filename="../../../python/mainApp.py" line="2357"/>
         <source>Error in getting stats values</source>
         <translation>Error in getting stats values</translation>
     </message>
@@ -1655,6 +1654,41 @@
         <location filename="../../../python/mainApp.py" line="174"/>
         <source>can be refreshed once in 20 seconds</source>
         <translation>can be refreshed once in 20 seconds</translation>
+    </message>
+    <message>
+        <location filename="../../../python/mainApp.py" line="1556"/>
+        <source>fetched transactions between selected dates.</source>
+        <translation>fetched transactions between selected dates.</translation>
+    </message>
+    <message>
+        <location filename="../../../python/mainApp.py" line="1467"/>
+        <source>TxId :</source>
+        <translation>TxId :</translation>
+    </message>
+    <message>
+        <location filename="../../../python/mainApp.py" line="2381"/>
+        <source>Total Normal</source>
+        <translation>Total Normal</translation>
+    </message>
+    <message>
+        <location filename="../../../python/mainApp.py" line="2382"/>
+        <source>Total Activated</source>
+        <translation>Total Activated</translation>
+    </message>
+    <message>
+        <location filename="../../../python/mainApp.py" line="2383"/>
+        <source>Total In Loops</source>
+        <translation>Total In Loops</translation>
+    </message>
+    <message>
+        <location filename="../../../python/mainApp.py" line="2441"/>
+        <source>fetched exchange values</source>
+        <translation>fetched exchange values</translation>
+    </message>
+    <message>
+        <location filename="../../../python/mainApp.py" line="2443"/>
+        <source>Error in getting exchange values</source>
+        <translation>Error in getting exchange values</translation>
     </message>
 </context>
 </TS>

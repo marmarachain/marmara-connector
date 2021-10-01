@@ -421,7 +421,7 @@
     <message>
         <location filename="../../../python/qtguidesign.py" line="2588"/>
         <source>Confirm</source>
-        <translation>Teyit Et</translation>
+        <translation>Onayla</translation>
     </message>
     <message>
         <location filename="../../../python/qtguidesign.py" line="2614"/>
@@ -1107,12 +1107,12 @@
         <translation>Destekle</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1859"/>
+        <location filename="../../../python/mainApp.py" line="1860"/>
         <source>Confirm Transaction</source>
         <translation>İşlemi Onaylayın</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1866"/>
+        <location filename="../../../python/mainApp.py" line="1867"/>
         <source>Transaction aborted</source>
         <translation>İşlem durduruldu</translation>
     </message>
@@ -1202,152 +1202,152 @@
         <translation>Belirtilen tarihler arasında herhangi bir işlem bulunmamaktadır.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1584"/>
+        <location filename="../../../python/mainApp.py" line="1585"/>
         <source>Copied </source>
         <translation>Kopyalandı </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1636"/>
+        <location filename="../../../python/mainApp.py" line="1637"/>
         <source>searching incoming loop requests</source>
         <translation>gelen döngü istekleri aranmaktadır</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1647"/>
+        <location filename="../../../python/mainApp.py" line="1648"/>
         <source>finished searching incoming loop requests</source>
         <translation>gelen döngü isteklerine ait arama tamamlanmıştır</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1746"/>
+        <location filename="../../../python/mainApp.py" line="1747"/>
         <source>Create Credit Loop</source>
         <translation>Kredi Döngüsü Oluşturun</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1775"/>
+        <location filename="../../../python/mainApp.py" line="1776"/>
         <source>Transfer Credit Loop</source>
         <translation>Krediyi Aktar</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1775"/>
+        <location filename="../../../python/mainApp.py" line="1776"/>
         <source>You are about to transfer you credit loop with given details below:</source>
         <translation>Aşağıdaki ayrıntılara sahip krediyi aktarmak üzeresiniz:</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1807"/>
+        <location filename="../../../python/mainApp.py" line="1808"/>
         <source>preparing loop request</source>
         <translation>döngü isteği hazırlanıyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1811"/>
+        <location filename="../../../python/mainApp.py" line="1812"/>
         <source>cannot make a credit loop request with empty fields</source>
         <translation>boş olan alanları doldurmadan kredi döngü isteğinde bulunamazsınız</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1821"/>
+        <location filename="../../../python/mainApp.py" line="1822"/>
         <source>You are about to make a credit loop request</source>
         <translation>Bir kredi döngü isteğinde bulunmak üzeresiniz</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1850"/>
+        <location filename="../../../python/mainApp.py" line="1851"/>
         <source>cannot make a receive transfer request with empty fields</source>
         <translation>kredi aktarma isteği yapabilmek için boş alanların doldurulması gerekmektedir</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1859"/>
+        <location filename="../../../python/mainApp.py" line="1860"/>
         <source>You are about to make a request to the endorser</source>
         <translation>Cirantaya,krediyi aktaran kişiye, istek yapmak üzeresiniz</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1985"/>
+        <location filename="../../../python/mainApp.py" line="1986"/>
         <source>Date Selection Warning</source>
         <translation>Tarih Seçimi Uyarısı</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1985"/>
+        <location filename="../../../python/mainApp.py" line="1986"/>
         <source>Make sure that the from and to dates are selected correctly.</source>
         <translation>Başlangıç ve bitiş tarihlerinin doğru seçildiğinden emin olunuz.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2027"/>
+        <location filename="../../../python/mainApp.py" line="2028"/>
         <source>Credit loop detail</source>
         <translation>Kredi döngü detayı</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2027"/>
+        <location filename="../../../python/mainApp.py" line="2028"/>
         <source>Credit loop details.</source>
         <translation>Kredi Döngüsü detayları.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2194"/>
+        <location filename="../../../python/mainApp.py" line="2195"/>
         <source>Error Adding Contact</source>
         <translation>Kişiyi Eklemede Hata</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2203"/>
+        <location filename="../../../python/mainApp.py" line="2204"/>
         <source>Added Contact</source>
         <translation>Kişi Eklenmiştir</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2203"/>
+        <location filename="../../../python/mainApp.py" line="2204"/>
         <source>It is your responsibility that the information you have entered are correct and valid.</source>
         <translation>Girdiğiniz bilgilerin doğru ve geçerli olması sizin sorumluluğunuzdadır.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2215"/>
+        <location filename="../../../python/mainApp.py" line="2216"/>
         <source>Name and Address cannot be the same!</source>
         <translation>İsim ve adress aynı olamaz!</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2217"/>
+        <location filename="../../../python/mainApp.py" line="2218"/>
         <source>Name and Pubkey cannot be the same!</source>
         <translation>İsim ve pubkey aynı olamaz!</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2219"/>
+        <location filename="../../../python/mainApp.py" line="2220"/>
         <source>Pubkey and Address cannot be the same!</source>
         <translation>Pubkey ve adres aynı olamaz!</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2223"/>
+        <location filename="../../../python/mainApp.py" line="2224"/>
         <source>Same name exists</source>
         <translation>Aynı isim bulunmakta</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2226"/>
+        <location filename="../../../python/mainApp.py" line="2227"/>
         <source>Same address exists</source>
         <translation>Aynı adresten bir tane daha bulunmakta</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2229"/>
+        <location filename="../../../python/mainApp.py" line="2230"/>
         <source>Same pubkey exists</source>
         <translation>Aynı pubkeyden bir tane daha bulunmakta</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2232"/>
+        <location filename="../../../python/mainApp.py" line="2233"/>
         <source>cannot be an empty record</source>
         <translation>boş kayıt açılamaz</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2302"/>
+        <location filename="../../../python/mainApp.py" line="2303"/>
         <source>Error Updating Contact</source>
         <translation>Kişileri Güncellemede Hata</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2323"/>
+        <location filename="../../../python/mainApp.py" line="2324"/>
         <source>You did not select a contact from table.</source>
         <translation>Listeden bir kişi seçmediniz.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2310"/>
+        <location filename="../../../python/mainApp.py" line="2311"/>
         <source>Deleting Contact</source>
         <translation>Kişi Siliniyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2310"/>
+        <location filename="../../../python/mainApp.py" line="2311"/>
         <source>Are you sure to delete the contact from the list?</source>
         <translation>Listeden ilgili kişiyi silmek istediğinizden emin misiniz?</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2323"/>
+        <location filename="../../../python/mainApp.py" line="2324"/>
         <source>Error Deleting Contact</source>
         <translation>Kişiyi Silmede Hata</translation>
     </message>
@@ -1372,12 +1372,12 @@
         <translation>Mevcut Uygulama versiyonu </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2508"/>
+        <location filename="../../../python/mainApp.py" line="2512"/>
         <source>please insert all values</source>
         <translation>lütfen bütün değerleri giriniz</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2158"/>
+        <location filename="../../../python/mainApp.py" line="2159"/>
         <source>Contacts</source>
         <translation>Kişiler</translation>
     </message>
@@ -1414,7 +1414,7 @@
     <message>
         <location filename="../../../python/mainApp.py" line="352"/>
         <source>Confirm</source>
-        <translation>Teyit Et</translation>
+        <translation>Onayla</translation>
     </message>
     <message>
         <location filename="../../../python/mainApp.py" line="352"/>
@@ -1502,52 +1502,52 @@
         <translation> MCL yi </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1746"/>
+        <location filename="../../../python/mainApp.py" line="1747"/>
         <source>You are about to create credit loop with given details below:</source>
         <translation>Aşağıdaki ayrıntılara sahip bir kredi döngüsü oluşturmak üzeresiniz:</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1904"/>
+        <location filename="../../../python/mainApp.py" line="1905"/>
         <source>getting address amounts finished</source>
         <translation>adresslerin bakiyeleri getirilme işlemi bitti</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1920"/>
+        <location filename="../../../python/mainApp.py" line="1921"/>
         <source>finished searching marmara blockchain for all blocks for the set pubkey</source>
         <translation>pukey&apos;e ait marmarainfo bilgilerini getirme işlemi bitti</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2027"/>
+        <location filename="../../../python/mainApp.py" line="2028"/>
         <source>&lt;br&gt;&lt;b&gt;Tx ID = &lt;/b&gt;</source>
         <translation>&lt;br&gt;&lt;b&gt;Tx ID = &lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2027"/>
+        <location filename="../../../python/mainApp.py" line="2028"/>
         <source>&lt;br&gt;&lt;b&gt;Amount = &lt;/b&gt;</source>
         <translation>&lt;br&gt;&lt;b&gt;Miktar = &lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2027"/>
+        <location filename="../../../python/mainApp.py" line="2028"/>
         <source>&lt;br&gt;&lt;b&gt;Maturity = &lt;/b&gt;</source>
         <translation>&lt;br&gt;&lt;b&gt;Vade = &lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2063"/>
+        <location filename="../../../python/mainApp.py" line="2064"/>
         <source>finished searching marmarainfo</source>
         <translation>marmarainfo sorgusu tamamlanmıştır</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2082"/>
+        <location filename="../../../python/mainApp.py" line="2083"/>
         <source>getting credit loop info, please wait</source>
         <translation>kredi döngü istekleri sorgusu alınıyor, lütfen bekleyin</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2097"/>
+        <location filename="../../../python/mainApp.py" line="2098"/>
         <source>write loop transaction id to search!</source>
         <translation>sorgulamak için döngü txid giriniz!</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2118"/>
+        <location filename="../../../python/mainApp.py" line="2119"/>
         <source>credit loop info finished</source>
         <translation>kredi döngü sorgusu bitti</translation>
     </message>
@@ -1632,17 +1632,17 @@
         <translation>Marmara zinciri çalışıyor ise durdurulacaktır</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2333"/>
+        <location filename="../../../python/mainApp.py" line="2334"/>
         <source>getting stats values</source>
         <translation>istatistik verileri alınıyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2341"/>
+        <location filename="../../../python/mainApp.py" line="2342"/>
         <source>stats values retrieved</source>
         <translation>istatistikler getirildi</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2356"/>
+        <location filename="../../../python/mainApp.py" line="2357"/>
         <source>Error in getting stats values</source>
         <translation>istatistikleri getirme işleminde hata alındı</translation>
     </message>
@@ -1655,6 +1655,41 @@
         <location filename="../../../python/mainApp.py" line="174"/>
         <source>can be refreshed once in 20 seconds</source>
         <translation>yalnızca 20 saniyede bir yenilenebilir</translation>
+    </message>
+    <message>
+        <location filename="../../../python/mainApp.py" line="1556"/>
+        <source>fetched transactions between selected dates.</source>
+        <translation>seçilen tarihler arasındaki işlemler getirildi.</translation>
+    </message>
+    <message>
+        <location filename="../../../python/mainApp.py" line="1467"/>
+        <source>TxId :</source>
+        <translation>TxId :</translation>
+    </message>
+    <message>
+        <location filename="../../../python/mainApp.py" line="2381"/>
+        <source>Total Normal</source>
+        <translation>Toplam Normal</translation>
+    </message>
+    <message>
+        <location filename="../../../python/mainApp.py" line="2382"/>
+        <source>Total Activated</source>
+        <translation>Toplam Aktif</translation>
+    </message>
+    <message>
+        <location filename="../../../python/mainApp.py" line="2383"/>
+        <source>Total In Loops</source>
+        <translation>Toplam Döngülerde Kilitli</translation>
+    </message>
+    <message>
+        <location filename="../../../python/mainApp.py" line="2441"/>
+        <source>fetched exchange values</source>
+        <translation>borsadan veriler çekildi</translation>
+    </message>
+    <message>
+        <location filename="../../../python/mainApp.py" line="2443"/>
+        <source>Error in getting exchange values</source>
+        <translation>borsadan verilerin alınmasında hata alındı</translation>
     </message>
 </context>
 </TS>
