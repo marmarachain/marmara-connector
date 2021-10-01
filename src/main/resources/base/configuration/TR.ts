@@ -847,814 +847,829 @@
         <translation>Marmara Çekirdek Ekibine Kahve Hediye et</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="232"/>
+        <location filename="../../../python/mainApp.py" line="231"/>
         <source>Software Update Available</source>
         <translation>Yazılım Güncellemesi Mevcut</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="250"/>
+        <location filename="../../../python/mainApp.py" line="249"/>
         <source>Choose a language</source>
         <translation>Dil seçiniz</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="286"/>
+        <location filename="../../../python/mainApp.py" line="285"/>
         <source>About Marmara Connector</source>
         <translation>Yazılım Hakkında</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="286"/>
+        <location filename="../../../python/mainApp.py" line="285"/>
         <source>This is a software written to carry out Marmarachain node operations on a local or remote machine.&lt;br&gt;Version info: </source>
         <translation>İşbu yazılım lokal veya sunucu bilgisayarınızda Marmara zinciri düğüm operasyonlarınızı gerçekleştirmeniz için grafik bir arayüz sağlamaktadır.&lt;br&gt;Versiyon bilgisi: </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="308"/>
+        <location filename="../../../python/mainApp.py" line="307"/>
         <source>Ok</source>
         <translation>Tamam</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="314"/>
+        <location filename="../../../python/mainApp.py" line="313"/>
         <source>Yes</source>
         <translation>Evet</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="316"/>
+        <location filename="../../../python/mainApp.py" line="315"/>
         <source>No</source>
         <translation>Hayır</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="381"/>
+        <location filename="../../../python/mainApp.py" line="378"/>
         <source>Debug Console</source>
         <translation>Debug Konsol Ekranı</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="381"/>
+        <location filename="../../../python/mainApp.py" line="378"/>
         <source>Under development</source>
         <translation>Geliştirme aşamasında</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="451"/>
+        <location filename="../../../python/mainApp.py" line="448"/>
         <source>Getting marmara chain path from config file</source>
         <translation>Konfigürasyon dosyasından marmara zincirine ait dizin yolu alınmaktadır</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="454"/>
+        <location filename="../../../python/mainApp.py" line="451"/>
         <source>marmara path from configuration file : </source>
         <translation>Konfigürasyon dosyasından alınan marmara dizini : </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="457"/>
+        <location filename="../../../python/mainApp.py" line="454"/>
         <source>Verifiying the Chain location </source>
         <translation>Zincirin bulunduğu yer doğrulanıyor </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="460"/>
+        <location filename="../../../python/mainApp.py" line="457"/>
         <source>Chain location verified.</source>
         <translation>Zincirin bulunduğu yer doğrulandı.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="464"/>
+        <location filename="../../../python/mainApp.py" line="461"/>
         <source>Installing Marmarachain</source>
         <translation>Marmara zinciri yükleniyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="464"/>
+        <location filename="../../../python/mainApp.py" line="461"/>
         <source>Marmarachain is not installed. Would you like to install it?</source>
         <translation>Marmara zinciri yüklü değildir. Yüklemek ister misiniz?</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="464"/>
+        <location filename="../../../python/mainApp.py" line="461"/>
         <source>question</source>
         <translation>soru</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="491"/>
+        <location filename="../../../python/mainApp.py" line="488"/>
         <source>Auto-installation does not begin</source>
         <translation>Oto yükleme başlayamıyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="491"/>
+        <location filename="../../../python/mainApp.py" line="488"/>
         <source>You need to write a password that has admin privileges</source>
         <translation>Yönetici haklarına sahip bir şifre girmelisiniz</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="491"/>
+        <location filename="../../../python/mainApp.py" line="488"/>
         <source>information</source>
         <translation>bilgi</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="524"/>
+        <location filename="../../../python/mainApp.py" line="521"/>
         <source>Installation Completed</source>
         <translation>Yükleme Tamamlandı</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="524"/>
+        <location filename="../../../python/mainApp.py" line="521"/>
         <source>Starting Marmarachain</source>
         <translation>Marmara zinciri Başlatılıyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="533"/>
+        <location filename="../../../python/mainApp.py" line="530"/>
         <source>Installation not completed correctly</source>
         <translation>Yükleme doğru bir şekilde tamamlanamadı</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="533"/>
+        <location filename="../../../python/mainApp.py" line="530"/>
         <source>Wrong password input. Please install again</source>
         <translation>Yanlış şifre girişi. Lütfen yeniden yükleme yapınız</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="560"/>
+        <location filename="../../../python/mainApp.py" line="556"/>
         <source>chain_status </source>
         <translation>zincir_durumu </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="564"/>
+        <location filename="../../../python/mainApp.py" line="560"/>
         <source>Checking marmarachain</source>
         <translation>Marmara zinciri kontrol ediliyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="567"/>
+        <location filename="../../../python/mainApp.py" line="563"/>
         <source>marmarachain has pid</source>
         <translation>marmara zinciri arka planda çalışmaktadır</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="571"/>
+        <location filename="../../../python/mainApp.py" line="567"/>
         <source>sending chain start command</source>
         <translation>zincire başlama komutu gönderiliyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="576"/>
+        <location filename="../../../python/mainApp.py" line="572"/>
         <source>Checking if marmarachain is ready for rpc</source>
         <translation>marmara zincirinin sorgular için hazır olup olmadığı kontrol ediliyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="592"/>
+        <location filename="../../../python/mainApp.py" line="588"/>
         <source>chain ready</source>
         <translation>marmara zinciri hazır</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="926"/>
+        <location filename="../../../python/mainApp.py" line="921"/>
         <source>getting wallet addresses</source>
         <translation>cüzdan adresi alınıyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="607"/>
+        <location filename="../../../python/mainApp.py" line="603"/>
         <source>Chain init completed.</source>
         <translation>Zincirin başlatılması tamamlandı.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="635"/>
+        <location filename="../../../python/mainApp.py" line="631"/>
         <source>Marmarachain is not ready</source>
         <translation>Marmara zinciri hazır değildir</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="658"/>
+        <location filename="../../../python/mainApp.py" line="653"/>
         <source>Marmarachain stopped</source>
         <translation>Marmara zinciri durduruldu</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="682"/>
+        <location filename="../../../python/mainApp.py" line="677"/>
         <source>loading getinfo values</source>
         <translation>getinfo sorgusunun cevapları yükleniyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="699"/>
+        <location filename="../../../python/mainApp.py" line="694"/>
         <source>pubkey is not set</source>
         <translation>pubkey ile başlatılmamış</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="708"/>
+        <location filename="../../../python/mainApp.py" line="703"/>
         <source>getinfo finished</source>
         <translation>getinfo komutu tamamlandı</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="717"/>
+        <location filename="../../../python/mainApp.py" line="712"/>
         <source>getting getinfo</source>
         <translation>getinfo sorgusu gönderiliyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="727"/>
+        <location filename="../../../python/mainApp.py" line="722"/>
         <source>Last Update: </source>
         <translation>Son Güncelleme: </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="745"/>
+        <location filename="../../../python/mainApp.py" line="740"/>
         <source>Refresh completed.</source>
         <translation>Yenileme tamamlandı.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="767"/>
+        <location filename="../../../python/mainApp.py" line="762"/>
         <source>copied </source>
         <translation>kopyalandı </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="759"/>
+        <location filename="../../../python/mainApp.py" line="754"/>
         <source>no address value set</source>
         <translation>adres değeri seçilmemiş</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="770"/>
+        <location filename="../../../python/mainApp.py" line="765"/>
         <source>no pubkey value set</source>
         <translation>pubkey değeri seçilmemiş</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="825"/>
+        <location filename="../../../python/mainApp.py" line="820"/>
         <source>Turning off Mining</source>
         <translation>Madencilik kapatılıyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="777"/>
+        <location filename="../../../python/mainApp.py" line="772"/>
         <source>Mining is currently on. You are about to turn off mining. Are you sure?</source>
         <translation>Mevcutta zincir madencilik ayarında çalışmakta. Bunu kapatmak istediğinizden emin misiniz?</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="808"/>
+        <location filename="../../../python/mainApp.py" line="803"/>
         <source>Turning off Staking</source>
         <translation>Staking modu kapatılıyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="794"/>
+        <location filename="../../../python/mainApp.py" line="789"/>
         <source>You are about to turn off staking. Are you sure?</source>
         <translation>Zincirin staking modunda çalışması kapatılacaktır. Emin misiniz?</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="808"/>
+        <location filename="../../../python/mainApp.py" line="803"/>
         <source>Staking is currently active. You are about to turn off staking. Are you sure?</source>
         <translation>Zincir staking modunda çalışmaktadır. Bu modu kapatmak istediğinizden emin misiniz?</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="825"/>
+        <location filename="../../../python/mainApp.py" line="820"/>
         <source>You are about to turn off mining. Are you sure?</source>
         <translation>Madencilik modunda çalışma kapatılacaktır. Emin misiniz?</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="862"/>
+        <location filename="../../../python/mainApp.py" line="857"/>
         <source>Staking ON</source>
         <translation>Staking AÇIK</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="867"/>
+        <location filename="../../../python/mainApp.py" line="862"/>
         <source>Mining status is OFF</source>
         <translation>Madencilik durumu KAPALIDIR</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="872"/>
+        <location filename="../../../python/mainApp.py" line="867"/>
         <source>Mining ON with </source>
         <translation>Madencilik AÇIK </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="903"/>
+        <location filename="../../../python/mainApp.py" line="898"/>
         <source>Support</source>
         <translation>Destekle</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1859"/>
+        <location filename="../../../python/mainApp.py" line="1853"/>
         <source>Confirm Transaction</source>
         <translation>İşlemi Onaylayın</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1866"/>
+        <location filename="../../../python/mainApp.py" line="1860"/>
         <source>Transaction aborted</source>
         <translation>İşlem durduruldu</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="938"/>
+        <location filename="../../../python/mainApp.py" line="933"/>
         <source>Loading Addresses ...</source>
         <translation>Adresler yükleniyor ...</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="954"/>
+        <location filename="../../../python/mainApp.py" line="949"/>
         <source>Loading Addresses finished</source>
         <translation>Adreslerin yüklenmesi tamamlandı</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="980"/>
+        <location filename="../../../python/mainApp.py" line="975"/>
         <source>Copied  </source>
         <translation>Kopyalandı  </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1029"/>
+        <location filename="../../../python/mainApp.py" line="1024"/>
         <source>Pubkey set</source>
         <translation>Pubkey ile başlatıldı</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1049"/>
+        <location filename="../../../python/mainApp.py" line="1044"/>
         <source>Chain started with pubkey</source>
         <translation>Zincir pubkey ile başlatıldı</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1174"/>
+        <location filename="../../../python/mainApp.py" line="1167"/>
         <source>Creating New Address</source>
         <translation>Yeni adres oluşturuluyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1174"/>
+        <location filename="../../../python/mainApp.py" line="1167"/>
         <source>You are about to create a new address. Are you sure?</source>
         <translation>Yeni bir adres oluşturmak üzeresiniz. Emin misiniz?</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1202"/>
+        <location filename="../../../python/mainApp.py" line="1195"/>
         <source>seed words does not match</source>
         <translation>anahtar kelimeler uyuşmuyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1205"/>
+        <location filename="../../../python/mainApp.py" line="1198"/>
         <source>write some seed words!</source>
         <translation>anahtar kelimeleri giriniz!</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1219"/>
+        <location filename="../../../python/mainApp.py" line="1212"/>
         <source>Creating an Address</source>
         <translation>Yeni bir adres oluşturuluyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1312"/>
+        <location filename="../../../python/mainApp.py" line="1305"/>
         <source>Private Key</source>
         <translation>Özel Anahtar</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1452"/>
+        <location filename="../../../python/mainApp.py" line="1445"/>
         <source>Signing transaction</source>
         <translation>İşlem gerçekleştiriliyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1467"/>
+        <location filename="../../../python/mainApp.py" line="1460"/>
         <source>Transaction Successful</source>
         <translation>İşlem başarıyla gerçekleştirildi</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1491"/>
+        <location filename="../../../python/mainApp.py" line="1484"/>
         <source>enter a receiver address</source>
         <translation>Alıcı adresi giriniz</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1495"/>
+        <location filename="../../../python/mainApp.py" line="1488"/>
         <source>enter some amount to send</source>
         <translation>gönderilecek miktarı giriniz</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1537"/>
+        <location filename="../../../python/mainApp.py" line="1530"/>
         <source>A pubkey is not set yet! Please set a pubkey first.</source>
         <translation>Zincir pubkey ile başlatılmadı. Lütfen zinciri önce pubkey ile başlatınız.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1552"/>
+        <location filename="../../../python/mainApp.py" line="1545"/>
         <source>No transaction between selected dates.</source>
         <translation>Belirtilen tarihler arasında herhangi bir işlem bulunmamaktadır.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1584"/>
+        <location filename="../../../python/mainApp.py" line="1578"/>
         <source>Copied </source>
         <translation>Kopyalandı </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1636"/>
+        <location filename="../../../python/mainApp.py" line="1630"/>
         <source>searching incoming loop requests</source>
         <translation>gelen döngü istekleri aranmaktadır</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1647"/>
+        <location filename="../../../python/mainApp.py" line="1641"/>
         <source>finished searching incoming loop requests</source>
         <translation>gelen döngü isteklerine ait arama tamamlanmıştır</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1746"/>
+        <location filename="../../../python/mainApp.py" line="1740"/>
         <source>Create Credit Loop</source>
         <translation>Kredi Döngüsü Oluşturun</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1775"/>
+        <location filename="../../../python/mainApp.py" line="1769"/>
         <source>Transfer Credit Loop</source>
         <translation>Krediyi Aktar</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1775"/>
+        <location filename="../../../python/mainApp.py" line="1769"/>
         <source>You are about to transfer you credit loop with given details below:</source>
         <translation>Aşağıdaki ayrıntılara sahip krediyi aktarmak üzeresiniz:</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1807"/>
+        <location filename="../../../python/mainApp.py" line="1801"/>
         <source>preparing loop request</source>
         <translation>döngü isteği hazırlanıyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1811"/>
+        <location filename="../../../python/mainApp.py" line="1805"/>
         <source>cannot make a credit loop request with empty fields</source>
         <translation>boş olan alanları doldurmadan kredi döngü isteğinde bulunamazsınız</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1821"/>
+        <location filename="../../../python/mainApp.py" line="1815"/>
         <source>You are about to make a credit loop request</source>
         <translation>Bir kredi döngü isteğinde bulunmak üzeresiniz</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1850"/>
+        <location filename="../../../python/mainApp.py" line="1844"/>
         <source>cannot make a receive transfer request with empty fields</source>
         <translation>kredi aktarma isteği yapabilmek için boş alanların doldurulması gerekmektedir</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1859"/>
+        <location filename="../../../python/mainApp.py" line="1853"/>
         <source>You are about to make a request to the endorser</source>
         <translation>Cirantaya,krediyi aktaran kişiye, istek yapmak üzeresiniz</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1985"/>
+        <location filename="../../../python/mainApp.py" line="1979"/>
         <source>Date Selection Warning</source>
         <translation>Tarih Seçimi Uyarısı</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1985"/>
+        <location filename="../../../python/mainApp.py" line="1979"/>
         <source>Make sure that the from and to dates are selected correctly.</source>
         <translation>Başlangıç ve bitiş tarihlerinin doğru seçildiğinden emin olunuz.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2027"/>
+        <location filename="../../../python/mainApp.py" line="2021"/>
         <source>Credit loop detail</source>
         <translation>Kredi döngü detayı</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2027"/>
+        <location filename="../../../python/mainApp.py" line="2021"/>
         <source>Credit loop details.</source>
         <translation>Kredi Döngüsü detayları.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2194"/>
+        <location filename="../../../python/mainApp.py" line="2188"/>
         <source>Error Adding Contact</source>
         <translation>Kişiyi Eklemede Hata</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2203"/>
+        <location filename="../../../python/mainApp.py" line="2197"/>
         <source>Added Contact</source>
         <translation>Kişi Eklenmiştir</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2203"/>
+        <location filename="../../../python/mainApp.py" line="2197"/>
         <source>It is your responsibility that the information you have entered are correct and valid.</source>
         <translation>Girdiğiniz bilgilerin doğru ve geçerli olması sizin sorumluluğunuzdadır.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2215"/>
+        <location filename="../../../python/mainApp.py" line="2209"/>
         <source>Name and Address cannot be the same!</source>
         <translation>İsim ve adress aynı olamaz!</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2217"/>
+        <location filename="../../../python/mainApp.py" line="2211"/>
         <source>Name and Pubkey cannot be the same!</source>
         <translation>İsim ve pubkey aynı olamaz!</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2219"/>
+        <location filename="../../../python/mainApp.py" line="2213"/>
         <source>Pubkey and Address cannot be the same!</source>
         <translation>Pubkey ve adres aynı olamaz!</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2223"/>
+        <location filename="../../../python/mainApp.py" line="2217"/>
         <source>Same name exists</source>
         <translation>Aynı isim bulunmakta</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2226"/>
+        <location filename="../../../python/mainApp.py" line="2220"/>
         <source>Same address exists</source>
         <translation>Aynı adresten bir tane daha bulunmakta</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2229"/>
+        <location filename="../../../python/mainApp.py" line="2223"/>
         <source>Same pubkey exists</source>
         <translation>Aynı pubkeyden bir tane daha bulunmakta</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2232"/>
+        <location filename="../../../python/mainApp.py" line="2226"/>
         <source>cannot be an empty record</source>
         <translation>boş kayıt açılamaz</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2302"/>
+        <location filename="../../../python/mainApp.py" line="2293"/>
         <source>Error Updating Contact</source>
         <translation>Kişileri Güncellemede Hata</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2323"/>
+        <location filename="../../../python/mainApp.py" line="2314"/>
         <source>You did not select a contact from table.</source>
         <translation>Listeden bir kişi seçmediniz.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2310"/>
+        <location filename="../../../python/mainApp.py" line="2301"/>
         <source>Deleting Contact</source>
         <translation>Kişi Siliniyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2310"/>
+        <location filename="../../../python/mainApp.py" line="2301"/>
         <source>Are you sure to delete the contact from the list?</source>
         <translation>Listeden ilgili kişiyi silmek istediğinizden emin misiniz?</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2323"/>
+        <location filename="../../../python/mainApp.py" line="2314"/>
         <source>Error Deleting Contact</source>
         <translation>Kişiyi Silmede Hata</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="232"/>
+        <location filename="../../../python/mainApp.py" line="231"/>
         <source>A new update is available. &lt;br&gt;Follow the link </source>
         <translation>Yeni yazılım güncellemesi bulunmaktadır. &lt;br&gt;İlgili link </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="232"/>
+        <location filename="../../../python/mainApp.py" line="231"/>
         <source>&gt;here&lt;/a&gt;</source>
         <translation>&gt;burada&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="236"/>
+        <location filename="../../../python/mainApp.py" line="235"/>
         <source>No Update Available</source>
         <translation>Güncelleme bulunmamakta</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="236"/>
+        <location filename="../../../python/mainApp.py" line="235"/>
         <source>Current App version is </source>
         <translation>Mevcut Uygulama versiyonu </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2508"/>
+        <location filename="../../../python/mainApp.py" line="2499"/>
         <source>please insert all values</source>
         <translation>lütfen bütün değerleri giriniz</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2158"/>
+        <location filename="../../../python/mainApp.py" line="2152"/>
         <source>Contacts</source>
         <translation>Kişiler</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="355"/>
+        <location filename="../../../python/mainApp.py" line="352"/>
         <source>Amount</source>
         <translation>Miktar</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="348"/>
+        <location filename="../../../python/mainApp.py" line="345"/>
         <source>Address</source>
         <translation>Adres</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="346"/>
+        <location filename="../../../python/mainApp.py" line="343"/>
         <source>Pubkey</source>
         <translation>Pubkey</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="348"/>
+        <location filename="../../../python/mainApp.py" line="345"/>
         <source>See</source>
         <translation>Gör</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="349"/>
+        <location filename="../../../python/mainApp.py" line="346"/>
         <source>See on Explorer</source>
         <translation>Explorer&apos;da Gör</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="356"/>
+        <location filename="../../../python/mainApp.py" line="353"/>
         <source>Txid</source>
         <translation>Txid</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="352"/>
+        <location filename="../../../python/mainApp.py" line="349"/>
         <source>Confirm</source>
         <translation>Onayla</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="352"/>
+        <location filename="../../../python/mainApp.py" line="349"/>
         <source>TxId</source>
         <translation>Txid</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="352"/>
+        <location filename="../../../python/mainApp.py" line="349"/>
         <source>Maturity</source>
         <translation>Vade</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="352"/>
+        <location filename="../../../python/mainApp.py" line="349"/>
         <source>Receiver Pubkey</source>
         <translation>Alıcı Pubkeyi</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="355"/>
+        <location filename="../../../python/mainApp.py" line="352"/>
         <source>Loop Address</source>
         <translation>Döngü Adresi</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="356"/>
+        <location filename="../../../python/mainApp.py" line="353"/>
         <source>Details</source>
         <translation>Ayrıntılar</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="500"/>
+        <location filename="../../../python/mainApp.py" line="497"/>
         <source>Starting Install ...</source>
         <translation>Yükleme başlatılıyor ...</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1219"/>
+        <location filename="../../../python/mainApp.py" line="1212"/>
         <source>An address has been created with details below. Do you want to import this address to the wallet?</source>
         <translation>Aşağıdaki ayrıntılara sahip bir adres oluşturuldu. Bu adresi cüzdana almak ister misiniz?</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1219"/>
+        <location filename="../../../python/mainApp.py" line="1212"/>
         <source>&lt;br&gt;&lt;b&gt;Seed = &lt;/b&gt;&lt;br&gt;</source>
         <translation>&lt;br&gt;&lt;b&gt;Anahtar Kelimeler = &lt;/b&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1219"/>
+        <location filename="../../../python/mainApp.py" line="1212"/>
         <source>&lt;br&gt;&lt;b&gt;Private Key = &lt;/b&gt;&lt;br&gt;</source>
         <translation>&lt;br&gt;&lt;b&gt;Özel Anahtar = &lt;/b&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1219"/>
+        <location filename="../../../python/mainApp.py" line="1212"/>
         <source>&lt;br&gt;&lt;b&gt;Address = &lt;/b&gt;&lt;br&gt;</source>
         <translation>&lt;br&gt;&lt;b&gt;Adres = &lt;/b&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1219"/>
+        <location filename="../../../python/mainApp.py" line="1212"/>
         <source>&lt;br&gt;&lt;b&gt;Pubkey = &lt;/b&gt;&lt;br&gt;</source>
         <translation>&lt;br&gt;&lt;b&gt;Pubkey = &lt;/b&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1241"/>
+        <location filename="../../../python/mainApp.py" line="1234"/>
         <source>write private key first</source>
         <translation>önce özel anahtarı giriniz</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1323"/>
+        <location filename="../../../python/mainApp.py" line="1316"/>
         <source>getting marmarainfo, please wait</source>
         <translation>marmarainfo sorgusu gönderiliyor, lütfen bekleyin</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1346"/>
+        <location filename="../../../python/mainApp.py" line="1339"/>
         <source>pubkey is not set!</source>
         <translation>pubkey ile başlatılmamış!</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1384"/>
+        <location filename="../../../python/mainApp.py" line="1377"/>
         <source>You are about to activate </source>
         <translation>Aktifleştirilecek miktar </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1498"/>
+        <location filename="../../../python/mainApp.py" line="1491"/>
         <source>You are about to send </source>
         <translation>Gönderilecek miktar </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1498"/>
+        <location filename="../../../python/mainApp.py" line="1491"/>
         <source> MCL to </source>
         <translation> MCL yi </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1746"/>
+        <location filename="../../../python/mainApp.py" line="1740"/>
         <source>You are about to create credit loop with given details below:</source>
         <translation>Aşağıdaki ayrıntılara sahip bir kredi döngüsü oluşturmak üzeresiniz:</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1904"/>
+        <location filename="../../../python/mainApp.py" line="1898"/>
         <source>getting address amounts finished</source>
         <translation>adresslerin bakiyeleri getirilme işlemi bitti</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1920"/>
+        <location filename="../../../python/mainApp.py" line="1914"/>
         <source>finished searching marmara blockchain for all blocks for the set pubkey</source>
         <translation>pukey&apos;e ait marmarainfo bilgilerini getirme işlemi bitti</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2027"/>
+        <location filename="../../../python/mainApp.py" line="2021"/>
         <source>&lt;br&gt;&lt;b&gt;Tx ID = &lt;/b&gt;</source>
         <translation>&lt;br&gt;&lt;b&gt;Tx ID = &lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2027"/>
+        <location filename="../../../python/mainApp.py" line="2021"/>
         <source>&lt;br&gt;&lt;b&gt;Amount = &lt;/b&gt;</source>
         <translation>&lt;br&gt;&lt;b&gt;Miktar = &lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2027"/>
+        <location filename="../../../python/mainApp.py" line="2021"/>
         <source>&lt;br&gt;&lt;b&gt;Maturity = &lt;/b&gt;</source>
         <translation>&lt;br&gt;&lt;b&gt;Vade = &lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2063"/>
+        <location filename="../../../python/mainApp.py" line="2057"/>
         <source>finished searching marmarainfo</source>
         <translation>marmarainfo sorgusu tamamlanmıştır</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2082"/>
+        <location filename="../../../python/mainApp.py" line="2076"/>
         <source>getting credit loop info, please wait</source>
         <translation>kredi döngü istekleri sorgusu alınıyor, lütfen bekleyin</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2097"/>
+        <location filename="../../../python/mainApp.py" line="2091"/>
         <source>write loop transaction id to search!</source>
         <translation>sorgulamak için döngü txid giriniz!</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2118"/>
+        <location filename="../../../python/mainApp.py" line="2112"/>
         <source>credit loop info finished</source>
         <translation>kredi döngü sorgusu bitti</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1421"/>
+        <location filename="../../../python/mainApp.py" line="1414"/>
         <source>You are about to unlock </source>
         <translation>Normale çekilecek miktar </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1485"/>
+        <location filename="../../../python/mainApp.py" line="1478"/>
         <source>Qr Code</source>
         <translation>Qr Kodu</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="227"/>
+        <location filename="../../../python/mainApp.py" line="226"/>
         <source>Connection Error</source>
         <translation>Bağlantı Hatası</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="227"/>
+        <location filename="../../../python/mainApp.py" line="226"/>
         <source>Check your internet Connection </source>
         <translation>İnternet Bağlantınızı Kontrol Ediniz </translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="738"/>
+        <location filename="../../../python/mainApp.py" line="733"/>
         <source>getting activated balance.</source>
         <translation>aktif bakiye getiriliyor.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1363"/>
+        <location filename="../../../python/mainApp.py" line="1356"/>
         <source>Error getting address amounts</source>
         <translation>address miktarları getirilirken hata oluştu</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1092"/>
+        <location filename="../../../python/mainApp.py" line="1085"/>
         <source>Download Blocks bootstrap</source>
         <translation>Bootstrap ile Blokları İndir</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1053"/>
+        <location filename="../../../python/mainApp.py" line="1048"/>
         <source>Settings for Chain Start</source>
         <translation>Zinciri Başlatmak için Ayarlar</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1060"/>
+        <location filename="../../../python/mainApp.py" line="1055"/>
         <source> (starts scanning wallet data in blockchain data)</source>
         <translation> (blokzinciri verisi içinde cüzdan verileri taranmaya başlıyor)</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1099"/>
+        <location filename="../../../python/mainApp.py" line="1092"/>
         <source>You can either download or browse previously downloaded bootstrap.</source>
         <translation>Bootstrap dosyasını indirebilir veya önceden indirilmiş bootstrap dosyasını klasörlerden seçebilirsiniz.</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1126"/>
+        <location filename="../../../python/mainApp.py" line="1119"/>
         <source>select bootstrap.tar.gz</source>
         <translation>bootstrap.tar.gz dosyasını seçiniz</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1135"/>
+        <location filename="../../../python/mainApp.py" line="1128"/>
         <source>Extracting blocks</source>
         <translation>Bloklar çıkarılıyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1152"/>
+        <location filename="../../../python/mainApp.py" line="1145"/>
         <source>Bootstrap extracting cancelled</source>
         <translation>Blokların bootstrap dosyasından çıkarılması işlemi iptal edildi</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1158"/>
+        <location filename="../../../python/mainApp.py" line="1151"/>
         <source>Extracting blocks finished</source>
         <translation>Blokların çıkarılması işlemi tamamlandı</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1057"/>
+        <location filename="../../../python/mainApp.py" line="1052"/>
         <source> (starts from beginning and re-indexes currently synced blockchain data)</source>
         <translation> (baştan başlar ve mevcutta senkronize edilmiş blokzinciri verilerini yeniden endeksler)</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="1135"/>
+        <location filename="../../../python/mainApp.py" line="1128"/>
         <source>Marmara chain will be closed if it is running</source>
         <translation>Marmara zinciri çalışıyor ise durdurulacaktır</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2333"/>
+        <location filename="../../../python/mainApp.py" line="2324"/>
         <source>getting stats values</source>
         <translation>istatistik verileri alınıyor</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2341"/>
+        <location filename="../../../python/mainApp.py" line="2332"/>
         <source>stats values retrieved</source>
         <translation>istatistikler getirildi</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="2356"/>
+        <location filename="../../../python/mainApp.py" line="2347"/>
         <source>Error in getting stats values</source>
         <translation>istatistikleri getirme işleminde hata alındı</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="167"/>
+        <location filename="../../../python/mainApp.py" line="166"/>
         <source>can be refreshed once in a minute</source>
         <translation>yalnızca dakikada bir yenilenebilir</translation>
     </message>
     <message>
-        <location filename="../../../python/mainApp.py" line="174"/>
+        <location filename="../../../python/mainApp.py" line="173"/>
         <source>can be refreshed once in 20 seconds</source>
         <translation>yalnızca 20 saniyede bir yenilenebilir</translation>
+    </message>
+    <message>
+        <location filename="../../../python/mainApp.py" line="899"/>
+        <source>You are about to send {amount} MCL to Marmara Core Team.</source>
+        <translation>Marmara Çekirdek Ekibine {amount} MCL göndermek üzeresiniz.</translation>
+    </message>
+    <message>
+        <location filename="../../../python/mainApp.py" line="1460"/>
+        <source>TxId : {result_out[0]}</source>
+        <translation>TxId : {result_out[0]}</translation>
+    </message>
+    <message>
+        <location filename="../../../python/mainApp.py" line="1549"/>
+        <source>fetched transactions between selected dates.</source>
+        <translation>seçilen tarihler arasındaki işlemler getirildi.</translation>
     </message>
 </context>
 </TS>
