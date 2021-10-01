@@ -1,6 +1,6 @@
 {
     "freeze_dir": "target/${app_name}-${version}-Linux",
-    "installer": "target/${app_name}-${version}-Linux.deb",
+    "installer": "${app_name}-${version}-Linux.deb",
     "categories": "Utility;",
     "description": "Interact with Marmara Blockchain on a local machine or a remote server",
     "author_email": "marmarachain@gmail.com",
