@@ -75,3 +75,4 @@ def mcl_exchange_market(api_list_key):
         return response.json()
     except Exception as e:
         logging.error(e)
+        return 'error'
