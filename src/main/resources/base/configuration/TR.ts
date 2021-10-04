@@ -196,7 +196,7 @@
     <message>
         <location filename="../../../python/qtguidesign.py" line="2517"/>
         <source>Hide zero amount addresses</source>
-        <translation>Sıfır Bakiyeli Hesaplı Gizle</translation>
+        <translation>Sıfır Bakiyeli Adresleri Gizle</translation>
     </message>
     <message>
         <location filename="../../../python/qtguidesign.py" line="2649"/>
