@@ -1599,6 +1599,10 @@ class MarmaraMain(QMainWindow, GuiStyle):
         elif result_out[1]:
             self.bottom_err_info(result_out[1])
             logging.error(result_out[1])
+        else:
+            self.transactions_tableWidget.setRowCount(0)
+            self.bottom_err_info(self.tr("No transaction found between selected dates."))
+            logging.error("No transaction found between selected dates.")
 
     @pyqtSlot()
     def open_in_explorer(self):
