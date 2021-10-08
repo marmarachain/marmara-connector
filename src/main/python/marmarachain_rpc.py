@@ -12,6 +12,7 @@ from PyQt5.QtCore import pyqtSignal, pyqtSlot
 import remote_connection
 import chain_args as cp
 import configuration
+import local_connection
 
 marmara_path = None
 is_local = None
@@ -51,14 +52,14 @@ def set_remote(command):
     return command
 
 
-def set_local(command):
-    if platform.system() == 'Linux' or platform.system() == 'Darwin':
-        command = cp.linux_cli + command
-    if platform.system() == 'Windows':
-        if command.find("{") > 0:
-            command = command.replace('"', '\\"').replace("'{", '"{').replace("}'", '}"')
-        command = cp.windows_cli + command
-    return command
+# def set_local(command):
+#     if platform.system() == 'Linux' or platform.system() == 'Darwin':
+#         command = cp.linux_cli + command
+#     if platform.system() == 'Windows':
+#         if command.find("{") > 0:
+#             command = command.replace('"', '\\"').replace("'{", '"{').replace("}'", '}"')
+#         command = cp.windows_cli + command
+#     return command
 
 
 def set_pid_local(command):
@@ -211,39 +212,38 @@ def mcl_chain_status():
             logging.error(error)
 
 
-def handle_rpc(command):
+def handle_rpc(method, params):
     if is_local:
-        cmd = set_local(command)
-        if command.split(" ")[0] != cp.convertpassphrase and command.split(' ')[0] != cp.importprivkey:
-            logging.info('------sending command----- \n ' + cmd)
+        if method == cp.convertpassphrase or method == cp.importprivkey:
+            logging.info('------sending command----- \n ' + method)
         else:
-            logging.info('------sending command----- \n ' + command.split(' ')[0])
+            logging.info('------sending command----- \n ' + method + str(params))
         try:
-            proc = subprocess.Popen(cmd, cwd=marmara_path, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                                    bufsize=8192)
-            retvalue = proc.poll()
-            result = ""
-            err_out = ""
-            while True:
-                stdout = proc.stdout.readline().replace(b'\n', b'').replace(b'\r', b'').decode()
-                result = result + stdout
-                if not stdout:
-                    break
-            while True:
-                stderr = proc.stderr.readline().decode()
-                err_out = err_out + stderr
-                if not stderr:
-                    break
-            return result, err_out, retvalue
+            result = local_connection.curl_response(method, params)
+            return result
         except Exception as error:
             logging.error(error)
+            return None, error
     else:
-        cmd = set_remote(command)
+        cmd = set_remote(method)
         cmd = marmara_path + cmd
-        if command.split(" ")[0] != cp.convertpassphrase and command.split(' ')[0] != cp.importprivkey:
-            logging.info('------sending command----- \n ' + cmd)
+        for item in params:
+            if method == 'convertpassphrase':
+                cmd = cmd + ' "' + item + '"'
+            elif method == 'getaddressesbyaccount':
+                cmd = cmd + ' ""'
+            elif method == 'getaddresstxids' or method == 'marmaraissue' or method == 'marmaratransfer' \
+                    or method == 'marmarareceive' or method == 'getaddressbalance':
+                cmd = cmd + ' ' + json.dumps(item)
+            elif method == 'setgenerate':
+                cmd = cmd + ' ' + str(item).lower()
+            else:
+                cmd = cmd + ' ' + str(item)
+        cmd = cmd.replace('{', "'{").replace('}', "}'")
+        if method == cp.convertpassphrase or method == cp.importprivkey:
+            logging.info('------sending command----- \n ' + method)
         else:
-            logging.info('------sending command----- \n ' + command.split(' ')[0])
+            logging.info('------sending command----- \n ' + cmd)
         try:
             result = remote_connection.server_execute_command(cmd)
             return result
@@ -259,16 +259,25 @@ class RpcHandler(QtCore.QObject):
 
     def __init__(self):
         super(RpcHandler, self).__init__()
+        self.method = ""
+        self.params = []
         self.command = ""
 
     @pyqtSlot(str)
     def set_command(self, value):
         self.command = value
 
+    @pyqtSlot(str)
+    def set_method(self, method):
+        self.method = method
+
+    @pyqtSlot(list)
+    def set_params(self, params):
+        self.params = params
 
     @pyqtSlot()
     def do_execute_rpc(self):
-        result_out = handle_rpc(self.command)
+        result_out = handle_rpc(self.method, self.params)
         self.command_out.emit(result_out)
         time.sleep(0.1)
         self.finished.emit()
@@ -320,7 +329,7 @@ class RpcHandler(QtCore.QObject):
     @pyqtSlot()
     def is_chain_ready(self):
         while True:
-            getinfo = handle_rpc(cp.getinfo)
+            getinfo = handle_rpc(cp.getinfo, [])
             if getinfo[0]:
                 logging.info('----getinfo result ----- \n' + str(getinfo[0]))
                 self.command_out.emit(getinfo)
@@ -329,10 +338,10 @@ class RpcHandler(QtCore.QObject):
                 time.sleep(0.1)
                 if type(addresses) == list:
                     self.walletlist_out.emit(addresses)
-                    activated_address_list = handle_rpc(cp.marmaralistactivatedaddresses)
+                    activated_address_list = handle_rpc(cp.marmaralistactivatedaddresses, [])
                     time.sleep(0.1)
                     self.command_out.emit(activated_address_list)
-                    getgenerate = handle_rpc(cp.getgenerate)
+                    getgenerate = handle_rpc(cp.getgenerate, [])
                     time.sleep(0.1)
                     self.command_out.emit(getgenerate)
                     self.finished.emit()
@@ -344,12 +353,12 @@ class RpcHandler(QtCore.QObject):
                 break
             elif getinfo[1]:
                 self.command_out.emit(getinfo)
-                # print('chain is not ready')
+            # print('chain is not ready')
             time.sleep(2)
 
     @pyqtSlot()
     def stopping_chain(self):
-        result_out = handle_rpc(cp.stop)
+        result_out = handle_rpc(cp.stop, [])
         self.command_out.emit(result_out)
         if result_out[0]:
             while True:
@@ -365,22 +374,22 @@ class RpcHandler(QtCore.QObject):
             self.finished.emit()
 
     def _get_addresses(self):
-        addresses = handle_rpc(cp.getaddressesbyaccount)
+        addresses = handle_rpc(cp.getaddressesbyaccount, [''])
         if addresses[0]:
-            addresses = json.loads(addresses[0])
+            addresses_js = json.loads(addresses[0])
             wallet_list = []
             amount = 0
             pubkey = ""
-            for address in addresses:
-                validation = handle_rpc(cp.validateaddress + ' ' + address)
+            for address in addresses_js:
+                validation = handle_rpc(cp.validateaddress, [address])
                 if validation[0]:
                     if json.loads(validation[0])['ismine']:
                         pubkey = json.loads(validation[0])['pubkey']
                 elif validation[1]:
                     logging.info(validation[1])
                 address_js = {'addresses': [address]}
-                command = cp.getaddressbalance + "'" + json.dumps(address_js) + "'"
-                amounts = handle_rpc(command)
+                # command = cp.getaddressbalance + "'" + json.dumps(address_js) + "'"
+                amounts = handle_rpc(cp.getaddressbalance, [address_js])
                 if amounts[0]:
                     amount = json.loads(amounts[0])['balance']
                     amount = str(int(amount) / 100000000)
@@ -406,11 +415,11 @@ class RpcHandler(QtCore.QObject):
 
     @pyqtSlot()
     def refresh_sidepanel(self):
-        getinfo = handle_rpc(cp.getinfo)
+        getinfo = handle_rpc(cp.getinfo, [])
         if getinfo[0]:
             self.command_out.emit(getinfo)
             time.sleep(0.1)
-            activated_address_list = handle_rpc(cp.marmaralistactivatedaddresses)
+            activated_address_list = handle_rpc(cp.marmaralistactivatedaddresses, [])
             self.command_out.emit(activated_address_list)
             self.finished.emit()
         elif getinfo[1]:
@@ -419,9 +428,9 @@ class RpcHandler(QtCore.QObject):
 
     @pyqtSlot()
     def setgenerate(self):
-        setgenerate = handle_rpc(self.command)
-        if setgenerate[2] == 0:
-            getgenerate = handle_rpc(cp.getgenerate)
+        setgenerate = handle_rpc(self.method, self.params)
+        if setgenerate[2] == 0 or setgenerate[2] == 200:
+            getgenerate = handle_rpc(cp.getgenerate, [])
             time.sleep(0.1)
             self.command_out.emit(getgenerate)
             self.finished.emit()
@@ -431,9 +440,9 @@ class RpcHandler(QtCore.QObject):
 
     @pyqtSlot()
     def get_balances(self):
-        getbalance = handle_rpc(cp.getbalance)
-        listaddressgroupings = handle_rpc(cp.listaddressgroupings)
-        activated_address_list = handle_rpc(cp.marmaralistactivatedaddresses)
+        getbalance = handle_rpc(cp.getbalance, [])
+        listaddressgroupings = handle_rpc(cp.listaddressgroupings, [])
+        activated_address_list = handle_rpc(cp.marmaralistactivatedaddresses, [])
         if getbalance[0] and listaddressgroupings[0] and activated_address_list[0]:
             result = getbalance[0].replace('\n', ''), json.loads(listaddressgroupings[0]), json.loads(activated_address_list[0]), 0
             self.command_out.emit(result)

@@ -5,7 +5,7 @@ windows_cli = 'komodo-cli.exe -ac_name=MCL '
 marmarad = '-ac_supply=2000000 -ac_cc=2 -addnode=37.148.210.158 -addnode=37.148.212.36 -addnode=149.202.158.145 -addressindex=1 -spentindex=1 -ac_marmara=1 -ac_staked=75 -ac_reward=3000000000'
 getinfo = "getinfo"
 validateaddress = 'validateaddress'
-getaddressesbyaccount = 'getaddressesbyaccount ""'
+getaddressesbyaccount = 'getaddressesbyaccount'
 listaddressgroupings = 'listaddressgroupings'
 setpubkey = 'setpubkey'
 getnewaddress = 'getnewaddress'
@@ -15,7 +15,7 @@ marmaralock = 'marmaralock'
 getbalance = 'getbalance'
 getgenerate = 'getgenerate'
 setgenerate = 'setgenerate'  # + True "number" or False
-getaddressbalance = 'getaddressbalance '  # +  '{"addresses": ["address"]}'
+getaddressbalance = 'getaddressbalance'  # +  '{"addresses": ["address"]}'
 convertpassphrase = 'convertpassphrase'  # + "agamapassphrase"
 importprivkey = 'importprivkey'  # + "wifkey"
 dumpprivkey = 'dumpprivkey'  # + "address"
