@@ -122,7 +122,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.transactions_startdate_dateTimeEdit.setMaximumDateTime(QDateTime.currentDateTime())
         self.transactions_startdate_dateTimeEdit.setDateTime(QDateTime.currentDateTime().addDays(-1))
         self.transactions_endtdate_dateTimeEdit.setMinimumDateTime(QDateTime(datetime.fromtimestamp(1579278200)))
-        self.transactions_endtdate_dateTimeEdit.setMaximumDateTime(QDateTime.currentDateTime())
+        self.transactions_endtdate_dateTimeEdit.setDateTime(QDateTime.currentDateTime())
         self.transaction_search_button.clicked.connect(self.getaddresstxids)
         self.transactions_tableWidget.cellClicked.connect(self.transaction_itemcontext)
         # Credit Loops page-----------------
