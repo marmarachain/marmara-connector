@@ -443,11 +443,13 @@ class RpcHandler(QtCore.QObject):
         getbalance = handle_rpc(cp.getbalance, [])
         listaddressgroupings = handle_rpc(cp.listaddressgroupings, [])
         activated_address_list = handle_rpc(cp.marmaralistactivatedaddresses, [])
-        if getbalance[0] and listaddressgroupings[0] and activated_address_list[0]:
-            result = getbalance[0].replace('\n', ''), json.loads(listaddressgroupings[0]), json.loads(activated_address_list[0]), 0
+        if (getbalance[2] == 200 and listaddressgroupings[2] == 200 and activated_address_list[2] == 200) \
+                or (getbalance[2] == 0 and listaddressgroupings[2] == 0 and activated_address_list[2] == 0):
+            result = str(getbalance[0]).replace('\n', ''), json.loads(str(listaddressgroupings[0])), \
+                     json.loads(str(activated_address_list[0])), 0
             self.command_out.emit(result)
             self.finished.emit()
-        elif getbalance[1] or listaddressgroupings[1] or activated_address_list[1]:
+        else:
             result = getbalance[1], listaddressgroupings[1], activated_address_list[1], 1
             self.command_out.emit(result)
             self.finished.emit()
