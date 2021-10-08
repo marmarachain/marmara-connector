@@ -441,8 +441,11 @@ class RpcHandler(QtCore.QObject):
     @pyqtSlot()
     def get_balances(self):
         getbalance = handle_rpc(cp.getbalance, [])
+        time.sleep(0.1)
         listaddressgroupings = handle_rpc(cp.listaddressgroupings, [])
+        time.sleep(0.1)
         activated_address_list = handle_rpc(cp.marmaralistactivatedaddresses, [])
+        time.sleep(0.1)
         if (getbalance[2] == 200 and listaddressgroupings[2] == 200 and activated_address_list[2] == 200) \
                 or (getbalance[2] == 0 and listaddressgroupings[2] == 0 and activated_address_list[2] == 0):
             result = str(getbalance[0]).replace('\n', ''), json.loads(str(listaddressgroupings[0])), \
