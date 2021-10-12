@@ -223,7 +223,7 @@ def handle_rpc(method, params):
             return result
         except Exception as error:
             logging.error(error)
-            return None, error
+            return None, error, 1
     else:
         cmd = set_remote(method)
         cmd = marmara_path + cmd
@@ -328,6 +328,7 @@ class RpcHandler(QtCore.QObject):
 
     @pyqtSlot()
     def is_chain_ready(self):
+        i = 0
         while True:
             getinfo = handle_rpc(cp.getinfo, [])
             if getinfo[0]:
@@ -351,8 +352,16 @@ class RpcHandler(QtCore.QObject):
                     logging.warning('could not get addresses')
                     self.finished.emit()
                 break
-            elif getinfo[1]:
+            if getinfo[1]:
                 self.command_out.emit(getinfo)
+            if getinfo[2] == 1:
+                i = i + 1
+                if i >= 10:
+                    logging.error('could not start marmarachain')
+                    getinfo = None, 'could not start marmarachain'
+                    self.command_out.emit(getinfo)
+                    self.finished.emit()
+                    break
             # print('chain is not ready')
             time.sleep(2)
 

@@ -602,6 +602,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 for activated in result.get('WalletActivatedAddresses'):
                     TotalAmountOnActivated = TotalAmountOnActivated + activated.get('amount')
                 self.totalactivated_value_label.setText(str(TotalAmountOnActivated))
+                self.wallet_total_activated_value.setText(str(TotalAmountOnActivated))
             else:
                 self.setgenerate_result(result_out)
                 self.bottom_info(self.tr('Chain init completed.'))
@@ -659,6 +660,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             self.bottom_info(self.tr('Marmarachain stopped'))
             logging.info('Marmarachain stopped')
             self.chain_status = False
+            self.myCCActivatedAddress = None
             self.chainstatus_button.setIcon(QIcon(self.icon_path + '/circle-inactive.png'))
             self.update_addresses_table()
         elif result_out[1]:
@@ -706,6 +708,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.longestchain_value_label.setText(str(getinfo_result['longestchain']))
         self.connections_value_label.setText(str(getinfo_result['connections']))
         self.totalnormal_value_label.setText(str(getinfo_result['balance']))
+        self.wallet_total_normal_value.setText(str(getinfo_result['balance']))
         self.bottom_info(self.tr('getinfo finished'))
         logging.info('getinfo finished')
 
@@ -747,6 +750,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 for activated in json.loads(result_out[0]).get('WalletActivatedAddresses'):
                     TotalAmountOnActivated = TotalAmountOnActivated + activated.get('amount')
                 self.totalactivated_value_label.setText(str(TotalAmountOnActivated))
+                self.wallet_total_activated_value.setText(str(TotalAmountOnActivated))
                 self.bottom_info(self.tr('Refresh completed.'))
                 logging.info('Refresh completed.')
         elif result_out[1]:
@@ -1679,10 +1683,10 @@ class MarmaraMain(QMainWindow, GuiStyle):
 
     @pyqtSlot(tuple)
     def search_marmarareceivelist_result(self, result_out):
-        if result_out[0]:
+        if result_out[2] == 200 or result_out[2] == 0:
             self.bottom_info(self.tr('finished searching incoming loop requests'))
             logging.info('finished querying incoming loop requests')
-            result = json.loads(result_out[0])
+            result = json.loads(str(result_out[0]))
             self.loop_request_tableWidget.setRowCount(len(result))
             loop_create_request_list = []
             loop_transfer_request_list = []
@@ -1937,7 +1941,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 self.normal_amount_value.setText(str(result.get('myPubkeyNormalAmount')))
                 self.wallet_total_normal_value.setText(str(result.get('myWalletNormalAmount')))
                 self.activated_amount_value.setText(str(result.get('myActivatedAmount')))
-                self.wallet_total_activated_value.setText(str(result.get('myTotalAmountOnActivatedAddress')))
+                # self.wallet_total_activated_value.setText(str(result.get('myTotalAmountOnActivatedAddress')))
                 self.bottom_info(self.tr('getting address amounts finished'))
                 loops = result.get('Loops')
                 self.activeloops_total_amount_value_label.setText(str(result.get('TotalLockedInLoop')))
@@ -2164,6 +2168,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def clear_lq_txid_search_result(self):
         self.loopquery_baton_value.clear()
         self.loopquery_amount_value.clear()
+        self.loopquery_batonpk_value.clear()
         self.loopquery_currency_value.clear()
         self.loopquery_matures_value.clear()
         self.loopquery_issuer_value.clear()
