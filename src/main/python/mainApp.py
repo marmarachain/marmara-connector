@@ -203,6 +203,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.thread_sendtoteam = QThread()
         self.thread_get_address_amounts = QThread()
         self.thread_extract_bootstrap = QThread()
+        self.thread_api_exchange_request = QThread()
+        self.thread_api_stats_request = QThread()
 
         # Loading Gif
         # --------------------------------------------------
@@ -2373,28 +2375,39 @@ class MarmaraMain(QMainWindow, GuiStyle):
     @pyqtSlot()
     def get_marmara_stats(self):
         self.bottom_info(self.tr('getting stats values'))
-        mcl_stats = api_request.get_marmara_stats()
-        if mcl_stats != 'error':
-            mcl_stats_info = mcl_stats.get('info')
-            self.stats_height_value_label.setText(str(mcl_stats_info.get('height')))
-            self.stats_normal_label_value.setText(str(mcl_stats_info.get('TotalNormals')))
-            self.stats_activated_label_value.setText(str(mcl_stats_info.get('TotalActivated')))
-            self.stats_in_loops_label_value.setText(str(mcl_stats_info.get('TotalLockedInLoops')))
-            self.bottom_info(self.tr('stats values retrieved'))
-            self.stats_refresh_pushButton.setEnabled(False)
-            QtCore.QTimer.singleShot(60000, self.stat_refresh_enable)  # after 60 second it will enable button
-            self.stats_calculate_pushButton.setEnabled(True)
-            self.stats_amount_in_activated_lineEdit.setEnabled(True)
-            self.stats_amount_in_loops_lineEdit.setEnabled(True)
-            total_supply = int(mcl_stats_info.get('TotalNormals')) + int(mcl_stats_info.get('TotalActivated')) + int(mcl_stats_info.get('TotalLockedInLoops'))
-            total_normal_percentage = (int(mcl_stats_info.get('TotalNormals'))*100)/total_supply
-            total_activated_percentage = (int(mcl_stats_info.get('TotalActivated'))*100)/total_supply
-            total_inloops_percentage = (int(mcl_stats_info.get('TotalLockedInLoops'))*100)/total_supply
-            total_normal_per = round(total_normal_percentage, 2)
-            total_activated_per = round(total_activated_percentage, 2)
-            total_inloops_per = round(total_inloops_percentage, 2)
-            self.stat_pie_chart(total_normal_per, total_activated_per, total_inloops_per)
-        else:
+        self.worker_mcl_stats = marmarachain_rpc.ApiWorker()
+        self.worker_mcl_stats.moveToThread(self.thread_api_stats_request)
+        self.worker_mcl_stats.finished.connect(self.thread_api_stats_request.quit)
+        self.thread_api_stats_request.started.connect(self.worker_mcl_stats.mcl_stats_api)
+        self.thread_api_stats_request.start()
+        self.worker_mcl_stats.out_dict.connect(self.set_marmara_stats_values)
+        self.worker_mcl_stats.out_err.connect(self.set_marmara_stats_err)
+        self.stats_refresh_pushButton.setEnabled(False)
+        QtCore.QTimer.singleShot(60000, self.stat_refresh_enable)  # after 60 second it will enable button
+
+    @pyqtSlot(dict)
+    def set_marmara_stats_values(self, mcl_stats):
+        mcl_stats_info = mcl_stats.get('info')
+        self.stats_height_value_label.setText(str(mcl_stats_info.get('height')))
+        self.stats_normal_label_value.setText(str(mcl_stats_info.get('TotalNormals')))
+        self.stats_activated_label_value.setText(str(mcl_stats_info.get('TotalActivated')))
+        self.stats_in_loops_label_value.setText(str(mcl_stats_info.get('TotalLockedInLoops')))
+        self.bottom_info(self.tr('stats values retrieved'))
+        self.stats_calculate_pushButton.setEnabled(True)
+        self.stats_amount_in_activated_lineEdit.setEnabled(True)
+        self.stats_amount_in_loops_lineEdit.setEnabled(True)
+        total_supply = int(mcl_stats_info.get('TotalNormals')) + int(mcl_stats_info.get('TotalActivated')) + int(mcl_stats_info.get('TotalLockedInLoops'))
+        total_normal_percentage = (int(mcl_stats_info.get('TotalNormals'))*100)/total_supply
+        total_activated_percentage = (int(mcl_stats_info.get('TotalActivated'))*100)/total_supply
+        total_inloops_percentage = (int(mcl_stats_info.get('TotalLockedInLoops'))*100)/total_supply
+        total_normal_per = round(total_normal_percentage, 2)
+        total_activated_per = round(total_activated_percentage, 2)
+        total_inloops_per = round(total_inloops_percentage, 2)
+        self.stat_pie_chart(total_normal_per, total_activated_per, total_inloops_per)
+
+    @pyqtSlot(str)
+    def set_marmara_stats_err(self, err):
+        if err == 'error':
             self.bottom_err_info(self.tr('Error in getting stats values'))
 
     def stat_pie_chart(self, normal, activated, inloops):
@@ -2464,23 +2477,35 @@ class MarmaraMain(QMainWindow, GuiStyle):
         QtCore.QTimer.singleShot(20000, self.enable_market_request)  # after 20 second it will enable button
         index = self.exchange_market_comboBox.currentIndex()
         key = self.exchange_market_comboBox.itemText(index)
-        mcl_market_values = api_request.mcl_exchange_market(key)
-        if mcl_market_values != 'error':
-            self.exchange_market_tableWidget.setRowCount(len(mcl_market_values))
-            for row in mcl_market_values:
-                row_number = mcl_market_values.index(row)
-                self.exchange_market_tableWidget.setItem(row_number, 0, QTableWidgetItem(str(row.get('exchange_name'))))
-                self.exchange_market_tableWidget.setItem(row_number, 1, QTableWidgetItem(str(row.get('pair'))))
-                self.exchange_market_tableWidget.setItem(row_number, 2, QTableWidgetItem(str(row.get('quotes').get('USD').get('price'))))
-                self.exchange_market_tableWidget.setItem(row_number, 3, QTableWidgetItem(str(row.get('quotes').get('USD').get('volume_24h'))))
-                self.exchange_market_tableWidget.setItem(row_number, 4, QTableWidgetItem(str(row.get('last_updated')).replace('T', ' ').replace('Z', '')))
-                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
-                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
-                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
-                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
-                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
-                self.bottom_info(self.tr('fetched exchange values'))
-        else:
+        self.mcl_exchange_worker = marmarachain_rpc.ApiWorker()
+        self.mcl_exchange_worker.set_api_key(key)
+        self.mcl_exchange_worker.moveToThread(self.thread_api_exchange_request)
+        self.mcl_exchange_worker.finished.connect(self.thread_api_exchange_request.quit)
+        self.thread_api_exchange_request.started.connect(self.mcl_exchange_worker.exchange_api_run)
+        self.thread_api_exchange_request.start()
+        self.mcl_exchange_worker.out_list.connect(self.set_mcl_exchange_market_result)
+        self.mcl_exchange_worker.out_err.connect(self.err_mcl_exchange_market_result)
+
+    @pyqtSlot(list)
+    def set_mcl_exchange_market_result(self, out_json):
+        self.exchange_market_tableWidget.setRowCount(len(out_json))
+        for row in out_json:
+            row_number = out_json.index(row)
+            self.exchange_market_tableWidget.setItem(row_number, 0, QTableWidgetItem(str(row.get('exchange_name'))))
+            self.exchange_market_tableWidget.setItem(row_number, 1, QTableWidgetItem(str(row.get('pair'))))
+            self.exchange_market_tableWidget.setItem(row_number, 2, QTableWidgetItem(str(row.get('quotes').get('USD').get('price'))))
+            self.exchange_market_tableWidget.setItem(row_number, 3, QTableWidgetItem(str(row.get('quotes').get('USD').get('volume_24h'))))
+            self.exchange_market_tableWidget.setItem(row_number, 4, QTableWidgetItem(str(row.get('last_updated')).replace('T', ' ').replace('Z', '')))
+            self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+            self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
+            self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
+            self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
+            self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
+            self.bottom_info(self.tr('fetched exchange values'))
+
+    @pyqtSlot(str)
+    def err_mcl_exchange_market_result(self, err):
+        if err == 'error':
             self.bottom_err_info(self.tr('Error in getting exchange values'))
 
     @pyqtSlot()

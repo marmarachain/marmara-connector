@@ -13,6 +13,7 @@ import remote_connection
 import chain_args as cp
 import configuration
 import local_connection
+import api_request
 
 marmara_path = None
 is_local = None
@@ -249,7 +250,7 @@ def handle_rpc(method, params):
             return result
         except Exception as error:
             logging.error(error)
-
+            return None, error, 1
 
 class RpcHandler(QtCore.QObject):
     command_out = pyqtSignal(tuple)
@@ -626,3 +627,37 @@ class Autoinstall(QtCore.QObject):
                 break
         self.finished.emit()
         # update = subprocess.Popen
+
+
+class ApiWorker(QtCore.QObject):
+    out_list = pyqtSignal(list)
+    out_dict = pyqtSignal(dict)
+    out_err = pyqtSignal(str)
+    finished = pyqtSignal()
+
+    def __init__(self):
+        super(ApiWorker, self).__init__()
+        self.api_key = ""
+
+    @pyqtSlot(str)
+    def set_api_key(self, key):
+        self.api_key = key
+
+    @pyqtSlot()
+    def exchange_api_run(self):
+        mcl_market_values = api_request.mcl_exchange_market(self.api_key)
+        if type(mcl_market_values) is list:
+            self.out_list.emit(mcl_market_values)
+        if type(mcl_market_values) is str:
+            self.out_err.emit(mcl_market_values)
+        self.finished.emit()
+
+    @pyqtSlot()
+    def mcl_stats_api(self):
+        mcl_stats = api_request.get_marmara_stats()
+        print(mcl_stats)
+        if type(mcl_stats) is dict:
+            self.out_dict.emit(mcl_stats)
+        if type(mcl_stats) is str:
+            self.out_err.emit(mcl_stats)
+        self.finished.emit()
