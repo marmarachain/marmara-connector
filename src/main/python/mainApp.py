@@ -646,7 +646,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
 
     @pyqtSlot(tuple)
     def result_stopchain(self, result_out):
-        print(result_out)
         if result_out[0]:
             print_result = ""
             for line in str(result_out[0]).splitlines():
