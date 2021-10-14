@@ -1955,6 +1955,7 @@ class Ui_MainWindow(object):
         self.loopquery_batonpk_value.setFrameShape(QtWidgets.QFrame.WinPanel)
         self.loopquery_batonpk_value.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.loopquery_batonpk_value.setText("")
+        self.loopquery_batonpk_value.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse|QtCore.Qt.TextSelectableByMouse)
         self.loopquery_batonpk_value.setObjectName("loopquery_batonpk_value")
         self.gridLayout_28.addWidget(self.loopquery_batonpk_value, 1, 3, 1, 7)
         self.loopquery_baton_label = QtWidgets.QLabel(self.txidquery_result_frame)
