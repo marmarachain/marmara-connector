@@ -470,7 +470,7 @@ class RpcHandler(QtCore.QObject):
     @pyqtSlot()
     def extract_bootstrap(self):
         pwd_home = str(pathlib.Path.home())
-        print(self.command)
+        # print(self.command)
         proc = subprocess.Popen(self.command, cwd=pwd_home, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         retvalue = proc.poll()
         while True:
@@ -543,8 +543,7 @@ class Autoinstall(QtCore.QObject):
                     if not out:
                         proc.stdout.close()
                 exit_status = proc.poll()
-                print('exit_status  ' + str(exit_status))
-                logging.debug(exit_status)
+                logging.debug('exit_status  :' + str(exit_status))
                 proc.terminate()
                 i = i + 1
                 if i >= len(self.linux_command_list):
@@ -612,8 +611,7 @@ class Autoinstall(QtCore.QObject):
                 if not out:
                     proc.stdout.close()
             exit_status = proc.poll()
-            print('exit_status  ' + str(exit_status))
-            logging.info(exit_status)
+            logging.info('exit_status  ' + str(exit_status))
             proc.terminate()
             i = i + 1
             if i >= len(self.win_command_list):
@@ -655,7 +653,6 @@ class ApiWorker(QtCore.QObject):
     @pyqtSlot()
     def mcl_stats_api(self):
         mcl_stats = api_request.get_marmara_stats()
-        print(mcl_stats)
         if type(mcl_stats) is dict:
             self.out_dict.emit(mcl_stats)
         if type(mcl_stats) is str:
