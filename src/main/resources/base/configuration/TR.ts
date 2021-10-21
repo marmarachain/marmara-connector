@@ -131,7 +131,7 @@
     <message>
         <location filename="../../../python/qtguidesign.py" line="2493"/>
         <source>Longest Chain</source>
-        <translation>En uzun Zincir</translation>
+        <translation>En son Blok</translation>
     </message>
     <message>
         <location filename="../../../python/qtguidesign.py" line="2494"/>
