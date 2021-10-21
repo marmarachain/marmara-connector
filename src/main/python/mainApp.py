@@ -466,7 +466,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         if output == 'need to install mcl':
             message_box = self.custom_message(self.tr('Installing Marmarachain'),
                                               self.tr('Marmarachain is not installed. Would you like to install it?'),
-                                              self.tr("question"), QMessageBox.Question)
+                                              "question", QMessageBox.Question)
             if message_box == QMessageBox.Yes:
                 logging.info('Auto-install.')
                 self.main_tab.setCurrentIndex(2)
