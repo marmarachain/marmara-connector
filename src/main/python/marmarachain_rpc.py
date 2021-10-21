@@ -53,16 +53,6 @@ def set_remote(command):
     return command
 
 
-# def set_local(command):
-#     if platform.system() == 'Linux' or platform.system() == 'Darwin':
-#         command = cp.linux_cli + command
-#     if platform.system() == 'Windows':
-#         if command.find("{") > 0:
-#             command = command.replace('"', '\\"').replace("'{", '"{').replace("}'", '}"')
-#         command = cp.windows_cli + command
-#     return command
-
-
 def set_pid_local(command):
     if platform.system() == 'Linux' or platform.system() == 'Darwin':
         return command
@@ -290,7 +280,7 @@ class RpcHandler(QtCore.QObject):
         if is_local:
             path_key = 'local'
         if not is_local:
-            path_key = remote_connection.server_username
+            path_key = remote_connection.server_hostname
         marmarad_path = configuration.ApplicationConfig().get_value('PATHS', path_key)
         if marmarad_path:  # if these is path in configuration
             self.output.emit('marmarad_path :' + marmarad_path)
@@ -468,6 +458,38 @@ class RpcHandler(QtCore.QObject):
             self.finished.emit()
 
     @pyqtSlot()
+    def txids_detail(self):
+        get_txids = handle_rpc(self.method, self.params)
+        if get_txids[2] == 200 or get_txids[2] == 0:
+            if get_txids[0] or get_txids[0] == []:
+                details_list = []
+                if len(get_txids[0]) != 0:
+                    for txid in json.loads(get_txids[0]):
+                        txid_detail = handle_rpc(cp.gettransaction, [txid])
+                        if txid_detail[2] == 200 or txid_detail[2] == 0:
+                            if txid_detail[0]:
+                                detail = json.loads(txid_detail[0])
+                                amount = detail.get('amount')
+                                block_time = detail.get('blocktime')
+                                txid_list = [txid, amount, block_time]
+                                details_list.append(txid_list)
+                        else:
+                            print(txid_detail[1])
+                            self.finished.emit()
+                            break
+                    result = details_list, 0
+                    self.command_out.emit(result)
+                    self.finished.emit()
+                else:
+                    result = details_list, 0
+                    self.command_out.emit(result)
+                    self.finished.emit()
+        else:
+            result_err = get_txids[1], 1
+            self.command_out.emit(result_err)
+            self.finished.emit()
+
+    @pyqtSlot()
     def extract_bootstrap(self):
         pwd_home = str(pathlib.Path.home())
         # print(self.command)
@@ -480,6 +502,76 @@ class RpcHandler(QtCore.QObject):
                 break
         self.output.emit(str(retvalue))
         self.finished.emit()
+
+    def get_loop_detail(self, txid, holder=False):
+        loop_detail = handle_rpc(cp.marmaracreditloop, [txid])
+        print(loop_detail)
+        if loop_detail[2] == 200 or loop_detail[2] == 0:
+            if loop_detail[0]:
+                loop_amount = json.loads(loop_detail[0]).get('amount')
+                loop_matures = json.loads(loop_detail[0]).get('matures')
+                pubkey = json.loads(loop_detail[0]).get('batonpk')
+                creditloop = json.loads(loop_detail[0]).get('creditloop')
+                loop_address = json.loads(loop_detail[0]).get('LockedInLoopCCaddr')
+                loop_create_block = ""
+                for item in creditloop:
+                    if item.get('funcid') == 'B':
+                        print(item.get('height'))
+                        loop_create_block = item.get('height')
+                        issuer_pk = item.get('issuerpk')
+                        if holder:
+                            pubkey = issuer_pk
+                        break
+                return [txid, loop_amount, pubkey, loop_matures, loop_create_block, loop_address]
+        else:
+            print(loop_detail[1])
+            return False
+
+    @pyqtSlot()
+    def active_loops_details(self):
+        marmarainfo = handle_rpc(self.method, self.params)
+        if marmarainfo[2] == 200 or marmarainfo[2] == 0:
+            marmarainfo_result = json.loads(marmarainfo[0])
+            issuances_issuer = marmarainfo_result.get('issuances')
+            issuer_details_list = []
+            for issuance in issuances_issuer:
+                issuance_details = self.get_loop_detail(issuance)
+                if issuance_details:
+                    issuer_details_list.append(issuance_details)
+                else:
+                    print('some error in getting loopdetail')
+                    self.finished.emit()
+                    break
+            result = issuer_details_list, marmarainfo_result, 0
+            self.command_out.emit(result)
+            self.finished.emit()
+        else:
+            result_err = None, marmarainfo[1], 1
+            self.command_out.emit(result_err)
+            self.finished.emit()
+
+    @pyqtSlot()
+    def holder_loop_detail(self):
+        marmaraholderloops = handle_rpc(self.method, self.params)
+        if marmaraholderloops[2] == 200 or marmaraholderloops[2] == 0:
+            holer_result = json.loads(marmaraholderloops[0])
+            issuances_holder = holer_result.get('issuances')
+            holder_details_list = []
+            for issuance in issuances_holder:
+                issuance_details = self.get_loop_detail(issuance, holder=True)
+                if issuance_details:
+                    holder_details_list.append(issuance_details)
+                else:
+                    print('some error in getting loopdetail')
+                    self.finished.emit()
+                    break
+            result = holder_details_list, holer_result, 0
+            self.command_out.emit(result)
+            self.finished.emit()
+        else:
+            result_err = None, marmaraholderloops[1], 1
+            self.command_out.emit(result_err)
+            self.finished.emit()
 
 
 class Autoinstall(QtCore.QObject):

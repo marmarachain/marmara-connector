@@ -88,7 +88,7 @@
               <enum>QFrame::NoFrame</enum>
              </property>
              <property name="currentIndex">
-              <number>0</number>
+              <number>1</number>
              </property>
              <widget class="QWidget" name="hostselection_page">
               <layout class="QGridLayout" name="gridLayout_5">
@@ -1619,7 +1619,7 @@
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>2</number>
           </property>
           <property name="iconSize">
            <size>
@@ -1824,6 +1824,9 @@
                     </property>
                     <property name="selectionBehavior">
                      <enum>QAbstractItemView::SelectItems</enum>
+                    </property>
+                    <property name="verticalScrollMode">
+                     <enum>QAbstractItemView::ScrollPerPixel</enum>
                     </property>
                     <property name="horizontalScrollMode">
                      <enum>QAbstractItemView::ScrollPerPixel</enum>
@@ -2274,6 +2277,12 @@
                     <property name="sizeAdjustPolicy">
                      <enum>QAbstractScrollArea::AdjustToContents</enum>
                     </property>
+                    <property name="verticalScrollMode">
+                     <enum>QAbstractItemView::ScrollPerPixel</enum>
+                    </property>
+                    <property name="horizontalScrollMode">
+                     <enum>QAbstractItemView::ScrollPerPixel</enum>
+                    </property>
                     <attribute name="horizontalHeaderDefaultSectionSize">
                      <number>150</number>
                     </attribute>
@@ -2619,7 +2628,7 @@
                     <enum>QFrame::Sunken</enum>
                    </property>
                    <property name="text">
-                    <string>0</string>
+                    <string/>
                    </property>
                    <property name="textInteractionFlags">
                     <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
@@ -2641,7 +2650,7 @@
                     <enum>QFrame::Sunken</enum>
                    </property>
                    <property name="text">
-                    <string>0</string>
+                    <string/>
                    </property>
                    <property name="textInteractionFlags">
                     <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
@@ -2763,7 +2772,7 @@
                     <enum>QFrame::Sunken</enum>
                    </property>
                    <property name="text">
-                    <string>0</string>
+                    <string/>
                    </property>
                    <property name="textInteractionFlags">
                     <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
@@ -2785,7 +2794,7 @@
                     <enum>QFrame::Sunken</enum>
                    </property>
                    <property name="text">
-                    <string>0</string>
+                    <string/>
                    </property>
                    <property name="textInteractionFlags">
                     <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
@@ -2966,6 +2975,12 @@
               <property name="sizeAdjustPolicy">
                <enum>QAbstractScrollArea::AdjustToContents</enum>
               </property>
+              <property name="verticalScrollMode">
+               <enum>QAbstractItemView::ScrollPerPixel</enum>
+              </property>
+              <property name="horizontalScrollMode">
+               <enum>QAbstractItemView::ScrollPerPixel</enum>
+              </property>
               <attribute name="horizontalHeaderDefaultSectionSize">
                <number>150</number>
               </attribute>
@@ -2982,10 +2997,20 @@
               </column>
               <column>
                <property name="text">
-                <string>txid</string>
+                <string>Txid</string>
                </property>
                <property name="textAlignment">
                 <set>AlignLeading|AlignTop</set>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Amount</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Date</string>
                </property>
               </column>
              </widget>
@@ -3357,7 +3382,7 @@
                <enum>QTabWidget::Rounded</enum>
               </property>
               <property name="currentIndex">
-               <number>0</number>
+               <number>2</number>
               </property>
               <widget class="QWidget" name="looprequests_tab">
                <attribute name="title">
@@ -3491,7 +3516,7 @@
                   <item row="1" column="1">
                    <widget class="QTableWidget" name="loop_request_tableWidget">
                     <property name="sizePolicy">
-                     <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                       <horstretch>0</horstretch>
                       <verstretch>0</verstretch>
                      </sizepolicy>
@@ -3528,6 +3553,12 @@
                     </property>
                     <property name="selectionMode">
                      <enum>QAbstractItemView::SingleSelection</enum>
+                    </property>
+                    <property name="verticalScrollMode">
+                     <enum>QAbstractItemView::ScrollPerPixel</enum>
+                    </property>
+                    <property name="horizontalScrollMode">
+                     <enum>QAbstractItemView::ScrollPerPixel</enum>
                     </property>
                     <property name="wordWrap">
                      <bool>true</bool>
@@ -3626,7 +3657,7 @@
                   <item row="2" column="1">
                    <widget class="QTableWidget" name="transferrequests_tableWidget">
                     <property name="sizePolicy">
-                     <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                       <horstretch>0</horstretch>
                       <verstretch>0</verstretch>
                      </sizepolicy>
@@ -3663,6 +3694,12 @@
                     </property>
                     <property name="selectionMode">
                      <enum>QAbstractItemView::SingleSelection</enum>
+                    </property>
+                    <property name="verticalScrollMode">
+                     <enum>QAbstractItemView::ScrollPerPixel</enum>
+                    </property>
+                    <property name="horizontalScrollMode">
+                     <enum>QAbstractItemView::ScrollPerPixel</enum>
                     </property>
                     <property name="wordWrap">
                      <bool>true</bool>
@@ -4019,463 +4056,32 @@
               </widget>
               <widget class="QWidget" name="totalloops_tab">
                <attribute name="title">
-                <string>Credit Loops</string>
+                <string>Active Loops</string>
                </attribute>
                <layout class="QGridLayout" name="gridLayout_14">
-                <item row="3" column="0">
-                 <layout class="QGridLayout" name="transferable_loops_Layout">
-                  <item row="1" column="4" rowspan="2">
-                   <spacer name="horizontalSpacer_41">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="0" column="0" rowspan="4">
-                   <spacer name="horizontalSpacer_55">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="0" column="1" colspan="4">
-                   <widget class="QLabel" name="transferableloops_label">
-                    <property name="text">
-                     <string>Transferrable Loops</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="2" colspan="2">
-                   <spacer name="verticalSpacer_42">
-                    <property name="orientation">
-                     <enum>Qt::Vertical</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>20</width>
-                      <height>40</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="1" column="1" rowspan="2">
-                   <widget class="QTableWidget" name="transferableloops_tableWidget">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                     <size>
-                      <width>0</width>
-                      <height>0</height>
-                     </size>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>16777215</width>
-                      <height>16777215</height>
-                     </size>
-                    </property>
-                    <property name="sizeIncrement">
-                     <size>
-                      <width>0</width>
-                      <height>0</height>
-                     </size>
-                    </property>
-                    <property name="font">
-                     <font>
-                      <pointsize>12</pointsize>
-                      <underline>false</underline>
-                     </font>
-                    </property>
-                    <property name="sizeAdjustPolicy">
-                     <enum>QAbstractScrollArea::AdjustToContents</enum>
-                    </property>
-                    <property name="editTriggers">
-                     <set>QAbstractItemView::NoEditTriggers</set>
-                    </property>
-                    <property name="selectionMode">
-                     <enum>QAbstractItemView::SingleSelection</enum>
-                    </property>
-                    <property name="wordWrap">
-                     <bool>true</bool>
-                    </property>
-                    <property name="cornerButtonEnabled">
-                     <bool>false</bool>
-                    </property>
-                    <attribute name="horizontalHeaderDefaultSectionSize">
-                     <number>150</number>
-                    </attribute>
-                    <column>
-                     <property name="text">
-                      <string>TxId</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Details</string>
-                     </property>
-                    </column>
-                   </widget>
-                  </item>
-                  <item row="1" column="2" colspan="2">
-                   <widget class="QFrame" name="transferable_serchlimit_frame">
-                    <property name="maximumSize">
-                     <size>
-                      <width>350</width>
-                      <height>16777215</height>
-                     </size>
-                    </property>
-                    <property name="frameShape">
-                     <enum>QFrame::WinPanel</enum>
-                    </property>
-                    <property name="frameShadow">
-                     <enum>QFrame::Raised</enum>
-                    </property>
-                    <layout class="QGridLayout" name="gridLayout_15">
-                     <item row="3" column="1">
-                      <widget class="QDateTimeEdit" name="transferable_maturesto_dateTimeEdit">
-                       <property name="enabled">
-                        <bool>false</bool>
-                       </property>
-                       <property name="date">
-                        <date>
-                         <year>2021</year>
-                         <month>1</month>
-                         <day>16</day>
-                        </date>
-                       </property>
-                       <property name="minimumDate">
-                        <date>
-                         <year>2020</year>
-                         <month>1</month>
-                         <day>16</day>
-                        </date>
-                       </property>
-                       <property name="calendarPopup">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="1">
-                      <widget class="QLabel" name="transferable_maturesto_label">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="text">
-                        <string>To</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="5" column="1">
-                      <widget class="QCheckBox" name="transferable_amount_checkBox">
-                       <property name="styleSheet">
-                        <string notr="true"/>
-                       </property>
-                       <property name="text">
-                        <string>All</string>
-                       </property>
-                       <property name="checked">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="5" column="0">
-                      <widget class="QLabel" name="transferable_serchlimit_amount_label">
-                       <property name="text">
-                        <string>Amount</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="6" column="0">
-                      <widget class="QLabel" name="transferable_minamount_label">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="text">
-                        <string>Min Amount : </string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="6" column="1">
-                      <widget class="QLabel" name="transferable_maxamount_label">
-                       <property name="text">
-                        <string>Max Amount : </string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="0">
-                      <widget class="QLabel" name="transferable_serchlimit_matures_label">
-                       <property name="text">
-                        <string>Matures</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="7" column="1">
-                      <widget class="QLineEdit" name="transferable_maxamount_lineEdit">
-                       <property name="enabled">
-                        <bool>false</bool>
-                       </property>
-                       <property name="maximumSize">
-                        <size>
-                         <width>16777215</width>
-                         <height>16777215</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="3" column="0">
-                      <widget class="QDateTimeEdit" name="transferable_maturesfrom_dateTimeEdit">
-                       <property name="enabled">
-                        <bool>false</bool>
-                       </property>
-                       <property name="dateTime">
-                        <datetime>
-                         <hour>0</hour>
-                         <minute>0</minute>
-                         <second>0</second>
-                         <year>2020</year>
-                         <month>1</month>
-                         <day>17</day>
-                        </datetime>
-                       </property>
-                       <property name="date">
-                        <date>
-                         <year>2020</year>
-                         <month>1</month>
-                         <day>17</day>
-                        </date>
-                       </property>
-                       <property name="minimumDate">
-                        <date>
-                         <year>2020</year>
-                         <month>1</month>
-                         <day>17</day>
-                        </date>
-                       </property>
-                       <property name="calendarPopup">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="0" colspan="2">
-                      <layout class="QGridLayout" name="gridLayout_25">
-                       <item row="0" column="0">
-                        <spacer name="horizontalSpacer_42">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>40</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                       <item row="0" column="1">
-                        <widget class="QPushButton" name="transferableloops_search_button">
-                         <property name="text">
-                          <string>Search</string>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </item>
-                     <item row="1" column="1">
-                      <widget class="QCheckBox" name="transferable_matures_checkBox">
-                       <property name="enabled">
-                        <bool>true</bool>
-                       </property>
-                       <property name="styleSheet">
-                        <string notr="true"/>
-                       </property>
-                       <property name="text">
-                        <string>All</string>
-                       </property>
-                       <property name="checked">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="0">
-                      <widget class="QLabel" name="transferable_maturesfrom_label">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="text">
-                        <string>From</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="7" column="0">
-                      <widget class="QLineEdit" name="transferable_minamount_lineEdit">
-                       <property name="enabled">
-                        <bool>false</bool>
-                       </property>
-                       <property name="maximumSize">
-                        <size>
-                         <width>16777215</width>
-                         <height>16777215</height>
-                        </size>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-                <item row="2" column="0">
-                 <spacer name="verticalSpacer_32">
+                <item row="1" column="2">
+                 <spacer name="horizontalSpacer_41">
                   <property name="orientation">
-                   <enum>Qt::Vertical</enum>
+                   <enum>Qt::Horizontal</enum>
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>
-                    <width>20</width>
-                    <height>40</height>
+                    <width>40</width>
+                    <height>20</height>
                    </size>
                   </property>
                  </spacer>
                 </item>
-                <item row="4" column="0">
-                 <spacer name="verticalSpacer_40">
-                  <property name="orientation">
-                   <enum>Qt::Vertical</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>20</width>
-                    <height>40</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item row="0" column="0">
-                 <spacer name="verticalSpacer_31">
-                  <property name="orientation">
-                   <enum>Qt::Vertical</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>20</width>
-                    <height>40</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item row="1" column="0">
+                <item row="1" column="1">
                  <layout class="QGridLayout" name="activeloops_Layout">
-                  <item row="0" column="0" rowspan="4">
-                   <spacer name="horizontalSpacer_30">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>20</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="1" column="1" rowspan="2" colspan="2">
-                   <widget class="QTableWidget" name="activeloops_tableWidget">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                     <size>
-                      <width>0</width>
-                      <height>0</height>
-                     </size>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>16777215</width>
-                      <height>16777215</height>
-                     </size>
-                    </property>
-                    <property name="sizeIncrement">
-                     <size>
-                      <width>0</width>
-                      <height>0</height>
-                     </size>
-                    </property>
-                    <property name="font">
-                     <font>
-                      <pointsize>12</pointsize>
-                      <underline>false</underline>
-                     </font>
-                    </property>
-                    <property name="sizeAdjustPolicy">
-                     <enum>QAbstractScrollArea::AdjustToContents</enum>
-                    </property>
-                    <property name="editTriggers">
-                     <set>QAbstractItemView::NoEditTriggers</set>
-                    </property>
-                    <property name="selectionMode">
-                     <enum>QAbstractItemView::SingleSelection</enum>
-                    </property>
-                    <property name="wordWrap">
-                     <bool>true</bool>
-                    </property>
-                    <property name="cornerButtonEnabled">
-                     <bool>false</bool>
-                    </property>
-                    <attribute name="horizontalHeaderDefaultSectionSize">
-                     <number>150</number>
-                    </attribute>
-                    <column>
-                     <property name="text">
-                      <string>Loop address</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Amount</string>
-                     </property>
-                    </column>
-                   </widget>
-                  </item>
-                  <item row="0" column="1" colspan="5">
-                   <widget class="QLabel" name="activeloops_label">
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="Issuerloops_label">
                     <property name="text">
-                     <string>Active Loops</string>
+                     <string>Issuer Loops</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="3" colspan="2">
+                  <item row="10" column="0" colspan="3">
                    <widget class="QFrame" name="frame">
                     <property name="maximumSize">
                      <size>
@@ -4490,65 +4096,490 @@
                      <enum>QFrame::Raised</enum>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_20">
-                     <item row="4" column="0">
-                      <widget class="QLabel" name="activeloops_pending_number_label">
+                     <item row="1" column="1">
+                      <widget class="QLabel" name="total_transferrable_loop_amount_label_value">
+                       <property name="frameShape">
+                        <enum>QFrame::WinPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Sunken</enum>
+                       </property>
                        <property name="text">
-                        <string>Number of Pending </string>
+                        <string/>
+                       </property>
+                       <property name="textInteractionFlags">
+                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
                        </property>
                       </widget>
                      </item>
-                     <item row="3" column="0">
-                      <widget class="QLabel" name="closedloops_total_amount_label">
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="total_transferrable_loop_amount_label">
+                       <property name="text">
+                        <string>Amount in transferrable Loops</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="2">
+                      <widget class="QLabel" name="numberof_transferrable_loop_amount_label">
+                       <property name="text">
+                        <string>Number of Transferrable Loops</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="3">
+                      <widget class="QLabel" name="numberof_transferrable_loop_amount_label_value">
+                       <property name="frameShape">
+                        <enum>QFrame::WinPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Sunken</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="textInteractionFlags">
+                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="holderloops_closed_amount_label">
                        <property name="text">
                         <string>Amount In Closed Loops</string>
                        </property>
                       </widget>
                      </item>
-                     <item row="5" column="0">
-                      <widget class="QLabel" name="closedloops_total_number_label">
+                     <item row="2" column="1">
+                      <widget class="QLabel" name="holderloops_closed_amount_label_value">
+                       <property name="frameShape">
+                        <enum>QFrame::WinPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Sunken</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="textInteractionFlags">
+                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="2">
+                      <widget class="QLabel" name="holderloops_closed_number_label">
                        <property name="text">
                         <string>Number of Closed </string>
                        </property>
                       </widget>
                      </item>
-                     <item row="1" column="0">
-                      <widget class="QLabel" name="activeloops_total_amount_label">
+                     <item row="2" column="3">
+                      <widget class="QLabel" name="holderloops_closed_number_label_value">
+                       <property name="frameShape">
+                        <enum>QFrame::WinPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Sunken</enum>
+                       </property>
                        <property name="text">
-                        <string>Amount In Active Loops  </string>
+                        <string/>
+                       </property>
+                       <property name="textInteractionFlags">
+                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
                        </property>
                       </widget>
                      </item>
-                     <item row="0" column="0" colspan="3">
-                      <layout class="QGridLayout" name="gridLayout_22">
-                       <item row="0" column="1">
-                        <widget class="QPushButton" name="activeloops_search_button">
-                         <property name="text">
-                          <string>Search</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="0">
-                        <spacer name="horizontalSpacer_52">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>40</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                      </layout>
-                     </item>
-                     <item row="1" column="1" colspan="2">
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="8" column="1" colspan="2">
+                   <layout class="QGridLayout" name="gridLayout_15">
+                    <item row="0" column="1">
+                     <widget class="QPushButton" name="holderloops_search_button">
+                      <property name="text">
+                       <string>Search</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="0">
+                     <spacer name="horizontalSpacer_42">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </item>
+                  <item row="5" column="2">
+                   <spacer name="horizontalSpacer_58">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="9" column="0" colspan="3">
+                   <widget class="QTableWidget" name="transferableloops_tableWidget">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>250</height>
+                     </size>
+                    </property>
+                    <property name="sizeIncrement">
+                     <size>
+                      <width>0</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="font">
+                     <font>
+                      <pointsize>12</pointsize>
+                      <underline>false</underline>
+                     </font>
+                    </property>
+                    <property name="sizeAdjustPolicy">
+                     <enum>QAbstractScrollArea::AdjustToContents</enum>
+                    </property>
+                    <property name="editTriggers">
+                     <set>QAbstractItemView::NoEditTriggers</set>
+                    </property>
+                    <property name="dragEnabled">
+                     <bool>true</bool>
+                    </property>
+                    <property name="alternatingRowColors">
+                     <bool>true</bool>
+                    </property>
+                    <property name="selectionMode">
+                     <enum>QAbstractItemView::SingleSelection</enum>
+                    </property>
+                    <property name="verticalScrollMode">
+                     <enum>QAbstractItemView::ScrollPerPixel</enum>
+                    </property>
+                    <property name="horizontalScrollMode">
+                     <enum>QAbstractItemView::ScrollPerPixel</enum>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
+                    </property>
+                    <property name="cornerButtonEnabled">
+                     <bool>false</bool>
+                    </property>
+                    <attribute name="horizontalHeaderDefaultSectionSize">
+                     <number>150</number>
+                    </attribute>
+                    <column>
+                     <property name="text">
+                      <string>Txid</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Amount</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Issuer Pubkey</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Maturity</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Create Date</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </column>
+                   </widget>
+                  </item>
+                  <item row="4" column="0" colspan="3">
+                   <spacer name="verticalSpacer_32">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="8" column="0">
+                   <widget class="QLabel" name="transferableloops_label">
+                    <property name="text">
+                     <string>Transferrable Loops</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1" colspan="2">
+                   <layout class="QGridLayout" name="gridLayout_22">
+                    <item row="0" column="1">
+                     <widget class="QPushButton" name="activeloops_search_button">
+                      <property name="text">
+                       <string>Search</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="0">
+                     <spacer name="horizontalSpacer_52">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </item>
+                  <item row="5" column="0">
+                   <spacer name="horizontalSpacer_55">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="1" column="0" rowspan="2" colspan="3">
+                   <widget class="QTableWidget" name="activeloops_tableWidget">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>250</height>
+                     </size>
+                    </property>
+                    <property name="sizeIncrement">
+                     <size>
+                      <width>0</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="font">
+                     <font>
+                      <pointsize>12</pointsize>
+                      <underline>false</underline>
+                     </font>
+                    </property>
+                    <property name="sizeAdjustPolicy">
+                     <enum>QAbstractScrollArea::AdjustToContents</enum>
+                    </property>
+                    <property name="autoScroll">
+                     <bool>true</bool>
+                    </property>
+                    <property name="editTriggers">
+                     <set>QAbstractItemView::NoEditTriggers</set>
+                    </property>
+                    <property name="dragEnabled">
+                     <bool>true</bool>
+                    </property>
+                    <property name="dragDropOverwriteMode">
+                     <bool>true</bool>
+                    </property>
+                    <property name="dragDropMode">
+                     <enum>QAbstractItemView::NoDragDrop</enum>
+                    </property>
+                    <property name="alternatingRowColors">
+                     <bool>true</bool>
+                    </property>
+                    <property name="selectionMode">
+                     <enum>QAbstractItemView::SingleSelection</enum>
+                    </property>
+                    <property name="verticalScrollMode">
+                     <enum>QAbstractItemView::ScrollPerPixel</enum>
+                    </property>
+                    <property name="horizontalScrollMode">
+                     <enum>QAbstractItemView::ScrollPerPixel</enum>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
+                    </property>
+                    <property name="cornerButtonEnabled">
+                     <bool>false</bool>
+                    </property>
+                    <attribute name="horizontalHeaderDefaultSectionSize">
+                     <number>150</number>
+                    </attribute>
+                    <column>
+                     <property name="text">
+                      <string>Txid</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Amount</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Receiver Pubkey</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Maturity</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Create Date</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </column>
+                   </widget>
+                  </item>
+                  <item row="5" column="1">
+                   <widget class="QFrame" name="gridFrame_2">
+                    <property name="frameShape">
+                     <enum>QFrame::WinPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                     <enum>QFrame::Raised</enum>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_51">
+                     <item row="0" column="1">
                       <widget class="QLabel" name="activeloops_total_amount_value_label">
                        <property name="minimumSize">
                         <size>
                          <width>0</width>
                          <height>0</height>
                         </size>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>16777215</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
+                       <property name="font">
+                        <font>
+                         <family>Ubuntu</family>
+                        </font>
+                       </property>
+                       <property name="frameShape">
+                        <enum>QFrame::WinPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Sunken</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="textInteractionFlags">
+                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="activeloops_total_amount_label">
+                       <property name="text">
+                        <string>Total Amount In Active Loops addresses </string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="3" column="0" colspan="3">
+                   <widget class="QFrame" name="frame_2">
+                    <property name="frameShape">
+                     <enum>QFrame::StyledPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                     <enum>QFrame::Raised</enum>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_25">
+                     <item row="0" column="1">
+                      <widget class="QLabel" name="total_issuer_loop_amount_label_value">
+                       <property name="frameShape">
+                        <enum>QFrame::WinPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Sunken</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="textInteractionFlags">
+                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="total_issuer_loop_amount_label">
+                       <property name="text">
+                        <string>Amount in Issuer Loops</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="2">
+                      <widget class="QLabel" name="activeloops_pending_number_label">
+                       <property name="text">
+                        <string>Number of Issuer Loops </string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="3">
+                      <widget class="QLabel" name="activeloops_pending_number_value_label">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
                        </property>
                        <property name="maximumSize">
                         <size>
@@ -4570,7 +4601,14 @@
                        </property>
                       </widget>
                      </item>
-                     <item row="3" column="1" colspan="2">
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="closedloops_total_amount_label">
+                       <property name="text">
+                        <string>Amount In Closed Loops</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
                       <widget class="QLabel" name="closedloops_total_amount_value_label">
                        <property name="minimumSize">
                         <size>
@@ -4598,29 +4636,14 @@
                        </property>
                       </widget>
                      </item>
-                     <item row="4" column="1" colspan="2">
-                      <widget class="QLabel" name="activeloops_pending_number_value_label">
-                       <property name="maximumSize">
-                        <size>
-                         <width>16777215</width>
-                         <height>16777215</height>
-                        </size>
-                       </property>
-                       <property name="frameShape">
-                        <enum>QFrame::WinPanel</enum>
-                       </property>
-                       <property name="frameShadow">
-                        <enum>QFrame::Sunken</enum>
-                       </property>
+                     <item row="1" column="2">
+                      <widget class="QLabel" name="closedloops_total_number_label">
                        <property name="text">
-                        <string/>
-                       </property>
-                       <property name="textInteractionFlags">
-                        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                        <string>Number of Closed </string>
                        </property>
                       </widget>
                      </item>
-                     <item row="5" column="1" colspan="2">
+                     <item row="1" column="3">
                       <widget class="QLabel" name="closedloops_total_number_value_label">
                        <property name="sizePolicy">
                         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -4657,8 +4680,8 @@
                     </layout>
                    </widget>
                   </item>
-                  <item row="2" column="3" colspan="2">
-                   <spacer name="verticalSpacer_41">
+                  <item row="6" column="0" colspan="3">
+                   <spacer name="verticalSpacer_42">
                     <property name="orientation">
                      <enum>Qt::Vertical</enum>
                     </property>
@@ -4670,20 +4693,46 @@
                     </property>
                    </spacer>
                   </item>
-                  <item row="1" column="5">
-                   <spacer name="horizontalSpacer_58">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
                  </layout>
+                </item>
+                <item row="1" column="0">
+                 <spacer name="horizontalSpacer_30">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="0" column="0" colspan="3">
+                 <spacer name="verticalSpacer_31">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="2" column="0" colspan="3">
+                 <spacer name="verticalSpacer_40">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
                 </item>
                </layout>
               </widget>
@@ -5400,6 +5449,12 @@
               <property name="textElideMode">
                <enum>Qt::ElideMiddle</enum>
               </property>
+              <property name="verticalScrollMode">
+               <enum>QAbstractItemView::ScrollPerPixel</enum>
+              </property>
+              <property name="horizontalScrollMode">
+               <enum>QAbstractItemView::ScrollPerPixel</enum>
+              </property>
               <property name="showGrid">
                <bool>true</bool>
               </property>
@@ -5817,6 +5872,12 @@
                 <property name="sizeAdjustPolicy">
                  <enum>QAbstractScrollArea::AdjustToContents</enum>
                 </property>
+                <property name="verticalScrollMode">
+                 <enum>QAbstractItemView::ScrollPerPixel</enum>
+                </property>
+                <property name="horizontalScrollMode">
+                 <enum>QAbstractItemView::ScrollPerPixel</enum>
+                </property>
                 <attribute name="horizontalHeaderDefaultSectionSize">
                  <number>120</number>
                 </attribute>
@@ -6226,7 +6287,6 @@
   <tabstop>request_date_checkBox</tabstop>
   <tabstop>loop_request_tableWidget</tabstop>
   <tabstop>looprequest_search_button</tabstop>
-  <tabstop>transferableloops_tableWidget</tabstop>
   <tabstop>activeloops_tableWidget</tabstop>
   <tabstop>privatekeypage_back_button</tabstop>
   <tabstop>privkey_lineEdit</tabstop>

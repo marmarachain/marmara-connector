@@ -83,8 +83,8 @@ class GuiStyle(Ui_MainWindow):
 
         self.activeloops_search_button.setIcon(QtGui.QIcon(qta.icon('fa.search')))
         self.activeloops_search_button.setIconSize(QtCore.QSize(24, 24))
-        self.transferableloops_search_button.setIcon(qta.icon('fa.search'))
-        self.transferableloops_search_button.setIconSize(QtCore.QSize(24, 24))
+        self.holderloops_search_button.setIcon(qta.icon('fa.search'))
+        self.holderloops_search_button.setIconSize(QtCore.QSize(24, 24))
         # Stats
         self.stats_refresh_pushButton.setIcon(qta.icon('mdi.refresh'))
         self.stats_refresh_pushButton.setIconSize(QtCore.QSize(24, 24))
