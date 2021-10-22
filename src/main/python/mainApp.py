@@ -142,6 +142,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
         # -----Total Credit Loops page -----
         self.activeloops_search_button.clicked.connect(self.search_active_loops)
         self.holderloops_search_button.clicked.connect(self.marmaraholderloops)
+        self.activeloops_tableWidget.cellClicked.connect(self.activeloop_itemcontext)
+        self.transactions_tableWidget.cellClicked.connect(self.transferableloops_itemcontext)
         # self.transferableloops_search_button.clicked.connect(self.marmaraholderloops)
         # ---- Loop Queries page --
         self.lq_pubkey_search_button.clicked.connect(self.search_any_pubkey_loops)
@@ -362,6 +364,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.get_server_combobox_names()
         self.home_button.setVisible(True)
         marmarachain_rpc.set_connection_remote()
+        marmarachain_rpc.set_sshclient(None)
         logging.info('is local connection: ' + str(marmarachain_rpc.is_local))
         self.serverpw_lineEdit.clear()
         self.download_blocks_button.hide()
@@ -407,10 +410,11 @@ class MarmaraMain(QMainWindow, GuiStyle):
         remote_connection.set_server_connection(ip=selected_server_info[2], username=selected_server_info[1],
                                                 pw=self.serverpw_lineEdit.text())
         validate = remote_connection.check_server_connection()
-        if validate:
-            self.login_page_info(str(validate))
+        if validate == 'error':
+            self.login_page_info(self.tr("Authentication or Connection Error"))
         else:
             self.check_marmara_path()
+            marmarachain_rpc.set_sshclient(validate)
 
     def worker_thread(self, thread, worker, method=None, params=None, worker_output=None, execute=None):
         if self.chain_status:
@@ -428,6 +432,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 thread.started.connect(worker.refresh_sidepanel)
             if execute == 'get_addresses':
                 thread.started.connect(worker.get_addresses)
+                worker.walletlist_out.connect(worker_output)
             if execute == 'setgenerate':
                 thread.started.connect(worker.setgenerate)
             if execute == 'get_balances':
@@ -439,7 +444,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             if execute == 'holder_loop_detail':
                 thread.started.connect(worker.holder_loop_detail)
             thread.start(priority=4)
-            if worker_output:
+            if worker_output and execute != 'get_addresses':
                 worker.command_out.connect(worker_output)
             return worker
         else:
@@ -1892,6 +1897,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.closedloops_total_amount_value_label.setText(str(result.get('totalclosed')))
         self.activeloops_pending_number_value_label.setText(str(result.get('numpending')))
         self.closedloops_total_number_value_label.setText(str(result.get('numclosed')))
+        self.numberof_total_activeloops_label_value.setText(str(result.get('n')))
 
     @pyqtSlot(tuple)
     def marmarinfo_amount_and_loops_result(self, result_out):
@@ -1976,6 +1982,17 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 self.transferableloops_tableWidget.horizontalHeader().setSectionResizeMode(column_no,
                                                                                      QHeaderView.ResizeToContents)
 
+    @pyqtSlot(int, int)
+    def activeloop_itemcontext(self, row, column):
+        item = self.activeloops_tableWidget.item(row, column).text()
+        QtWidgets.QApplication.clipboard().setText(item)
+        self.bottom_info(self.tr("Copied ") + str(item))
+
+    @pyqtSlot(int, int)
+    def transferableloops_itemcontext(self, row, column):
+        item = self.transferableloops_tableWidget.item(row, column).text()
+        QtWidgets.QApplication.clipboard().setText(item)
+        self.bottom_info(self.tr("Copied ") + str(item))
     # -------------------------------------------------------------------
     # Credit Loop Queries functions
     # --------------------------------------------------------------------

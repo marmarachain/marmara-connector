@@ -1619,7 +1619,7 @@
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>2</number>
+           <number>4</number>
           </property>
           <property name="iconSize">
            <size>
@@ -4266,9 +4266,6 @@
                     <property name="editTriggers">
                      <set>QAbstractItemView::NoEditTriggers</set>
                     </property>
-                    <property name="dragEnabled">
-                     <bool>true</bool>
-                    </property>
                     <property name="alternatingRowColors">
                      <bool>true</bool>
                     </property>
@@ -4287,6 +4284,9 @@
                     <property name="cornerButtonEnabled">
                      <bool>false</bool>
                     </property>
+                    <attribute name="horizontalHeaderCascadingSectionResizes">
+                     <bool>false</bool>
+                    </attribute>
                     <attribute name="horizontalHeaderDefaultSectionSize">
                      <number>150</number>
                     </attribute>
@@ -4420,15 +4420,6 @@
                     <property name="editTriggers">
                      <set>QAbstractItemView::NoEditTriggers</set>
                     </property>
-                    <property name="dragEnabled">
-                     <bool>true</bool>
-                    </property>
-                    <property name="dragDropOverwriteMode">
-                     <bool>true</bool>
-                    </property>
-                    <property name="dragDropMode">
-                     <enum>QAbstractItemView::NoDragDrop</enum>
-                    </property>
                     <property name="alternatingRowColors">
                      <bool>true</bool>
                     </property>
@@ -4528,6 +4519,26 @@
                       <widget class="QLabel" name="activeloops_total_amount_label">
                        <property name="text">
                         <string>Total Amount In Active Loops addresses </string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="2">
+                      <widget class="QLabel" name="numberof_total_activeloops_label">
+                       <property name="text">
+                        <string>Number of Total Active Loops</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="3">
+                      <widget class="QLabel" name="numberof_total_activeloops_label_value">
+                       <property name="frameShape">
+                        <enum>QFrame::WinPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Sunken</enum>
+                       </property>
+                       <property name="text">
+                        <string/>
                        </property>
                       </widget>
                      </item>
@@ -5433,9 +5444,6 @@
               </property>
               <property name="editTriggers">
                <set>QAbstractItemView::NoEditTriggers</set>
-              </property>
-              <property name="dragDropOverwriteMode">
-               <bool>false</bool>
               </property>
               <property name="alternatingRowColors">
                <bool>true</bool>

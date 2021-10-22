@@ -28,10 +28,9 @@ def server_ssh_connect(ssh_key=None):
 def check_server_connection():
     try:
         client = server_ssh_connect()
-        client.close()
-        return
+        return client
     except paramiko.SSHException as e:
-        return e
+        return 'error'
 
 
 def server_start_chain(command):

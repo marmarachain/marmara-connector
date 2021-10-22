@@ -18,7 +18,7 @@ import api_request
 marmara_path = None
 is_local = None
 logging.getLogger(__name__)
-
+ssh_client = None
 
 def set_connection_local():
     global is_local
@@ -29,6 +29,9 @@ def set_connection_remote():
     global is_local
     is_local = False
 
+def set_sshclient(client):
+    global ssh_client
+    ssh_client = client
 
 def set_marmara_path(path):
     global marmara_path
@@ -235,12 +238,21 @@ def handle_rpc(method, params):
             logging.info('------sending command----- \n ' + method)
         else:
             logging.info('------sending command----- \n ' + cmd)
-        try:
-            result = remote_connection.server_execute_command(cmd)
-            return result
-        except Exception as error:
-            logging.error(error)
-            return None, error, 1
+        if ssh_client:
+            try:
+                # result = remote_connection.server_execute_command(cmd)
+                stdin, stdout, stderr = ssh_client.exec_command(cmd)
+                exit_status = stdout.channel.recv_exit_status()  # Blocking call
+                # stdout.flush()
+                # stderr.flush()
+                return stdout.read().decode("utf8"), stderr.read().decode("utf8"), exit_status
+            except Exception as error:
+                logging.error(error)
+                set_sshclient(remote_connection.server_ssh_connect())
+                print(error)
+                return None, error, 1
+        else:
+            set_sshclient(remote_connection.server_ssh_connect())
 
 class RpcHandler(QtCore.QObject):
     command_out = pyqtSignal(tuple)
@@ -388,7 +400,6 @@ class RpcHandler(QtCore.QObject):
                 elif validation[1]:
                     logging.info(validation[1])
                 address_js = {'addresses': [address]}
-                # command = cp.getaddressbalance + "'" + json.dumps(address_js) + "'"
                 amounts = handle_rpc(cp.getaddressbalance, [address_js])
                 if amounts[0]:
                     amount = json.loads(amounts[0])['balance']
@@ -531,20 +542,21 @@ class RpcHandler(QtCore.QObject):
     def active_loops_details(self):
         marmarainfo = handle_rpc(self.method, self.params)
         if marmarainfo[2] == 200 or marmarainfo[2] == 0:
-            marmarainfo_result = json.loads(marmarainfo[0])
-            issuances_issuer = marmarainfo_result.get('issuances')
-            issuer_details_list = []
-            for issuance in issuances_issuer:
-                issuance_details = self.get_loop_detail(issuance)
-                if issuance_details:
-                    issuer_details_list.append(issuance_details)
-                else:
-                    print('some error in getting loopdetail')
-                    self.finished.emit()
-                    break
-            result = issuer_details_list, marmarainfo_result, 0
-            self.command_out.emit(result)
-            self.finished.emit()
+            if marmarainfo[0]:
+                marmarainfo_result = json.loads(marmarainfo[0])
+                issuances_issuer = marmarainfo_result.get('issuances')
+                issuer_details_list = []
+                for issuance in issuances_issuer:
+                    issuance_details = self.get_loop_detail(issuance)
+                    if issuance_details:
+                        issuer_details_list.append(issuance_details)
+                    else:
+                        print('some error in getting loopdetail')
+                        self.finished.emit()
+                        break
+                result = issuer_details_list, marmarainfo_result, 0
+                self.command_out.emit(result)
+                self.finished.emit()
         else:
             result_err = None, marmarainfo[1], 1
             self.command_out.emit(result_err)
@@ -554,20 +566,21 @@ class RpcHandler(QtCore.QObject):
     def holder_loop_detail(self):
         marmaraholderloops = handle_rpc(self.method, self.params)
         if marmaraholderloops[2] == 200 or marmaraholderloops[2] == 0:
-            holer_result = json.loads(marmaraholderloops[0])
-            issuances_holder = holer_result.get('issuances')
-            holder_details_list = []
-            for issuance in issuances_holder:
-                issuance_details = self.get_loop_detail(issuance, holder=True)
-                if issuance_details:
-                    holder_details_list.append(issuance_details)
-                else:
-                    print('some error in getting loopdetail')
-                    self.finished.emit()
-                    break
-            result = holder_details_list, holer_result, 0
-            self.command_out.emit(result)
-            self.finished.emit()
+            if marmaraholderloops[0]:
+                holer_result = json.loads(marmaraholderloops[0])
+                issuances_holder = holer_result.get('issuances')
+                holder_details_list = []
+                for issuance in issuances_holder:
+                    issuance_details = self.get_loop_detail(issuance, holder=True)
+                    if issuance_details:
+                        holder_details_list.append(issuance_details)
+                    else:
+                        print('some error in getting loopdetail')
+                        self.finished.emit()
+                        break
+                result = holder_details_list, holer_result, 0
+                self.command_out.emit(result)
+                self.finished.emit()
         else:
             result_err = None, marmaraholderloops[1], 1
             self.command_out.emit(result_err)
