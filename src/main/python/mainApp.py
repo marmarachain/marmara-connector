@@ -1920,7 +1920,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def set_activeloops_table(self, loop_info):
         self.activeloops_tableWidget.setColumnHidden(5, True)
         self.activeloops_tableWidget.setRowCount(len(loop_info))
-        print(len(loop_info))
         for section in loop_info:
             row_number = loop_info.index(section)
             for item in section:
@@ -1959,7 +1958,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def marmaraholderloops_result(self, result_out):
         if result_out[2] == 0:
             self.set_holder_loops_table(result_out[0])
-            print(result_out[1])
             self.total_transferrable_loop_amount_label_value.setText(str(result_out[1].get('totalamount')))
             self.numberof_transferrable_loop_amount_label_value.setText(str(result_out[1].get('numpending')))
             self.holderloops_closed_amount_label_value.setText(str(result_out[1].get('numclosed')))

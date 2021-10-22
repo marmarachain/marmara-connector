@@ -249,7 +249,6 @@ def handle_rpc(method, params):
             except Exception as error:
                 logging.error(error)
                 set_sshclient(remote_connection.server_ssh_connect())
-                print(error)
                 return None, error, 1
         else:
             set_sshclient(remote_connection.server_ssh_connect())
@@ -516,7 +515,6 @@ class RpcHandler(QtCore.QObject):
 
     def get_loop_detail(self, txid, holder=False):
         loop_detail = handle_rpc(cp.marmaracreditloop, [txid])
-        print(loop_detail)
         if loop_detail[2] == 200 or loop_detail[2] == 0:
             if loop_detail[0]:
                 loop_amount = json.loads(loop_detail[0]).get('amount')
@@ -527,7 +525,6 @@ class RpcHandler(QtCore.QObject):
                 loop_create_block = ""
                 for item in creditloop:
                     if item.get('funcid') == 'B':
-                        print(item.get('height'))
                         loop_create_block = item.get('height')
                         issuer_pk = item.get('issuerpk')
                         if holder:
@@ -551,6 +548,7 @@ class RpcHandler(QtCore.QObject):
                     if issuance_details:
                         issuer_details_list.append(issuance_details)
                     else:
+                        logging.error('some error in getting loopdetail')
                         print('some error in getting loopdetail')
                         self.finished.emit()
                         break
@@ -575,6 +573,7 @@ class RpcHandler(QtCore.QObject):
                     if issuance_details:
                         holder_details_list.append(issuance_details)
                     else:
+                        logging.error('some error in getting loopdetail')
                         print('some error in getting loopdetail')
                         self.finished.emit()
                         break
