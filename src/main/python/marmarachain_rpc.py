@@ -74,8 +74,10 @@ def do_search_path(cmd):
         except Exception as error:
             logging.error(error)
     else:
+        if not ssh_client:
+            set_sshclient(remote_connection.server_ssh_connect())
         try:
-            mcl_path = remote_connection.server_execute_command(cmd)
+            mcl_path = remote_connection.server_execute_command(cmd, ssh_client)
             return mcl_path[0].split('\n'), mcl_path[1].split('\n'),
         except Exception as error:
             logging.error(error)
@@ -92,13 +94,15 @@ def search_marmarad_path():  # will be added for windows search
         else:
             windows = False
     else:
-        pwd_r = remote_connection.server_execute_command('pwd')
+        if not ssh_client:
+            set_sshclient(remote_connection.server_ssh_connect())
+        pwd_r = remote_connection.server_execute_command('pwd', ssh_client)
         time.sleep(2)
         logging.info('pwd remote' + pwd_r[0])
         if not pwd_r[0]:
-            pwd_r = remote_connection.server_execute_command('pwd')
+            pwd_r = remote_connection.server_execute_command('pwd', ssh_client)
             time.sleep(1)
-        pwd = str(pwd_r[0].replace('\n', ''))
+        pwd = str(pwd_r[0]).replace('\n', '').replace('\r', '')
         logging.info('pwd_remote :' + pwd)
     search_list_linux = ['ls ' + pwd, 'ls ' + pwd + '/marmara/src', 'ls ' + pwd + '/komodo/src']
     search_list_windows = ['PowerShell ls ' + pwd + '\marmara -name']
@@ -182,6 +186,7 @@ def start_chain(pubkey=None):
             marmara_param = marmara_param + ' -pubkey=' + str(pubkey)
         try:
             start = remote_connection.server_start_chain(marmara_param)
+            time.sleep(0.3)
             start.close()
             logging.info('shell closed')
         except Exception as error:
@@ -199,8 +204,10 @@ def mcl_chain_status():
         except Exception as error:
             logging.error(error)
     else:
+        if not ssh_client:
+            set_sshclient(remote_connection.server_ssh_connect())
         try:
-            marmarad_pid = remote_connection.server_execute_command('pidof komodod')
+            marmarad_pid = remote_connection.server_execute_command('pidof komodod', ssh_client)
             return marmarad_pid
         except Exception as error:
             logging.error(error)
@@ -238,20 +245,15 @@ def handle_rpc(method, params):
             logging.info('------sending command----- \n ' + method)
         else:
             logging.info('------sending command----- \n ' + cmd)
-        if ssh_client:
-            try:
-                # result = remote_connection.server_execute_command(cmd)
-                stdin, stdout, stderr = ssh_client.exec_command(cmd)
-                exit_status = stdout.channel.recv_exit_status()  # Blocking call
-                # stdout.flush()
-                # stderr.flush()
-                return stdout.read().decode("utf8"), stderr.read().decode("utf8"), exit_status
-            except Exception as error:
-                logging.error(error)
-                set_sshclient(remote_connection.server_ssh_connect())
-                return None, error, 1
-        else:
+        if not ssh_client:
             set_sshclient(remote_connection.server_ssh_connect())
+        try:
+            result = remote_connection.server_execute_command(cmd, ssh_client)
+            return result
+        except Exception as error:
+            logging.error(error)
+            set_sshclient(remote_connection.server_ssh_connect())
+            return None, error, 1
 
 class RpcHandler(QtCore.QObject):
     command_out = pyqtSignal(tuple)

@@ -39,16 +39,11 @@ def server_start_chain(command):
     return client
 
 
-def server_execute_command(command, sudo=False):
-    client = server_ssh_connect()
-    if sudo:
-        command = 'sudo -S -- ' + command + '\n'
-    stdin, stdout, stderr = client.exec_command(command)
-    if sudo:
-        stdin.write(server_password + '\n')
-        stdin.flush()
+def server_execute_command(command, ss_client):
+    # client = server_ssh_connect()
+    stdin, stdout, stderr = ss_client.exec_command(command)
     exit_status = stdout.channel.recv_exit_status()  # Blocking call
     stdout.flush()
     stderr.flush()
-    client.close()
+    # client.close()
     return stdout.read().decode("utf8"), stderr.read().decode("utf8"), exit_status

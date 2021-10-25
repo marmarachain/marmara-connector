@@ -1131,8 +1131,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
     @pyqtSlot()
     def browse_bootstrap(self):
         home_path = str(pathlib.Path.home())
-        get_bootstrap_path = QtWidgets.QFileDialog.getOpenFileName(caption=self.tr('select bootstrap.tar.gz'),
-                                                                   directory=home_path, filter='*.tar.gz')
+        get_bootstrap_path = QtWidgets.QFileDialog.getOpenFileName(self, caption=self.tr('select bootstrap.tar.gz'),
+                                                                   directory=home_path, filter='.tar.gz')
         bootstrap_path = str(get_bootstrap_path).split(',')[0].replace('(', '').replace("'", '')
         if platform.system() == 'Darwin':
             destination_path = os.environ['HOME'] + '/Library/Application Support/Komodo/MCL'
