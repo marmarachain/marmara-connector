@@ -1162,6 +1162,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.bottom_info(output)
         if output == 'None':
             self.bottom_info(self.tr('Extracting blocks finished'))
+            logging.info('Extracting blocks finished')
 
     #     to do extract bootstrap on remote server
 

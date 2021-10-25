@@ -507,7 +507,7 @@ class RpcHandler(QtCore.QObject):
         proc = subprocess.Popen(self.command, cwd=pwd_home, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         retvalue = proc.poll()
         while True:
-            stdout = proc.stdout.readline().replace(b'\n', b'').decode()
+            stdout = proc.stdout.readline().replace(b'\n', b'').replace(b'\r', b'').decode()
             self.output.emit(str(stdout))
             logging.info(str(stdout))
             if not stdout:
