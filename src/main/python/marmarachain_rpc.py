@@ -97,13 +97,13 @@ def search_marmarad_path():  # will be added for windows search
         if not ssh_client:
             set_sshclient(remote_connection.server_ssh_connect())
         pwd_r = remote_connection.server_execute_command('pwd', ssh_client)
-        time.sleep(2)
-        logging.info('pwd remote' + pwd_r[0])
+        time.sleep(0.2)
         if not pwd_r[0]:
+            set_sshclient(remote_connection.server_ssh_connect())
             pwd_r = remote_connection.server_execute_command('pwd', ssh_client)
-            time.sleep(1)
+            time.sleep(0.1)
         pwd = str(pwd_r[0]).replace('\n', '').replace('\r', '')
-        logging.info('pwd_remote :' + pwd)
+        logging.info('pwd_remote= ' + pwd)
     search_list_linux = ['ls ' + pwd, 'ls ' + pwd + '/marmara/src', 'ls ' + pwd + '/komodo/src']
     search_list_windows = ['PowerShell ls ' + pwd + '\marmara -name']
     if windows:
@@ -118,14 +118,13 @@ def check_path_linux(search_list):
     i = 0
     while True:
         search_path = search_list[i]
-        logging.info('search_path :' + search_path)
+        logging.info('search_path= ' + search_path)
         path = do_search_path(search_path)
-        # logging.debug(path)
         if not path[0] == ['']:
             if 'komodod' in path[0] and 'komodo-cli' in path[0]:
                 out_path = search_path
                 out_path = out_path.replace('ls ', '') + '/'
-                logging.info('out_path :' + out_path)
+                logging.info('out_path= ' + out_path)
                 break
             else:
                 i = i + 1
@@ -141,7 +140,7 @@ def check_path_windows(search_list):
     i = 0
     while True:
         search_path = search_list[i]
-        logging.info('search_path :' + search_path)
+        logging.info('search_path= ' + search_path)
         path = do_search_path(search_path)
         logging.info(path)
         if not path[0] == ['']:
@@ -149,7 +148,7 @@ def check_path_windows(search_list):
             if 'komodod' in out and 'komodo-cli' in out:
                 out_path = search_path.replace('` ', ' ')
                 out_path = out_path.replace('PowerShell ls ', '').replace(' -name', '') + '\\'
-                logging.info('out_path :' + out_path)
+                logging.info('out_path= ' + out_path)
                 break
             else:
                 i = i + 1
@@ -296,7 +295,7 @@ class RpcHandler(QtCore.QObject):
             path_key = remote_connection.server_hostname
         marmarad_path = configuration.ApplicationConfig().get_value('PATHS', path_key)
         if marmarad_path:  # if these is path in configuration
-            self.output.emit('marmarad_path :' + marmarad_path)
+            self.output.emit('marmarad_path= ' + marmarad_path)
             if platform.system() == 'Windows':
                 ls_cmd = 'PowerShell ls ' + marmarad_path.replace(' ', '` ') + ' -name'
             else:
@@ -510,6 +509,7 @@ class RpcHandler(QtCore.QObject):
         while True:
             stdout = proc.stdout.readline().replace(b'\n', b'').decode()
             self.output.emit(str(stdout))
+            logging.info(str(stdout))
             if not stdout:
                 break
         self.output.emit(str(retvalue))

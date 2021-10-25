@@ -143,8 +143,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.activeloops_search_button.clicked.connect(self.search_active_loops)
         self.holderloops_search_button.clicked.connect(self.marmaraholderloops)
         self.activeloops_tableWidget.cellClicked.connect(self.activeloop_itemcontext)
-        self.transactions_tableWidget.cellClicked.connect(self.transferableloops_itemcontext)
-        # self.transferableloops_search_button.clicked.connect(self.marmaraholderloops)
+        self.transferableloops_tableWidget.cellClicked.connect(self.transferableloops_itemcontext)
         # ---- Loop Queries page --
         self.lq_pubkey_search_button.clicked.connect(self.search_any_pubkey_loops)
         self.lq_txid_search_button.clicked.connect(self.search_loop_txid)
@@ -474,9 +473,9 @@ class MarmaraMain(QMainWindow, GuiStyle):
         if output == 'get marmarad path':
             self.login_page_info(self.tr('Getting marmara chain path from config file'))
             logging.info('Getting marmara chain path from config file')
-        if str(output).split(' ')[0] == 'marmarad_path':
-            self.login_page_info(self.tr('marmara path from configuration file : ') + str(output).split(' ')[1])
-            logging.info('marmara path from configuration file : ' + str(output).split(' ')[1])
+        if str(output).split('=')[0] == 'marmarad_path':
+            self.login_page_info(self.tr('marmara path from configuration file = ') + str(output).split('=')[1])
+            logging.info('marmara path from configuration file = ' + str(output).split('=')[1])
         if output == 'verifiying path':
             self.login_page_info(self.tr('Verifiying the Chain location '))
             logging.info('Verifiying the Chain location ')
@@ -1132,7 +1131,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def browse_bootstrap(self):
         home_path = str(pathlib.Path.home())
         get_bootstrap_path = QtWidgets.QFileDialog.getOpenFileName(self, caption=self.tr('select bootstrap.tar.gz'),
-                                                                   directory=home_path, filter='.tar.gz')
+                                                                   directory=home_path, filter='*.tar.gz')
         bootstrap_path = str(get_bootstrap_path).split(',')[0].replace('(', '').replace("'", '')
         if platform.system() == 'Darwin':
             destination_path = os.environ['HOME'] + '/Library/Application Support/Komodo/MCL'
