@@ -327,29 +327,29 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.currentaddress_value.setText("")
         self.pubkey_status = False
         self.myCCActivatedAddress = None
-        self.addresses_tableWidget.clear()
-        self.addresses_privkey_tableWidget.clear()
-        self.transactions_tableWidget.clear()
-        self.loop_request_tableWidget.clear()
-        self.transferrequests_tableWidget.clear()
-        self.activeloops_tableWidget.clear()
-        self.transferableloops_tableWidget.clear()
-        self.addresses_tableWidget.setHorizontalHeaderLabels(['', self.tr('Amount'), self.tr('Address'),
-                                                              self.tr('Pubkey')])
-        self.addresses_privkey_tableWidget.setHorizontalHeaderLabels([self.tr('Address'), self.tr('See')])
-        self.transactions_tableWidget.setHorizontalHeaderLabels([self.tr('See on Explorer'), self.tr('Txid'),
-                                                                 self.tr('Amount'), self.tr('Date')])
-        self.loop_request_tableWidget.setHorizontalHeaderLabels([self.tr('Confirm'), self.tr('TxId'), self.tr('Amount'),
-                                                                 self.tr('Maturity'), self.tr('Receiver Pubkey'), ''])
-        self.transferrequests_tableWidget.setHorizontalHeaderLabels([self.tr('Confirm'), self.tr('TxId'),
-                                                                     self.tr('Amount'), self.tr('Maturity'),
-                                                                     self.tr('Receiver Pubkey'), ''])
-        self.activeloops_tableWidget.setHorizontalHeaderLabels([self.tr('Txid'), self.tr('Amount'),
-                                                                self.tr('Receiver Pubkey'), self.tr('Maturity'),
-                                                                self.tr('Create Date'), self.tr('')])
-        self.transferableloops_tableWidget.setHorizontalHeaderLabels([self.tr('Txid'), self.tr('Amount'),
-                                                                      self.tr('Receiver Pubkey'), self.tr('Maturity'),
-                                                                      self.tr('Create Date'), self.tr('')])
+        self.addresses_tableWidget.setRowCount(0)
+        self.addresses_privkey_tableWidget.setRowCount(0)
+        self.transactions_tableWidget.setRowCount(0)
+        self.loop_request_tableWidget.setRowCount(0)
+        self.transferrequests_tableWidget.setRowCount(0)
+        self.activeloops_tableWidget.setRowCount(0)
+        self.transferableloops_tableWidget.setRowCount(0)
+        # self.addresses_tableWidget.setHorizontalHeaderLabels(['', self.tr('Amount'), self.tr('Address'),
+        #                                                       self.tr('Pubkey')])
+        # self.addresses_privkey_tableWidget.setHorizontalHeaderLabels([self.tr('Address'), self.tr('See')])
+        # self.transactions_tableWidget.setHorizontalHeaderLabels([self.tr('See on Explorer'), self.tr('Txid'),
+        #                                                          self.tr('Amount'), self.tr('Date')])
+        # self.loop_request_tableWidget.setHorizontalHeaderLabels([self.tr('Confirm'), self.tr('TxId'), self.tr('Amount'),
+        #                                                          self.tr('Maturity'), self.tr('Receiver Pubkey'), ''])
+        # self.transferrequests_tableWidget.setHorizontalHeaderLabels([self.tr('Confirm'), self.tr('TxId'),
+        #                                                              self.tr('Amount'), self.tr('Maturity'),
+        #                                                              self.tr('Receiver Pubkey'), ''])
+        # self.activeloops_tableWidget.setHorizontalHeaderLabels([self.tr('Txid'), self.tr('Amount'),
+        #                                                         self.tr('Receiver Pubkey'), self.tr('Maturity'),
+        #                                                         self.tr('Create Date'), self.tr('')])
+        # self.transferableloops_tableWidget.setHorizontalHeaderLabels([self.tr('Txid'), self.tr('Amount'),
+        #                                                               self.tr('Issuer Pubkey'), self.tr('Maturity'),
+        #                                                               self.tr('Create Date'), self.tr('')])
         self.host_selection()
 
     def local_selection(self):
