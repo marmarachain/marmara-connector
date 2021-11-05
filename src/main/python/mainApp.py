@@ -40,6 +40,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.login_stackedWidget.setCurrentIndex(0)
         self.home_button.setVisible(False)
         self.chain_status = False
+        self.chain_synced = False
         self.pubkey_status = False
         self.center_ui()
         self.read_lang_setting()
@@ -102,6 +103,12 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.download_blocks_button.setToolTip(self.tr("Download Blocks bootstrap"))
         self.download_blocks_button.clicked.connect(self.download_blocks)
         self.refresh_walletaddresses_button.clicked.connect(self.getaddresses)
+        self.check_fork_button.clicked.connect(self.check_fork)
+        self.check_fork_button.setHidden(True)
+        self.update_chain_button.clicked.connect(self.update_chain_latest)
+        self.latest_chain_version = None
+        self.chain_versiyon_tag = None
+        self.update_chain_textBrowser.setHidden(True)
         # - add address page ----
         self.newaddress_button.clicked.connect(self.get_new_address)
         self.address_seed_button.clicked.connect(self.convertpassphrase)
@@ -131,8 +138,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.looprequest_search_button.clicked.connect(self.search_marmarareceivelist)
         self.request_date_checkBox.clicked.connect(self.set_request_date_state)
         self.request_dateTimeEdit.setDateTime(QDateTime.currentDateTime())
-        self.loop_request_tableWidget.setColumnHidden(5, True)
-        self.transferrequests_tableWidget.setColumnHidden(5, True)
+
         # -----Make credit Loop Request
         self.contactpubkey_makeloop_comboBox.currentTextChanged.connect(self.get_selected_contact_loop_pubkey)
         self.contactpubkey_transferrequest_comboBox.currentTextChanged.connect(self.get_selected_contact_transfer_pubkey)
@@ -165,6 +171,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
         # Market Page
         self.exchange_market_request_button.clicked.connect(self.get_mcl_exchange_market)
         self.exchange_market_request_button.setToolTip(self.tr("can be refreshed once in 20 seconds"))
+        self.mcl_amount_lineEdit.editingFinished.connect(self.calculate_usd_price)
+        self.usd_amount_lineEdit.editingFinished.connect(self.calculate_mcl_price)
 
         # Thread setup
         self.thread_marmarad_path = QThread()
@@ -200,6 +208,9 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.thread_api_exchange_request = QThread()
         self.thread_api_stats_request = QThread()
         self.thread_marmarholderloop = QThread()
+        self.thread_getblock = QThread()
+        self.thread_api_chain_update_check = QThread()
+        self.thread_chain_update = QThread()
 
         # Loading Gif
         # --------------------------------------------------
@@ -321,10 +332,11 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.home_button.setVisible(False)
         self.login_message_label.clear()
         self.chain_status = False
+        self.chain_synced = False
 
     def logout_host(self):
-        self.current_pubkey_value.setText("")
-        self.currentaddress_value.setText("")
+        self.current_pubkey_value.clear()
+        self.currentaddress_value.clear()
         self.pubkey_status = False
         self.myCCActivatedAddress = None
         self.addresses_tableWidget.setRowCount(0)
@@ -334,23 +346,32 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.transferrequests_tableWidget.setRowCount(0)
         self.activeloops_tableWidget.setRowCount(0)
         self.transferableloops_tableWidget.setRowCount(0)
-        # self.addresses_tableWidget.setHorizontalHeaderLabels(['', self.tr('Amount'), self.tr('Address'),
-        #                                                       self.tr('Pubkey')])
-        # self.addresses_privkey_tableWidget.setHorizontalHeaderLabels([self.tr('Address'), self.tr('See')])
-        # self.transactions_tableWidget.setHorizontalHeaderLabels([self.tr('See on Explorer'), self.tr('Txid'),
-        #                                                          self.tr('Amount'), self.tr('Date')])
-        # self.loop_request_tableWidget.setHorizontalHeaderLabels([self.tr('Confirm'), self.tr('TxId'), self.tr('Amount'),
-        #                                                          self.tr('Maturity'), self.tr('Receiver Pubkey'), ''])
-        # self.transferrequests_tableWidget.setHorizontalHeaderLabels([self.tr('Confirm'), self.tr('TxId'),
-        #                                                              self.tr('Amount'), self.tr('Maturity'),
-        #                                                              self.tr('Receiver Pubkey'), ''])
-        # self.activeloops_tableWidget.setHorizontalHeaderLabels([self.tr('Txid'), self.tr('Amount'),
-        #                                                         self.tr('Receiver Pubkey'), self.tr('Maturity'),
-        #                                                         self.tr('Create Date'), self.tr('')])
-        # self.transferableloops_tableWidget.setHorizontalHeaderLabels([self.tr('Txid'), self.tr('Amount'),
-        #                                                               self.tr('Issuer Pubkey'), self.tr('Maturity'),
-        #                                                               self.tr('Create Date'), self.tr('')])
+        self.chain_version_label.clear()
+        self.latest_chain_version = None
+        self.chain_versiyon_tag = None
+        self.clear_amount_values()
         self.host_selection()
+
+    def clear_amount_values(self):
+        self.normal_amount_value.clear()
+        self.activated_amount_value.clear()
+        self.wallet_total_normal_value.clear()
+        self.wallet_total_activated_value.clear()
+        self.totalnormal_value_label.clear()
+        self.totalactivated_value_label.clear()
+        self.total_issuer_loop_amount_label_value.clear()
+        self.activeloops_pending_number_value_label.clear()
+        self.closedloops_total_amount_value_label.clear()
+        self.closedloops_total_number_value_label.clear()
+        self.activeloops_total_amount_value_label.clear()
+        self.numberof_total_activeloops_label_value.clear()
+        self.my_stats_normal_label_value.clear()
+        self.my_stats_activated_label_value.clear()
+        self.my_stats_inloops_label_value.clear()
+        self.total_transferrable_loop_amount_label_value.clear()
+        self.numberof_transferrable_loop_amount_label_value.clear()
+        self.holderloops_closed_amount_label_value.clear()
+        self.holderloops_closed_number_label_value.clear()
 
     def local_selection(self):
         marmarachain_rpc.set_connection_local()
@@ -442,6 +463,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 thread.started.connect(worker.active_loops_details)
             if execute == 'holder_loop_detail':
                 thread.started.connect(worker.holder_loop_detail)
+            if execute == 'check_fork_api':
+                thread.started.connect(worker.check_fork_api)
             thread.start(priority=4)
             if worker_output and execute != 'get_addresses':
                 worker.command_out.connect(worker_output)
@@ -556,6 +579,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                                               self.tr('Wrong password input. Please install again'),
                                               'information', QMessageBox.Information)
 
+    @pyqtSlot(str)
     def bottom_info(self, info):
         self.bottom_message_label.setText(info)
 
@@ -564,7 +588,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             result = json.loads(err_msg)
             self.bottom_info(result['message'])
             logging.error(result['message'])
-        except:
+        except Exception:
             result = str(err_msg).splitlines()
             if str(err_msg).find('error message:') != -1:
                 index = result.index('error message:') + 1
@@ -588,6 +612,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.main_tab.setCurrentIndex(1)
         self.mcl_tab.setCurrentIndex(0)
         self.chain_stackedWidget.setCurrentIndex(0)
+        self.check_chain_update()
         logging.info('chain_status ' + str(self.chain_status))
         self.bottom_info(self.tr('chain_status ' + str(self.chain_status)))
         time.sleep(0.1)
@@ -624,6 +649,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             self.bottom_info(self.tr('chain ready'))
             result = json.loads(result_out[0])
             self.chain_status = True
+            self.check_fork_button.setHidden(False)
             self.chainstatus_button.setIcon(QIcon(self.icon_path + '/circle-active.png'))
             if result.get('version'):
                 self.set_getinfo_result(result)
@@ -641,6 +667,65 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 logging.info('Chain init completed.')
         elif result_out[1]:
             self.bottom_err_info(result_out[1])
+
+    def check_chain_update(self):
+        self.update_chain_button.setHidden(True)
+        self.worker_api_chain_update = marmarachain_rpc.ApiWorker()
+        self.worker_api_chain_update.moveToThread(self.thread_api_chain_update_check)
+        self.worker_api_chain_update.finished.connect(self.thread_api_chain_update_check.quit)
+        self.thread_api_chain_update_check.started.connect(self.worker_api_chain_update.mcl_update_check)
+        self.thread_api_chain_update_check.start()
+        self.worker_api_chain_update.out_str.connect(self.check_installed_mcl_version)
+        self.worker_api_chain_update.out_err.connect(self.check_chain_update_err)
+
+    @pyqtSlot(str)
+    def check_installed_mcl_version(self, out):
+        self.latest_chain_version = out
+        if marmarachain_rpc.marmara_path:
+            installed_chain_versiyon = self.get_installed_chain_version()
+            if out == installed_chain_versiyon:
+                self.update_chain_button.setHidden(True)
+            else:
+                self.update_chain_button.setHidden(False)
+        else:
+            self.update_chain_button.setHidden(False)
+
+    def get_installed_chain_version(self):
+        if marmarachain_rpc.is_local:
+            file = None
+            try:
+                file = open(marmarachain_rpc.marmara_path + 'version.info', "r")
+                self.chain_versiyon_tag = file.read().rstrip()
+                self.chain_version_label.setText('Marmara Chain ' + self.chain_versiyon_tag)
+                return self.chain_versiyon_tag
+            except IOError as error:
+                logging.error("Exception error while reading mcl version info file: " + str(error))
+                self.update_chain_button.setHidden(False)
+            finally:
+                if file:
+                    file.close()
+        else:
+            remote_file = None
+            try:
+                sftp_client = marmarachain_rpc.ssh_client.open_sftp()
+                remote_file = sftp_client.open(marmarachain_rpc.marmara_path + 'version.info', "r")
+                self.chain_versiyon_tag = remote_file.read().rstrip().decode()
+                self.chain_version_label.setText('Marmara Chain ' + self.chain_versiyon_tag)
+                return self.chain_versiyon_tag
+            except Exception as error:
+                logging.error("Exception error while reading mcl version info file: " + str(error))
+                self.update_chain_button.setHidden(False)
+            finally:
+                if remote_file:
+                    remote_file.close()
+
+
+    @pyqtSlot(str)
+    def check_chain_update_err(self, err):
+        print(err)
+        self.bottom_info(err)
+        self.update_chain_button.setHidden(False)
+        logging.error(err)
 
     # --------------------------------------
     # Stopping Chain
@@ -707,8 +792,10 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def set_getinfo_result(self, getinfo_result):
         if getinfo_result.get('synced'):
             self.chainsync_button.setIcon(QIcon(self.icon_path + '/circle-active.png'))
+            self.chain_synced = True
         elif not getinfo_result.get('synced'):
             self.chainsync_button.setIcon(QIcon(self.icon_path + '/circle-inactive.png'))
+            self.chain_synced = False
         if getinfo_result.get('pubkey'):
             self.pubkey_status = True
             self.current_pubkey_value.setText(str(getinfo_result['pubkey']))
@@ -856,13 +943,11 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.cpu_core_set_button.setVisible(False)
 
     def setgenerate(self, arg):
-
         self.worker_setgenerate = marmarachain_rpc.RpcHandler()
         method = cp.setgenerate
         params = arg
         self.worker_thread(self.thread_setgenerate, self.worker_setgenerate, method, params, self.setgenerate_result,
                            execute='setgenerate')
-
 
     @pyqtSlot(tuple)
     def setgenerate_result(self, result_out):
@@ -1116,8 +1201,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
         download_button.clicked.connect(blocksDialog.close)
         browse_button.clicked.connect(self.browse_bootstrap)
         browse_button.clicked.connect(blocksDialog.close)
-
-
         blocksDialog.exec_()
 
     @pyqtSlot()
@@ -1166,6 +1249,94 @@ class MarmaraMain(QMainWindow, GuiStyle):
 
     #     to do extract bootstrap on remote server
 
+    @pyqtSlot()
+    def check_fork(self):
+        block = self.currentblock_value_label.text()
+        self.worker_getblock = marmarachain_rpc.RpcHandler()
+        method = cp.getblock
+        params = [block]
+        self.worker_thread(self.thread_getblock, self.worker_getblock, method, params, self.out_getblock,
+                           execute='check_fork_api')
+
+    @pyqtSlot(tuple)
+    def out_getblock(self, result_out):
+        if result_out[2] == 0:
+            if type(result_out[1]) is list:
+                fork_message = ""
+                fork = False
+                index = 1
+                for r_list in result_out[1]:
+                    for item in result_out[0]:
+                        if item != r_list[result_out[0].index(item)]:
+                            fork = True
+                    if fork:
+                        if self.chain_synced:
+                            fork_message = fork_message + self.tr('Not Sync with explorer') + str(index) \
+                                           + self.tr(" possible fork \n")
+                        else:
+                            fork_message = fork_message + self.tr('Not Sync with explorer') + str(index) \
+                                           + self.tr(" first sync your node \n")
+                        fork = False
+                    else:
+                        fork_message = fork_message + self.tr('Sync with ') + 'explorer' + str(index) + ' \n'
+                    index = index + 1
+                self.custom_message(self.tr('Comparing Chain with Explorers'), self.tr('Checked for block height ') +
+                                    str(result_out[0][0]) + '\n' + '\n' + fork_message, 'information',
+                                    QMessageBox.Information)
+                logging.info(fork_message)
+            if result_out[1] == 'error':
+                self.bottom_err_info(self.tr('Could not get info from explorer. Check your network connection'))
+                logging.info('Could not get info from explorer. Check your network connection')
+        elif result_out[2] == 1:
+            self.bottom_err_info(result_out[1])
+
+    @pyqtSlot()
+    def update_chain_latest(self):
+        if not self.latest_chain_version:
+            self.check_chain_update()
+        if not self.chain_versiyon_tag and self.latest_chain_version:
+            installed_chain_versiyon = self.get_installed_chain_version()
+            if installed_chain_versiyon:
+               self.update_chain_dialogbox(self.tr('your chain version'), self.chain_versiyon_tag)
+            else:
+                self.update_chain_dialogbox(self.tr('Could not get your version'), "")
+
+        if self.latest_chain_version and self.chain_versiyon_tag:
+            self.update_chain_dialogbox(self.tr('your chain version'), self.chain_versiyon_tag)
+
+    def update_chain_dialogbox(self, message, version):
+        message_box = self.custom_message('Marmara Chain Update', message +
+                                          version + ' \n' + self.tr('Latest available version ')
+                                          + self.latest_chain_version, 'question', QMessageBox.Question)
+        if message_box == QMessageBox.Yes:
+            self.start_animation()
+            self.worker_update_chain = marmarachain_rpc.Autoinstall()
+            self.worker_update_chain.moveToThread(self.thread_chain_update)  # putting in to thread
+            self.worker_update_chain.finished.connect(self.thread_chain_update.quit)
+            self.worker_update_chain.finished.connect(self.stop_animation)  # when finished close animation
+            self.thread_chain_update.started.connect(self.worker_update_chain.update_chain)
+            self.thread_chain_update.start()
+            self.update_chain_textBrowser.setHidden(False)
+            self.worker_update_chain.out_text.connect(self.update_chain_progress)
+            self.worker_update_chain.finished.connect(self.update_chain_finished)
+
+        if message_box == QMessageBox.No:
+            self.bottom_info(self.tr('Update closed'))
+            logging.info('Update closed')
+
+
+    @pyqtSlot(str)
+    def update_chain_progress(self, out):
+        self.update_chain_textBrowser.append(out)
+
+    @pyqtSlot()
+    def update_chain_finished(self):
+        if self.get_installed_chain_version():
+            self.custom_message(self.tr('Update finished'), self.tr('marmara chain ') + self.get_installed_chain_version() + self.tr(' update finished. Restart your chain'), 'information', QMessageBox.Information)
+            self.update_chain_textBrowser.setHidden(True)
+            self.check_chain_update()
+        else:
+            self.custom_message(self.tr('Update Failed'), self.tr('Something went wrong update failed.'), 'information')
     # ------------------
     # Chain  --- wallet Address Add, import
     # -------------------
@@ -1898,6 +2069,17 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.activeloops_pending_number_value_label.setText(str(result.get('numpending')))
         self.closedloops_total_number_value_label.setText(str(result.get('numclosed')))
         self.numberof_total_activeloops_label_value.setText(str(result.get('n')))
+        my_total_normal = float(self.wallet_total_normal_value.text())
+        my_total_activated = float(self.activated_amount_value.text())
+        my_total_inloops = float(self.activeloops_total_amount_value_label.text())
+        self.stats_amount_in_activated_lineEdit.setText(self.activated_amount_value.text())
+        self.stats_amount_in_loops_lineEdit.setText(self.activeloops_total_amount_value_label.text())
+        my_total = my_total_normal + my_total_activated + my_total_inloops
+        self.my_stats_normal_label_value.setText(str(round((my_total_normal/my_total)*100, 2)))
+        self.my_stats_activated_label_value.setText(str(round((my_total_activated/my_total)*100, 2)))
+        self.my_stats_inloops_label_value.setText(str(round((my_total_inloops/my_total)*100, 2)))
+
+
 
     @pyqtSlot(tuple)
     def marmarinfo_amount_and_loops_result(self, result_out):
@@ -2395,29 +2577,60 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.thread_api_exchange_request.started.connect(self.mcl_exchange_worker.exchange_api_run)
         self.thread_api_exchange_request.start()
         self.mcl_exchange_worker.out_list.connect(self.set_mcl_exchange_market_result)
-        self.mcl_exchange_worker.out_err.connect(self.err_mcl_exchange_market_result)
+        # self.mcl_exchange_worker.out_err.connect(self.err_mcl_exchange_market_result)
 
     @pyqtSlot(list)
-    def set_mcl_exchange_market_result(self, out_json):
-        self.exchange_market_tableWidget.setRowCount(len(out_json))
-        for row in out_json:
-            row_number = out_json.index(row)
-            self.exchange_market_tableWidget.setItem(row_number, 0, QTableWidgetItem(str(row.get('exchange_name'))))
-            self.exchange_market_tableWidget.setItem(row_number, 1, QTableWidgetItem(str(row.get('pair'))))
-            self.exchange_market_tableWidget.setItem(row_number, 2, QTableWidgetItem(str(row.get('quotes').get('USD').get('price'))))
-            self.exchange_market_tableWidget.setItem(row_number, 3, QTableWidgetItem(str(row.get('quotes').get('USD').get('volume_24h'))))
-            self.exchange_market_tableWidget.setItem(row_number, 4, QTableWidgetItem(str(row.get('last_updated')).replace('T', ' ').replace('Z', '')))
-            self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
-            self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
-            self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
-            self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
-            self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
-            self.bottom_info(self.tr('fetched exchange values'))
+    def set_mcl_exchange_market_result(self, out_list):
+        out_json = out_list[0]
+        if type(out_json) is list:
+            self.exchange_market_tableWidget.setRowCount(len(out_json))
+            for row in out_json:
+                row_number = out_json.index(row)
+                self.exchange_market_tableWidget.setItem(row_number, 0, QTableWidgetItem(str(row.get('exchange_name'))))
+                self.exchange_market_tableWidget.setItem(row_number, 1, QTableWidgetItem(str(row.get('pair'))))
+                self.exchange_market_tableWidget.setItem(row_number, 2, QTableWidgetItem(str(row.get('quotes').get('USD').get('price'))))
+                self.exchange_market_tableWidget.setItem(row_number, 3, QTableWidgetItem(str(row.get('quotes').get('USD').get('volume_24h'))))
+                self.exchange_market_tableWidget.setItem(row_number, 4, QTableWidgetItem(str(row.get('last_updated')).replace('T', ' ').replace('Z', '')))
+                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
+                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
+                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
+                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
+                self.bottom_info(self.tr('fetched exchange values'))
+        if type(out_json) is str:
+            if out_json == 'error':
+                self.bottom_err_info(self.tr('Error in getting exchange values'))
+        if out_list[1]:
+            if type(out_list[1]) is dict:
+                self.ticker_price_label_value.setText(str(out_list[1].get('quotes').get('USD').get('price')))
+                self.ticker_volume_label_value.setText(str(out_list[1].get('quotes').get('USD').get('volume_24h')))
+                self.ticker_1hour_label_value.setText(str(out_list[1].get('quotes').get('USD').get('percent_change_1h')))
+                self.ticker_24hour_label_value.setText(str(out_list[1].get('quotes').get('USD').get('percent_change_24h')))
+                self.ticker_1week_label_value.setText(str(out_list[1].get('quotes').get('USD').get('percent_change_7d')))
+                self.ticker_1month_label_value.setText(str(out_list[1].get('quotes').get('USD').get('percent_change_30d')))
+                if self.ticker_price_label_value.text():
+                    self.mcl_amount_lineEdit.setEnabled(True)
+                    self.usd_amount_lineEdit.setEnabled(True)
+            if type(out_list[1]) is str:
+                if out_list[1] == 'error':
+                    self.bottom_err_info(self.tr('Error in getting exchange values'))
 
-    @pyqtSlot(str)
-    def err_mcl_exchange_market_result(self, err):
-        if err == 'error':
-            self.bottom_err_info(self.tr('Error in getting exchange values'))
+    @pyqtSlot()
+    def calculate_usd_price(self):
+        price = float(self.ticker_price_label_value.text())
+        calculation = float(self.mcl_amount_lineEdit.text()) * price
+        self.usd_amount_lineEdit.setText(str(calculation))
+
+    @pyqtSlot()
+    def calculate_mcl_price(self):
+        price = float(self.ticker_price_label_value.text())
+        calculation = float(self.usd_amount_lineEdit.text()) / price
+        self.mcl_amount_lineEdit.setText(str(calculation))
+
+    # @pyqtSlot(str)
+    # def err_mcl_exchange_market_result(self, err):
+    #     if err == 'error':
+    #         self.bottom_err_info(self.tr('Error in getting exchange values'))
 
     @pyqtSlot()
     def enable_market_request(self):

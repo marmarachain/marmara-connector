@@ -15,13 +15,15 @@ class GuiStyle(Ui_MainWindow):
         self.setupUi(self)  # loading from qtguidesign.py
         # setting params
         self.icon_path = icon_path
-        # stop button style
+        # Chain page
         self.stopchain_button.setIcon(QtGui.QIcon(self.icon_path + "/stop_icon.png"))
         self.stopchain_button.setIconSize(QtCore.QSize(32, 32))
         self.download_blocks_button.setIcon(qta.icon('mdi.cloud-download-outline'))
         self.download_blocks_button.setIconSize(QtCore.QSize(24, 24))
         self.refresh_walletaddresses_button.setIcon(qta.icon('mdi.refresh'))
         self.refresh_walletaddresses_button.setIconSize(QtCore.QSize(24, 24))
+        self.check_fork_button.setIcon(qta.icon('mdi.directions-fork'))
+        self.check_fork_button.setIconSize(QtCore.QSize(24, 24))
         # menubar
         self.actionQuit.setIcon(QtGui.QIcon(self.icon_path + '/exit_icon.png'))
         # mcl tab
@@ -96,6 +98,10 @@ class GuiStyle(Ui_MainWindow):
         # Market
         self.exchange_market_request_button.setIcon(qta.icon('mdi.arrow-bottom-left-thick'))
         self.exchange_market_request_button.setIconSize(QtCore.QSize(24, 24))
+        self.cal_exchange_icon_button.setIcon(QtGui.QIcon(self.icon_path + '/send_recive_icon.png'))
+        self.cal_exchange_icon_button.setIconSize(QtCore.QSize(24, 24))
+        self.cal_exchange_icon_button.setStyleSheet("border-color: black; border-radius: 10px")
+
 
 
 

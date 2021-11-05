@@ -8,7 +8,8 @@ app_release_url = 'https://github.com/marmarachain/marmara-connector/releases/'
 marmara_api_url = "https://api.github.com/repos/marmarachain/marmara/releases/latest"
 app_api_url = "https://api.github.com/repos/marmarachain/marmara-connector/releases/latest"
 
-coinpaprika = 'https://api.coinpaprika.com/v1/coins/mcl-marmara-credit-loops/markets'
+coinpaprika = ['https://api.coinpaprika.com/v1/coins/mcl-marmara-credit-loops/markets',
+               'https://api.coinpaprika.com/v1/tickers/mcl-marmara-credit-loops/']
 exchange_market_api_list = {'coinpaprika': coinpaprika}
 """
 requests to get the latest releases' tag_name of a git api url
@@ -70,9 +71,53 @@ def get_marmara_stats():
 
 
 def mcl_exchange_market(api_list_key):
-    try:
-        response = requests.get(exchange_market_api_list.get(api_list_key), timeout=5)
-        return response.json()
-    except Exception as e:
-        logging.error(e)
+    api_url_list = exchange_market_api_list.get(api_list_key)
+    response_list = []
+    for api_url in api_url_list:
+        try:
+            response = requests.get(api_url, timeout=5)
+            response_list.append(response.json())
+        except Exception as e:
+            logging.error(e)
+            response_list.append('error')
+    return response_list
+
+
+def get_block_hash(block):
+    api_url_list = ['https://explorer3.marmara.io/insight-api-komodo/blocks',
+                    'https://explorer2.marmara.io/insight-api-komodo/blocks',
+                    'https://explorer.marmara.io/insight-api-komodo/blocks']
+    result_lists = []
+    for api_url in api_url_list:
+        try:
+            response_e = requests.get(api_url, timeout=15)
+            response_json = response_e.json().get('blocks')
+            block_e = None
+            hash_e = None
+            previous_hash_e = None
+            for item in response_json:
+                index = response_json.index(item)
+                if int(item.get('height')) == int(block):
+                    block_e = item.get('height')
+                    hash_e = item.get('hash')
+                    previous_hash_e = response_json[index+1].get('hash')
+                    break
+            if block_e is None and hash_e is None and previous_hash_e is None:
+                block_e = response_json[0].get('height')
+                hash_e = response_json[0].get('hash')
+                previous_hash_e = response_json[1].get('hash')
+            result_list = []
+            if block_e:
+                result_list.append(block_e)
+            if hash_e:
+                result_list.append(hash_e)
+            if previous_hash_e:
+                result_list.append(previous_hash_e)
+        except Exception:
+            result_list = []
+        if result_list:
+            result_lists.append(result_list)
+    if result_lists:
+        return result_lists
+    else:
         return 'error'

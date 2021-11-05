@@ -587,6 +587,27 @@ class RpcHandler(QtCore.QObject):
             self.command_out.emit(result_err)
             self.finished.emit()
 
+    @pyqtSlot()
+    def check_fork_api(self):
+        getblock = handle_rpc(self.method, self.params)
+        if getblock[2] == 200 or getblock[2] == 0:
+            if getblock[0]:
+                result_json = json.loads(getblock[0])
+                block = result_json.get('height')
+                hash = result_json.get('hash')
+                previous_hash = result_json.get('previousblockhash')
+                # next_hash = result_json.get('nextblockhash')
+                result_list = [block, hash, previous_hash]
+                block_hash_api = api_request.get_block_hash(block)
+                result_out = result_list, block_hash_api, 0
+                self.command_out.emit(result_out)
+                self.finished.emit()
+        else:
+            result_err = None, getblock[1], 1
+            self.command_out.emit(result_err)
+            self.finished.emit()
+
+
 
 class Autoinstall(QtCore.QObject):
     out_text = pyqtSignal(str)
@@ -597,13 +618,14 @@ class Autoinstall(QtCore.QObject):
         super(Autoinstall, self).__init__()
         self.mcl_download_url = api_request.latest_marmara_download_url()
         self.mcl_linux_zipname = 'MCL-linux.zip'
+        self.mcl_win_zipname = 'MCL-win.zip'
         self.linux_command_list = ['sudo apt-get update', 'sudo apt-get install libgomp1 -y',
                                    'sudo wget ' + str(self.mcl_download_url) + '/' + self.mcl_linux_zipname +
                                    " -O " + self.mcl_linux_zipname, 'sudo apt-get install unzip -y',
                                    'unzip -o MCL-linux.zip', 'sudo chmod +x komodod komodo-cli fetch-params.sh',
                                    './fetch-params.sh']
 
-        self.mcl_win_zipname = 'MCL-win.zip'
+
         self.win_command_list = ['mkdir marmara',
                                  'curl -L ' + str(self.mcl_download_url) + '/' + self.mcl_win_zipname +
                                  " > " + self.mcl_win_zipname, 'PowerShell Expand-Archive .\MCL-win.zip . -Force',
@@ -732,11 +754,72 @@ class Autoinstall(QtCore.QObject):
         self.finished.emit()
         # update = subprocess.Popen
 
+    @pyqtSlot()
+    def update_chain(self):
+        if is_local:
+            self.local_chain_update()
+        if not is_local:
+            self.remote_chain_update()
+
+    def local_chain_update(self):
+        cmd_list = None
+        if platform.system() == 'Linux':
+            cmd_list = ['wget ' + str(self.mcl_download_url) + '/' + self.mcl_linux_zipname + " -O " +
+                        self.mcl_linux_zipname, 'unzip -o ' + self.mcl_linux_zipname]
+        if platform.system() == 'Windows':
+            cmd_list = [self.win_command_list[1], self.win_command_list[2]]
+        if cmd_list:
+            for cmd in cmd_list:
+                proc = subprocess.Popen(cmd, cwd=marmara_path, shell=True, stdin=subprocess.PIPE,
+                                        stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                while not proc.stdout.closed:
+                    out = proc.stdout.readline()
+                    try:
+                        out_d = out.decode().replace('\n', '')
+                    except Exception as e:
+                        out_d = e
+                    print(out_d)
+                    self.out_text.emit(out_d)
+                    if not out:
+                        proc.stdout.close()
+                exit_status = proc.poll()
+                logging.info('exit_status  ' + str(exit_status))
+                proc.terminate()
+            self.finished.emit()
+
+    def remote_chain_update(self):
+        cmd_list = ['curl -L ' + str(self.mcl_download_url) + '/' + self.mcl_linux_zipname + ' > ' + marmara_path +
+                    self.mcl_linux_zipname, 'unzip -o ' + marmara_path + self.mcl_linux_zipname + ' -d ' + marmara_path]
+        sshclient = remote_connection.server_ssh_connect()
+        for cmd in cmd_list:
+            print(cmd)
+            session = sshclient.get_transport().open_session()
+            session.set_combine_stderr(True)
+            session.get_pty()
+            session.exec_command(cmd)
+            stdout = session.makefile('rb', -1)
+            while not stdout.channel.exit_status_ready():
+                if stdout.channel.recv_ready():
+                    out = stdout.channel.recv(65535)
+                    try:
+                        out_d = out.decode()
+                    except Exception as e:
+                        out_d = e
+                    logging.info(str(out_d))
+                    self.out_text.emit(str(out_d))
+                else:
+                    time.sleep(1)
+            exit_status = session.recv_exit_status()  # Blocking call
+            logging.info(exit_status)
+            session.close()
+        self.finished.emit()
+        sshclient.close()
 
 class ApiWorker(QtCore.QObject):
     out_list = pyqtSignal(list)
     out_dict = pyqtSignal(dict)
     out_err = pyqtSignal(str)
+    out_str = pyqtSignal(str)
     finished = pyqtSignal()
 
     def __init__(self):
@@ -750,10 +833,7 @@ class ApiWorker(QtCore.QObject):
     @pyqtSlot()
     def exchange_api_run(self):
         mcl_market_values = api_request.mcl_exchange_market(self.api_key)
-        if type(mcl_market_values) is list:
-            self.out_list.emit(mcl_market_values)
-        if type(mcl_market_values) is str:
-            self.out_err.emit(mcl_market_values)
+        self.out_list.emit(mcl_market_values)
         self.finished.emit()
 
     @pyqtSlot()
@@ -764,3 +844,13 @@ class ApiWorker(QtCore.QObject):
         if type(mcl_stats) is str:
             self.out_err.emit(mcl_stats)
         self.finished.emit()
+
+    @pyqtSlot()
+    def mcl_update_check(self):
+        tag_name = api_request.git_request_tag(api_request.marmara_api_url)
+        if type(tag_name) is str:
+            self.out_str.emit(tag_name)
+            self.finished.emit()
+        else:
+            self.out_err.emit('Connection Error')
+            self.finished.emit()

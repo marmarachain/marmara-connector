@@ -34,3 +34,4 @@ marmaraholderloops = 'marmaraholderloops'  # firstheight + lastheight + minamoun
 getaddresstxids = 'getaddresstxids'  # '{"addresses": ["address"], "start": 799712,  "end": 799734}'
 marmaralistactivatedaddresses = 'marmaralistactivatedaddresses'
 gettransaction = 'gettransaction'  # + txid
+getblock = 'getblock'  # + block
