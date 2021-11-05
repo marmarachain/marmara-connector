@@ -39,9 +39,9 @@ def server_start_chain(command):
     return client
 
 
-def server_execute_command(command, ss_client):
+def server_execute_command(command, ssh_client):
     # client = server_ssh_connect()
-    stdin, stdout, stderr = ss_client.exec_command(command)
+    stdin, stdout, stderr = ssh_client.exec_command(command)
     exit_status = stdout.channel.recv_exit_status()  # Blocking call
     stdout.flush()
     stderr.flush()
