@@ -1619,7 +1619,7 @@
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>3</number>
           </property>
           <property name="iconSize">
            <size>
@@ -3436,7 +3436,7 @@
                <enum>QTabWidget::Rounded</enum>
               </property>
               <property name="currentIndex">
-               <number>0</number>
+               <number>2</number>
               </property>
               <widget class="QWidget" name="looprequests_tab">
                <attribute name="title">
@@ -4772,7 +4772,7 @@
                          <item>
                           <widget class="QLabel" name="my_stats_activated_label">
                            <property name="text">
-                            <string> Activated %</string>
+                            <string>Activated %</string>
                            </property>
                           </widget>
                          </item>
@@ -4795,7 +4795,7 @@
                          <item>
                           <widget class="QLabel" name="my_stats_inloops_label">
                            <property name="text">
-                            <string> InLoops %</string>
+                            <string>InLoops %</string>
                            </property>
                           </widget>
                          </item>
