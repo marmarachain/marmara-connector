@@ -172,10 +172,10 @@ class MarmaraMain(QMainWindow, GuiStyle):
         # Market Page
         self.exchange_market_request_button.clicked.connect(self.get_mcl_exchange_market)
         self.exchange_market_request_button.setToolTip(self.tr("can be refreshed once in 20 seconds"))
-        self.regex_amount = QRegExp('[1-90_].+')
-        self.amount_validator = QRegExpValidator(self.regex_amount)
-        self.mcl_amount_lineEdit.setValidator(self.amount_validator)
-        self.usd_amount_lineEdit.setValidator(self.amount_validator)
+        # self.regex_amount = QRegExp('[1-90_].+')
+        # self.amount_validator = QRegExpValidator(self.regex_amount)
+        # self.mcl_amount_lineEdit.setValidator(self.amount_validator)
+        # self.usd_amount_lineEdit.setValidator(self.amount_validator)
         self.mcl_amount_lineEdit.editingFinished.connect(self.calculate_usd_price)
         self.usd_amount_lineEdit.editingFinished.connect(self.calculate_mcl_price)
 
