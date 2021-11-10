@@ -10,7 +10,7 @@ import qrcode
 from datetime import datetime, timedelta
 from qr_code_gen import Image
 from PyQt5 import QtWidgets, QtCore, QtChart
-from PyQt5.QtGui import QIcon, QRegExpValidator, QFont, QPainter, QDoubleValidator
+from PyQt5.QtGui import QIcon, QRegExpValidator, QFont, QPainter
 from PyQt5.QtChart import QChart, QChartView, QPieSeries
 from PyQt5.QtCore import QThread, pyqtSlot, QDateTime, QSize, Qt, QTranslator, QRegExp
 from PyQt5.QtWidgets import QMainWindow, QPushButton, QTableWidgetItem, QMessageBox, QDesktopWidget, QHeaderView, \
@@ -141,8 +141,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
 
         # -----Make credit Loop Request
         self.contactpubkey_makeloop_comboBox.currentTextChanged.connect(self.get_selected_contact_loop_pubkey)
-        self.contactpubkey_transferrequest_comboBox.currentTextChanged.connect(
-            self.get_selected_contact_transfer_pubkey)
+        self.contactpubkey_transferrequest_comboBox.currentTextChanged.connect(self.get_selected_contact_transfer_pubkey)
         self.make_credit_loop_matures_dateTimeEdit.setMinimumDateTime(QDateTime.currentDateTime())
         self.send_loop_request_button.clicked.connect(self.marmarareceive)
         self.send_transfer_request_button.clicked.connect(self.marmararecieve_transfer)
@@ -172,10 +171,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
         # Market Page
         self.exchange_market_request_button.clicked.connect(self.get_mcl_exchange_market)
         self.exchange_market_request_button.setToolTip(self.tr("can be refreshed once in 20 seconds"))
-        # self.regex_amount = QRegExp('[1-90_].+')
-        # self.amount_validator = QRegExpValidator(self.regex_amount)
-        # self.mcl_amount_lineEdit.setValidator(self.amount_validator)
-        # self.usd_amount_lineEdit.setValidator(self.amount_validator)
         self.mcl_amount_lineEdit.editingFinished.connect(self.calculate_usd_price)
         self.usd_amount_lineEdit.editingFinished.connect(self.calculate_mcl_price)
 
@@ -245,7 +240,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 message_box = self.custom_message(self.tr('No Update Available'),
                                                   self.tr('Current App version is ') + base_version,
                                                   'information', QMessageBox.Information)
-
     def read_lang_setting(self):
         language = configuration.ApplicationConfig().get_value('USER', 'lang')
         if language:
@@ -253,7 +247,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
             for item in entries:
                 if item.strip('.qm') == language:
                     self.change_lang(language)
-
     @pyqtSlot()
     def show_languages(self):
 
@@ -404,13 +397,14 @@ class MarmaraMain(QMainWindow, GuiStyle):
 
     def open_debug_console(self):
         QMessageBox.information(self,
-                                self.tr("Debug Console"),
-                                self.tr("Under development"))
+                          self.tr("Debug Console"),
+                          self.tr("Under development"))
 
     @pyqtSlot()
     def open_log_file(self):
         text_path = configuration.log_file_path
         webbrowser.open_new(text_path)
+
 
     @pyqtSlot(int)
     def mcl_tab_changed(self, index):
@@ -725,6 +719,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 if remote_file:
                     remote_file.close()
 
+
     @pyqtSlot(str)
     def check_chain_update_err(self, err):
         print(err)
@@ -780,8 +775,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.worker_getinfo = marmarachain_rpc.RpcHandler()  # worker setting
         method = cp.getinfo  # setting command
         params = []
-        self.worker_thread(self.thread_getinfo, self.worker_getinfo, method, params,
-                           self.getinfo_result)  # putting in to thread
+        self.worker_thread(self.thread_getinfo, self.worker_getinfo, method, params, self.getinfo_result)  # putting in to thread
 
     @pyqtSlot(tuple)
     def getinfo_result(self, result_out):
@@ -1278,10 +1272,10 @@ class MarmaraMain(QMainWindow, GuiStyle):
                     if fork:
                         if self.chain_synced:
                             fork_message = fork_message + self.tr('Not Sync with explorer') + str(index) \
-                                           + self.tr(" possible fork") + '\n'
+                                           + self.tr(" possible fork \n")
                         else:
                             fork_message = fork_message + self.tr('Not Sync with explorer') + str(index) \
-                                           + self.tr(" first sync your node") + '\n'
+                                           + self.tr(" first sync your node \n")
                         fork = False
                     else:
                         fork_message = fork_message + self.tr('Sync with ') + 'explorer' + str(index) + ' \n'
@@ -1303,7 +1297,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         if not self.chain_versiyon_tag and self.latest_chain_version:
             installed_chain_versiyon = self.get_installed_chain_version()
             if installed_chain_versiyon:
-                self.update_chain_dialogbox(self.tr('your chain version'), self.chain_versiyon_tag)
+               self.update_chain_dialogbox(self.tr('your chain version'), self.chain_versiyon_tag)
             else:
                 self.update_chain_dialogbox(self.tr('Could not get your version'), "")
 
@@ -1315,39 +1309,21 @@ class MarmaraMain(QMainWindow, GuiStyle):
                                           version + ' \n' + self.tr('Latest available version ')
                                           + self.latest_chain_version, 'question', QMessageBox.Question)
         if message_box == QMessageBox.Yes:
-            if self.chain_status:
-                stop_message = self.custom_message(self.tr('Stop chain'),
-                                                   self.tr('Marmara chain is running. stop the chain then update'),
-                                                   'question', QMessageBox.Question)
-                if stop_message == QMessageBox.Yes:
-                    self.chain_updater()
-                if stop_message == QMessageBox.No:
-                    self.bottom_info(self.tr('Update closed'))
-                    logging.info('Update closed')
-            else:
-                self.chain_updater()
+            self.start_animation()
+            self.worker_update_chain = marmarachain_rpc.Autoinstall()
+            self.worker_update_chain.moveToThread(self.thread_chain_update)  # putting in to thread
+            self.worker_update_chain.finished.connect(self.thread_chain_update.quit)
+            self.worker_update_chain.finished.connect(self.stop_animation)  # when finished close animation
+            self.thread_chain_update.started.connect(self.worker_update_chain.update_chain)
+            self.thread_chain_update.start()
+            self.update_chain_textBrowser.setHidden(False)
+            self.worker_update_chain.out_text.connect(self.update_chain_progress)
+            self.worker_update_chain.finished.connect(self.update_chain_finished)
+
         if message_box == QMessageBox.No:
             self.bottom_info(self.tr('Update closed'))
             logging.info('Update closed')
 
-    def chain_updater(self):
-        stopping = False
-        self.start_animation()
-        if self.chain_status:
-            stopping = True
-            stop_chain_thread = self.stop_chain_thread()
-        self.worker_update_chain = marmarachain_rpc.Autoinstall()
-        self.worker_update_chain.moveToThread(self.thread_chain_update)  # putting in to thread
-        self.worker_update_chain.finished.connect(self.thread_chain_update.quit)
-        self.worker_update_chain.finished.connect(self.stop_animation)  # when finished close animation
-        self.thread_chain_update.started.connect(self.worker_update_chain.update_chain)
-        if stopping:
-            stop_chain_thread.finished.connect(self.thread_chain_update.start)
-        if not stopping:
-            self.thread_chain_update.start()
-        self.update_chain_textBrowser.setHidden(False)
-        self.worker_update_chain.out_text.connect(self.update_chain_progress)
-        self.worker_update_chain.finished.connect(self.update_chain_finished)
 
     @pyqtSlot(str)
     def update_chain_progress(self, out):
@@ -1356,14 +1332,11 @@ class MarmaraMain(QMainWindow, GuiStyle):
     @pyqtSlot()
     def update_chain_finished(self):
         if self.get_installed_chain_version():
-            self.custom_message(self.tr('Update finished'),
-                                self.tr('marmara chain ') + self.get_installed_chain_version() + self.tr(
-                                    ' update finished.'), 'information', QMessageBox.Information)
+            self.custom_message(self.tr('Update finished'), self.tr('marmara chain ') + self.get_installed_chain_version() + self.tr(' update finished. Restart your chain'), 'information', QMessageBox.Information)
             self.update_chain_textBrowser.setHidden(True)
             self.check_chain_update()
         else:
             self.custom_message(self.tr('Update Failed'), self.tr('Something went wrong update failed.'), 'information')
-
     # ------------------
     # Chain  --- wallet Address Add, import
     # -------------------
@@ -1414,7 +1387,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             method = cp.convertpassphrase
             params = [seed]
             self.worker_thread(self.thread_convertpassphrase, self.worker_convert_passphrase, method, params,
-                               self.convertpassphrase_result)
+                              self.convertpassphrase_result)
 
     @pyqtSlot(tuple)
     def convertpassphrase_result(self, result_out):
@@ -1424,10 +1397,10 @@ class MarmaraMain(QMainWindow, GuiStyle):
             message_box = self.custom_message(self.tr('Creating an Address'),
                                               self.tr("An address has been created with details below. Do you want to "
                                                       "import this address to the wallet?") +
-                                              self.tr("<br><b>Seed = </b><br>") + result['agamapassphrase'] +
-                                              self.tr("<br><b>Private Key = </b><br>") + wif +
-                                              self.tr("<br><b>Address = </b><br>") + result['address'] +
-                                              self.tr("<br><b>Pubkey = </b><br>") + result['pubkey'],
+                                                      self.tr("<br><b>Seed = </b><br>") + result['agamapassphrase'] +
+                                                      self.tr("<br><b>Private Key = </b><br>") + wif +
+                                                      self.tr("<br><b>Address = </b><br>") + result['address'] +
+                                                      self.tr("<br><b>Pubkey = </b><br>") + result['pubkey'],
                                               "question",
                                               QMessageBox.Question)
             if message_box == QMessageBox.Yes:
@@ -1570,6 +1543,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
             logging.warning(str(result_out[0]))
             logging.warning(str(result_out[1]))
             logging.warning(str(result_out[2]))
+
+
 
     @pyqtSlot()
     def marmaralock_amount(self):
@@ -1747,14 +1722,10 @@ class MarmaraMain(QMainWindow, GuiStyle):
                     self.transactions_tableWidget.setItem(row_number, 1, QTableWidgetItem(str(txid[0])))
                     self.transactions_tableWidget.setItem(row_number, 2, QTableWidgetItem(str(txid[1])))
                     self.transactions_tableWidget.setItem(row_number, 3, QTableWidgetItem(str(txid_date)))
-                    self.transactions_tableWidget.horizontalHeader().setSectionResizeMode(0,
-                                                                                          QHeaderView.ResizeToContents)
-                    self.transactions_tableWidget.horizontalHeader().setSectionResizeMode(1,
-                                                                                          QHeaderView.ResizeToContents)
-                    self.transactions_tableWidget.horizontalHeader().setSectionResizeMode(2,
-                                                                                          QHeaderView.ResizeToContents)
-                    self.transactions_tableWidget.horizontalHeader().setSectionResizeMode(3,
-                                                                                          QHeaderView.ResizeToContents)
+                    self.transactions_tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+                    self.transactions_tableWidget.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
+                    self.transactions_tableWidget.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
+                    self.transactions_tableWidget.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
                     btn_explorer.clicked.connect(self.open_in_explorer)
         if result_out[1] == 1:
             self.bottom_err_info(result_out[1])
@@ -1935,8 +1906,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 message_box = self.custom_message(self.tr('Create Credit Loop'),
                                                   self.tr(
                                                       "You are about to create credit loop with given details below:") +
-                                                  "<br><b>Tx ID = </b>" + result.get('requesttxid') +
-                                                  "<br><b>Pubkey = </b>" + result.get('receiverpk'), "question",
+                                                      "<br><b>Tx ID = </b>" + result.get('requesttxid') +
+                                                      "<br><b>Pubkey = </b>" + result.get('receiverpk'), "question",
                                                   QMessageBox.Question)
                 if message_box == QMessageBox.Yes:
                     self.sendrawtransaction(result.get('hex'))
@@ -2077,6 +2048,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             self.bottom_info('pubkey not set!')
             self.clear_search_active_loops_result()
 
+
     @pyqtSlot(tuple)
     def loops_details_result(self, result_out):
         if result_out[2] == 0:
@@ -2103,9 +2075,11 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.stats_amount_in_activated_lineEdit.setText(self.activated_amount_value.text())
         self.stats_amount_in_loops_lineEdit.setText(self.activeloops_total_amount_value_label.text())
         my_total = my_total_normal + my_total_activated + my_total_inloops
-        self.my_stats_normal_label_value.setText(str(round((my_total_normal / my_total) * 100, 2)))
-        self.my_stats_activated_label_value.setText(str(round((my_total_activated / my_total) * 100, 2)))
-        self.my_stats_inloops_label_value.setText(str(round((my_total_inloops / my_total) * 100, 2)))
+        self.my_stats_normal_label_value.setText(str(round((my_total_normal/my_total)*100, 2)))
+        self.my_stats_activated_label_value.setText(str(round((my_total_activated/my_total)*100, 2)))
+        self.my_stats_inloops_label_value.setText(str(round((my_total_inloops/my_total)*100, 2)))
+
+
 
     @pyqtSlot(tuple)
     def marmarinfo_amount_and_loops_result(self, result_out):
@@ -2161,6 +2135,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             self.bottom_info('pubkey not set!')
             self.clear_search_active_loops_result()
 
+
     @pyqtSlot(tuple)
     def marmaraholderloops_result(self, result_out):
         if result_out[2] == 0:
@@ -2185,7 +2160,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                     item = self.change_block_to_date(item)
                 self.transferableloops_tableWidget.setItem(row_number, column_no, QTableWidgetItem(str(item)))
                 self.transferableloops_tableWidget.horizontalHeader().setSectionResizeMode(column_no,
-                                                                                           QHeaderView.ResizeToContents)
+                                                                                     QHeaderView.ResizeToContents)
 
     @pyqtSlot(int, int)
     def activeloop_itemcontext(self, row, column):
@@ -2198,7 +2173,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
         item = self.transferableloops_tableWidget.item(row, column).text()
         QtWidgets.QApplication.clipboard().setText(item)
         self.bottom_info(self.tr("Copied ") + str(item))
-
     # -------------------------------------------------------------------
     # Credit Loop Queries functions
     # --------------------------------------------------------------------
@@ -2487,7 +2461,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
                                               self.tr('You did not select a contact from table.'),
                                               "information",
                                               QMessageBox.Information)
-
     # ------------------------
     # Stats Page
     # ------------------------
@@ -2516,11 +2489,10 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.stats_calculate_pushButton.setEnabled(True)
         self.stats_amount_in_activated_lineEdit.setEnabled(True)
         self.stats_amount_in_loops_lineEdit.setEnabled(True)
-        total_supply = int(mcl_stats_info.get('TotalNormals')) + int(mcl_stats_info.get('TotalActivated')) + int(
-            mcl_stats_info.get('TotalLockedInLoops'))
-        total_normal_percentage = (int(mcl_stats_info.get('TotalNormals')) * 100) / total_supply
-        total_activated_percentage = (int(mcl_stats_info.get('TotalActivated')) * 100) / total_supply
-        total_inloops_percentage = (int(mcl_stats_info.get('TotalLockedInLoops')) * 100) / total_supply
+        total_supply = int(mcl_stats_info.get('TotalNormals')) + int(mcl_stats_info.get('TotalActivated')) + int(mcl_stats_info.get('TotalLockedInLoops'))
+        total_normal_percentage = (int(mcl_stats_info.get('TotalNormals'))*100)/total_supply
+        total_activated_percentage = (int(mcl_stats_info.get('TotalActivated'))*100)/total_supply
+        total_inloops_percentage = (int(mcl_stats_info.get('TotalLockedInLoops'))*100)/total_supply
         total_normal_per = round(total_normal_percentage, 2)
         total_activated_per = round(total_activated_percentage, 2)
         total_inloops_per = round(total_inloops_percentage, 2)
@@ -2564,6 +2536,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
     def stat_refresh_enable(self):
         self.stats_refresh_pushButton.setEnabled(True)
 
+
     @pyqtSlot()
     def calculate_estimated_stake(self):
         total_activated = float(self.stats_activated_label_value.text())
@@ -2578,10 +2551,9 @@ class MarmaraMain(QMainWindow, GuiStyle):
         else:
             amount_inloops = 0
             self.stats_amount_in_loops_lineEdit.setText('0')
-        calculation = (((amount_activated / total_activated) + (amount_inloops / total_inloops) * 3) / 4) * 32400
+        calculation = (((amount_activated/total_activated) + (amount_inloops/total_inloops)*3)/4)*32400
         self.stats_estimated_staking_label_value.setText(str(calculation))
         # 30 * 60 * 24 * 0,75  = 32400
-
     # -----------------
     # Market Page
     # -----------------
@@ -2616,22 +2588,14 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 row_number = out_json.index(row)
                 self.exchange_market_tableWidget.setItem(row_number, 0, QTableWidgetItem(str(row.get('exchange_name'))))
                 self.exchange_market_tableWidget.setItem(row_number, 1, QTableWidgetItem(str(row.get('pair'))))
-                self.exchange_market_tableWidget.setItem(row_number, 2, QTableWidgetItem(
-                    str(row.get('quotes').get('USD').get('price'))))
-                self.exchange_market_tableWidget.setItem(row_number, 3, QTableWidgetItem(
-                    str(row.get('quotes').get('USD').get('volume_24h'))))
-                self.exchange_market_tableWidget.setItem(row_number, 4, QTableWidgetItem(
-                    str(row.get('last_updated')).replace('T', ' ').replace('Z', '')))
-                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(0,
-                                                                                         QHeaderView.ResizeToContents)
-                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(1,
-                                                                                         QHeaderView.ResizeToContents)
-                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(2,
-                                                                                         QHeaderView.ResizeToContents)
-                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(3,
-                                                                                         QHeaderView.ResizeToContents)
-                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(4,
-                                                                                         QHeaderView.ResizeToContents)
+                self.exchange_market_tableWidget.setItem(row_number, 2, QTableWidgetItem(str(row.get('quotes').get('USD').get('price'))))
+                self.exchange_market_tableWidget.setItem(row_number, 3, QTableWidgetItem(str(row.get('quotes').get('USD').get('volume_24h'))))
+                self.exchange_market_tableWidget.setItem(row_number, 4, QTableWidgetItem(str(row.get('last_updated')).replace('T', ' ').replace('Z', '')))
+                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
+                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
+                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
+                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
                 self.bottom_info(self.tr('fetched exchange values'))
         if type(out_json) is str:
             if out_json == 'error':
@@ -2640,14 +2604,10 @@ class MarmaraMain(QMainWindow, GuiStyle):
             if type(out_list[1]) is dict:
                 self.ticker_price_label_value.setText(str(out_list[1].get('quotes').get('USD').get('price')))
                 self.ticker_volume_label_value.setText(str(out_list[1].get('quotes').get('USD').get('volume_24h')))
-                self.ticker_1hour_label_value.setText(
-                    str(out_list[1].get('quotes').get('USD').get('percent_change_1h')))
-                self.ticker_24hour_label_value.setText(
-                    str(out_list[1].get('quotes').get('USD').get('percent_change_24h')))
-                self.ticker_1week_label_value.setText(
-                    str(out_list[1].get('quotes').get('USD').get('percent_change_7d')))
-                self.ticker_1month_label_value.setText(
-                    str(out_list[1].get('quotes').get('USD').get('percent_change_30d')))
+                self.ticker_1hour_label_value.setText(str(out_list[1].get('quotes').get('USD').get('percent_change_1h')))
+                self.ticker_24hour_label_value.setText(str(out_list[1].get('quotes').get('USD').get('percent_change_24h')))
+                self.ticker_1week_label_value.setText(str(out_list[1].get('quotes').get('USD').get('percent_change_7d')))
+                self.ticker_1month_label_value.setText(str(out_list[1].get('quotes').get('USD').get('percent_change_30d')))
                 if self.ticker_price_label_value.text():
                     self.mcl_amount_lineEdit.setEnabled(True)
                     self.usd_amount_lineEdit.setEnabled(True)
@@ -2675,7 +2635,6 @@ class MarmaraMain(QMainWindow, GuiStyle):
     @pyqtSlot()
     def enable_market_request(self):
         self.exchange_market_request_button.setEnabled(True)
-
     # -------------------------------------------------------------------
     # Remote Host adding , editing, deleting and  saving in conf file
     # --------------------------------------------------------------------
@@ -2699,6 +2658,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.edit_servername_lineEdit.setText(selected_server_info[0])
         self.edit_serverusername_lineEdit.setText(selected_server_info[1])
         self.edit_serverip_lineEdit.setText(selected_server_info[2])
+
 
     @pyqtSlot()
     def save_server_settings(self):

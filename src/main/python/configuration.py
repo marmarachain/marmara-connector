@@ -1,4 +1,5 @@
 import csv
+import os
 from appdirs import *
 from configparser import ConfigParser, Error
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
