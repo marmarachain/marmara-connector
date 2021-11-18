@@ -4,9 +4,7 @@ import platform
 import time
 import subprocess
 import pathlib
-import api_request
 import logging
-
 from PyQt5 import QtCore
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
 import remote_connection

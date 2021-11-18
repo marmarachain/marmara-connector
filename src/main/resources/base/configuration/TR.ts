@@ -1703,7 +1703,7 @@
     <message>
         <location filename="../../../python/mainApp.py" line="1289"/>
         <source>Checked for block height </source>
-        <translation>Zincir yüksekliği ile kontrol edildi</translation>
+        <translation>kontrol edildiği zincir yüksekliği </translation>
     </message>
     <message>
         <location filename="../../../python/mainApp.py" line="1294"/>

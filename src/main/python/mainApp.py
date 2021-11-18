@@ -10,7 +10,7 @@ import qrcode
 from datetime import datetime, timedelta
 from qr_code_gen import Image
 from PyQt5 import QtWidgets, QtCore, QtChart
-from PyQt5.QtGui import QIcon, QRegExpValidator, QFont, QPainter
+from PyQt5.QtGui import QIcon, QRegExpValidator, QFont, QPainter, QFontDatabase
 from PyQt5.QtChart import QChart, QChartView, QPieSeries
 from PyQt5.QtCore import QThread, pyqtSlot, QDateTime, QSize, Qt, QTranslator, QRegExp
 from PyQt5.QtWidgets import QMainWindow, QPushButton, QTableWidgetItem, QMessageBox, QDesktopWidget, QHeaderView, \
@@ -35,6 +35,11 @@ class MarmaraMain(QMainWindow, GuiStyle):
         #   Default Settings
         self.trans = QTranslator(self)
         # self.retranslateUi(self)
+        QFontDatabase.addApplicationFont(ApplicationContext().get_resource('fonts') + '/Roboto-Regular.ttf')
+        font = QFont('Roboto Regular')
+        self.centralwidget.setFont(font)
+        font.setPointSize(12)
+        self.menuBar.setFont(font)
         self.main_tab.setCurrentIndex(0)
         self.main_tab.tabBar().setVisible(False)
         self.login_stackedWidget.setCurrentIndex(0)
