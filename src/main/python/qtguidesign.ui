@@ -1811,9 +1811,6 @@
                     <property name="horizontalScrollMode">
                      <enum>QAbstractItemView::ScrollPerPixel</enum>
                     </property>
-                    <property name="gridStyle">
-                     <enum>Qt::SolidLine</enum>
-                    </property>
                     <property name="wordWrap">
                      <bool>true</bool>
                     </property>
@@ -2330,6 +2327,9 @@
                     </property>
                     <property name="sizeAdjustPolicy">
                      <enum>QAbstractScrollArea::AdjustToContents</enum>
+                    </property>
+                    <property name="alternatingRowColors">
+                     <bool>true</bool>
                     </property>
                     <property name="verticalScrollMode">
                      <enum>QAbstractItemView::ScrollPerPixel</enum>
@@ -3029,6 +3029,9 @@
               <property name="sizeAdjustPolicy">
                <enum>QAbstractScrollArea::AdjustToContents</enum>
               </property>
+              <property name="alternatingRowColors">
+               <bool>true</bool>
+              </property>
               <property name="verticalScrollMode">
                <enum>QAbstractItemView::ScrollPerPixel</enum>
               </property>
@@ -3040,6 +3043,9 @@
               </attribute>
               <attribute name="horizontalHeaderMinimumSectionSize">
                <number>60</number>
+              </attribute>
+              <attribute name="horizontalHeaderStretchLastSection">
+               <bool>false</bool>
               </attribute>
               <column>
                <property name="text">
@@ -3212,14 +3218,14 @@
             </item>
             <item row="1" column="1">
              <layout class="QGridLayout" name="send_receive_Layout">
-              <item row="0" column="2">
+              <item row="0" column="3">
                <widget class="QLabel" name="coinreceive_label">
                 <property name="text">
                  <string>Receive</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="0">
+              <item row="1" column="1">
                <widget class="QFrame" name="coinsend_frame">
                 <property name="frameShape">
                  <enum>QFrame::WinPanel</enum>
@@ -3290,14 +3296,14 @@
                 </layout>
                </widget>
               </item>
-              <item row="0" column="0">
+              <item row="0" column="1">
                <widget class="QLabel" name="coinsend_label">
                 <property name="text">
                  <string>Send </string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="2">
+              <item row="1" column="3">
                <widget class="QFrame" name="coinreceive_lframe">
                 <property name="minimumSize">
                  <size>
@@ -3334,7 +3340,7 @@
                 </layout>
                </widget>
               </item>
-              <item row="0" column="1" rowspan="2">
+              <item row="0" column="2" rowspan="2">
                <spacer name="horizontalSpacer_48">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
@@ -3347,8 +3353,21 @@
                 </property>
                </spacer>
               </item>
-              <item row="0" column="3" rowspan="2">
+              <item row="0" column="4" rowspan="2">
                <spacer name="horizontalSpacer_49">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="0" column="0" rowspan="2">
+               <spacer name="horizontalSpacer_78">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
@@ -3436,7 +3455,7 @@
                <enum>QTabWidget::Rounded</enum>
               </property>
               <property name="currentIndex">
-               <number>2</number>
+               <number>1</number>
               </property>
               <widget class="QWidget" name="looprequests_tab">
                <attribute name="title">
@@ -4331,6 +4350,9 @@
                     <attribute name="horizontalHeaderDefaultSectionSize">
                      <number>150</number>
                     </attribute>
+                    <attribute name="horizontalHeaderStretchLastSection">
+                     <bool>false</bool>
+                    </attribute>
                     <column>
                      <property name="text">
                       <string>Txid</string>
@@ -4468,6 +4490,9 @@
                     </property>
                     <attribute name="horizontalHeaderDefaultSectionSize">
                      <number>150</number>
+                    </attribute>
+                    <attribute name="horizontalHeaderStretchLastSection">
+                     <bool>false</bool>
                     </attribute>
                     <column>
                      <property name="text">
@@ -5610,6 +5635,9 @@
               <property name="showGrid">
                <bool>true</bool>
               </property>
+              <attribute name="horizontalHeaderStretchLastSection">
+               <bool>false</bool>
+              </attribute>
               <column>
                <property name="text">
                 <string>Name</string>
@@ -6123,6 +6151,9 @@
                 <property name="sizeAdjustPolicy">
                  <enum>QAbstractScrollArea::AdjustToContents</enum>
                 </property>
+                <property name="alternatingRowColors">
+                 <bool>true</bool>
+                </property>
                 <property name="verticalScrollMode">
                  <enum>QAbstractItemView::ScrollPerPixel</enum>
                 </property>
@@ -6131,6 +6162,9 @@
                 </property>
                 <attribute name="horizontalHeaderDefaultSectionSize">
                  <number>120</number>
+                </attribute>
+                <attribute name="horizontalHeaderStretchLastSection">
+                 <bool>false</bool>
                 </attribute>
                 <column>
                  <property name="text">
@@ -6574,6 +6608,7 @@
      <string>Settings</string>
     </property>
     <addaction name="actionLanguage_Selection"/>
+    <addaction name="actionStyle_Selection"/>
     <addaction name="actionLogout"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
@@ -6646,6 +6681,11 @@
   <action name="actionCheck_for_Update">
    <property name="text">
     <string>Check for Update</string>
+   </property>
+  </action>
+  <action name="actionStyle_Selection">
+   <property name="text">
+    <string>Style Selection</string>
    </property>
   </action>
  </widget>
