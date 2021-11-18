@@ -20,7 +20,7 @@ import marmarachain_rpc
 import api_request
 import remote_connection
 import chain_args as cp
-from qtguistyle import GuiStyle
+import qtguistyle
 from Loading import LoadingScreen
 import qtawesome as qta
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
@@ -28,18 +28,14 @@ from fbs_runtime.application_context.PyQt5 import ApplicationContext
 logging.getLogger(__name__)
 
 
-class MarmaraMain(QMainWindow, GuiStyle):
+class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
 
     def __init__(self, parent=None):
         super(MarmaraMain, self).__init__(parent)
         #   Default Settings
         self.trans = QTranslator(self)
-        # self.retranslateUi(self)
-        QFontDatabase.addApplicationFont(ApplicationContext().get_resource('fonts') + '/Roboto-Regular.ttf')
-        font = QFont('Roboto Regular')
-        self.centralwidget.setFont(font)
-        font.setPointSize(12)
-        self.menuBar.setFont(font)
+        self.retranslateUi(self)
+        self.set_fonts()
         self.main_tab.setCurrentIndex(0)
         self.main_tab.tabBar().setVisible(False)
         self.login_stackedWidget.setCurrentIndex(0)
@@ -48,6 +44,8 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.chain_synced = False
         self.pubkey_status = False
         self.center_ui()
+        self.selected_stylesheet = self.get_style_settings()
+        self.setStyleSheet(self.selected_stylesheet)
         self.read_lang_setting()
         # paths settings
         # Menu Actions
@@ -58,6 +56,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         self.actionConsole.triggered.connect(self.open_debug_console)
         self.actionSee_Log_File.triggered.connect(self.open_log_file)
         self.actionCheck_for_Update.triggered.connect(self.check_app_version)
+        self.actionStyle_Selection.triggered.connect(self.show_style_themes)
         #   Login page Host Selection
         self.local_button.clicked.connect(self.local_selection)
         self.remote_button.clicked.connect(self.remote_selection)
@@ -176,8 +175,9 @@ class MarmaraMain(QMainWindow, GuiStyle):
         # Market Page
         self.exchange_market_request_button.clicked.connect(self.get_mcl_exchange_market)
         self.exchange_market_request_button.setToolTip(self.tr("can be refreshed once in 20 seconds"))
-        self.mcl_amount_lineEdit.editingFinished.connect(self.calculate_usd_price)
-        self.usd_amount_lineEdit.editingFinished.connect(self.calculate_mcl_price)
+        self.mcl_amount_lineEdit.textEdited.connect(self.calculate_usd_price)
+        self.usd_amount_lineEdit.textEdited.connect(self.calculate_mcl_price)
+        self.setStyleSheet(self.selected_stylesheet)
 
         # Thread setup
         self.thread_marmarad_path = QThread()
@@ -221,12 +221,56 @@ class MarmaraMain(QMainWindow, GuiStyle):
         # --------------------------------------------------
         self.loading = LoadingScreen()
         # --------------------------------------------------
+    def set_fonts(self):
+        QFontDatabase.addApplicationFont(ApplicationContext().get_resource('fonts') + '/Roboto-Regular.ttf')
+        font = QFont('Roboto Regular')
+        font.setPointSize(12)
+        self.centralwidget.setFont(font)
+        self.menuBar.setFont(font)
 
     def center_ui(self):
         qr = self.frameGeometry()
         center_point = QDesktopWidget().availableGeometry().center()
         qr.moveCenter(center_point)
         self.move(qr.topLeft())
+
+    def get_style_settings(self):
+        style_conf = configuration.ApplicationConfig().get_value('USER', 'style')
+        if style_conf:
+            return self.get_style(style_conf + '.qss')
+        else:
+            return self.get_style('light.qss')
+
+    def show_style_themes(self):
+        themeDialog = QDialog(self)
+        themeDialog.setWindowTitle(self.tr("Choose a style"))
+
+        apply_button = QDialogButtonBox(QDialogButtonBox.Apply)
+        self.style_comboBox = QtWidgets.QComboBox()
+
+        themeDialog.layout = QVBoxLayout()
+        themeDialog.layout.addWidget(self.style_comboBox)
+        themeDialog.layout.addWidget(apply_button)
+        themeDialog.setLayout(themeDialog.layout)
+
+        entries = os.listdir(qtguistyle.style_path)
+        entries.sort()
+
+        for item in entries:
+            self.style_comboBox.addItem(item.strip('.qss'))
+        apply_button.clicked.connect(self.get_theme_selection)
+        apply_button.clicked.connect(themeDialog.close)
+        themeDialog.exec_()
+
+    @pyqtSlot()
+    def get_theme_selection(self):
+        data = self.style_comboBox.currentText()
+        if data:
+            configuration.ApplicationConfig().set_key_value('USER', 'style', data)
+            self.selected_stylesheet = self.get_style(data + '.qss')
+            self.setStyleSheet(self.selected_stylesheet)
+            self.set_fonts()
+
 
     def check_app_version(self):
         base_version = configuration.version
@@ -245,6 +289,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
                 message_box = self.custom_message(self.tr('No Update Available'),
                                                   self.tr('Current App version is ') + base_version,
                                                   'information', QMessageBox.Information)
+
     def read_lang_setting(self):
         language = configuration.ApplicationConfig().get_value('USER', 'lang')
         if language:
@@ -252,6 +297,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             for item in entries:
                 if item.strip('.qm') == language:
                     self.change_lang(language)
+
     @pyqtSlot()
     def show_languages(self):
 
@@ -277,7 +323,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         apply_button.clicked.connect(languageDialog.close)
         languageDialog.exec_()
 
-    @QtCore.pyqtSlot()
+    @pyqtSlot()
     def get_lang_selection(self):
         data = self.lang_comboBox.currentText()
         if data:
@@ -302,6 +348,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
         """ custom_message(str, str, str: message_type = {information, question}, icon = {QMessageBox.Question,
         QMessageBox.Information, QMessageBox.Warning, QMessageBox.Critical}, str) """
         messagebox = QMessageBox()
+        messagebox.setStyleSheet(self.selected_stylesheet)
         messagebox.setWindowTitle(title)
         messagebox.setText(content)
         messagebox.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
