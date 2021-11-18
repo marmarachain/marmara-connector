@@ -6,7 +6,7 @@ from PyQt5.uic import loadUi
 import qtawesome as qta
 
 icon_path = ApplicationContext().get_resource("images")
-
+style_path = ApplicationContext().get_resource("styles")
 
 class GuiStyle(Ui_MainWindow):
 
@@ -102,8 +102,16 @@ class GuiStyle(Ui_MainWindow):
         self.cal_exchange_icon_button.setIconSize(QtCore.QSize(24, 24))
         self.cal_exchange_icon_button.setStyleSheet("border-color: black; border-radius: 10px")
 
+        # self.light_style = self.get_style('/light.qss')
+        #
+        # self.dark_style = self.get_style('/dark.qss')
 
 
+    def get_style(self, type):
+        file = open(style_path + '/' + type, "r")
+        style = file.read()
+        file.close()
+        return style
 
 class ToggleSwitch(QtWidgets.QPushButton):
     def __init__(self, parent=None):
