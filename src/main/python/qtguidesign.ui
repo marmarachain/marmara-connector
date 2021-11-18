@@ -1000,33 +1000,6 @@
               <enum>QFrame::Raised</enum>
              </property>
              <layout class="QGridLayout" name="gridLayout_11">
-              <item row="5" column="1">
-               <widget class="QLabel" name="difficulty_value_label">
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>12</pointsize>
-                 </font>
-                </property>
-                <property name="frameShape">
-                 <enum>QFrame::NoFrame</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Plain</enum>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="textInteractionFlags">
-                 <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-                </property>
-               </widget>
-              </item>
               <item row="1" column="0">
                <widget class="QLabel" name="chainsync_label">
                 <property name="font">
@@ -1076,27 +1049,6 @@
                 </property>
                </widget>
               </item>
-              <item row="8" column="1">
-               <widget class="QLabel" name="connections_value_label">
-                <property name="font">
-                 <font>
-                  <pointsize>12</pointsize>
-                 </font>
-                </property>
-                <property name="frameShape">
-                 <enum>QFrame::NoFrame</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Sunken</enum>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="textInteractionFlags">
-                 <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-                </property>
-               </widget>
-              </item>
               <item row="8" column="0">
                <widget class="QLabel" name="connections_label">
                 <property name="font">
@@ -1121,15 +1073,51 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="1">
-               <widget class="QPushButton" name="chainstatus_button">
+              <item row="6" column="1">
+               <widget class="QLabel" name="currentblock_value_label">
                 <property name="font">
                  <font>
-                  <pointsize>9</pointsize>
+                  <pointsize>12</pointsize>
                  </font>
+                </property>
+                <property name="frameShape">
+                 <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Plain</enum>
                 </property>
                 <property name="text">
                  <string/>
+                </property>
+                <property name="textInteractionFlags">
+                 <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
+               <widget class="QLabel" name="difficulty_value_label">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>12</pointsize>
+                 </font>
+                </property>
+                <property name="frameShape">
+                 <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Plain</enum>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="textInteractionFlags">
+                 <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
                 </property>
                </widget>
               </item>
@@ -1154,8 +1142,8 @@
                 </property>
                </widget>
               </item>
-              <item row="6" column="1">
-               <widget class="QLabel" name="currentblock_value_label">
+              <item row="8" column="1">
+               <widget class="QLabel" name="connections_value_label">
                 <property name="font">
                  <font>
                   <pointsize>12</pointsize>
@@ -1165,7 +1153,7 @@
                  <enum>QFrame::NoFrame</enum>
                 </property>
                 <property name="frameShadow">
-                 <enum>QFrame::Plain</enum>
+                 <enum>QFrame::Sunken</enum>
                 </property>
                 <property name="text">
                  <string/>
@@ -1175,15 +1163,23 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="1">
-               <widget class="QPushButton" name="chainsync_button">
-                <property name="font">
-                 <font>
-                  <pointsize>9</pointsize>
-                 </font>
-                </property>
+              <item row="0" column="1">
+               <widget class="QLabel" name="chainstatus_label_value">
                 <property name="text">
                  <string/>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLabel" name="chainsync_label_value">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
                 </property>
                </widget>
               </item>
@@ -1500,7 +1496,7 @@
               <enum>QFrame::Raised</enum>
              </property>
              <layout class="QGridLayout" name="gridLayout_24">
-              <item row="1" column="1" colspan="3">
+              <item row="1" column="1" colspan="4">
                <widget class="QPushButton" name="support_pushButton">
                 <property name="font">
                  <font>
@@ -1512,19 +1508,7 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="1">
-               <widget class="QPushButton" name="coffee_pushButton">
-                <property name="font">
-                 <font>
-                  <pointsize>11</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="2">
+              <item row="0" column="3">
                <widget class="QLabel" name="multiply_label">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -1542,7 +1526,7 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="3">
+              <item row="0" column="4">
                <widget class="QLineEdit" name="cup_lineEdit">
                 <property name="maximumSize">
                  <size>
@@ -1573,7 +1557,7 @@
                 </property>
                </spacer>
               </item>
-              <item row="0" column="4" rowspan="2">
+              <item row="0" column="5" rowspan="2">
                <spacer name="horizontalSpacer_57">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
@@ -1585,6 +1569,16 @@
                  </size>
                 </property>
                </spacer>
+              </item>
+              <item row="0" column="2">
+               <widget class="QLabel" name="coffee_icon_label">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignHCenter|Qt::AlignTop</set>
+                </property>
+               </widget>
               </item>
              </layout>
             </widget>
@@ -6726,8 +6720,6 @@
   <tabstop>staking_button</tabstop>
   <tabstop>mining_button</tabstop>
   <tabstop>copyaddress_button</tabstop>
-  <tabstop>chainsync_button</tabstop>
-  <tabstop>chainstatus_button</tabstop>
   <tabstop>addresspage_back_button</tabstop>
   <tabstop>creditloop_tabWidget</tabstop>
   <tabstop>request_date_checkBox</tabstop>
