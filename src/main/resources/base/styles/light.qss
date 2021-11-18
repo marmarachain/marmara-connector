@@ -1,0 +1,288 @@
+QToolTip
+{
+    border: 0.04em solid #eff0f1;
+    background-color: #eff0f1;
+    alternate-background-color: #eaebec;
+    color: #31363b;
+    padding: 0.1em;
+    opacity: 200;
+}
+
+QWidget
+{
+    color: #31363b;
+    background-color: #eff0f1;
+    selection-background-color: rgba(51, 164, 223, 0.5);
+    selection-color: #31363b;
+    background-clip: border;
+    border-image: none;
+}
+
+QWidget:disabled
+{
+    color: #b4b4b4;
+    background-color: #eff0f1;
+}
+
+QWidget:disabled:hover
+{
+    background-color: #eff0f1;
+}
+
+QCheckBox
+{
+    spacing: 0.23em;
+    outline: none;
+    color: #31363b;
+    margin-bottom: 0.09em;
+    opacity: 200;
+}
+
+QCheckBox::indicator
+{
+    width: 1em;
+    height: 1em;
+    background: none;
+}
+
+QCheckBox:focus
+{
+    border: none;
+}
+
+QCalendarWidget
+{
+  border: 1px solid #C9CDD0;
+  border-radius: 4px;
+}
+
+QCalendarWidget:disabled
+{
+  background-color: #FAFAFA;
+  color: #788D9C;
+}
+
+QMenuBar
+{
+    background-color: #eff0f1;
+    color: #31363b;
+}
+
+QMenuBar::item
+{
+    background: transparent;
+}
+
+QMenuBar::item:selected
+{
+    background: transparent;
+}
+
+QMenuBar::item:disabled
+{
+    color: #bab9b8;
+}
+
+QMenuBar::item:pressed
+{
+    background-color: rgba(51, 164, 223, 0.5);
+    color: #31363b;
+    margin-bottom: -0.09em;
+    padding-bottom: 0.09em;
+}
+
+QMenu
+{
+    color: #31363b;
+    margin: 0.09em;
+}
+
+QMenu::icon
+{
+    margin: 0.23em;
+}
+
+QMenu::item
+{
+    padding: 0.23em 1.5em 0.23em 1.3em;
+    border: 0.09em solid transparent;
+    background: transparent;
+}
+
+QMenu::item:selected
+{
+    color: #31363b;
+    background-color: rgba(51, 164, 223, 0.5);
+}
+
+QMenu::item:selected:disabled
+{
+    background-color: #eff0f1;
+}
+
+QMenu::item:disabled
+{
+    color: #bab9b8;
+}
+
+QMenu::indicator
+{
+    width: 1em;
+    height: 1em;
+}
+
+QTabWidget
+{
+    background-color: #eff0f1;
+    padding: 0.23em;
+    border-style: solid;
+    border: 0.04em solid #bab9b8;
+    border-radius: 0.09em;
+    color: #31363b;
+}
+
+QTabWidget:focus
+{
+    border: none;
+}
+
+QLineEdit
+{
+    background-color: #ffffff;
+    padding: 0.23em;
+    border-style: solid;
+    border: 0.04em solid #bab9b8;
+    border-radius: 0.09em;
+    color: #31363b;
+}
+
+QTableView
+{
+    gridline-color: #d9d9d8;
+    alternate-background-color: #e6e6e5;
+    background-color: #ffffff;
+}
+
+QProgressBar:horizontal, QProgressBar:vertical
+{
+    background-color: rgba(106, 105, 105, 0.7);
+    border: 0.9em solid #eff0f1;
+    border-radius: 0.13em;
+    padding: 0em;
+}
+
+QProgressBar:horizontal
+{
+    height: 0.2em;
+    min-width: 6em;
+    text-align: right;
+    padding-left: -0.03em;
+    padding-right: -0.03em;
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
+    margin-right: 1.3em;
+}
+
+QProgressBar:vertical
+{
+    width: 0.2em;
+    min-height: 6em;
+    text-align: bottom;
+    padding-top: -0.03em;
+    padding-bottom: -0.03em;
+    margin-left: 0.2em;
+    margin-right: 0.2em;
+    margin-bottom: 0.41em;
+}
+
+QProgressBar::chunk:horizontal, QProgressBar::chunk:vertical
+{
+    background-color: #3daef3;
+    border: 0.9em transparent;
+    border-radius: 0.08em;
+}
+
+QScrollArea, QScrollArea:focus, QScrollArea:hover
+{
+    border: 0em solid black;
+}
+
+QPlainTextEdit
+{
+    background-color: #eff0f1;
+    color: #31363b;
+    border-radius: 0.09em;
+    border: 0.04em solid #bab9b8;
+}
+
+QMainWindow::separator
+{
+    border: 0.09em transparent #bab9b8;
+    background: transparent;
+}
+
+QMenu::separator
+{
+    height: 0.09em;
+    background-color: #bab9b8;
+    padding-left: 0.2em;
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
+    margin-left: 0.41em;
+    margin-right: 0.41em;
+}
+
+QPushButton
+{
+    color: #31363b;
+    background-color: #eaebec;
+    padding: 0.23em;
+    outline: none;
+}
+
+QPushButton:disabled
+{
+    background-color: #eff0f1;
+    border-width: 0.04em;
+    border-color: #bab9b8;
+    border-style: solid;
+    padding-top: 0.23em;
+    padding-bottom: 0.23em;
+    padding-left: 1ex;
+    padding-right: 1ex;
+    border-radius: 0.04em;
+    color: #b4b4b4;
+}
+
+QPushButton:focus
+{
+    color: #31363b;
+}
+
+QPushButton:pressed
+{
+    background-color: #bedfec;
+    padding-top: -0.65em;
+    padding-bottom: -0.74em;
+    color: #31363b;
+}
+
+QComboBox
+{
+    border: 0.04em solid #bab9b8;
+    border-radius: 0.09em;
+    padding: 0.23em;
+    min-width: 2.5em;
+}
+
+QDialogButtonBox QPushButton
+{
+    min-height: 1.1em;
+    min-width: 5em;
+}
+
+QMessageBox QPushButton
+{
+    min-height: 1.1em;
+    min-width: 5em;
+}
