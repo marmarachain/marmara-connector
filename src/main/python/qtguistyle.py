@@ -1,5 +1,6 @@
 from PyQt5 import QtGui, QtCore, QtWidgets
 from PyQt5.QtCore import Qt, QRect
+from PyQt5.QtGui import QPixmap
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 from qtguidesign import Ui_MainWindow
 from PyQt5.uic import loadUi
@@ -38,12 +39,10 @@ class GuiStyle(Ui_MainWindow):
         # Side panel
         self.getinfo_refresh_button.setIcon(QtGui.QIcon(self.icon_path + '/refresh_icon.png'))
         self.getinfo_refresh_button.setIconSize(QtCore.QSize(32, 32))
-        self.chainstatus_button.setIcon(QtGui.QIcon(self.icon_path + '/circle-inactive.png'))
-        self.chainstatus_button.setStyleSheet("border-color: red;border-radius: 10px")
-        self.chainstatus_button.setIconSize(QtCore.QSize(24, 24))
-        self.chainsync_button.setIcon(QtGui.QIcon(self.icon_path + '/circle-inactive.png'))
-        self.chainsync_button.setStyleSheet("border-color: red;border-radius: 10px")
-        self.chainsync_button.setIconSize(QtCore.QSize(24, 24))
+        self.inactive_icon_pixmap = QPixmap(self.icon_path + '/circle-inactive.png')
+        self.active_icon_pixmap = QPixmap(self.icon_path + '/circle-active.png')
+        self.chainstatus_label_value.setPixmap(self.inactive_icon_pixmap)
+        self.chainsync_label_value.setPixmap(self.inactive_icon_pixmap)
         self.staking_button.setVisible(False)
         self.staking_button = ToggleSwitch(self.miningstatus_frame)
         self.staking_button.setObjectName("staking_button")
@@ -58,9 +57,8 @@ class GuiStyle(Ui_MainWindow):
         self.copypubkey_button.setIconSize(QtCore.QSize(24, 24))
         self.support_pushButton.setText('Support')
         self.support_pushButton.setEnabled(False)
-        self.coffee_pushButton.setIcon(qta.icon('fa.coffee'))
-        self.coffee_pushButton.setStyleSheet("border-color: brown; border-radius: 10px")
-        self.coffee_pushButton.setIconSize(QtCore.QSize(27, 27))
+        self.coffee_pixmap = QPixmap(self.icon_path + '/coffee-icon.png')
+        self.coffee_icon_label.setPixmap(self.coffee_pixmap)
         # Wallet page button icons
         self.lock_button.setIcon(QtGui.QIcon(qta.icon('fa5s.lock')))
         self.lock_button.setIconSize(QtCore.QSize(32, 32))

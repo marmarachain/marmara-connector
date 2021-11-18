@@ -655,7 +655,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             result = json.loads(result_out[0])
             self.chain_status = True
             self.check_fork_button.setHidden(False)
-            self.chainstatus_button.setIcon(QIcon(self.icon_path + '/circle-active.png'))
+            self.chainstatus_label_value.setPixmap(self.active_icon_pixmap)
             if result.get('version'):
                 self.set_getinfo_result(result)
                 self.bottom_info(self.tr('getting wallet addresses'))
@@ -767,7 +767,7 @@ class MarmaraMain(QMainWindow, GuiStyle):
             logging.info('Marmarachain stopped')
             self.chain_status = False
             self.myCCActivatedAddress = None
-            self.chainstatus_button.setIcon(QIcon(self.icon_path + '/circle-inactive.png'))
+            self.chainstatus_label_value.setPixmap(self.inactive_icon_pixmap)
             self.update_addresses_table()
         elif result_out[1]:
             self.bottom_err_info(result_out[1])
@@ -796,10 +796,10 @@ class MarmaraMain(QMainWindow, GuiStyle):
 
     def set_getinfo_result(self, getinfo_result):
         if getinfo_result.get('synced'):
-            self.chainsync_button.setIcon(QIcon(self.icon_path + '/circle-active.png'))
+            self.chainsync_label_value.setPixmap(self.active_icon_pixmap)
             self.chain_synced = True
         elif not getinfo_result.get('synced'):
-            self.chainsync_button.setIcon(QIcon(self.icon_path + '/circle-inactive.png'))
+            self.chainsync_label_value.setPixmap(self.inactive_icon_pixmap)
             self.chain_synced = False
         if getinfo_result.get('pubkey'):
             self.pubkey_status = True
