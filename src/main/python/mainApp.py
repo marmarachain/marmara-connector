@@ -35,7 +35,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         #   Default Settings
         self.trans = QTranslator(self)
         self.retranslateUi(self)
-        self.set_fonts()
+        # self.set_fonts()
         self.main_tab.setCurrentIndex(0)
         self.main_tab.tabBar().setVisible(False)
         self.login_stackedWidget.setCurrentIndex(0)
@@ -44,8 +44,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.chain_synced = False
         self.pubkey_status = False
         self.center_ui()
-        self.selected_stylesheet = self.get_style_settings()
-        self.setStyleSheet(self.selected_stylesheet)
+        self.get_initial_style_settings()
         self.read_lang_setting()
         # paths settings
         # Menu Actions
@@ -177,7 +176,6 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.exchange_market_request_button.setToolTip(self.tr("can be refreshed once in 20 seconds"))
         self.mcl_amount_lineEdit.textEdited.connect(self.calculate_usd_price)
         self.usd_amount_lineEdit.textEdited.connect(self.calculate_mcl_price)
-        self.setStyleSheet(self.selected_stylesheet)
 
         # Thread setup
         self.thread_marmarad_path = QThread()
@@ -234,12 +232,16 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         qr.moveCenter(center_point)
         self.move(qr.topLeft())
 
-    def get_style_settings(self):
+    def get_initial_style_settings(self):
         style_conf = configuration.ApplicationConfig().get_value('USER', 'style')
         if style_conf:
-            return self.get_style(style_conf + '.qss')
+            self.selected_stylesheet = self.get_style(style_conf + '.qss')
+            self.setStyleSheet(self.selected_stylesheet)
+            if style_conf == 'dark':
+                self.set_icon_color('#eff0f1')
         else:
-            return self.get_style('light.qss')
+            self.selected_stylesheet = self.get_style('light.qss')
+            self.setStyleSheet(self.selected_stylesheet)
 
     def show_style_themes(self):
         themeDialog = QDialog(self)
@@ -268,8 +270,11 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         if data:
             configuration.ApplicationConfig().set_key_value('USER', 'style', data)
             self.selected_stylesheet = self.get_style(data + '.qss')
+            if data == 'dark':
+                self.set_icon_color('white')
+            if data == 'light':
+                self.set_icon_color('black')
             self.setStyleSheet(self.selected_stylesheet)
-            self.set_fonts()
 
 
     def check_app_version(self):

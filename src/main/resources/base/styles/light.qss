@@ -1,13 +1,3 @@
-QToolTip
-{
-    border: 0.04em solid #eff0f1;
-    background-color: #eff0f1;
-    alternate-background-color: #eaebec;
-    color: #31363b;
-    padding: 0.1em;
-    opacity: 200;
-}
-
 QWidget
 {
     color: #31363b;
@@ -285,4 +275,14 @@ QMessageBox QPushButton
 {
     min-height: 1.1em;
     min-width: 5em;
+}
+
+QToolTip
+{
+    border: 0.04em solid #eff0f1;
+    background-color: #eff0f1;
+    alternate-background-color: #eaebec;
+    color: #31363b;
+    padding: 0.1em;
+    opacity: 200;
 }

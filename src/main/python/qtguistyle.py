@@ -9,6 +9,7 @@ import qtawesome as qta
 icon_path = ApplicationContext().get_resource("images")
 style_path = ApplicationContext().get_resource("styles")
 
+
 class GuiStyle(Ui_MainWindow):
 
     def __init__(self):
@@ -16,33 +17,14 @@ class GuiStyle(Ui_MainWindow):
         self.setupUi(self)  # loading from qtguidesign.py
         # setting params
         self.icon_path = icon_path
-        # Chain page
         self.stopchain_button.setIcon(QtGui.QIcon(self.icon_path + "/stop_icon.png"))
         self.stopchain_button.setIconSize(QtCore.QSize(32, 32))
-        self.download_blocks_button.setIcon(qta.icon('mdi.cloud-download-outline'))
-        self.download_blocks_button.setIconSize(QtCore.QSize(24, 24))
-        self.refresh_walletaddresses_button.setIcon(qta.icon('mdi.refresh'))
-        self.refresh_walletaddresses_button.setIconSize(QtCore.QSize(24, 24))
-        self.check_fork_button.setIcon(qta.icon('mdi.directions-fork'))
-        self.check_fork_button.setIconSize(QtCore.QSize(24, 24))
-        # menubar
-        self.actionQuit.setIcon(QtGui.QIcon(self.icon_path + '/exit_icon.png'))
-        # mcl tab
-        self.mcl_tab.setTabIcon(0, QtGui.QIcon(self.icon_path + '/chain_icon.png'))
-        self.mcl_tab.setTabIcon(1, QtGui.QIcon(self.icon_path + '/wallet_icon.png'))
-        self.mcl_tab.setTabIcon(2, QtGui.QIcon(self.icon_path + '/credit.png'))
-        self.mcl_tab.setTabIcon(3, QtGui.QIcon(qta.icon('fa5b.hornbill')))
-        self.mcl_tab.setTabIcon(4, QtGui.QIcon(self.icon_path + '/persons.png'))
-        self.mcl_tab.setTabIcon(5, QtGui.QIcon(qta.icon("mdi.chart-areaspline")))
-        self.mcl_tab.setTabIcon(6, QtGui.QIcon(qta.icon("mdi.bulletin-board")))
-        # self.mcl_tab.setIconSize(QtCore.QSize(24,24))
-        # Side panel
-        self.getinfo_refresh_button.setIcon(QtGui.QIcon(self.icon_path + '/refresh_icon.png'))
-        self.getinfo_refresh_button.setIconSize(QtCore.QSize(32, 32))
         self.inactive_icon_pixmap = QPixmap(self.icon_path + '/circle-inactive.png')
         self.active_icon_pixmap = QPixmap(self.icon_path + '/circle-active.png')
         self.chainstatus_label_value.setPixmap(self.inactive_icon_pixmap)
         self.chainsync_label_value.setPixmap(self.inactive_icon_pixmap)
+        self.coffee_pixmap = QPixmap(self.icon_path + '/Coffee-icon.png')
+        self.coffee_icon_label.setPixmap(self.coffee_pixmap)
         self.staking_button.setVisible(False)
         self.staking_button = ToggleSwitch(self.miningstatus_frame)
         self.staking_button.setObjectName("staking_button")
@@ -51,65 +33,85 @@ class GuiStyle(Ui_MainWindow):
         self.mining_button = ToggleSwitch(self.miningstatus_frame)
         self.mining_button.setObjectName("mining_button")
         self.gridLayout_17.addWidget(self.mining_button, 3, 1, 1, 1)
-        self.copyaddress_button.setIcon(QtGui.QIcon(self.icon_path + '/copy_wallet_icon_.png'))
-        self.copyaddress_button.setIconSize(QtCore.QSize(24, 24))
-        self.copypubkey_button.setIcon(QtGui.QIcon(self.icon_path + '/copy_key_icon.png'))
-        self.copypubkey_button.setIconSize(QtCore.QSize(24, 24))
-        self.support_pushButton.setText('Support')
-        self.support_pushButton.setEnabled(False)
-        self.coffee_pixmap = QPixmap(self.icon_path + '/coffee-icon.png')
-        self.coffee_icon_label.setPixmap(self.coffee_pixmap)
-        # Wallet page button icons
-        self.lock_button.setIcon(QtGui.QIcon(qta.icon('fa5s.lock')))
-        self.lock_button.setIconSize(QtCore.QSize(32, 32))
-        self.unlock_button.setIcon(QtGui.QIcon(qta.icon('fa5s.unlock-alt')))
-        self.unlock_button.setIconSize(QtCore.QSize(32, 32))
-        self.addressamount_refresh_button.setIcon(QtGui.QIcon(self.icon_path + '/refresh_icon.png'))
-        self.addressamount_refresh_button.setIconSize(QtCore.QSize(24, 24))
-        # Coin Send-Receive page
-        self.coinsend_button.setIcon(QtGui.QIcon(self.icon_path + '/send_coin_icon.png'))
-        self.coinsend_button.setIconSize(QtCore.QSize(24, 24))
-        self.transaction_search_button.setIcon(QtGui.QIcon(qta.icon('fa.search')))
-        self.transaction_search_button.setIconSize(QtCore.QSize(24, 24))
-        # Credit loops page
-        self.looprequest_search_button.setIcon(QtGui.QIcon(qta.icon('fa.search')))
-        self.looprequest_search_button.setIconSize(QtCore.QSize(24, 24))
-
-        self.lq_pubkey_search_button.setIcon(QtGui.QIcon(qta.icon('fa.search')))
-        self.lq_pubkey_search_button.setIconSize(QtCore.QSize(24, 24))
-
-        self.lq_txid_search_button.setIcon(QtGui.QIcon(qta.icon('fa.search')))
-        self.lq_txid_search_button.setIconSize(QtCore.QSize(24, 24))
-
-        self.activeloops_search_button.setIcon(QtGui.QIcon(qta.icon('fa.search')))
-        self.activeloops_search_button.setIconSize(QtCore.QSize(24, 24))
-        self.holderloops_search_button.setIcon(qta.icon('fa.search'))
-        self.holderloops_search_button.setIconSize(QtCore.QSize(24, 24))
-        # Stats
-        self.stats_refresh_pushButton.setIcon(qta.icon('mdi.refresh'))
-        self.stats_refresh_pushButton.setIconSize(QtCore.QSize(24, 24))
-        self.stats_calculate_pushButton.setIcon(qta.icon('mdi.calculator-variant-outline'))
-        self.stats_calculate_pushButton.setIconSize(QtCore.QSize(24, 24))
         self.stats_pie_frame.setContentsMargins(0, 0, 0, 0)
         self.stats_layout = QtWidgets.QHBoxLayout(self.stats_pie_frame)
         self.stats_layout.setContentsMargins(0, 0, 0, 0)
-        # Market
-        self.exchange_market_request_button.setIcon(qta.icon('mdi.arrow-bottom-left-thick'))
-        self.exchange_market_request_button.setIconSize(QtCore.QSize(24, 24))
         self.cal_exchange_icon_button.setIcon(QtGui.QIcon(self.icon_path + '/send_recive_icon.png'))
         self.cal_exchange_icon_button.setIconSize(QtCore.QSize(24, 24))
         self.cal_exchange_icon_button.setStyleSheet("border-color: black; border-radius: 10px")
+        self.set_icon_color('black')
 
-        # self.light_style = self.get_style('/light.qss')
-        #
-        # self.dark_style = self.get_style('/dark.qss')
+    def set_icon_color(self, color):
+        # Chain page
+        self.download_blocks_button.setIcon(qta.icon('mdi.cloud-download-outline', color=color))
+        self.download_blocks_button.setIconSize(QtCore.QSize(24, 24))
+        self.refresh_walletaddresses_button.setIcon(qta.icon('mdi.refresh', color=color))
+        self.refresh_walletaddresses_button.setIconSize(QtCore.QSize(24, 24))
+        self.check_fork_button.setIcon(qta.icon('mdi.directions-fork', color=color))
+        self.check_fork_button.setIconSize(QtCore.QSize(24, 24))
+        # menubar
+        self.actionQuit.setIcon(qta.icon('mdi.exit-to-app', color=color))
+        # mcl tab
+        self.mcl_tab.setTabIcon(0, qta.icon('fa.chain', color=color))
+        self.mcl_tab.setTabIcon(1, qta.icon('fa5s.wallet', color=color))
+        self.mcl_tab.setTabIcon(2, qta.icon('fa5s.coins', color=color))
+        self.mcl_tab.setTabIcon(3, qta.icon('fa5b.hornbill', color=color))
+        self.mcl_tab.setTabIcon(4, qta.icon('fa5.address-card', color=color))
+        self.mcl_tab.setTabIcon(5, qta.icon("mdi.chart-areaspline", color=color))
+        self.mcl_tab.setTabIcon(6, qta.icon("mdi.bulletin-board", color=color))
+        # self.mcl_tab.setIconSize(QtCore.QSize(24,24))
+        # Side panel
+        self.getinfo_refresh_button.setIcon(qta.icon('ei.refresh', color=color))
+        self.getinfo_refresh_button.setIconSize(QtCore.QSize(24, 24))
 
+        self.copyaddress_button.setIcon(qta.icon('fa5.copy', color=color))
+        self.copyaddress_button.setIconSize(QtCore.QSize(24, 24))
+        self.copypubkey_button.setIcon(qta.icon('mdi.key-change', color=color))
+        self.copypubkey_button.setIconSize(QtCore.QSize(24, 24))
+        self.support_pushButton.setText('Support')
+        self.support_pushButton.setEnabled(False)
 
-    def get_style(self, type):
-        file = open(style_path + '/' + type, "r")
+        # Wallet page button icons
+        self.lock_button.setIcon(QtGui.QIcon(qta.icon('fa5s.lock', color=color)))
+        self.lock_button.setIconSize(QtCore.QSize(32, 32))
+        self.unlock_button.setIcon(QtGui.QIcon(qta.icon('fa5s.unlock-alt', color=color)))
+        self.unlock_button.setIconSize(QtCore.QSize(32, 32))
+        self.addressamount_refresh_button.setIcon(qta.icon('mdi.refresh', color=color))
+        self.addressamount_refresh_button.setIconSize(QtCore.QSize(24, 24))
+        # Coin Send-Receive page
+        self.coinsend_button.setIcon(qta.icon('mdi.database-export', color=color))
+        self.coinsend_button.setIconSize(QtCore.QSize(24, 24))
+        self.transaction_search_button.setIcon(QtGui.QIcon(qta.icon('fa.search', color=color)))
+        self.transaction_search_button.setIconSize(QtCore.QSize(24, 24))
+        # Credit loops page
+        self.looprequest_search_button.setIcon(QtGui.QIcon(qta.icon('fa.search', color=color)))
+        self.looprequest_search_button.setIconSize(QtCore.QSize(24, 24))
+
+        self.lq_pubkey_search_button.setIcon(QtGui.QIcon(qta.icon('fa.search', color=color)))
+        self.lq_pubkey_search_button.setIconSize(QtCore.QSize(24, 24))
+
+        self.lq_txid_search_button.setIcon(QtGui.QIcon(qta.icon('fa.search', color=color)))
+        self.lq_txid_search_button.setIconSize(QtCore.QSize(24, 24))
+
+        self.activeloops_search_button.setIcon(QtGui.QIcon(qta.icon('fa.search', color=color)))
+        self.activeloops_search_button.setIconSize(QtCore.QSize(24, 24))
+        self.holderloops_search_button.setIcon(qta.icon('fa.search', color=color))
+        self.holderloops_search_button.setIconSize(QtCore.QSize(24, 24))
+        # Stats
+        self.stats_refresh_pushButton.setIcon(qta.icon('mdi.refresh', color=color))
+        self.stats_refresh_pushButton.setIconSize(QtCore.QSize(24, 24))
+        self.stats_calculate_pushButton.setIcon(qta.icon('mdi.calculator-variant-outline', color=color))
+        self.stats_calculate_pushButton.setIconSize(QtCore.QSize(24, 24))
+        # Market
+        self.exchange_market_request_button.setIcon(qta.icon('mdi.arrow-bottom-left-thick', color=color))
+        self.exchange_market_request_button.setIconSize(QtCore.QSize(24, 24))
+
+    def get_style(self, s_type):
+        file = open(style_path + '/' + s_type, "r")
         style = file.read()
         file.close()
         return style
+
 
 class ToggleSwitch(QtWidgets.QPushButton):
     def __init__(self, parent=None):

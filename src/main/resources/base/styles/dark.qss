@@ -1,13 +1,3 @@
-QToolTip
-{
-    border: 0.04em solid #eff0f1;
-    background-color: #31363b;
-    alternate-background-color: #31363b;
-    color: #eff0f1;
-    padding: 0.1em;
-    opacity: 200;
-}
-
 QWidget
 {
     color: #eff0f1;
@@ -137,12 +127,12 @@ QTabWidget:focus
 
 QLineEdit
 {
+    color: #eff0f1;
     background-color: #1d2023;
     padding: 0.23em;
     border-style: solid;
     border: 0.04em solid #76797c;
     border-radius: 0.09em;
-    color: #eff0f1;
 }
 
 QTableView
@@ -275,4 +265,14 @@ QMessageBox QPushButton
 {
     min-height: 1.1em;
     min-width: 5em;
+}
+
+QToolTip
+{
+    border: 0.04em solid #eff0f1;
+    background-color: #31363b;
+    alternate-background-color: #31363b;
+    color: #eff0f1;
+    padding: 0.1em;
+    opacity: 200;
 }
