@@ -59,7 +59,11 @@ QPushButton:disabled
 {
     color: #000000;
 }
-
+QPushButton:pressed
+{
+    background-color: #bedfec;
+    color: #31363b;
+}
 QDialogButtonBox QPushButton
 {
     min-height: 1.1em;
