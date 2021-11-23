@@ -25,110 +25,12 @@ QCheckBox::indicator
     height: 1em;
 }
 
-QCalendarWidget
-{
-  border: 1px solid #C9CDD0;
-  border-radius: 4px;
-}
-
-QCalendarWidget:disabled
-{
-  background-color: #FAFAFA;
-  color: #788D9C;
-}
-
-QMenuBar
-{
-    background-color: #eff0f1;
-    color: #31363b;
-}
-
-QMenuBar::item
-{
-    background: transparent;
-}
-
-QMenuBar::item:selected
-{
-    background: transparent;
-}
-
-QMenuBar::item:disabled
-{
-    color: #bab9b8;
-}
-
-QMenuBar::item:pressed
-{
-    background-color: rgba(51, 164, 223, 0.5);
-    color: #31363b;
-    margin-bottom: -0.09em;
-    padding-bottom: 0.09em;
-}
-
-QMenu
-{
-    color: #31363b;
-    margin: 0.09em;
-}
-
-QMenu::icon
-{
-    margin: 0.23em;
-}
-
-QMenu::item
-{
-    padding: 0.23em 1.5em 0.23em 1.3em;
-    border: 0.09em solid transparent;
-    background: transparent;
-}
-
-QMenu::item:selected
-{
-    color: #31363b;
-    background-color: rgba(51, 164, 223, 0.5);
-}
-
-QMenu::item:selected:disabled
-{
-    background-color: #eff0f1;
-}
-
-QMenu::item:disabled
-{
-    color: #bab9b8;
-}
-
-QMenu::indicator
-{
-    width: 1em;
-    height: 1em;
-}
-
-QTabWidget
-{
-    background-color: #eff0f1;
-    padding: 0.23em;
-    border-style: solid;
-    border: 0.04em solid #bab9b8;
-    border-radius: 0.09em;
-    color: #31363b;
-}
-
-QTabWidget:focus
-{
-    border: none;
-}
-
 QLineEdit
 {
     background-color: #ffffff;
     padding: 0.23em;
-    border-style: solid;
     border: 0.04em solid #bab9b8;
     border-radius: 0.09em;
-    color: #31363b;
 }
 
 QTableView
@@ -138,13 +40,7 @@ QTableView
     background-color: #ffffff;
 }
 
-
-QScrollArea, QScrollArea:focus, QScrollArea:hover
-{
-    border: 0em solid black;
-}
-
-QPlainTextEdit
+QTextBrowser
 {
     background-color: #eff0f1;
     color: #31363b;

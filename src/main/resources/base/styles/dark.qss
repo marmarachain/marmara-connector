@@ -41,7 +41,6 @@ QTableView
     background-color: #1d2023;
 }
 
-
 QTextBrowser
 {
     background-color: #1d2023;
@@ -61,7 +60,7 @@ QPushButton:disabled
 }
 QPushButton:pressed
 {
-    background-color: #bedfec;
+    background-color: #9ea6ae;
     color: #31363b;
 }
 QDialogButtonBox QPushButton
