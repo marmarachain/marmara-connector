@@ -1576,7 +1576,7 @@
                  <string/>
                 </property>
                 <property name="alignment">
-                 <set>Qt::AlignHCenter|Qt::AlignTop</set>
+                 <set>Qt::AlignCenter</set>
                 </property>
                </widget>
               </item>
@@ -1613,7 +1613,7 @@
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>3</number>
+           <number>1</number>
           </property>
           <property name="iconSize">
            <size>
@@ -2874,7 +2874,7 @@
             <item row="1" column="1">
              <widget class="QFrame" name="currentaddres_frame">
               <property name="frameShape">
-               <enum>QFrame::StyledPanel</enum>
+               <enum>QFrame::WinPanel</enum>
               </property>
               <property name="frameShadow">
                <enum>QFrame::Raised</enum>
@@ -6026,6 +6026,12 @@
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>160</width>
+                  <height>0</height>
+                 </size>
+                </property>
                 <property name="placeholderText">
                  <string>0</string>
                 </property>
@@ -6041,13 +6047,6 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="2">
-               <widget class="QPushButton" name="cal_exchange_icon_button">
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
               <item row="2" column="1">
                <widget class="QLineEdit" name="mcl_amount_lineEdit">
                 <property name="enabled">
@@ -6058,6 +6057,12 @@
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>160</width>
+                  <height>0</height>
+                 </size>
                 </property>
                 <property name="placeholderText">
                  <string>0</string>
@@ -6109,6 +6114,13 @@
                  </size>
                 </property>
                </spacer>
+              </item>
+              <item row="2" column="2">
+               <widget class="QLabel" name="exchange_label_icon">
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>

@@ -500,17 +500,34 @@ class RpcHandler(QtCore.QObject):
 
     @pyqtSlot()
     def extract_bootstrap(self):
+        cmd_list = []
+        if os.path.exists(self.method + '/blocks'):
+            if platform.system() == 'Linux':
+                cmd_list.append('rm -r ' + self.method + '/blocks')
+            if platform.system() == 'Win64' or platform.system() == 'Windows':
+                cmd_list.append('del /S ' + self.method + '/blocks/*')
+        if os.path.exists(self.method + '/chainstate'):
+            if platform.system() == 'Linux':
+                cmd_list.append('rm -r ' + self.method + '/chainstate')
+            if platform.system() == 'Win64' or platform.system() == 'Windows':
+                cmd_list.append('del /S ' + self.method + '/chainstate/*')
+        cmd_list.append(self.command)
+        self.do_execute_extract(cmd_list)
+
+    def do_execute_extract(self, cmd_list):
         pwd_home = str(pathlib.Path.home())
-        # print(self.command)
-        proc = subprocess.Popen(self.command, cwd=pwd_home, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        retvalue = proc.poll()
-        while True:
-            stdout = proc.stdout.readline().replace(b'\n', b'').replace(b'\r', b'').decode()
-            self.output.emit(str(stdout))
-            logging.info(str(stdout))
-            if not stdout:
-                break
-        self.output.emit(str(retvalue))
+        for cmd in cmd_list:
+            print(cmd)
+            proc = subprocess.Popen(cmd, cwd=pwd_home, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            retvalue = proc.poll()
+            while True:
+                stdout = proc.stdout.readline().replace(b'\n', b'').replace(b'\r', b'').decode()
+                self.output.emit(str(stdout))
+                print(stdout)
+                logging.info(str(stdout))
+                if not stdout:
+                    break
+            self.output.emit(str(retvalue))
         self.finished.emit()
 
     def get_loop_detail(self, txid, holder=False):
@@ -596,8 +613,8 @@ class RpcHandler(QtCore.QObject):
                 previous_hash = result_json.get('previousblockhash')
                 # next_hash = result_json.get('nextblockhash')
                 result_list = [block, hash, previous_hash]
-                block_hash_api = api_request.get_block_hash(block)
-                result_out = result_list, block_hash_api, 0
+                blocks_detail_api = api_request.get_blocks_details(block, hash)
+                result_out = result_list, blocks_detail_api, 0
                 self.command_out.emit(result_out)
                 self.finished.emit()
         else:

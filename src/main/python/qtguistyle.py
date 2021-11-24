@@ -1,6 +1,6 @@
 from PyQt5 import QtGui, QtCore, QtWidgets
 from PyQt5.QtCore import Qt, QRect
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QFontDatabase, QFont
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 from qtguidesign import Ui_MainWindow
 from PyQt5.uic import loadUi
@@ -17,8 +17,10 @@ class GuiStyle(Ui_MainWindow):
         self.setupUi(self)  # loading from qtguidesign.py
         # setting params
         self.icon_path = icon_path
+        # Chain page
         self.stopchain_button.setIcon(QtGui.QIcon(self.icon_path + "/stop_icon.png"))
         self.stopchain_button.setIconSize(QtCore.QSize(32, 32))
+        # Side panel
         self.inactive_icon_pixmap = QPixmap(self.icon_path + '/circle-inactive.png')
         self.active_icon_pixmap = QPixmap(self.icon_path + '/circle-active.png')
         self.chainstatus_label_value.setPixmap(self.inactive_icon_pixmap)
@@ -32,14 +34,17 @@ class GuiStyle(Ui_MainWindow):
         self.mining_button.setVisible(False)
         self.mining_button = ToggleSwitch(self.miningstatus_frame)
         self.mining_button.setObjectName("mining_button")
+        self.support_pushButton.setText('Support')
+        self.support_pushButton.setEnabled(False)
+        # Stats
         self.gridLayout_17.addWidget(self.mining_button, 3, 1, 1, 1)
         self.stats_pie_frame.setContentsMargins(0, 0, 0, 0)
         self.stats_layout = QtWidgets.QHBoxLayout(self.stats_pie_frame)
         self.stats_layout.setContentsMargins(0, 0, 0, 0)
-        self.cal_exchange_icon_button.setIcon(QtGui.QIcon(self.icon_path + '/send_recive_icon.png'))
-        self.cal_exchange_icon_button.setIconSize(QtCore.QSize(24, 24))
-        self.cal_exchange_icon_button.setStyleSheet("border-color: black; border-radius: 10px")
-        self.set_icon_color('black')
+        # Market
+        self.exchange_pixmap = QPixmap(self.icon_path + '/arrow-double-icon.png')
+        self.exchange_label_icon.setPixmap(self.exchange_pixmap)
+        # self.set_icon_color('black')
 
     def set_icon_color(self, color):
         # Chain page
@@ -63,14 +68,10 @@ class GuiStyle(Ui_MainWindow):
         # Side panel
         self.getinfo_refresh_button.setIcon(qta.icon('ei.refresh', color=color))
         self.getinfo_refresh_button.setIconSize(QtCore.QSize(24, 24))
-
         self.copyaddress_button.setIcon(qta.icon('fa5.copy', color=color))
         self.copyaddress_button.setIconSize(QtCore.QSize(24, 24))
         self.copypubkey_button.setIcon(qta.icon('mdi.key-change', color=color))
         self.copypubkey_button.setIconSize(QtCore.QSize(24, 24))
-        self.support_pushButton.setText('Support')
-        self.support_pushButton.setEnabled(False)
-
         # Wallet page button icons
         self.lock_button.setIcon(QtGui.QIcon(qta.icon('fa5s.lock', color=color)))
         self.lock_button.setIconSize(QtCore.QSize(32, 32))

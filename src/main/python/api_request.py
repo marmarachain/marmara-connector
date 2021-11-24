@@ -83,7 +83,7 @@ def mcl_exchange_market(api_list_key):
     return response_list
 
 
-def get_block_hash(block):
+def get_blocks_details(block, hash):
     api_url_list = ['https://explorer3.marmara.io/insight-api-komodo/blocks',
                     'https://explorer2.marmara.io/insight-api-komodo/blocks',
                     'https://explorer.marmara.io/insight-api-komodo/blocks']
@@ -103,9 +103,12 @@ def get_block_hash(block):
                     previous_hash_e = response_json[index+1].get('hash')
                     break
             if block_e is None and hash_e is None and previous_hash_e is None:
-                block_e = response_json[0].get('height')
-                hash_e = response_json[0].get('hash')
-                previous_hash_e = response_json[1].get('hash')
+                print('dsfdsadsada')
+                api_index = api_url_list.index(api_url)
+                hash_response = get_block_hash(hash, api_index)
+                block_e = block
+                hash_e = hash_response.get('hash')
+                previous_hash_e = hash_response.get('previousblockhash')
             result_list = []
             if block_e:
                 result_list.append(block_e)
@@ -121,3 +124,16 @@ def get_block_hash(block):
         return result_lists
     else:
         return 'error'
+
+
+def get_block_hash(hash, index):
+    api_url_list = ['https://explorer3.marmara.io/insight-api-komodo/block/' + hash,
+                    'https://explorer2.marmara.io/insight-api-komodo/block/' + hash,
+                    'https://explorer.marmara.io/insight-api-komodo/block/' + hash]
+    try:
+        response_e = requests.get(api_url_list[index], timeout=15)
+        return response_e.json()
+    except Exception:
+        return
+
+

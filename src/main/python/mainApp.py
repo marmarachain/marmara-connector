@@ -35,7 +35,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         #   Default Settings
         self.trans = QTranslator(self)
         self.retranslateUi(self)
-        # self.set_fonts()
+        self.set_fonts()
         self.main_tab.setCurrentIndex(0)
         self.main_tab.tabBar().setVisible(False)
         self.login_stackedWidget.setCurrentIndex(0)
@@ -44,6 +44,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.chain_synced = False
         self.pubkey_status = False
         self.center_ui()
+        self.selected_stylesheet = ""
         self.get_initial_style_settings()
         self.read_lang_setting()
         # paths settings
@@ -77,11 +78,11 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         # MCL tabwidget
         self.mcl_tab.currentChanged.connect(self.mcl_tab_changed)
         # side panel
-        QToolTip.setFont(QFont('SansSerif', 10))
+        # QToolTip.setFont(QFont('SansSerif', 10))
         self.copyaddress_button.clicked.connect(self.copyaddress_clipboard)
-        self.copyaddress_button.setToolTip(self.tr("Copy address"))
+        # self.copyaddress_button.setToolTip(self.tr("Copy address"))
         self.copypubkey_button.clicked.connect(self.copypubkey_clipboard)
-        self.copypubkey_button.setToolTip(self.tr("Copy pubkey"))
+        # self.copypubkey_button.setToolTip(self.tr("Copy pubkey"))
         self.staking_button.setChecked(False)
         self.staking_button.clicked.connect(self.toggle_staking)
         self.mining_button.setChecked(False)
@@ -92,7 +93,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.cpu_core_set_button.clicked.connect(self.setmining_cpu_core)
         self.mining_button.clicked.connect(self.toggle_mining)
         self.getinfo_refresh_button.clicked.connect(self.refresh_side_panel)
-        self.support_pushButton.setToolTip(self.tr("Gift Marmara Core Team cups of coffee"))
+        # self.support_pushButton.setToolTip(self.tr("Gift Marmara Core Team cups of coffee"))
         self.cup_lineEdit.setValidator(self.validator)
         self.cup_lineEdit.textChanged.connect(self.calculate_amount)
         self.cup_lineEdit.returnPressed.connect(self.send_coins_to_team)
@@ -103,7 +104,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.addresses_tableWidget.cellClicked.connect(self.addresstable_itemcontext)
         self.privkey_page_button.clicked.connect(self.see_privkey_page)
         self.hide_address_checkBox.clicked.connect(self.hide_addresses)
-        self.download_blocks_button.setToolTip(self.tr("Download Blocks bootstrap"))
+        # self.download_blocks_button.setToolTip(self.tr("Download Blocks bootstrap"))
         self.download_blocks_button.clicked.connect(self.download_blocks)
         self.refresh_walletaddresses_button.clicked.connect(self.getaddresses)
         self.check_fork_button.clicked.connect(self.check_fork)
@@ -166,14 +167,14 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.contact_editing_row = ""
         # Stats Page
         self.stats_refresh_pushButton.clicked.connect(self.get_marmara_stats)
-        self.stats_refresh_pushButton.setToolTip(self.tr("can be refreshed once in a minute"))
+        # self.stats_refresh_pushButton.setToolTip(self.tr("can be refreshed once in a minute"))
         self.stats_calculate_pushButton.setEnabled(False)
         self.stats_amount_in_activated_lineEdit.setEnabled(False)
         self.stats_amount_in_loops_lineEdit.setEnabled(False)
         self.stats_calculate_pushButton.clicked.connect(self.calculate_estimated_stake)
         # Market Page
         self.exchange_market_request_button.clicked.connect(self.get_mcl_exchange_market)
-        self.exchange_market_request_button.setToolTip(self.tr("can be refreshed once in 20 seconds"))
+        # self.exchange_market_request_button.setToolTip(self.tr("can be refreshed once in 20 seconds"))
         self.mcl_amount_lineEdit.textEdited.connect(self.calculate_usd_price)
         self.usd_amount_lineEdit.textEdited.connect(self.calculate_mcl_price)
 
@@ -219,12 +220,21 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         # --------------------------------------------------
         self.loading = LoadingScreen()
         # --------------------------------------------------
+
     def set_fonts(self):
-        QFontDatabase.addApplicationFont(ApplicationContext().get_resource('fonts') + '/Roboto-Regular.ttf')
-        font = QFont('Roboto Regular')
-        font.setPointSize(12)
-        self.centralwidget.setFont(font)
-        self.menuBar.setFont(font)
+        # QFontDatabase.addApplicationFont(ApplicationContext().get_resource('fonts') + '/Roboto-Regular.ttf')
+        font = QFont('Roboto')
+        # font.setPointSize(12)
+        # self.centralwidget.setFont(font)
+        # self.menuBar.setFont(font)
+        self.setFont(font)
+        QToolTip.setFont(QFont('SansSerif', 10))
+        self.copyaddress_button.setToolTip(self.tr("Copy address"))
+        self.copypubkey_button.setToolTip(self.tr("Copy pubkey"))
+        self.support_pushButton.setToolTip(self.tr("Gift Marmara Core Team cups of coffee"))
+        self.download_blocks_button.setToolTip(self.tr("Download Blocks bootstrap"))
+        self.stats_refresh_pushButton.setToolTip(self.tr("can be refreshed once in a minute"))
+        self.exchange_market_request_button.setToolTip(self.tr("can be refreshed once in 20 seconds"))
 
     def center_ui(self):
         qr = self.frameGeometry()
@@ -235,13 +245,9 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     def get_initial_style_settings(self):
         style_conf = configuration.ApplicationConfig().get_value('USER', 'style')
         if style_conf:
-            self.selected_stylesheet = self.get_style(style_conf + '.qss')
-            self.setStyleSheet(self.selected_stylesheet)
-            if style_conf == 'dark':
-                self.set_icon_color('#eff0f1')
+            self.set_stylesheet(style_conf)
         else:
-            self.selected_stylesheet = self.get_style('light.qss')
-            self.setStyleSheet(self.selected_stylesheet)
+            self.set_icon_color('black')
 
     def show_style_themes(self):
         themeDialog = QDialog(self)
@@ -257,9 +263,9 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
 
         entries = os.listdir(qtguistyle.style_path)
         entries.sort()
-
         for item in entries:
             self.style_comboBox.addItem(item.strip('.qss'))
+        self.style_comboBox.addItem('Normal')
         apply_button.clicked.connect(self.get_theme_selection)
         apply_button.clicked.connect(themeDialog.close)
         themeDialog.exec_()
@@ -269,31 +275,37 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         data = self.style_comboBox.currentText()
         if data:
             configuration.ApplicationConfig().set_key_value('USER', 'style', data)
+            self.set_stylesheet(data)
+
+    def set_stylesheet(self, data):
+        if data == 'Normal':
+            self.selected_stylesheet = ""
+            self.set_icon_color('black')
+        else:
             self.selected_stylesheet = self.get_style(data + '.qss')
-            if data == 'dark':
-                self.set_icon_color('white')
+            # if data == 'dark':
+            #     self.set_icon_color('#eff0f1')
             if data == 'light':
                 self.set_icon_color('black')
-            self.setStyleSheet(self.selected_stylesheet)
-
+            else:
+                self.set_icon_color('#eff0f1')
+        self.setStyleSheet(self.selected_stylesheet)
 
     def check_app_version(self):
         base_version = configuration.version
         latest_app_tag = api_request.git_request_tag(api_request.app_api_url)
         latest_app_version = api_request.latest_app_release_url()
         if latest_app_tag == 'Connection Error' or latest_app_version == 'Connection Error':
-            message_box = self.custom_message(self.tr('Connection Error'),
-                                              self.tr('Check your internet Connection '),
-                                              'information', QMessageBox.Information)
+            self.custom_message(self.tr('Connection Error'), self.tr('Check your internet Connection '), 'information',
+                                QMessageBox.Information)
         else:
             if base_version != latest_app_tag:
                 QMessageBox.information(self, self.tr('Software Update Available'),
                                         self.tr('A new update is available. <br>Follow the link ')
-                                        + "<a href='" + latest_app_version + "'" + self.tr(">here</a>"))
+                                        + "<a href='" + latest_app_version + "'>" + self.tr("here") + '</a>')
             else:
-                message_box = self.custom_message(self.tr('No Update Available'),
-                                                  self.tr('Current App version is ') + base_version,
-                                                  'information', QMessageBox.Information)
+                self.custom_message(self.tr('No Update Available'), self.tr('Current App version is ') + base_version,
+                                    'information', QMessageBox.Information)
 
     def read_lang_setting(self):
         language = configuration.ApplicationConfig().get_value('USER', 'lang')
@@ -1285,14 +1297,20 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
 
         if messagebox == QMessageBox.Yes:
             self.start_animation()
-            stopchain_thread = self.stop_chain_thread()
+            stopchain_thread = None
+            if self.chain_status:
+                stopchain_thread = self.stop_chain_thread()
             self.worker_extract_bootstrap = marmarachain_rpc.RpcHandler()  # worker setting
             self.worker_extract_bootstrap.set_command('tar -zvxf ' + bootstrap_path + ' -C ' + destination_path)
+            self.worker_extract_bootstrap.set_method(destination_path)
             self.worker_extract_bootstrap.moveToThread(self.thread_extract_bootstrap)  # putting in to thread
             self.worker_extract_bootstrap.finished.connect(self.thread_extract_bootstrap.quit)
             self.worker_extract_bootstrap.finished.connect(self.stop_animation)  # when finished close animation
             self.thread_extract_bootstrap.started.connect(self.worker_extract_bootstrap.extract_bootstrap)
-            stopchain_thread.finished.connect(self.thread_extract_bootstrap.start)
+            if stopchain_thread is None:
+                self.thread_extract_bootstrap.start()
+            else:
+                stopchain_thread.finished.connect(self.thread_extract_bootstrap.start)
             self.worker_extract_bootstrap.output.connect(self.extract_bootstrap_out)
         if messagebox == QMessageBox.No:
             self.bottom_info(self.tr('Bootstrap extracting cancelled'))
@@ -1320,32 +1338,35 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         if result_out[2] == 0:
             if type(result_out[1]) is list:
                 fork_message = ""
-                fork = False
+                forked = False
+                self.fork_count = 0
                 index = 1
                 for r_list in result_out[1]:
                     for item in result_out[0]:
                         if item != r_list[result_out[0].index(item)]:
-                            fork = True
-                    if fork:
-                        if self.chain_synced:
-                            fork_message = fork_message + self.tr('Not Sync with explorer') + str(index) \
-                                           + self.tr(" possible fork \n")
-                        else:
-                            fork_message = fork_message + self.tr('Not Sync with explorer') + str(index) \
-                                           + self.tr(" first sync your node \n")
-                        fork = False
+                            forked = True
+                            self.fork_count = self.fork_count + 1
+                    if forked:
+                        fork_message = fork_message + self.tr('Not Sync with explorer') + str(index) \
+                                           + self.tr(" possible fork ") + '\n'
+                        forked = False
                     else:
                         fork_message = fork_message + self.tr('Sync with ') + 'explorer' + str(index) + ' \n'
                     index = index + 1
-                self.custom_message(self.tr('Comparing Chain with Explorers'), self.tr('Checked for block height ') +
-                                    str(result_out[0][0]) + '\n' + '\n' + fork_message, 'information',
-                                    QMessageBox.Information)
+                self.fork_message_box(str(result_out[0][0]), fork_message)
                 logging.info(fork_message)
             if result_out[1] == 'error':
                 self.bottom_err_info(self.tr('Could not get info from explorer. Check your network connection'))
                 logging.info('Could not get info from explorer. Check your network connection')
         elif result_out[2] == 1:
             self.bottom_err_info(result_out[1])
+
+    def fork_message_box(self, result, message):
+        if self.fork_count == 9:
+            message = message + '\n' + 'your node forked'
+        self.custom_message(self.tr('Comparing Chain with Explorers'), self.tr('Checked for block height ') +
+                            result + '\n' + '\n' + message, 'information',
+                            QMessageBox.Information)
 
     @pyqtSlot()
     def update_chain_latest(self):
@@ -1367,12 +1388,18 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
                                           + self.latest_chain_version, 'question', QMessageBox.Question)
         if message_box == QMessageBox.Yes:
             self.start_animation()
+            stopchain_thread = None
+            if self.chain_status:
+                stopchain_thread = self.stop_chain_thread()
             self.worker_update_chain = marmarachain_rpc.Autoinstall()
             self.worker_update_chain.moveToThread(self.thread_chain_update)  # putting in to thread
             self.worker_update_chain.finished.connect(self.thread_chain_update.quit)
             self.worker_update_chain.finished.connect(self.stop_animation)  # when finished close animation
             self.thread_chain_update.started.connect(self.worker_update_chain.update_chain)
-            self.thread_chain_update.start()
+            if stopchain_thread is None:
+                self.thread_chain_update.start()
+            else:
+                stopchain_thread.finished.connect(self.thread_chain_update.start)
             self.update_chain_textBrowser.setHidden(False)
             self.worker_update_chain.out_text.connect(self.update_chain_progress)
             self.worker_update_chain.finished.connect(self.update_chain_finished)
@@ -1389,7 +1416,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     @pyqtSlot()
     def update_chain_finished(self):
         if self.get_installed_chain_version():
-            self.custom_message(self.tr('Update finished'), self.tr('marmara chain ') + self.get_installed_chain_version() + self.tr(' update finished. Restart your chain'), 'information', QMessageBox.Information)
+            self.custom_message(self.tr('Update finished'), self.tr('marmara chain ') + self.get_installed_chain_version() + self.tr(' update finished.'), 'information', QMessageBox.Information)
             self.update_chain_textBrowser.setHidden(True)
             self.check_chain_update()
         else:
@@ -1704,6 +1731,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         # set image to the Icon
         qr_image = qr.make_image(image_factory=Image).pixmap()
         msg = QMessageBox()
+        msg.setStyleSheet(self.selected_stylesheet)
         msg.setIcon(QMessageBox.Information)
         msg.setIconPixmap(qr_image)
         msg.setWindowTitle(self.tr('Qr Code'))
@@ -2113,7 +2141,8 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             self.set_loop_amount_result(result_out[1])
         if result_out[2] == 1:
             print(result_out[1])
-        # print(result_out)
+            self.bottom_err_info(result_out[1])
+            logging.error(str(result_out[1]))
 
     def set_loop_amount_result(self, result):
         self.myCCActivatedAddress = str(result.get('myCCActivatedAddress'))
@@ -2203,6 +2232,8 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             self.holderloops_closed_number_label_value.setText(str(result_out[1].get('totalclosed')))
         if result_out[2] == 1:
             print(result_out[1])
+            self.bottom_err_info(result_out[1])
+            logging.error(str(result_out[1]))
 
     def set_holder_loops_table(self, loop_info):
         self.transferableloops_tableWidget.setColumnHidden(5, True)
@@ -2383,8 +2414,8 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     @pyqtSlot()
     def add_contact(self):
         contact_name = self.contactname_lineEdit.text()
-        contact_address = self.contactaddress_lineEdit.text()
-        contact_pubkey = self.contactpubkey_lineEdit.text()
+        contact_address = self.contactaddress_lineEdit.text().replace(' ', '')
+        contact_pubkey = self.contactpubkey_lineEdit.text().replace(' ', '')
         new_record = [contact_name, contact_address, contact_pubkey]
         unique_record = self.unique_contacts(contact_name, contact_address, contact_pubkey)
         if unique_record:
@@ -2477,8 +2508,8 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         if self.contact_editing_row is not None:
             read_contacts_data = configuration.ContactsSettings().read_csv_file()
             contact_name = self.contactname_lineEdit.text()
-            contact_address = self.contactaddress_lineEdit.text()
-            contact_pubkey = self.contactpubkey_lineEdit.text()
+            contact_address = self.contactaddress_lineEdit.text().replace(' ', '')
+            contact_pubkey = self.contactpubkey_lineEdit.text().replace(' ', '')
             contact_data = configuration.ContactsSettings().read_csv_file()
             del contact_data[self.contact_editing_row + 1]  # removing editing record to don't check same record
             unique_record = self.unique_contacts(contact_name, contact_address, contact_pubkey, contact_data)
@@ -2674,15 +2705,17 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
 
     @pyqtSlot()
     def calculate_usd_price(self):
-        price = float(self.ticker_price_label_value.text())
-        calculation = float(self.mcl_amount_lineEdit.text()) * price
-        self.usd_amount_lineEdit.setText(str(calculation))
+        if self.mcl_amount_lineEdit.text():
+            price = float(self.ticker_price_label_value.text())
+            calculation = float(self.mcl_amount_lineEdit.text()) * price
+            self.usd_amount_lineEdit.setText(str(round(calculation, 12)))
 
     @pyqtSlot()
     def calculate_mcl_price(self):
-        price = float(self.ticker_price_label_value.text())
-        calculation = float(self.usd_amount_lineEdit.text()) / price
-        self.mcl_amount_lineEdit.setText(str(calculation))
+        if self.usd_amount_lineEdit.text():
+            price = float(self.ticker_price_label_value.text())
+            calculation = float(self.usd_amount_lineEdit.text()) / price
+            self.mcl_amount_lineEdit.setText(str(round(calculation, 12)))
 
     # @pyqtSlot(str)
     # def err_mcl_exchange_market_result(self, err):
