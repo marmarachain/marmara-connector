@@ -103,7 +103,6 @@ def get_blocks_details(block, hash):
                     previous_hash_e = response_json[index+1].get('hash')
                     break
             if block_e is None and hash_e is None and previous_hash_e is None:
-                print('dsfdsadsada')
                 api_index = api_url_list.index(api_url)
                 hash_response = get_block_hash(hash, api_index)
                 block_e = block

@@ -47,6 +47,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.selected_stylesheet = ""
         self.get_initial_style_settings()
         self.read_lang_setting()
+        self.set_tooltip_texts()
         # paths settings
         # Menu Actions
         self.actionAbout.triggered.connect(self.show_about)
@@ -78,11 +79,8 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         # MCL tabwidget
         self.mcl_tab.currentChanged.connect(self.mcl_tab_changed)
         # side panel
-        # QToolTip.setFont(QFont('SansSerif', 10))
         self.copyaddress_button.clicked.connect(self.copyaddress_clipboard)
-        # self.copyaddress_button.setToolTip(self.tr("Copy address"))
         self.copypubkey_button.clicked.connect(self.copypubkey_clipboard)
-        # self.copypubkey_button.setToolTip(self.tr("Copy pubkey"))
         self.staking_button.setChecked(False)
         self.staking_button.clicked.connect(self.toggle_staking)
         self.mining_button.setChecked(False)
@@ -93,7 +91,6 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.cpu_core_set_button.clicked.connect(self.setmining_cpu_core)
         self.mining_button.clicked.connect(self.toggle_mining)
         self.getinfo_refresh_button.clicked.connect(self.refresh_side_panel)
-        # self.support_pushButton.setToolTip(self.tr("Gift Marmara Core Team cups of coffee"))
         self.cup_lineEdit.setValidator(self.validator)
         self.cup_lineEdit.textChanged.connect(self.calculate_amount)
         self.cup_lineEdit.returnPressed.connect(self.send_coins_to_team)
@@ -104,7 +101,6 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.addresses_tableWidget.cellClicked.connect(self.addresstable_itemcontext)
         self.privkey_page_button.clicked.connect(self.see_privkey_page)
         self.hide_address_checkBox.clicked.connect(self.hide_addresses)
-        # self.download_blocks_button.setToolTip(self.tr("Download Blocks bootstrap"))
         self.download_blocks_button.clicked.connect(self.download_blocks)
         self.refresh_walletaddresses_button.clicked.connect(self.getaddresses)
         self.check_fork_button.clicked.connect(self.check_fork)
@@ -167,14 +163,12 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.contact_editing_row = ""
         # Stats Page
         self.stats_refresh_pushButton.clicked.connect(self.get_marmara_stats)
-        # self.stats_refresh_pushButton.setToolTip(self.tr("can be refreshed once in a minute"))
         self.stats_calculate_pushButton.setEnabled(False)
         self.stats_amount_in_activated_lineEdit.setEnabled(False)
         self.stats_amount_in_loops_lineEdit.setEnabled(False)
         self.stats_calculate_pushButton.clicked.connect(self.calculate_estimated_stake)
         # Market Page
         self.exchange_market_request_button.clicked.connect(self.get_mcl_exchange_market)
-        # self.exchange_market_request_button.setToolTip(self.tr("can be refreshed once in 20 seconds"))
         self.mcl_amount_lineEdit.textEdited.connect(self.calculate_usd_price)
         self.usd_amount_lineEdit.textEdited.connect(self.calculate_mcl_price)
 
@@ -220,14 +214,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         # --------------------------------------------------
         self.loading = LoadingScreen()
         # --------------------------------------------------
-
-    def set_fonts(self):
-        # QFontDatabase.addApplicationFont(ApplicationContext().get_resource('fonts') + '/Roboto-Regular.ttf')
-        font = QFont('Roboto')
-        # font.setPointSize(12)
-        # self.centralwidget.setFont(font)
-        # self.menuBar.setFont(font)
-        self.setFont(font)
+    def set_tooltip_texts(self):
         QToolTip.setFont(QFont('SansSerif', 10))
         self.copyaddress_button.setToolTip(self.tr("Copy address"))
         self.copypubkey_button.setToolTip(self.tr("Copy pubkey"))
@@ -235,6 +222,23 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.download_blocks_button.setToolTip(self.tr("Download Blocks bootstrap"))
         self.stats_refresh_pushButton.setToolTip(self.tr("can be refreshed once in a minute"))
         self.exchange_market_request_button.setToolTip(self.tr("can be refreshed once in 20 seconds"))
+
+    def set_fonts(self):
+        # QFontDatabase.addApplicationFont(ApplicationContext().get_resource('fonts') + '/Roboto-Regular.ttf')
+        font = QFont()
+        font.setPointSize(12)
+        self.centralwidget.setFont(font)
+        # self.menuBar.setFont(font)
+        font.setPointSize(16)
+        self.login_label.setFont(font)
+        self.remotelogin_label.setFont(font)
+        self.add_remotehost_label.setFont(font)
+        self.edit_remotehost_label.setFont(font)
+        font.setPointSize(10)
+        self.bottom_message_label.setFont(font)
+        self.last_update_label.setFont(font)
+        self.mining_button.setFont(font)
+        self.staking_button.setFont(font)
 
     def center_ui(self):
         qr = self.frameGeometry()
@@ -289,7 +293,10 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
                 self.set_icon_color('black')
             else:
                 self.set_icon_color('#eff0f1')
+        # self.setStyleSheet("")
+        # time.sleep(0.1)
         self.setStyleSheet(self.selected_stylesheet)
+        self.set_fonts()
 
     def check_app_version(self):
         base_version = configuration.version

@@ -793,7 +793,7 @@ class Autoinstall(QtCore.QObject):
                         out_d = out.decode().replace('\n', '')
                     except Exception as e:
                         out_d = e
-                    print(out_d)
+                    logging.info(out_d)
                     self.out_text.emit(out_d)
                     if not out:
                         proc.stdout.close()
