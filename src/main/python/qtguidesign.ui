@@ -20,11 +20,6 @@
    <string notr="true">Marmara Connector</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <property name="font">
-    <font>
-     <pointsize>12</pointsize>
-    </font>
-   </property>
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
      <widget class="QTabWidget" name="main_tab">
@@ -83,7 +78,7 @@
               <enum>QFrame::NoFrame</enum>
              </property>
              <property name="currentIndex">
-              <number>1</number>
+              <number>2</number>
              </property>
              <widget class="QWidget" name="hostselection_page">
               <layout class="QGridLayout" name="gridLayout_5">
@@ -230,11 +225,6 @@
                 <layout class="QGridLayout" name="selecthost__layout">
                  <item row="0" column="0">
                   <widget class="QLabel" name="login_label">
-                   <property name="font">
-                    <font>
-                     <pointsize>16</pointsize>
-                    </font>
-                   </property>
                    <property name="text">
                     <string>Select Host </string>
                    </property>
@@ -301,11 +291,6 @@
                 <layout class="QGridLayout" name="remoteloginlabel_Layout">
                  <item row="0" column="0">
                   <widget class="QLabel" name="remotelogin_label">
-                   <property name="font">
-                    <font>
-                     <pointsize>16</pointsize>
-                    </font>
-                   </property>
                    <property name="text">
                     <string>Login Remote Host</string>
                    </property>
@@ -382,11 +367,6 @@
                 <layout class="QGridLayout" name="add_remotehostlabel_Layout">
                  <item row="0" column="0">
                   <widget class="QLabel" name="add_remotehost_label">
-                   <property name="font">
-                    <font>
-                     <pointsize>16</pointsize>
-                    </font>
-                   </property>
                    <property name="text">
                     <string>Add Remote Host</string>
                    </property>
@@ -559,11 +539,6 @@
                 <layout class="QGridLayout" name="edit_remotehostlabel_Layout">
                  <item row="0" column="0">
                   <widget class="QLabel" name="edit_remotehost_label">
-                   <property name="font">
-                    <font>
-                     <pointsize>16</pointsize>
-                    </font>
-                   </property>
                    <property name="text">
                     <string>Edit Remote Host</string>
                    </property>
@@ -682,11 +657,6 @@
             <height>16777215</height>
            </size>
           </property>
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-           </font>
-          </property>
           <property name="frameShape">
            <enum>QFrame::NoFrame</enum>
           </property>
@@ -722,7 +692,7 @@
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <property name="iconSize">
            <size>
@@ -909,13 +879,13 @@
                      <number>0</number>
                     </property>
                     <property name="columnCount">
-                     <number>4</number>
+                     <number>5</number>
                     </property>
                     <attribute name="horizontalHeaderCascadingSectionResizes">
                      <bool>false</bool>
                     </attribute>
                     <attribute name="horizontalHeaderDefaultSectionSize">
-                     <number>170</number>
+                     <number>125</number>
                     </attribute>
                     <attribute name="horizontalHeaderHighlightSections">
                      <bool>true</bool>
@@ -956,6 +926,11 @@
                      </property>
                      <property name="textAlignment">
                       <set>AlignLeading|AlignTop</set>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Known Address</string>
                      </property>
                     </column>
                    </widget>
@@ -5722,11 +5697,6 @@
                <height>16777215</height>
               </size>
              </property>
-             <property name="font">
-              <font>
-               <pointsize>10</pointsize>
-              </font>
-             </property>
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -5837,11 +5807,6 @@
               </item>
               <item row="1" column="0" colspan="2">
                <widget class="QLabel" name="last_update_label">
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
                 <property name="text">
                  <string>Last Update:  00:00:00</string>
                 </property>
@@ -5870,11 +5835,6 @@
              <layout class="QGridLayout" name="gridLayout_17">
               <item row="3" column="1">
                <widget class="QPushButton" name="mining_button">
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
                 <property name="text">
                  <string/>
                 </property>
@@ -5882,11 +5842,6 @@
               </item>
               <item row="1" column="1">
                <widget class="QPushButton" name="staking_button">
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
                 <property name="text">
                  <string/>
                 </property>
@@ -5976,11 +5931,6 @@
                <width>16777215</width>
                <height>16777215</height>
               </size>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>11</pointsize>
-              </font>
              </property>
              <property name="frameShape">
               <enum>QFrame::WinPanel</enum>

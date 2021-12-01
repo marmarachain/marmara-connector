@@ -35,7 +35,8 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         #   Default Settings
         self.trans = QTranslator(self)
         self.retranslateUi(self)
-        self.set_fonts()
+        self.default_fontsize = 12
+        self.set_font_size(self.default_fontsize)
         self.main_tab.setCurrentIndex(0)
         self.main_tab.tabBar().setVisible(False)
         self.login_stackedWidget.setCurrentIndex(0)
@@ -84,7 +85,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.staking_button.setChecked(False)
         self.staking_button.clicked.connect(self.toggle_staking)
         self.mining_button.setChecked(False)
-        self.regex = QRegExp("[1-90_]{1,5}")
+        self.regex = QRegExp("[1-90_]{1,4}")
         self.validator = QRegExpValidator(self.regex)
         self.cpu_core_lineEdit.setValidator(self.validator)
         self.cpu_core_selection_off()
@@ -223,23 +224,6 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.stats_refresh_pushButton.setToolTip(self.tr("can be refreshed once in a minute"))
         self.exchange_market_request_button.setToolTip(self.tr("can be refreshed once in 20 seconds"))
 
-    def set_fonts(self):
-        # QFontDatabase.addApplicationFont(ApplicationContext().get_resource('fonts') + '/Roboto-Regular.ttf')
-        font = QFont()
-        font.setPointSize(12)
-        self.centralwidget.setFont(font)
-        # self.menuBar.setFont(font)
-        font.setPointSize(16)
-        self.login_label.setFont(font)
-        self.remotelogin_label.setFont(font)
-        self.add_remotehost_label.setFont(font)
-        self.edit_remotehost_label.setFont(font)
-        font.setPointSize(10)
-        self.bottom_message_label.setFont(font)
-        self.last_update_label.setFont(font)
-        self.mining_button.setFont(font)
-        self.staking_button.setFont(font)
-
     def center_ui(self):
         qr = self.frameGeometry()
         center_point = QDesktopWidget().availableGeometry().center()
@@ -296,7 +280,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         # self.setStyleSheet("")
         # time.sleep(0.1)
         self.setStyleSheet(self.selected_stylesheet)
-        self.set_fonts()
+        self.set_font_size(self.default_fontsize)
 
     def check_app_version(self):
         base_version = configuration.version
@@ -880,6 +864,11 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             logging.warning('pubkey is not set')
             self.pubkey_status = False
             self.current_pubkey_value.setText("")
+        if getinfo_result.get('errors') is None:
+            self.update_chain_textBrowser.setHidden(True)
+        if getinfo_result.get('errors'):
+            self.update_chain_textBrowser.setHidden(False)
+            self.update_chain_textBrowser.setText(str(getinfo_result.get('errors')))
         self.difficulty_value_label.setText(str(int(getinfo_result['difficulty'])))
         self.currentblock_value_label.setText(str(getinfo_result['blocks']))
         self.longestchain_value_label.setText(str(getinfo_result['longestchain']))
@@ -926,6 +915,10 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
 
     @pyqtSlot()
     def copyaddress_clipboard(self):
+        # if self.default_fontsize <= 20:
+        #     self.default_fontsize = self.default_fontsize + 1
+        # self.set_font_size(self.default_fontsize)
+        # self.bottom_info('fontsize :' + str(self.default_fontsize))
         address = self.currentaddress_value.text()
         if address != "":
             QtWidgets.QApplication.clipboard().setText(address)
@@ -937,6 +930,10 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
 
     @pyqtSlot()
     def copypubkey_clipboard(self):
+        # if self.default_fontsize >= 9:
+        #     self.default_fontsize = self.default_fontsize - 1
+        # self.set_font_size(self.default_fontsize)
+        # self.bottom_info('fontsize :' + str(self.default_fontsize))
         pubkey = self.current_pubkey_value.text()
         if pubkey != "":
             QtWidgets.QApplication.clipboard().setText(pubkey)
@@ -1172,6 +1169,28 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
                 if rowcount == 0:
                     break
         self.hide_addresses()
+        self.get_known_addresses()
+
+    def check_address_contact_name(self, address):
+        contacts_data = configuration.ContactsSettings().read_csv_file()
+        known_address = ""
+        for contact in contacts_data:  # each contact set in contacts_data
+            if contact[1] == address:  # contact[1] contact address
+                known_address = contact[0]  # contact[0] contact name
+                break
+        return known_address
+
+    def get_known_addresses(self):
+        rowcount = self.addresses_tableWidget.rowCount()
+        self.addresses_tableWidget.setRowCount(rowcount)
+        while True:
+            rowcount = rowcount - 1
+            address = self.addresses_tableWidget.item(rowcount, 2).text()
+            known_address = self.check_address_contact_name(address)
+            self.addresses_tableWidget.setItem(rowcount, 4, QTableWidgetItem(str(known_address)))
+            self.addresses_tableWidget.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
+            if rowcount == 0:
+                break
 
     @pyqtSlot()
     def set_pubkey(self):
@@ -1314,6 +1333,8 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             self.worker_extract_bootstrap.finished.connect(self.thread_extract_bootstrap.quit)
             self.worker_extract_bootstrap.finished.connect(self.stop_animation)  # when finished close animation
             self.thread_extract_bootstrap.started.connect(self.worker_extract_bootstrap.extract_bootstrap)
+            self.update_chain_textBrowser.clear()
+            self.update_chain_textBrowser.setHidden(False)
             if stopchain_thread is None:
                 self.thread_extract_bootstrap.start()
             else:
@@ -1324,8 +1345,10 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
 
     @pyqtSlot(str)
     def extract_bootstrap_out(self, output):
-        self.bottom_info(output)
+        self.update_chain_textBrowser.append(output)
+        logging.info(output)
         if output == 'None':
+            self.update_chain_textBrowser.setHidden(True)
             self.bottom_info(self.tr('Extracting blocks finished'))
             logging.info('Extracting blocks finished')
 
@@ -1403,6 +1426,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             self.worker_update_chain.finished.connect(self.thread_chain_update.quit)
             self.worker_update_chain.finished.connect(self.stop_animation)  # when finished close animation
             self.thread_chain_update.started.connect(self.worker_update_chain.update_chain)
+            self.update_chain_textBrowser.clear()
             if stopchain_thread is None:
                 self.thread_chain_update.start()
             else:
