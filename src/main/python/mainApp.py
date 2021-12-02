@@ -112,7 +112,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.update_chain_button.clicked.connect(self.update_chain_latest)
         self.latest_chain_version = None
         self.chain_versiyon_tag = None
-        self.update_chain_textBrowser.setHidden(True)
+        self.update_chain_textBrowser.setVisible(False)
         # - add address page ----
         self.newaddress_button.clicked.connect(self.get_new_address)
         self.address_seed_button.clicked.connect(self.convertpassphrase)
@@ -887,9 +887,9 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             self.pubkey_status = False
             self.current_pubkey_value.setText("")
         if getinfo_result.get('errors') is None:
-            self.update_chain_textBrowser.setHidden(True)
+            self.update_chain_textBrowser.setVisible(False)
         if getinfo_result.get('errors'):
-            self.update_chain_textBrowser.setHidden(False)
+            self.update_chain_textBrowser.setVisible(True)
             self.update_chain_textBrowser.setText(str(getinfo_result.get('errors')))
         self.difficulty_value_label.setText(str(int(getinfo_result['difficulty'])))
         self.currentblock_value_label.setText(str(getinfo_result['blocks']))
@@ -1377,9 +1377,9 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             self.worker_extract_bootstrap.finished.connect(self.stop_animation)  # when finished close animation
             self.thread_extract_bootstrap.started.connect(self.worker_extract_bootstrap.extract_bootstrap)
             self.update_chain_textBrowser.clear()
-            self.update_chain_textBrowser.setHidden(False)
-            if stopchain_thread is None:
-                self.thread_extract_bootstrap.start()
+            self.update_chain_textBrowser.setVisible(True)
+            #if stopchain_thread is None:
+            self.thread_extract_bootstrap.start()
             else:
                 stopchain_thread.finished.connect(self.thread_extract_bootstrap.start)
             self.worker_extract_bootstrap.output.connect(self.extract_bootstrap_out)
@@ -1390,8 +1390,10 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     def extract_bootstrap_out(self, output):
         self.update_chain_textBrowser.append(output)
         logging.info(output)
+        if output:
+            self.update_chain_textBrowser.setVisible(True)
         if output == 'None':
-            self.update_chain_textBrowser.setHidden(True)
+            self.update_chain_textBrowser.setVisible(False)
             self.bottom_info(self.tr('Extracting blocks finished'))
             logging.info('Extracting blocks finished')
 
@@ -1474,7 +1476,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
                 self.thread_chain_update.start()
             else:
                 stopchain_thread.finished.connect(self.thread_chain_update.start)
-            self.update_chain_textBrowser.setHidden(False)
+            self.update_chain_textBrowser.setVisible(True)
             self.worker_update_chain.out_text.connect(self.update_chain_progress)
             self.worker_update_chain.finished.connect(self.update_chain_finished)
 
@@ -1491,7 +1493,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     def update_chain_finished(self):
         if self.get_installed_chain_version():
             self.custom_message(self.tr('Update finished'), self.tr('marmara chain ') + self.get_installed_chain_version() + self.tr(' update finished.'), 'information', QMessageBox.Information)
-            self.update_chain_textBrowser.setHidden(True)
+            self.update_chain_textBrowser.setVisible(False)
             self.check_chain_update()
         else:
             self.custom_message(self.tr('Update Failed'), self.tr('Something went wrong update failed.'), 'information')

@@ -505,12 +505,12 @@ class RpcHandler(QtCore.QObject):
             if platform.system() == 'Linux':
                 cmd_list.append('rm -r ' + self.method + '/blocks')
             if platform.system() == 'Win64' or platform.system() == 'Windows':
-                cmd_list.append('del /S ' + self.method + '/blocks/*')
+                cmd_list.append('rmdir /s /q ' + self.method + '\blocks')
         if os.path.exists(self.method + '/chainstate'):
             if platform.system() == 'Linux':
                 cmd_list.append('rm -r ' + self.method + '/chainstate')
             if platform.system() == 'Win64' or platform.system() == 'Windows':
-                cmd_list.append('del /S ' + self.method + '/chainstate/*')
+                cmd_list.append('rmdir /s /q ' + self.method + '\chainstate')
         cmd_list.append(self.command)
         self.do_execute_extract(cmd_list)
 
