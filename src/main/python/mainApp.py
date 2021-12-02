@@ -36,6 +36,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.trans = QTranslator(self)
         self.retranslateUi(self)
         self.default_fontsize = 12
+        self.get_default_fontsize()
         self.set_font_size(self.default_fontsize)
         self.main_tab.setCurrentIndex(0)
         self.main_tab.tabBar().setVisible(False)
@@ -58,7 +59,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.actionConsole.triggered.connect(self.open_debug_console)
         self.actionSee_Log_File.triggered.connect(self.open_log_file)
         self.actionCheck_for_Update.triggered.connect(self.check_app_version)
-        self.actionStyle_Selection.triggered.connect(self.show_style_themes)
+        self.actionAppearances.triggered.connect(self.show_style_themes)
         #   Login page Host Selection
         self.local_button.clicked.connect(self.local_selection)
         self.remote_button.clicked.connect(self.remote_selection)
@@ -96,6 +97,8 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.cup_lineEdit.textChanged.connect(self.calculate_amount)
         self.cup_lineEdit.returnPressed.connect(self.send_coins_to_team)
         self.support_pushButton.clicked.connect(self.send_coins_to_team)
+        self.fontsize_plus_button.clicked.connect(self.increase_fontsize)
+        self.fontsize_minus_button.clicked.connect(self.decrease_fontsize)
         # Chain page
         self.stopchain_button.clicked.connect(self.stop_chain)
         self.addaddress_page_button.clicked.connect(self.get_address_page)
@@ -223,12 +226,19 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.download_blocks_button.setToolTip(self.tr("Download Blocks bootstrap"))
         self.stats_refresh_pushButton.setToolTip(self.tr("can be refreshed once in a minute"))
         self.exchange_market_request_button.setToolTip(self.tr("can be refreshed once in 20 seconds"))
+        self.fontsize_plus_button.setToolTip(self.tr("Increase font size"))
+        self.fontsize_minus_button.setToolTip(self.tr("Decrease font size"))
 
     def center_ui(self):
         qr = self.frameGeometry()
         center_point = QDesktopWidget().availableGeometry().center()
         qr.moveCenter(center_point)
         self.move(qr.topLeft())
+
+    def get_default_fontsize(self):
+        fontsize_conf = configuration.ApplicationConfig().get_value('USER', 'fontsize')
+        if fontsize_conf:
+            self.default_fontsize = int(fontsize_conf)
 
     def get_initial_style_settings(self):
         style_conf = configuration.ApplicationConfig().get_value('USER', 'style')
@@ -238,11 +248,15 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             self.set_icon_color('black')
 
     def show_style_themes(self):
+        font = QFont()
+        font.setPointSize(self.default_fontsize)
         themeDialog = QDialog(self)
         themeDialog.setWindowTitle(self.tr("Choose a style"))
-
+        themeDialog.setFont(font)
         apply_button = QDialogButtonBox(QDialogButtonBox.Apply)
+        apply_button.setFont(font)
         self.style_comboBox = QtWidgets.QComboBox()
+        self.style_comboBox.setFont(font)
 
         themeDialog.layout = QVBoxLayout()
         themeDialog.layout.addWidget(self.style_comboBox)
@@ -277,8 +291,6 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
                 self.set_icon_color('black')
             else:
                 self.set_icon_color('#eff0f1')
-        # self.setStyleSheet("")
-        # time.sleep(0.1)
         self.setStyleSheet(self.selected_stylesheet)
         self.set_font_size(self.default_fontsize)
 
@@ -308,12 +320,15 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
 
     @pyqtSlot()
     def show_languages(self):
-
+        font = QFont()
+        font.setPointSize(self.default_fontsize)
         languageDialog = QDialog(self)
         languageDialog.setWindowTitle(self.tr("Choose a language"))
-
+        languageDialog.setFont(font)
         apply_button = QDialogButtonBox(QDialogButtonBox.Apply)
+        apply_button.setFont(font)
         self.lang_comboBox = QtWidgets.QComboBox()
+        self.lang_comboBox.setFont(font)
 
         languageDialog.layout = QVBoxLayout()
         languageDialog.layout.addWidget(self.lang_comboBox)
@@ -355,29 +370,36 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     def custom_message(self, title, content, message_type, icon=None, detailed_text=None):
         """ custom_message(str, str, str: message_type = {information, question}, icon = {QMessageBox.Question,
         QMessageBox.Information, QMessageBox.Warning, QMessageBox.Critical}, str) """
+        font = QFont()
+        font.setPointSize(self.default_fontsize)
         messagebox = QMessageBox()
         messagebox.setStyleSheet(self.selected_stylesheet)
         messagebox.setWindowTitle(title)
         messagebox.setText(content)
         messagebox.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
         messagebox.setDetailedText(detailed_text)
+        messagebox.setFont(font)
         btn_yes = None
         btn_no = None
         btn_ok = None
+
         if message_type == "information":
             if icon:
                 messagebox.setIcon(icon)
             messagebox.setStandardButtons(QMessageBox.Ok)
             btn_ok = messagebox.button(QMessageBox.Ok)
             btn_ok.setText(self.tr("Ok"))
+            btn_ok.setFont(font)
         if message_type == "question":
             if icon:
                 messagebox.setIcon(icon)
             messagebox.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
             btn_yes = messagebox.button(QMessageBox.Yes)
             btn_yes.setText(self.tr("Yes"))
+            btn_yes.setFont(font)
             btn_no = messagebox.button(QMessageBox.No)
             btn_no.setText(self.tr("No"))
+            btn_no.setFont(font)
         messagebox.exec_()
         if messagebox.clickedButton() == btn_yes:
             return QMessageBox.Yes
@@ -872,6 +894,11 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.difficulty_value_label.setText(str(int(getinfo_result['difficulty'])))
         self.currentblock_value_label.setText(str(getinfo_result['blocks']))
         self.longestchain_value_label.setText(str(getinfo_result['longestchain']))
+        connection_count = int(getinfo_result['connections'])
+        if connection_count == 0:
+            self.connections_warning_label.setVisible(True)
+        if connection_count > 0:
+            self.connections_warning_label.setVisible(False)
         self.connections_value_label.setText(str(getinfo_result['connections']))
         self.totalnormal_value_label.setText(str(getinfo_result['balance']))
         self.wallet_total_normal_value.setText(str(getinfo_result['balance']))
@@ -915,10 +942,6 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
 
     @pyqtSlot()
     def copyaddress_clipboard(self):
-        # if self.default_fontsize <= 20:
-        #     self.default_fontsize = self.default_fontsize + 1
-        # self.set_font_size(self.default_fontsize)
-        # self.bottom_info('fontsize :' + str(self.default_fontsize))
         address = self.currentaddress_value.text()
         if address != "":
             QtWidgets.QApplication.clipboard().setText(address)
@@ -929,11 +952,21 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             logging.warning('no address value set')
 
     @pyqtSlot()
+    def decrease_fontsize(self):
+        if self.default_fontsize >= 9:
+            self.default_fontsize = self.default_fontsize - 1
+        self.set_font_size(self.default_fontsize)
+        self.bottom_info('fontsize :' + str(self.default_fontsize))
+
+    @pyqtSlot()
+    def increase_fontsize(self):
+        if self.default_fontsize <= 20:
+            self.default_fontsize = self.default_fontsize + 1
+        self.set_font_size(self.default_fontsize)
+        self.bottom_info('fontsize :' + str(self.default_fontsize))
+
+    @pyqtSlot()
     def copypubkey_clipboard(self):
-        # if self.default_fontsize >= 9:
-        #     self.default_fontsize = self.default_fontsize - 1
-        # self.set_font_size(self.default_fontsize)
-        # self.bottom_info('fontsize :' + str(self.default_fontsize))
         pubkey = self.current_pubkey_value.text()
         if pubkey != "":
             QtWidgets.QApplication.clipboard().setText(pubkey)
@@ -1234,18 +1267,23 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.bottom_info(self.tr('Chain started with pubkey'))
         logging.info('Chain started with pubkey')
         self.start_pubkey = pubkey
+        font = QFont()
+        font.setPointSize(self.default_fontsize)
         startchainDialog = QDialog(self)
         startchainDialog.setWindowTitle(self.tr('Settings for Chain Start'))
         startchainDialog.layout = QVBoxLayout()
-
+        startchainDialog.setFont(font)
         apply_button = QPushButton('Start')
         apply_button.setIcon(QIcon(self.icon_path + "/start_icon.png"))
+        apply_button.setFont(font)
         button_layout = QHBoxLayout()
         self.reindex = QtWidgets.QCheckBox('reindex' + self.tr(' (starts from beginning and re-indexes currently '
                                                                'synced blockchain data)'))
         self.reindex.setChecked(False)
         self.rescan = QtWidgets.QCheckBox('rescan' + self.tr(' (starts scanning wallet data in blockchain data)'))
         self.rescan.setChecked(False)
+        self.reindex.setFont(font)
+        self.rescan.setFont(font)
         spacer_item = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         startchainDialog.setLayout(startchainDialog.layout)
         startchainDialog.layout.addWidget(self.reindex)
@@ -1275,15 +1313,20 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
 
     @pyqtSlot()
     def download_blocks(self):
+        font = QFont()
+        font.setPointSize(self.default_fontsize)
         blocksDialog = QDialog(self)
         blocksDialog.setWindowTitle(self.tr('Download Blocks bootstrap'))
         blocksDialog.layout = QGridLayout()
-
+        blocksDialog.setFont(font)
         description_label = QtWidgets.QLabel()
         spacer_item = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         browse_button = QtWidgets.QPushButton('Browse ..')
+        browse_button.setFont(font)
         download_button = QtWidgets.QPushButton('Download')
+        download_button.setFont(font)
         description_label.setText(self.tr('You can either download or browse previously downloaded bootstrap.'))
+        description_label.setFont(font)
 
         blocksDialog.setLayout(blocksDialog.layout)
         blocksDialog.layout.addWidget(description_label, 0, 0, 1, 3)
@@ -1576,7 +1619,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             # self.addresses_privkey_tableWidget.autoScrollMargin()
             for address in result:
                 row_number = result.index(address)
-                btn_seeprivkey = QPushButton(qta.icon('mdi.shield-key'), '')
+                btn_seeprivkey = QPushButton(qta.icon('mdi.shield-key', color='#cc2900'), '')
                 btn_seeprivkey.setIconSize(QSize(32, 32))
                 self.addresses_privkey_tableWidget.setCellWidget(row_number, 1, btn_seeprivkey)
                 self.addresses_privkey_tableWidget.setItem(row_number, 0, QTableWidgetItem(address))

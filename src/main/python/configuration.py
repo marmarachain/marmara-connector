@@ -49,6 +49,7 @@ class ApplicationConfig:
                 self.config.add_section('USER')
                 self.config.set('USER', 'lang', 'EN')
                 self.config.set('USER', 'style', 'light')
+                self.config.set('USER', 'fontsize', '12')
                 self.config.write(configfile)
 
     def set_key_value(self, section, key, value):

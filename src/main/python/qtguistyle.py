@@ -5,6 +5,7 @@ from fbs_runtime.application_context.PyQt5 import ApplicationContext
 from qtguidesign import Ui_MainWindow
 from PyQt5.uic import loadUi
 import qtawesome as qta
+import configuration
 
 icon_path = ApplicationContext().get_resource("images")
 style_path = ApplicationContext().get_resource("styles")
@@ -36,6 +37,8 @@ class GuiStyle(Ui_MainWindow):
         self.mining_button.setObjectName("mining_button")
         self.support_pushButton.setText('Support')
         self.support_pushButton.setEnabled(False)
+        self.connections_warning_label.setPixmap(QPixmap(self.icon_path + '/warning-icon.png'))
+        self.connections_warning_label.setVisible(True)
         # Stats
         self.gridLayout_17.addWidget(self.mining_button, 3, 1, 1, 1)
         self.stats_pie_frame.setContentsMargins(0, 0, 0, 0)
@@ -54,8 +57,29 @@ class GuiStyle(Ui_MainWindow):
         self.refresh_walletaddresses_button.setIconSize(QtCore.QSize(24, 24))
         self.check_fork_button.setIcon(qta.icon('mdi.directions-fork', color=color))
         self.check_fork_button.setIconSize(QtCore.QSize(24, 24))
+        self.addaddress_page_button.setIcon(qta.icon('fa.plus', color=color))
+        self.addaddress_page_button.setIconSize(QtCore.QSize(24, 24))
+        self.address_seed_button.setIcon(qta.icon('mdi.seed-outline', color=color))
+        self.address_seed_button.setIconSize(QtCore.QSize(24, 24))
+        self.newaddress_button.setIcon(qta.icon('mdi.credit-card-plus-outline', color=color))
+        self.newaddress_button.setIconSize(QtCore.QSize(24, 24))
+        self.addresspage_back_button.setIcon(qta.icon('mdi.step-backward', color=color))
+        self.addresspage_back_button.setIconSize(QtCore.QSize(24, 24))
+        self.privatekeypage_back_button.setIcon(qta.icon('mdi.step-backward', color=color))
+        self.privatekeypage_back_button.setIconSize(QtCore.QSize(24, 24))
+        self.importprivkey_button.setIcon(qta.icon('mdi.application-import', color=color))
+        self.importprivkey_button.setIconSize(QtCore.QSize(24, 24))
+        self.privkey_page_button.setIcon(qta.icon('mdi.incognito', color=color))
+        self.privkey_page_button.setIconSize(QtCore.QSize(24, 24))
         # menubar
-        self.actionQuit.setIcon(qta.icon('mdi.exit-to-app', color=color))
+        self.actionQuit.setIcon(qta.icon('fa.close', color=color))
+        self.actionLogout.setIcon(qta.icon('mdi.logout', color=color))
+        self.menuDebug.setIcon(qta.icon('fa.bug', color=color))
+        self.actionAbout.setIcon(qta.icon('fa.info', color=color))
+        self.actionLanguage_Selection.setIcon(qta.icon('ei.flag', color=color))
+        self.actionAppearances.setIcon(qta.icon('fa.paint-brush', color=color))
+        self.actionSee_Log_File.setIcon(qta.icon('mdi.file-document-outline', color=color))
+        self.actionCheck_for_Update.setIcon(qta.icon('mdi.open-in-app', color=color))
         # mcl tab
         self.mcl_tab.setTabIcon(0, qta.icon('fa.chain', color=color))
         self.mcl_tab.setTabIcon(1, qta.icon('fa5s.wallet', color=color))
@@ -64,7 +88,7 @@ class GuiStyle(Ui_MainWindow):
         self.mcl_tab.setTabIcon(4, qta.icon('fa5.address-card', color=color))
         self.mcl_tab.setTabIcon(5, qta.icon("mdi.chart-areaspline", color=color))
         self.mcl_tab.setTabIcon(6, qta.icon("mdi.bulletin-board", color=color))
-        # self.mcl_tab.setIconSize(QtCore.QSize(24,24))
+        self.mcl_tab.setIconSize(QtCore.QSize(28, 28))
         # Side panel
         self.getinfo_refresh_button.setIcon(qta.icon('ei.refresh', color=color))
         self.getinfo_refresh_button.setIconSize(QtCore.QSize(24, 24))
@@ -72,6 +96,10 @@ class GuiStyle(Ui_MainWindow):
         self.copyaddress_button.setIconSize(QtCore.QSize(24, 24))
         self.copypubkey_button.setIcon(qta.icon('mdi.key-change', color=color))
         self.copypubkey_button.setIconSize(QtCore.QSize(24, 24))
+        self.fontsize_minus_button.setIcon(qta.icon('mdi.format-font-size-decrease', color=color))
+        self.fontsize_minus_button.setIconSize(QtCore.QSize(24, 24))
+        self.fontsize_plus_button.setIcon(qta.icon('mdi.format-font-size-increase', color=color))
+        self.fontsize_plus_button.setIconSize(QtCore.QSize(24, 24))
         # Wallet page button icons
         self.lock_button.setIcon(QtGui.QIcon(qta.icon('fa5s.lock', color=color)))
         self.lock_button.setIconSize(QtCore.QSize(32, 32))
@@ -82,22 +110,44 @@ class GuiStyle(Ui_MainWindow):
         # Coin Send-Receive page
         self.coinsend_button.setIcon(qta.icon('mdi.database-export', color=color))
         self.coinsend_button.setIconSize(QtCore.QSize(24, 24))
-        self.transaction_search_button.setIcon(QtGui.QIcon(qta.icon('fa.search', color=color)))
+        self.transaction_search_button.setIcon(qta.icon('fa.search', color=color))
         self.transaction_search_button.setIconSize(QtCore.QSize(24, 24))
+        self.qrcode_button.setIcon(qta.icon('mdi.qrcode', color=color))
+        self.qrcode_button.setIconSize(QtCore.QSize(48, 48))
         # Credit loops page
-        self.looprequest_search_button.setIcon(QtGui.QIcon(qta.icon('fa.search', color=color)))
+        self.creditloop_tabWidget.setTabIcon(0, qta.icon('mdi.arrow-down-circle-outline', color=color))
+        self.creditloop_tabWidget.setTabIcon(1, qta.icon('mdi.link-variant-plus', color=color))
+        self.creditloop_tabWidget.setTabIcon(2, qta.icon('mdi.vector-circle', color=color))
+        self.creditloop_tabWidget.setTabIcon(3, qta.icon('mdi.database-search', color=color))
+        self.creditloop_tabWidget.setIconSize(QtCore.QSize(24, 24))
+
+        self.looprequest_search_button.setIcon(qta.icon('fa.search', color=color))
         self.looprequest_search_button.setIconSize(QtCore.QSize(24, 24))
 
-        self.lq_pubkey_search_button.setIcon(QtGui.QIcon(qta.icon('fa.search', color=color)))
+        self.send_loop_request_button.setIcon(qta.icon('ei.share-alt', color=color))
+        self.send_loop_request_button.setIconSize(QtCore.QSize(24, 24))
+        self.send_transfer_request_button.setIcon(qta.icon('ei.share-alt', color=color))
+        self.send_transfer_request_button.setIconSize(QtCore.QSize(24, 24))
+
+        self.lq_pubkey_search_button.setIcon(qta.icon('fa.search', color=color))
         self.lq_pubkey_search_button.setIconSize(QtCore.QSize(24, 24))
 
-        self.lq_txid_search_button.setIcon(QtGui.QIcon(qta.icon('fa.search', color=color)))
+        self.lq_txid_search_button.setIcon(qta.icon('fa.search', color=color))
         self.lq_txid_search_button.setIconSize(QtCore.QSize(24, 24))
 
-        self.activeloops_search_button.setIcon(QtGui.QIcon(qta.icon('fa.search', color=color)))
+        self.activeloops_search_button.setIcon(qta.icon('fa.search', color=color))
         self.activeloops_search_button.setIconSize(QtCore.QSize(24, 24))
         self.holderloops_search_button.setIcon(qta.icon('fa.search', color=color))
         self.holderloops_search_button.setIconSize(QtCore.QSize(24, 24))
+        # Contacts page
+        self.clear_contact_button.setIcon(qta.icon('ei.broom', color=color))
+        self.clear_contact_button.setIconSize(QtCore.QSize(24, 24))
+        self.addcontact_button.setIcon(qta.icon('fa.user-plus', color=color))
+        self.addcontact_button.setIconSize(QtCore.QSize(24, 24))
+        self.updatecontact_button.setIcon(qta.icon('fa5s.user-edit', color=color))
+        self.updatecontact_button.setIconSize(QtCore.QSize(24, 24))
+        self.deletecontact_button.setIcon(qta.icon('fa5s.user-slash', color=color))
+        self.deletecontact_button.setIconSize(QtCore.QSize(24, 24))
         # Stats
         self.stats_refresh_pushButton.setIcon(qta.icon('mdi.refresh', color=color))
         self.stats_refresh_pushButton.setIconSize(QtCore.QSize(24, 24))
@@ -122,7 +172,7 @@ class GuiStyle(Ui_MainWindow):
         self.loop_request_tableWidget.setFont(font)
         self.loop_request_tableWidget.horizontalHeader().setFont(font)
         self.transferrequests_tableWidget.setFont(font)
-        self.loop_request_tableWidget.horizontalHeader().setFont(font)
+        self.transferrequests_tableWidget.horizontalHeader().setFont(font)
         self.activeloops_tableWidget.setFont(font)
         self.activeloops_tableWidget.horizontalHeader().setFont(font)
         self.transferableloops_tableWidget.setFont(font)
@@ -192,6 +242,8 @@ class GuiStyle(Ui_MainWindow):
         self.cup_lineEdit.setFont(font)
         self.copypubkey_button.setFont(font)
         self.copyaddress_button.setFont(font)
+        self.fontsize_minus_button.setFont(font)
+        self.fontsize_plus_button.setFont(font)
         # Chain tab label
         self.chain_version_label.setFont(font)
         self.privkey_page_button.setFont(font)
@@ -253,13 +305,16 @@ class GuiStyle(Ui_MainWindow):
         self.coinsend_label.setFont(font)
         self.qrcode_button.setFont(font)
         self.transactions_startdate_dateTimeEdit.setFont(font)
+        self.transactions_startdate_dateTimeEdit.calendarWidget().setFont(font)
         self.transactions_endtdate_dateTimeEdit.setFont(font)
+        self.transactions_endtdate_dateTimeEdit.calendarWidget().setFont(font)
         # Creditloops page
         self.creditloop_tabWidget.tabBar().setFont(font)
         # Incoming loop request
         self.looprequest_search_button.setFont(font)
         self.requestdate_label.setFont(font)
         self.request_dateTimeEdit.setFont(font)
+        self.request_dateTimeEdit.calendarWidget().setFont(font)
         self.request_date_checkBox.setFont(font)
         self.loop_request_label.setFont(font)
         self.transferrequests_label.setFont(font)
@@ -270,6 +325,7 @@ class GuiStyle(Ui_MainWindow):
         self.make_credit_loop_amount_lineEdit.setFont(font)
         self.make_credit_loop_matures_label.setFont(font)
         self.make_credit_loop_matures_dateTimeEdit.setFont(font)
+        self.make_credit_loop_matures_dateTimeEdit.calendarWidget().setFont(font)
         self.make_credit_loop_currency_label.setFont(font)
         self.make_credit_loop_currency_value_label.setFont(font)
         self.make_credit_loop_senderpubkey_label.setFont(font)
@@ -410,11 +466,11 @@ class GuiStyle(Ui_MainWindow):
         self.actionQuit.setFont(font)
         self.actionAbout.setFont(font)
         self.actionLogout.setFont(font)
-        self.actionStyle_Selection.setFont(font)
+        self.actionAppearances.setFont(font)
         self.actionConsole.setFont(font)
         self.actionCheck_for_Update.setFont(font)
         self.actionLanguage_Selection.setFont(font)
-        self.menuDebug.setFont(font)
+        self.menuHelp.setFont(font)
         self.actionSee_Log_File.setFont(font)
         # smaller fontsize
         font.setPointSize(size-2)
@@ -423,6 +479,8 @@ class GuiStyle(Ui_MainWindow):
         self.last_update_label.setFont(font)
         self.mining_button.setFont(font)
         self.staking_button.setFont(font)
+        # set config fontsize
+        configuration.ApplicationConfig().set_key_value('USER', 'fontsize', str(size))
 
     def get_style(self, s_type):
         file = open(style_path + '/' + s_type, "r")
