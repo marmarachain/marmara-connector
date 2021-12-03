@@ -1378,8 +1378,8 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             self.thread_extract_bootstrap.started.connect(self.worker_extract_bootstrap.extract_bootstrap)
             self.update_chain_textBrowser.clear()
             self.update_chain_textBrowser.setVisible(True)
-            #if stopchain_thread is None:
-            self.thread_extract_bootstrap.start()
+            if stopchain_thread is None:
+                self.thread_extract_bootstrap.start()
             else:
                 stopchain_thread.finished.connect(self.thread_extract_bootstrap.start)
             self.worker_extract_bootstrap.output.connect(self.extract_bootstrap_out)
