@@ -1323,11 +1323,11 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         blocksDialog.setFont(font)
         description_label = QtWidgets.QLabel()
         spacer_item = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        browse_button = QtWidgets.QPushButton('Browse ..')
+        browse_button = QtWidgets.QPushButton(self.tr('Browse ../ Extract'))
         browse_button.setFont(font)
         download_button = QtWidgets.QPushButton('Download')
         download_button.setFont(font)
-        description_label.setText(self.tr('You can either download or browse previously downloaded bootstrap.'))
+        description_label.setText(self.tr('You can either download or browse and extract previously downloaded bootstrap.'))
         description_label.setFont(font)
 
         blocksDialog.setLayout(blocksDialog.layout)

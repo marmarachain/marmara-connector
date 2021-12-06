@@ -78,7 +78,7 @@
               <enum>QFrame::NoFrame</enum>
              </property>
              <property name="currentIndex">
-              <number>0</number>
+              <number>1</number>
              </property>
              <widget class="QWidget" name="hostselection_page">
               <layout class="QGridLayout" name="gridLayout_5">
@@ -891,6 +891,9 @@
                      <property name="text">
                       <string/>
                      </property>
+                     <property name="textAlignment">
+                      <set>AlignLeading|AlignTop</set>
+                     </property>
                     </column>
                     <column>
                      <property name="text">
@@ -919,6 +922,9 @@
                     <column>
                      <property name="text">
                       <string>Known Address</string>
+                     </property>
+                     <property name="textAlignment">
+                      <set>AlignLeading|AlignTop</set>
                      </property>
                     </column>
                    </widget>
@@ -2011,44 +2017,6 @@
                  </property>
                 </spacer>
                </item>
-               <item row="0" column="3">
-                <widget class="QPushButton" name="copyaddress_button">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="minimumSize">
-                  <size>
-                   <width>0</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="3">
-                <widget class="QPushButton" name="copypubkey_button">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="minimumSize">
-                  <size>
-                   <width>0</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-               </item>
               </layout>
              </widget>
             </item>
@@ -2919,30 +2887,48 @@
                      <property name="text">
                       <string>Confirm</string>
                      </property>
+                     <property name="textAlignment">
+                      <set>AlignLeading|AlignTop</set>
+                     </property>
                     </column>
                     <column>
                      <property name="text">
                       <string>TxId</string>
+                     </property>
+                     <property name="textAlignment">
+                      <set>AlignLeading|AlignTop</set>
                      </property>
                     </column>
                     <column>
                      <property name="text">
                       <string>Amount</string>
                      </property>
+                     <property name="textAlignment">
+                      <set>AlignLeading|AlignTop</set>
+                     </property>
                     </column>
                     <column>
                      <property name="text">
                       <string>Maturity</string>
+                     </property>
+                     <property name="textAlignment">
+                      <set>AlignLeading|AlignTop</set>
                      </property>
                     </column>
                     <column>
                      <property name="text">
                       <string>Receiver Pubkey</string>
                      </property>
+                     <property name="textAlignment">
+                      <set>AlignLeading|AlignTop</set>
+                     </property>
                     </column>
                     <column>
                      <property name="text">
                       <string/>
+                     </property>
+                     <property name="textAlignment">
+                      <set>AlignLeading|AlignTop</set>
                      </property>
                     </column>
                    </widget>
@@ -3057,30 +3043,48 @@
                      <property name="text">
                       <string>Confirm</string>
                      </property>
+                     <property name="textAlignment">
+                      <set>AlignLeading|AlignTop</set>
+                     </property>
                     </column>
                     <column>
                      <property name="text">
                       <string>TxId</string>
+                     </property>
+                     <property name="textAlignment">
+                      <set>AlignLeading|AlignTop</set>
                      </property>
                     </column>
                     <column>
                      <property name="text">
                       <string>Amount</string>
                      </property>
+                     <property name="textAlignment">
+                      <set>AlignLeading|AlignTop</set>
+                     </property>
                     </column>
                     <column>
                      <property name="text">
                       <string>Maturity</string>
+                     </property>
+                     <property name="textAlignment">
+                      <set>AlignLeading|AlignTop</set>
                      </property>
                     </column>
                     <column>
                      <property name="text">
                       <string>Receiver Pubkey</string>
                      </property>
+                     <property name="textAlignment">
+                      <set>AlignLeading|AlignTop</set>
+                     </property>
                     </column>
                     <column>
                      <property name="text">
                       <string/>
+                     </property>
+                     <property name="textAlignment">
+                      <set>AlignLeading|AlignTop</set>
                      </property>
                     </column>
                    </widget>
@@ -3617,25 +3621,40 @@
                      <property name="text">
                       <string>Txid</string>
                      </property>
+                     <property name="textAlignment">
+                      <set>AlignLeading|AlignTop</set>
+                     </property>
                     </column>
                     <column>
                      <property name="text">
                       <string>Amount</string>
+                     </property>
+                     <property name="textAlignment">
+                      <set>AlignLeading|AlignTop</set>
                      </property>
                     </column>
                     <column>
                      <property name="text">
                       <string>Issuer Pubkey</string>
                      </property>
+                     <property name="textAlignment">
+                      <set>AlignLeading|AlignTop</set>
+                     </property>
                     </column>
                     <column>
                      <property name="text">
                       <string>Maturity</string>
                      </property>
+                     <property name="textAlignment">
+                      <set>AlignLeading|AlignTop</set>
+                     </property>
                     </column>
                     <column>
                      <property name="text">
                       <string>Create Date</string>
+                     </property>
+                     <property name="textAlignment">
+                      <set>AlignLeading|AlignTop</set>
                      </property>
                     </column>
                     <column>
@@ -3752,25 +3771,40 @@
                      <property name="text">
                       <string>Txid</string>
                      </property>
+                     <property name="textAlignment">
+                      <set>AlignLeading|AlignTop</set>
+                     </property>
                     </column>
                     <column>
                      <property name="text">
                       <string>Amount</string>
+                     </property>
+                     <property name="textAlignment">
+                      <set>AlignLeading|AlignTop</set>
                      </property>
                     </column>
                     <column>
                      <property name="text">
                       <string>Receiver Pubkey</string>
                      </property>
+                     <property name="textAlignment">
+                      <set>AlignLeading|AlignTop</set>
+                     </property>
                     </column>
                     <column>
                      <property name="text">
                       <string>Maturity</string>
                      </property>
+                     <property name="textAlignment">
+                      <set>AlignLeading|AlignTop</set>
+                     </property>
                     </column>
                     <column>
                      <property name="text">
                       <string>Create Date</string>
+                     </property>
+                     <property name="textAlignment">
+                      <set>AlignLeading|AlignTop</set>
                      </property>
                     </column>
                     <column>
@@ -5772,7 +5806,26 @@
               <property name="spacing">
                <number>6</number>
               </property>
-              <item row="0" column="2">
+              <item row="0" column="1">
+               <widget class="QPushButton" name="copyaddress_button">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="4">
                <widget class="QPushButton" name="fontsize_minus_button">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -5798,13 +5851,32 @@
                 </property>
                </spacer>
               </item>
-              <item row="0" column="1">
+              <item row="0" column="3">
                <widget class="QPushButton" name="fontsize_plus_button">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QPushButton" name="copypubkey_button">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>0</height>
+                 </size>
                 </property>
                 <property name="text">
                  <string/>
