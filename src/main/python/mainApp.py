@@ -269,7 +269,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         entries.sort()
         for item in entries:
             self.style_comboBox.addItem(item.strip('.qss'))
-        self.style_comboBox.addItem('Normal')
+        self.style_comboBox.addItem('light')
         apply_button.clicked.connect(self.get_theme_selection)
         apply_button.clicked.connect(themeDialog.close)
         themeDialog.exec_()
@@ -282,17 +282,12 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             self.set_stylesheet(data)
 
     def set_stylesheet(self, data):
-        if data == 'Normal':
+        if data == 'light':
             self.selected_stylesheet = ""
             self.set_icon_color('black')
         else:
             self.selected_stylesheet = self.get_style(data + '.qss')
-            # if data == 'dark':
-            #     self.set_icon_color('#eff0f1')
-            if data == 'light':
-                self.set_icon_color('black')
-            else:
-                self.set_icon_color('#eff0f1')
+            self.set_icon_color('#eff0f1')
         self.setStyleSheet(self.selected_stylesheet)
         self.set_font_size(self.default_fontsize)
 
@@ -1439,11 +1434,14 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             self.bottom_err_info(result_out[1])
 
     def fork_message_box(self, result, message):
-        if self.fork_count == 9:
-            message = message + '\n' + 'your node forked'
+        fork_message_detail = ""
+        if 3 <= self.fork_count <= 9:
+            message = message + '\n' + self.tr('Your node forked.')
+            fork_message_detail = self.tr("To fix your node fork, stop the chain and start again. if the fork is not "
+                                          "fixed, you may try downloading blocks.")
         self.custom_message(self.tr('Comparing Chain with Explorers'), self.tr('Checked for block height ') +
-                            result + '\n' + '\n' + message, 'information',
-                            QMessageBox.Information)
+                            result + '\n' + '\n' + message, 'information', QMessageBox.Information,
+                            detailed_text=fork_message_detail)
 
     @pyqtSlot()
     def update_chain_latest(self):

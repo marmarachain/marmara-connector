@@ -18,6 +18,8 @@ class GuiStyle(Ui_MainWindow):
         self.setupUi(self)  # loading from qtguidesign.py
         # setting params
         self.icon_path = icon_path
+        logo = QPixmap(self.icon_path + '/mcl_logo.png')
+        self.logo_label.setPixmap(logo)
         # Chain page
         self.stopchain_button.setIcon(QtGui.QIcon(self.icon_path + "/stop_icon.png"))
         self.stopchain_button.setIconSize(QtCore.QSize(32, 32))
@@ -211,6 +213,12 @@ class GuiStyle(Ui_MainWindow):
         self.serverdelete_button.setFont(font)
         self.edit_remotehost_label.setFont(font)
         self.home_button.setFont(font)
+        self.server_comboBox.setFont(font)
+        # Install Page
+        self.sudo_password_lineEdit.setFont(font)
+        self.start_install_button.setFont(font)
+        self.install_progress_textBrowser.setFont(font)
+        self.install_progressBar.setFont(font)
         # mcl page
         self.mcl_tab.tabBar().setFont(font)
         # Side panel Labels
@@ -268,6 +276,7 @@ class GuiStyle(Ui_MainWindow):
         self.importprivkey_label.setFont(font)
         self.importprivkey_button.setFont(font)
         self.privkey_lineEdit.setFont(font)
+        self.update_chain_textBrowser.setFont(font)
         # Wallet page label
         self.unlock_amount_label.setFont(font)
         self.unlock_amount_value.setFont(font)
