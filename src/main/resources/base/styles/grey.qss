@@ -133,8 +133,8 @@ QPushButton:checked
 
 QLineEdit
 {
-	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #ad801f, stop: 0.3 #b78620, stop: 0.7 #c39022, stop: 1.0 #d9a026);
-	color : #333333;
+	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #98701b, stop: 0.3 #ad801f, stop: 0.7 #ad801f, stop: 1 #98781b);
+	color : #262626;
 	border: 1px solid #343434;
 	border-radius: 2px;
 	padding: 3px;
@@ -307,8 +307,8 @@ QTableView
 QTableCornerButton::section
 {
     background-color: qlineargradient(spread:repeat, x1:1, y1:0, x2:1, y2:1, stop:0 rgba(60, 60, 60, 255),stop:1 rgba(50, 50, 50, 255));
-	border: 1px solid #000;
-    color: #fff;
+	border: 1px solid #000000
+    color: #ffffff;
 }
 
 QHeaderView::section
