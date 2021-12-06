@@ -125,6 +125,8 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.addressamount_refresh_button.clicked.connect(self.get_address_amounts)
         self.lock_button.clicked.connect(self.marmaralock_amount)
         self.unlock_button.clicked.connect(self.marmaraunlock_amount)
+        self.refresh_loopinfo_button.setVisible(False)
+        self.refresh_loopinfo_button.clicked.connect(self.get_wallet_loopinfo)
         # Coin send-receive page
         self.contacts_address_comboBox.currentTextChanged.connect(self.get_selected_contact_address)
         self.qrcode_button.clicked.connect(self.create_currentaddress_qrcode)
@@ -144,8 +146,8 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.request_dateTimeEdit.setDateTime(QDateTime.currentDateTime())
 
         # -----Make credit Loop Request
-        self.contactpubkey_makeloop_comboBox.currentTextChanged.connect(self.get_selected_contact_loop_pubkey)
-        self.contactpubkey_transferrequest_comboBox.currentTextChanged.connect(self.get_selected_contact_transfer_pubkey)
+        self.contactpk_makeloop_comboBox.currentTextChanged.connect(self.get_selected_contact_loop_pubkey)
+        self.contactpk_transferrequest_comboBox.currentTextChanged.connect(self.get_selected_contact_transfer_pubkey)
         self.make_credit_loop_matures_dateTimeEdit.setMinimumDateTime(QDateTime.currentDateTime())
         self.send_loop_request_button.clicked.connect(self.marmarareceive)
         self.send_transfer_request_button.clicked.connect(self.marmararecieve_transfer)
@@ -857,7 +859,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.worker_getinfo = marmarachain_rpc.RpcHandler()  # worker setting
         method = cp.getinfo  # setting command
         params = []
-        self.worker_thread(self.thread_getinfo, self.worker_getinfo, method, params, self.getinfo_result)  # putting in to thread
+        self.worker_thread(self.thread_getinfo, self.worker_getinfo, method, params, self.getinfo_result)
 
     @pyqtSlot(tuple)
     def getinfo_result(self, result_out):
@@ -1492,7 +1494,9 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     @pyqtSlot()
     def update_chain_finished(self):
         if self.get_installed_chain_version():
-            self.custom_message(self.tr('Update finished'), self.tr('marmara chain ') + self.get_installed_chain_version() + self.tr(' update finished.'), 'information', QMessageBox.Information)
+            self.custom_message(self.tr('Update finished'), self.tr('marmara chain ') +
+                                self.get_installed_chain_version() + self.tr(' update finished.'), 'information',
+                                QMessageBox.Information)
             self.update_chain_textBrowser.setVisible(False)
             self.check_chain_update()
         else:
@@ -1547,7 +1551,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             method = cp.convertpassphrase
             params = [seed]
             self.worker_thread(self.thread_convertpassphrase, self.worker_convert_passphrase, method, params,
-                              self.convertpassphrase_result)
+                               self.convertpassphrase_result)
 
     @pyqtSlot(tuple)
     def convertpassphrase_result(self, result_out):
@@ -1666,6 +1670,11 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         params = ['0', '0', '0', '0', pubkey]
         self.worker_thread(self.thread_marmarainfo, self.worker_marmarainfo, method, params,
                            worker_output=worker_output)
+
+    @pyqtSlot()
+    def get_wallet_loopinfo(self):
+        pubkey = self.current_pubkey_value.text()
+        self.marmarainfo(pubkey, self.marmarinfo_amount_and_loops_result)
 
     @pyqtSlot()
     def get_address_amounts(self):
@@ -2230,11 +2239,11 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.closedloops_total_amount_value_label.setText(str(result.get('totalclosed')))
         self.activeloops_pending_number_value_label.setText(str(result.get('numpending')))
         self.closedloops_total_number_value_label.setText(str(result.get('numclosed')))
-        self.numberof_total_activeloops_label_value.setText(str(result.get('n')))
+        self.numberof_total_activeloops_label_value.setText(str(len(result.get('Loops'))))
         my_total_normal = float(self.wallet_total_normal_value.text())
         my_total_activated = float(self.activated_amount_value.text())
         my_total_inloops = float(self.activeloops_total_amount_value_label.text())
-        self.stats_amount_in_activated_lineEdit.setText(self.activated_amount_value.text())
+        self.stats_amount_in_activated_lineEdit.setText(self.totalactivated_value_label.text())
         self.stats_amount_in_loops_lineEdit.setText(self.activeloops_total_amount_value_label.text())
         my_total = my_total_normal + my_total_activated + my_total_inloops
         self.my_stats_normal_label_value.setText(str(round((my_total_normal/my_total)*100, 2)))
@@ -2254,6 +2263,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
                 self.set_loop_amount_result(result)
                 self.bottom_info(self.tr('finished searching marmara blockchain for all blocks for the set pubkey'))
                 logging.info('finished searching marmara blockchain for all blocks for the set pubkey')
+                self.refresh_loopinfo_button.setVisible(True)
             if result.get('result') == "error":
                 self.bottom_info(result.get('error'))
                 logging.error(result.get('error'))
@@ -2454,22 +2464,22 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             self.receiver_address_lineEdit.clear()
 
     def get_contact_names_pubkeys(self):
-        self.contactpubkey_makeloop_comboBox.clear()
-        self.contactpubkey_transferrequest_comboBox.clear()
+        self.contactpk_makeloop_comboBox.clear()
+        self.contactpk_transferrequest_comboBox.clear()
         self.make_credit_loop_senderpubkey_lineEdit.clear()
         self.transfer_senderpubkey_lineEdit.clear()
-        self.contactpubkey_makeloop_comboBox.addItem(self.tr('Contacts'))
-        self.contactpubkey_transferrequest_comboBox.addItem(self.tr('Contacts'))
+        self.contactpk_makeloop_comboBox.addItem(self.tr('Contacts'))
+        self.contactpk_transferrequest_comboBox.addItem(self.tr('Contacts'))
         contacts_data = configuration.ContactsSettings().read_csv_file()
         for name in contacts_data:
             if name[0] != 'Name':
-                self.contactpubkey_makeloop_comboBox.addItem(name[0])
-                self.contactpubkey_transferrequest_comboBox.addItem(name[0])
+                self.contactpk_makeloop_comboBox.addItem(name[0])
+                self.contactpk_transferrequest_comboBox.addItem(name[0])
 
     @pyqtSlot()
     def get_selected_contact_loop_pubkey(self):
         contacts_data = configuration.ContactsSettings().read_csv_file()
-        selected_contactpubkey_loop = contacts_data[self.contactpubkey_makeloop_comboBox.currentIndex()]
+        selected_contactpubkey_loop = contacts_data[self.contactpk_makeloop_comboBox.currentIndex()]
         if selected_contactpubkey_loop[2] != 'Pubkey':
             self.make_credit_loop_senderpubkey_lineEdit.setText(selected_contactpubkey_loop[2])
         if selected_contactpubkey_loop[2] == 'Pubkey':
@@ -2478,7 +2488,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     @pyqtSlot()
     def get_selected_contact_transfer_pubkey(self):
         contacts_data = configuration.ContactsSettings().read_csv_file()
-        selected_contactpubkey_transfer = contacts_data[self.contactpubkey_transferrequest_comboBox.currentIndex()]
+        selected_contactpubkey_transfer = contacts_data[self.contactpk_transferrequest_comboBox.currentIndex()]
         if selected_contactpubkey_transfer[2] != 'Pubkey':
             self.transfer_senderpubkey_lineEdit.setText(selected_contactpubkey_transfer[2])
         if selected_contactpubkey_transfer[2] == 'Pubkey':

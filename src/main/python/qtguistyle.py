@@ -107,6 +107,8 @@ class GuiStyle(Ui_MainWindow):
         self.unlock_button.setIconSize(QtCore.QSize(32, 32))
         self.addressamount_refresh_button.setIcon(qta.icon('mdi.refresh', color=color))
         self.addressamount_refresh_button.setIconSize(QtCore.QSize(24, 24))
+        self.refresh_loopinfo_button.setIcon(qta.icon('mdi.refresh', color=color))
+        self.refresh_loopinfo_button.setIconSize(QtCore.QSize(24, 24))
         # Coin Send-Receive page
         self.coinsend_button.setIcon(qta.icon('mdi.database-export', color=color))
         self.coinsend_button.setIconSize(QtCore.QSize(24, 24))
@@ -290,6 +292,7 @@ class GuiStyle(Ui_MainWindow):
         self.current_pubkey_value.setFont(font)
         self.currentaddress_label.setFont(font)
         self.currentaddress_value.setFont(font)
+        self.refresh_loopinfo_button.setFont(font)
         # Coin send receive page
         self.transaction_startdate_label.setFont(font)
         self.transaction_enddate_label.setFont(font)
@@ -330,14 +333,14 @@ class GuiStyle(Ui_MainWindow):
         self.make_credit_loop_currency_value_label.setFont(font)
         self.make_credit_loop_senderpubkey_label.setFont(font)
         self.make_credit_loop_senderpubkey_lineEdit.setFont(font)
-        self.contactpubkey_makeloop_comboBox.setFont(font)
+        self.contactpk_makeloop_comboBox.setFont(font)
         self.create_transfer_request_label.setFont(font)
         self.transfer_senderpubkey_label.setFont(font)
         self.transfer_senderpubkey_lineEdit.setFont(font)
         self.send_transfer_request_button.setFont(font)
         self.transfer_baton_label.setFont(font)
         self.transfer_baton_lineEdit.setFont(font)
-        self.contactpubkey_transferrequest_comboBox.setFont(font)
+        self.contactpk_transferrequest_comboBox.setFont(font)
         self.total_issuer_loop_amount_label.setFont(font)
 
         # Active Loops
