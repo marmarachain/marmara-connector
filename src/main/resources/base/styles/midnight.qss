@@ -58,7 +58,7 @@ QMenuBar::item
 
 QMenuBar::item:selected
 {
-	background-color: rgba(52, 103, 146, 60%);
+	background-color: rgba(52, 103, 146, 0.6);
 	border: 1px solid #346792;
 	color: #ffffff;
 }
@@ -98,7 +98,7 @@ QMenu::item:disabled
 
 QMenu::item:selected
 {
-	background-color: rgba(52, 103, 146);
+	background-color: rgba(52, 103, 146, 0.6);
 	border: 1px solid #5692c2;
 	color: #E0E1E3;
 }
@@ -130,7 +130,7 @@ QPushButton:disabled
 
 QPushButton:hover
 {
-	background-color: rgba(52, 103, 146, 60%);
+	background-color: rgba(52, 103, 146, 0.6);
 	border: 1px solid #828c97;
 }
 
@@ -255,7 +255,7 @@ QComboBox QAbstractItemView
 
 QComboBox:on
 {
-    background-color: rgba(52, 103, 146, 60%);
+    background-color: rgba(52, 103, 146, 0.6);
 	color: #000000;
 }
 
@@ -306,7 +306,7 @@ QCalendarWidget QAbstractItemView:enabled
 {
 	color: white;
 	background-color: #121a21;
-	selection-background-color: rgba(52, 103, 146, 20%);
+	selection-background-color: rgba(52, 103, 146, 0.2);
 	selection-color: rgb(0, 255, 0);
 }
 
