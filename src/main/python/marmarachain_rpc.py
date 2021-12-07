@@ -4,9 +4,7 @@ import platform
 import time
 import subprocess
 import pathlib
-import api_request
 import logging
-
 from PyQt5 import QtCore
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
 import remote_connection
@@ -18,7 +16,7 @@ import api_request
 marmara_path = None
 is_local = None
 logging.getLogger(__name__)
-
+ssh_client = None
 
 def set_connection_local():
     global is_local
@@ -29,6 +27,9 @@ def set_connection_remote():
     global is_local
     is_local = False
 
+def set_sshclient(client):
+    global ssh_client
+    ssh_client = client
 
 def set_marmara_path(path):
     global marmara_path
@@ -53,16 +54,6 @@ def set_remote(command):
     return command
 
 
-# def set_local(command):
-#     if platform.system() == 'Linux' or platform.system() == 'Darwin':
-#         command = cp.linux_cli + command
-#     if platform.system() == 'Windows':
-#         if command.find("{") > 0:
-#             command = command.replace('"', '\\"').replace("'{", '"{').replace("}'", '}"')
-#         command = cp.windows_cli + command
-#     return command
-
-
 def set_pid_local(command):
     if platform.system() == 'Linux' or platform.system() == 'Darwin':
         return command
@@ -81,8 +72,10 @@ def do_search_path(cmd):
         except Exception as error:
             logging.error(error)
     else:
+        if not ssh_client:
+            set_sshclient(remote_connection.server_ssh_connect())
         try:
-            mcl_path = remote_connection.server_execute_command(cmd)
+            mcl_path = remote_connection.server_execute_command(cmd, ssh_client)
             return mcl_path[0].split('\n'), mcl_path[1].split('\n'),
         except Exception as error:
             logging.error(error)
@@ -99,14 +92,16 @@ def search_marmarad_path():  # will be added for windows search
         else:
             windows = False
     else:
-        pwd_r = remote_connection.server_execute_command('pwd')
-        time.sleep(2)
-        logging.info('pwd remote' + pwd_r[0])
+        if not ssh_client:
+            set_sshclient(remote_connection.server_ssh_connect())
+        pwd_r = remote_connection.server_execute_command('pwd', ssh_client)
+        time.sleep(0.2)
         if not pwd_r[0]:
-            pwd_r = remote_connection.server_execute_command('pwd')
-            time.sleep(1)
-        pwd = str(pwd_r[0].replace('\n', ''))
-        logging.info('pwd_remote :' + pwd)
+            set_sshclient(remote_connection.server_ssh_connect())
+            pwd_r = remote_connection.server_execute_command('pwd', ssh_client)
+            time.sleep(0.1)
+        pwd = str(pwd_r[0]).replace('\n', '').replace('\r', '')
+        logging.info('pwd_remote= ' + pwd)
     search_list_linux = ['ls ' + pwd, 'ls ' + pwd + '/marmara/src', 'ls ' + pwd + '/komodo/src']
     search_list_windows = ['PowerShell ls ' + pwd + '\marmara -name']
     if windows:
@@ -121,14 +116,13 @@ def check_path_linux(search_list):
     i = 0
     while True:
         search_path = search_list[i]
-        logging.info('search_path :' + search_path)
+        logging.info('search_path= ' + search_path)
         path = do_search_path(search_path)
-        # logging.debug(path)
         if not path[0] == ['']:
             if 'komodod' in path[0] and 'komodo-cli' in path[0]:
                 out_path = search_path
                 out_path = out_path.replace('ls ', '') + '/'
-                logging.info('out_path :' + out_path)
+                logging.info('out_path= ' + out_path)
                 break
             else:
                 i = i + 1
@@ -144,7 +138,7 @@ def check_path_windows(search_list):
     i = 0
     while True:
         search_path = search_list[i]
-        logging.info('search_path :' + search_path)
+        logging.info('search_path= ' + search_path)
         path = do_search_path(search_path)
         logging.info(path)
         if not path[0] == ['']:
@@ -152,7 +146,7 @@ def check_path_windows(search_list):
             if 'komodod' in out and 'komodo-cli' in out:
                 out_path = search_path.replace('` ', ' ')
                 out_path = out_path.replace('PowerShell ls ', '').replace(' -name', '') + '\\'
-                logging.info('out_path :' + out_path)
+                logging.info('out_path= ' + out_path)
                 break
             else:
                 i = i + 1
@@ -189,6 +183,7 @@ def start_chain(pubkey=None):
             marmara_param = marmara_param + ' -pubkey=' + str(pubkey)
         try:
             start = remote_connection.server_start_chain(marmara_param)
+            time.sleep(0.3)
             start.close()
             logging.info('shell closed')
         except Exception as error:
@@ -206,8 +201,10 @@ def mcl_chain_status():
         except Exception as error:
             logging.error(error)
     else:
+        if not ssh_client:
+            set_sshclient(remote_connection.server_ssh_connect())
         try:
-            marmarad_pid = remote_connection.server_execute_command('pidof komodod')
+            marmarad_pid = remote_connection.server_execute_command('pidof komodod', ssh_client)
             return marmarad_pid
         except Exception as error:
             logging.error(error)
@@ -245,11 +242,14 @@ def handle_rpc(method, params):
             logging.info('------sending command----- \n ' + method)
         else:
             logging.info('------sending command----- \n ' + cmd)
+        if not ssh_client:
+            set_sshclient(remote_connection.server_ssh_connect())
         try:
-            result = remote_connection.server_execute_command(cmd)
+            result = remote_connection.server_execute_command(cmd, ssh_client)
             return result
         except Exception as error:
             logging.error(error)
+            set_sshclient(remote_connection.server_ssh_connect())
             return None, error, 1
 
 class RpcHandler(QtCore.QObject):
@@ -290,10 +290,10 @@ class RpcHandler(QtCore.QObject):
         if is_local:
             path_key = 'local'
         if not is_local:
-            path_key = remote_connection.server_username
+            path_key = remote_connection.server_hostname
         marmarad_path = configuration.ApplicationConfig().get_value('PATHS', path_key)
         if marmarad_path:  # if these is path in configuration
-            self.output.emit('marmarad_path :' + marmarad_path)
+            self.output.emit('marmarad_path= ' + marmarad_path)
             if platform.system() == 'Windows':
                 ls_cmd = 'PowerShell ls ' + marmarad_path.replace(' ', '` ') + ' -name'
             else:
@@ -398,7 +398,6 @@ class RpcHandler(QtCore.QObject):
                 elif validation[1]:
                     logging.info(validation[1])
                 address_js = {'addresses': [address]}
-                # command = cp.getaddressbalance + "'" + json.dumps(address_js) + "'"
                 amounts = handle_rpc(cp.getaddressbalance, [address_js])
                 if amounts[0]:
                     amount = json.loads(amounts[0])['balance']
@@ -468,18 +467,161 @@ class RpcHandler(QtCore.QObject):
             self.finished.emit()
 
     @pyqtSlot()
+    def txids_detail(self):
+        get_txids = handle_rpc(self.method, self.params)
+        if get_txids[2] == 200 or get_txids[2] == 0:
+            if get_txids[0] or get_txids[0] == []:
+                details_list = []
+                if len(get_txids[0]) != 0:
+                    for txid in json.loads(get_txids[0]):
+                        txid_detail = handle_rpc(cp.gettransaction, [txid])
+                        if txid_detail[2] == 200 or txid_detail[2] == 0:
+                            if txid_detail[0]:
+                                detail = json.loads(txid_detail[0])
+                                amount = detail.get('amount')
+                                block_time = detail.get('blocktime')
+                                txid_list = [txid, amount, block_time]
+                                details_list.append(txid_list)
+                        else:
+                            print(txid_detail[1])
+                            self.finished.emit()
+                            break
+                    result = details_list, 0
+                    self.command_out.emit(result)
+                    self.finished.emit()
+                else:
+                    result = details_list, 0
+                    self.command_out.emit(result)
+                    self.finished.emit()
+        else:
+            result_err = get_txids[1], 1
+            self.command_out.emit(result_err)
+            self.finished.emit()
+
+    @pyqtSlot()
     def extract_bootstrap(self):
+        cmd_list = []
+        if os.path.exists(self.method + '/blocks'):
+            if platform.system() == 'Linux':
+                cmd_list.append('rm -r ' + self.method + '/blocks')
+            if platform.system() == 'Win64' or platform.system() == 'Windows':
+                cmd_list.append('rmdir /s /q ' + self.method + '\blocks')
+        if os.path.exists(self.method + '/chainstate'):
+            if platform.system() == 'Linux':
+                cmd_list.append('rm -r ' + self.method + '/chainstate')
+            if platform.system() == 'Win64' or platform.system() == 'Windows':
+                cmd_list.append('rmdir /s /q ' + self.method + '\chainstate')
+        cmd_list.append(self.command)
+        self.do_execute_extract(cmd_list)
+
+    def do_execute_extract(self, cmd_list):
         pwd_home = str(pathlib.Path.home())
-        # print(self.command)
-        proc = subprocess.Popen(self.command, cwd=pwd_home, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        retvalue = proc.poll()
-        while True:
-            stdout = proc.stdout.readline().replace(b'\n', b'').decode()
-            self.output.emit(str(stdout))
-            if not stdout:
-                break
-        self.output.emit(str(retvalue))
+        for cmd in cmd_list:
+            print(cmd)
+            proc = subprocess.Popen(cmd, cwd=pwd_home, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            retvalue = proc.poll()
+            while True:
+                stdout = proc.stdout.readline().replace(b'\n', b'').replace(b'\r', b'').decode()
+                self.output.emit(str(stdout))
+                print(stdout)
+                logging.info(str(stdout))
+                if not stdout:
+                    break
+            self.output.emit(str(retvalue))
         self.finished.emit()
+
+    def get_loop_detail(self, txid, holder=False):
+        loop_detail = handle_rpc(cp.marmaracreditloop, [txid])
+        if loop_detail[2] == 200 or loop_detail[2] == 0:
+            if loop_detail[0]:
+                loop_amount = json.loads(loop_detail[0]).get('amount')
+                loop_matures = json.loads(loop_detail[0]).get('matures')
+                pubkey = json.loads(loop_detail[0]).get('batonpk')
+                creditloop = json.loads(loop_detail[0]).get('creditloop')
+                loop_address = json.loads(loop_detail[0]).get('LockedInLoopCCaddr')
+                loop_create_block = ""
+                for item in creditloop:
+                    if item.get('funcid') == 'B':
+                        loop_create_block = item.get('height')
+                        issuer_pk = item.get('issuerpk')
+                        if holder:
+                            pubkey = issuer_pk
+                        break
+                return [txid, loop_amount, pubkey, loop_matures, loop_create_block, loop_address]
+        else:
+            print(loop_detail[1])
+            return False
+
+    @pyqtSlot()
+    def active_loops_details(self):
+        marmarainfo = handle_rpc(self.method, self.params)
+        if marmarainfo[2] == 200 or marmarainfo[2] == 0:
+            if marmarainfo[0]:
+                marmarainfo_result = json.loads(marmarainfo[0])
+                issuances_issuer = marmarainfo_result.get('issuances')
+                issuer_details_list = []
+                for issuance in issuances_issuer:
+                    issuance_details = self.get_loop_detail(issuance)
+                    if issuance_details:
+                        issuer_details_list.append(issuance_details)
+                    else:
+                        logging.error('some error in getting loopdetail')
+                        print('some error in getting loopdetail')
+                        self.finished.emit()
+                        break
+                result = issuer_details_list, marmarainfo_result, 0
+                self.command_out.emit(result)
+                self.finished.emit()
+        else:
+            result_err = None, marmarainfo[1], 1
+            self.command_out.emit(result_err)
+            self.finished.emit()
+
+    @pyqtSlot()
+    def holder_loop_detail(self):
+        marmaraholderloops = handle_rpc(self.method, self.params)
+        if marmaraholderloops[2] == 200 or marmaraholderloops[2] == 0:
+            if marmaraholderloops[0]:
+                holer_result = json.loads(marmaraholderloops[0])
+                issuances_holder = holer_result.get('issuances')
+                holder_details_list = []
+                for issuance in issuances_holder:
+                    issuance_details = self.get_loop_detail(issuance, holder=True)
+                    if issuance_details:
+                        holder_details_list.append(issuance_details)
+                    else:
+                        logging.error('some error in getting loopdetail')
+                        print('some error in getting loopdetail')
+                        self.finished.emit()
+                        break
+                result = holder_details_list, holer_result, 0
+                self.command_out.emit(result)
+                self.finished.emit()
+        else:
+            result_err = None, marmaraholderloops[1], 1
+            self.command_out.emit(result_err)
+            self.finished.emit()
+
+    @pyqtSlot()
+    def check_fork_api(self):
+        getblock = handle_rpc(self.method, self.params)
+        if getblock[2] == 200 or getblock[2] == 0:
+            if getblock[0]:
+                result_json = json.loads(getblock[0])
+                block = result_json.get('height')
+                hash = result_json.get('hash')
+                previous_hash = result_json.get('previousblockhash')
+                # next_hash = result_json.get('nextblockhash')
+                result_list = [block, hash, previous_hash]
+                blocks_detail_api = api_request.get_blocks_details(block, hash)
+                result_out = result_list, blocks_detail_api, 0
+                self.command_out.emit(result_out)
+                self.finished.emit()
+        else:
+            result_err = None, getblock[1], 1
+            self.command_out.emit(result_err)
+            self.finished.emit()
+
 
 
 class Autoinstall(QtCore.QObject):
@@ -491,13 +633,14 @@ class Autoinstall(QtCore.QObject):
         super(Autoinstall, self).__init__()
         self.mcl_download_url = api_request.latest_marmara_download_url()
         self.mcl_linux_zipname = 'MCL-linux.zip'
+        self.mcl_win_zipname = 'MCL-win.zip'
         self.linux_command_list = ['sudo apt-get update', 'sudo apt-get install libgomp1 -y',
                                    'sudo wget ' + str(self.mcl_download_url) + '/' + self.mcl_linux_zipname +
                                    " -O " + self.mcl_linux_zipname, 'sudo apt-get install unzip -y',
                                    'unzip -o MCL-linux.zip', 'sudo chmod +x komodod komodo-cli fetch-params.sh',
                                    './fetch-params.sh']
 
-        self.mcl_win_zipname = 'MCL-win.zip'
+
         self.win_command_list = ['mkdir marmara',
                                  'curl -L ' + str(self.mcl_download_url) + '/' + self.mcl_win_zipname +
                                  " > " + self.mcl_win_zipname, 'PowerShell Expand-Archive .\MCL-win.zip . -Force',
@@ -626,11 +769,72 @@ class Autoinstall(QtCore.QObject):
         self.finished.emit()
         # update = subprocess.Popen
 
+    @pyqtSlot()
+    def update_chain(self):
+        if is_local:
+            self.local_chain_update()
+        if not is_local:
+            self.remote_chain_update()
+
+    def local_chain_update(self):
+        cmd_list = None
+        if platform.system() == 'Linux':
+            cmd_list = ['wget ' + str(self.mcl_download_url) + '/' + self.mcl_linux_zipname + " -O " +
+                        self.mcl_linux_zipname, 'unzip -o ' + self.mcl_linux_zipname]
+        if platform.system() == 'Windows':
+            cmd_list = [self.win_command_list[1], self.win_command_list[2]]
+        if cmd_list:
+            for cmd in cmd_list:
+                proc = subprocess.Popen(cmd, cwd=marmara_path, shell=True, stdin=subprocess.PIPE,
+                                        stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                while not proc.stdout.closed:
+                    out = proc.stdout.readline()
+                    try:
+                        out_d = out.decode().replace('\n', '')
+                    except Exception as e:
+                        out_d = e
+                    logging.info(out_d)
+                    self.out_text.emit(out_d)
+                    if not out:
+                        proc.stdout.close()
+                exit_status = proc.poll()
+                logging.info('exit_status  ' + str(exit_status))
+                proc.terminate()
+            self.finished.emit()
+
+    def remote_chain_update(self):
+        cmd_list = ['curl -L ' + str(self.mcl_download_url) + '/' + self.mcl_linux_zipname + ' > ' + marmara_path +
+                    self.mcl_linux_zipname, 'unzip -o ' + marmara_path + self.mcl_linux_zipname + ' -d ' + marmara_path]
+        sshclient = remote_connection.server_ssh_connect()
+        for cmd in cmd_list:
+            print(cmd)
+            session = sshclient.get_transport().open_session()
+            session.set_combine_stderr(True)
+            session.get_pty()
+            session.exec_command(cmd)
+            stdout = session.makefile('rb', -1)
+            while not stdout.channel.exit_status_ready():
+                if stdout.channel.recv_ready():
+                    out = stdout.channel.recv(65535)
+                    try:
+                        out_d = out.decode()
+                    except Exception as e:
+                        out_d = e
+                    logging.info(str(out_d))
+                    self.out_text.emit(str(out_d))
+                else:
+                    time.sleep(1)
+            exit_status = session.recv_exit_status()  # Blocking call
+            logging.info(exit_status)
+            session.close()
+        self.finished.emit()
+        sshclient.close()
 
 class ApiWorker(QtCore.QObject):
     out_list = pyqtSignal(list)
     out_dict = pyqtSignal(dict)
     out_err = pyqtSignal(str)
+    out_str = pyqtSignal(str)
     finished = pyqtSignal()
 
     def __init__(self):
@@ -644,10 +848,7 @@ class ApiWorker(QtCore.QObject):
     @pyqtSlot()
     def exchange_api_run(self):
         mcl_market_values = api_request.mcl_exchange_market(self.api_key)
-        if type(mcl_market_values) is list:
-            self.out_list.emit(mcl_market_values)
-        if type(mcl_market_values) is str:
-            self.out_err.emit(mcl_market_values)
+        self.out_list.emit(mcl_market_values)
         self.finished.emit()
 
     @pyqtSlot()
@@ -658,3 +859,13 @@ class ApiWorker(QtCore.QObject):
         if type(mcl_stats) is str:
             self.out_err.emit(mcl_stats)
         self.finished.emit()
+
+    @pyqtSlot()
+    def mcl_update_check(self):
+        tag_name = api_request.git_request_tag(api_request.marmara_api_url)
+        if type(tag_name) is str:
+            self.out_str.emit(tag_name)
+            self.finished.emit()
+        else:
+            self.out_err.emit('Connection Error')
+            self.finished.emit()

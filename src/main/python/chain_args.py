@@ -31,5 +31,7 @@ marmaraissue = 'marmaraissue'  # receiverpk + '{"avalcount":"n", "autosettlement
 # "autoinsurance":"true"|"false", "disputeexpires":"offset", "EscrowOn":"true"|"false", "BlockageAmount":"amount" }'
 # + requesttxid
 marmaraholderloops = 'marmaraholderloops'  # firstheight + lastheight + minamount + maxamount + pk + [currency]
-getaddresstxids = 'getaddresstxids' #  '{"addresses": ["address"], "start": 799712,  "end": 799734}'
+getaddresstxids = 'getaddresstxids'  # '{"addresses": ["address"], "start": 799712,  "end": 799734}'
 marmaralistactivatedaddresses = 'marmaralistactivatedaddresses'
+gettransaction = 'gettransaction'  # + txid
+getblock = 'getblock'  # + block

@@ -5,10 +5,7 @@ import platform
 import re
 from pycurl import Curl
 import logging
-try:
-    from StringIO import StringIO
-except ImportError:
-    from io import BytesIO as StringIO
+from io import BytesIO as StringIO
 logging.getLogger(__name__)
 
 

@@ -1,4 +1,5 @@
 import csv
+import os
 from appdirs import *
 from configparser import ConfigParser, Error
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
@@ -47,6 +48,8 @@ class ApplicationConfig:
                 self.config.add_section('PATHS')
                 self.config.add_section('USER')
                 self.config.set('USER', 'lang', 'EN')
+                self.config.set('USER', 'style', 'light')
+                self.config.set('USER', 'fontsize', '12')
                 self.config.write(configfile)
 
     def set_key_value(self, section, key, value):
