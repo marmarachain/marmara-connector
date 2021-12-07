@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1100</width>
+    <width>960</width>
     <height>720</height>
    </rect>
   </property>
@@ -24,14 +24,14 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="main_tab">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="login_tab">
        <attribute name="title">
         <string>Login</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_4">
-        <item row="2" column="1">
+        <item row="4" column="1">
          <widget class="QFrame" name="home_frame">
           <property name="frameShape">
            <enum>QFrame::WinPanel</enum>
@@ -47,10 +47,6 @@
             <widget class="QPushButton" name="home_button">
              <property name="text">
               <string>Home</string>
-             </property>
-             <property name="icon">
-              <iconset>
-               <normaloff>../../../../../../../../MarmaraQt/src/main/resources/base/images/exit_icon.png</normaloff>../../../../../../../../MarmaraQt/src/main/resources/base/images/exit_icon.png</iconset>
              </property>
             </widget>
            </item>
@@ -70,7 +66,20 @@
           </layout>
          </widget>
         </item>
-        <item row="1" column="1">
+        <item row="0" column="1">
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="3" column="1">
          <widget class="QFrame" name="login_frame">
           <property name="acceptDrops">
            <bool>false</bool>
@@ -581,7 +590,7 @@
           </layout>
          </widget>
         </item>
-        <item row="3" column="1">
+        <item row="5" column="1">
          <widget class="QLabel" name="login_message_label">
           <property name="font">
            <font>
@@ -602,17 +611,7 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="1">
-         <widget class="QLabel" name="logo_label">
-          <property name="text">
-           <string/>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="1">
+        <item row="8" column="1">
          <spacer name="verticalSpacer_2">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -625,7 +624,30 @@
           </property>
          </spacer>
         </item>
-        <item row="1" column="2">
+        <item row="1" column="1">
+         <widget class="QLabel" name="logo_label">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="9" column="1">
+         <spacer name="verticalSpacer_49">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="3" column="2">
          <spacer name="horizontalSpacer_2">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -638,7 +660,33 @@
           </property>
          </spacer>
         </item>
-        <item row="1" column="0">
+        <item row="7" column="1">
+         <spacer name="verticalSpacer_50">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="6" column="1">
+         <spacer name="verticalSpacer_42">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="3" column="0">
          <spacer name="horizontalSpacer">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -647,6 +695,19 @@
            <size>
             <width>40</width>
             <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="2" column="1">
+         <spacer name="verticalSpacer_51">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
            </size>
           </property>
          </spacer>
@@ -701,7 +762,7 @@
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>2</number>
           </property>
           <property name="iconSize">
            <size>
@@ -6299,7 +6360,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1100</width>
+     <width>960</width>
      <height>22</height>
     </rect>
    </property>
