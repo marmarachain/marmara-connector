@@ -233,9 +233,9 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
 
     def center_ui(self):
         qr = self.frameGeometry()
-        center_point = QDesktopWidget().availableGeometry().center()
         top_point = QDesktopWidget().availableGeometry().top()
-        qr.moveCenter(QtCore.QPoint(center_point.x(), top_point))
+        center_point = QDesktopWidget().availableGeometry().center().x()
+        qr.moveTopLeft(QtCore.QPoint(center_point-(qr.width()/2), top_point))
         self.move(qr.topLeft())
 
     def get_default_fontsize(self):
