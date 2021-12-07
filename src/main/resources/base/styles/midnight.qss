@@ -241,7 +241,6 @@ QComboBox
     border-radius: 3px;
     padding: 7px;
     color: #ffffff;
-    height: 20px;
 }
 
 QComboBox QAbstractItemView
