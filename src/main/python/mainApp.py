@@ -573,8 +573,6 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
 
     @pyqtSlot(str)
     def check_marmara_path_output(self, output):
-        logging.info('Checking marmara path')
-        logging.info('login:' + output)
         if output == 'get marmarad path':
             self.login_page_info(self.tr('Getting marmara chain path from config file'))
             logging.info('Getting marmara chain path from config file')
@@ -989,12 +987,12 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
                 if message_box == QMessageBox.Yes:
                     self.mining_button.setChecked(False)  # Close mining and set staking mode
                     self.cpu_core_selection_off()
-                    logging.debug('setgenerate True 0')
+                    logging.info('setgenerate True 0')
                     self.setgenerate([True, 0])
                 if message_box == QMessageBox.No:  # Abort selecting staking and continue mining
                     self.staking_button.setChecked(False)
             else:  # set staking mode
-                logging.debug('setgenerate True 0')
+                logging.info('setgenerate True 0')
                 self.setgenerate([True, 0])
         else:  # Staking button status is False
             message_box = self.custom_message(self.tr('Turning off Staking'),
@@ -1002,7 +1000,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
                                               QMessageBox.Question)
 
             if message_box == QMessageBox.Yes:
-                logging.debug('setgenerate False')
+                logging.info('setgenerate False')
                 self.setgenerate([False])
             if message_box == QMessageBox.No:
                 self.staking_button.setChecked(True)  # Abort selecting staking button
@@ -1018,13 +1016,13 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
                                                   QMessageBox.Question)
                 if message_box == QMessageBox.Yes:
                     self.staking_button.setChecked(False)  # Close staking and turn on mining
-                    logging.debug('setgenerate True 1')
+                    logging.info('setgenerate True 1')
                     self.setgenerate([True, 1])
                     self.cpu_core_selection_on()
                 if message_box == QMessageBox.No:  # Abort selecting mining and continue staking
                     self.mining_button.setChecked(False)
             else:  # Staking is off turn on Mining mode
-                logging.debug('setgenerate True 1')
+                logging.info('setgenerate True 1')
                 self.cpu_core_selection_on()
                 self.setgenerate([True, 1])
         else:  # Mining button status is False.
@@ -1032,7 +1030,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
                                               self.tr('You are about to turn off mining. Are you sure?'), "question",
                                               QMessageBox.Question)
             if message_box == QMessageBox.Yes:
-                logging.debug('setgenerate False')
+                logging.info('setgenerate False')
                 self.cpu_core_selection_off()
                 self.setgenerate([False])
             if message_box == QMessageBox.No:
@@ -1058,7 +1056,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     @pyqtSlot(tuple)
     def setgenerate_result(self, result_out):
         if result_out[0]:
-            logging.debug('\n---- getgenerate result------\n' + str(json.loads(result_out[0])))
+            logging.info('\n---- getgenerate result------\n' + str(json.loads(result_out[0])))
             result = json.loads(result_out[0])
             if result.get('staking') is True and result.get('generate') is False:
                 self.bottom_info(self.tr('Staking ON'))
@@ -1257,8 +1255,8 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     def start_chain_with_pubkey(self):
         button = self.sender()
         index = self.addresses_tableWidget.indexAt(button.pos())
-        logging.debug(index.row())
-        logging.debug(index.column())
+        logging.info(index.row())
+        logging.info(index.column())
         if index.isValid():
             pubkey = self.addresses_tableWidget.item(index.row(), 3).text()
             self.start_chain_settings(pubkey)
@@ -1886,7 +1884,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
                 for txid in result_out[0]:
                     self.bottom_info(self.tr("fetched transactions between selected dates."))
                     row_number = result_out[0].index(txid)
-                    btn_explorer = QPushButton(qta.icon('mdi.firefox'), '')
+                    btn_explorer = QPushButton(qta.icon('mdi.firefox', color='#728FCE'), '')
                     btn_explorer.setIconSize(QSize(24, 24))
                     txid_date = datetime.fromtimestamp(txid[2]).date()
                     self.transactions_tableWidget.setCellWidget(row_number, 0, btn_explorer)
@@ -2008,7 +2006,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.loop_request_tableWidget.setColumnHidden(5, True)
         for row in credit_request_list:
             row_number = credit_request_list.index(row)
-            btn_review = QPushButton(qta.icon('mdi.text-box-check-outline'), '')
+            btn_review = QPushButton(qta.icon('mdi.text-box-check-outline', color='#728FCE'), '')
             btn_review.setIconSize(QSize(24, 24))
             self.loop_request_tableWidget.setCellWidget(row_number, 0, btn_review)
             self.loop_request_tableWidget.setItem(row_number, 1, QTableWidgetItem(str(row[0])))
@@ -2037,7 +2035,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.transferrequests_tableWidget.setColumnHidden(5, True)
         for row in transfer_request_list:
             row_number = transfer_request_list.index(row)
-            btn_review = QPushButton(qta.icon('mdi.text-box-check-outline'), '')
+            btn_review = QPushButton(qta.icon('mdi.text-box-check-outline', color='#728FCE'), '')
             btn_review.setIconSize(QSize(24, 24))
             self.transferrequests_tableWidget.setCellWidget(row_number, 0, btn_review)
             self.transferrequests_tableWidget.setItem(row_number, 1, QTableWidgetItem(str(row[0])))
@@ -2225,6 +2223,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         if result_out[2] == 0:
             self.set_activeloops_table(result_out[0])
             self.set_loop_amount_result(result_out[1])
+            self.refresh_loopinfo_button.setVisible(True)
         if result_out[2] == 1:
             print(result_out[1])
             self.bottom_err_info(result_out[1])
@@ -2421,14 +2420,33 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             if result.get('result') == "error":
                 self.bottom_info(result.get('error'))
                 self.clear_lq_txid_search_result()
-            if result.get('result') == "success":
+            else:
                 creditloop = result.get('creditloop')
-                self.loopquery_baton_value.setText(str(result.get('batontxid')))
-                self.loopquery_amount_value.setText(str(result.get('amount')))
+                if str(result.get('funcid')) == 'S':
+                    baton = str(result.get('settlement'))
+                    batonpk = str(result.get('pubkey'))
+                    amount = str(result.get('collected'))
+                    self.loopquery_baton_label.setText(self.tr('Txid (Settlement)'))
+                    issuerpk = str((creditloop[0]).get('issuerpk'))
+                elif str(result.get('funcid')) == 'B':
+                    issuerpk = str(result.get('issuerpk'))
+                    amount = str(result.get('amount'))
+                    baton = str(result.get('createtxid'))
+                    batonpk = str(self.tr('Not issued yet!'))
+                    self.loopquery_baton_label.setText(self.tr('Txid (baton)'))
+                else:
+                    baton = str(result.get('batontxid'))
+                    batonpk = str(result.get('batonpk'))
+                    amount = str(result.get('amount'))
+                    issuerpk = str((creditloop[0]).get('issuerpk'))
+                    self.loopquery_baton_label.setText(self.tr('Txid (baton)'))
+
+                self.loopquery_baton_value.setText(baton)
+                self.loopquery_amount_value.setText(amount)
                 self.loopquery_currency_value.setText(result.get('currency'))
                 self.loopquery_matures_value.setText(str(result.get('matures')))
-                self.loopquery_batonpk_value.setText(str(result.get('batonpk')))
-                self.loopquery_issuer_value.setText(str((creditloop[0]).get('issuerpk')))
+                self.loopquery_batonpk_value.setText(batonpk)
+                self.loopquery_issuer_value.setText(issuerpk)
                 self.loopquery_transfercount_value.setText(str(result.get('n')))
                 self.bottom_info(self.tr('credit loop info finished'))
                 logging.info('credit loop info finished')
