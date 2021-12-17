@@ -68,7 +68,7 @@ def do_search_path(cmd):
             mcl_path = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
             mcl_path.wait()
             mcl_path.terminate()
-            return mcl_path.stdout.read().decode("utf8").split('\n'), mcl_path.stdout.read().decode("utf8").split('\n')
+            return mcl_path.stdout.read().decode().split('\n'), mcl_path.stdout.read().decode().split('\n')
         except Exception as error:
             logging.error(error)
     else:
@@ -197,7 +197,7 @@ def mcl_chain_status():
             marmarad_pid = subprocess.Popen(marmara_pid, shell=True, stdout=subprocess.PIPE)
             marmarad_pid.wait()
             marmarad_pid.terminate()
-            return marmarad_pid.stdout.read().decode("utf8"), marmarad_pid.stdout.read().decode("utf8")
+            return marmarad_pid.stdout.read().decode(), marmarad_pid.stdout.read().decode()
         except Exception as error:
             logging.error(error)
     else:
@@ -517,13 +517,11 @@ class RpcHandler(QtCore.QObject):
     def do_execute_extract(self, cmd_list):
         pwd_home = str(pathlib.Path.home())
         for cmd in cmd_list:
-            print(cmd)
             proc = subprocess.Popen(cmd, cwd=pwd_home, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             retvalue = proc.poll()
             while True:
                 stdout = proc.stdout.readline().replace(b'\n', b'').replace(b'\r', b'').decode()
                 self.output.emit(str(stdout))
-                print(stdout)
                 logging.info(str(stdout))
                 if not stdout:
                     break
@@ -549,7 +547,7 @@ class RpcHandler(QtCore.QObject):
                         break
                 return [txid, loop_amount, pubkey, loop_matures, loop_create_block, loop_address]
         else:
-            print(loop_detail[1])
+            logging.error(loop_detail[1])
             return False
 
     @pyqtSlot()
@@ -566,7 +564,6 @@ class RpcHandler(QtCore.QObject):
                         issuer_details_list.append(issuance_details)
                     else:
                         logging.error('some error in getting loopdetail')
-                        print('some error in getting loopdetail')
                         self.finished.emit()
                         break
                 result = issuer_details_list, marmarainfo_result, 0
@@ -591,7 +588,6 @@ class RpcHandler(QtCore.QObject):
                         holder_details_list.append(issuance_details)
                     else:
                         logging.error('some error in getting loopdetail')
-                        print('some error in getting loopdetail')
                         self.finished.emit()
                         break
                 result = holder_details_list, holer_result, 0
@@ -669,7 +665,7 @@ class Autoinstall(QtCore.QObject):
             cmd = self.linux_command_list[i]
             if cmd.startswith('sudo'):
                 cmd = 'sudo -k -S -- ' + cmd + '\n'
-            logging.debug(cmd)
+            logging.info(cmd)
             if is_local:
                 proc = subprocess.Popen(cmd, cwd=str(pathlib.Path.home()), shell=True, stdin=subprocess.PIPE,
                                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -686,7 +682,7 @@ class Autoinstall(QtCore.QObject):
                     if not out:
                         proc.stdout.close()
                 exit_status = proc.poll()
-                logging.debug('exit_status  :' + str(exit_status))
+                logging.info('exit_status  :' + str(exit_status))
                 proc.terminate()
                 i = i + 1
                 if i >= len(self.linux_command_list):
@@ -740,7 +736,7 @@ class Autoinstall(QtCore.QObject):
                     self.progress.emit(10)
             else:
                 cwd = str(pathlib.Path.home()) + '\marmara'
-            logging.debug(cwd)
+            logging.info(cwd)
             proc = subprocess.Popen(cmd, cwd=cwd, shell=True, stdin=subprocess.PIPE,
                                     stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             while not proc.stdout.closed:
@@ -749,7 +745,6 @@ class Autoinstall(QtCore.QObject):
                     out_d = out.decode()
                 except:
                     out_d = '*-*-'
-                print(out_d)
                 self.out_text.emit(out_d)
                 if not out:
                     proc.stdout.close()
@@ -807,7 +802,6 @@ class Autoinstall(QtCore.QObject):
                     self.mcl_linux_zipname, 'unzip -o ' + marmara_path + self.mcl_linux_zipname + ' -d ' + marmara_path]
         sshclient = remote_connection.server_ssh_connect()
         for cmd in cmd_list:
-            print(cmd)
             session = sshclient.get_transport().open_session()
             session.set_combine_stderr(True)
             session.get_pty()

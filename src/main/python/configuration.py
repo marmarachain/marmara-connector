@@ -27,9 +27,9 @@ os.makedirs(user_data_path, exist_ok=True)  # make platform-specific user direct
 
 log_file_path = os.path.join(config_directory_path, "marmara-connector.log")  # configure log file directory
 logging.getLogger(__name__)
-stream_handler = logging.StreamHandler()  # create stream handler and set level to debug
-stream_handler.setLevel(logging.DEBUG)  # set stream handler level to debug
-logging.basicConfig(level=logging.DEBUG,
+stream_handler = logging.StreamHandler()  # create stream handler and set level to info
+stream_handler.setLevel(logging.INFO)  # set stream handler level to info
+logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s %(levelname)s %(name)s:%(module)s %(funcName)s:%(lineno)s %(message)s',
                     handlers=[logging.FileHandler(filename=log_file_path, mode='a+'), stream_handler])
 
