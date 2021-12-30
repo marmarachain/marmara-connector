@@ -166,6 +166,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.deletecontact_button.clicked.connect(self.delete_contact)
         self.contacts_tableWidget.cellClicked.connect(self.get_contact_info)
         self.clear_contact_button.clicked.connect(self.clear_contacts_line_edit)
+        self.contacts_tableWidget.horizontalHeader().sectionClicked.connect(self.clear_contacts_line_edit)
         self.contact_editing_row = ""
         # Stats Page
         self.stats_refresh_pushButton.clicked.connect(self.get_marmara_stats)
@@ -1132,6 +1133,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     def set_getaddresses_result(self, result_out):
         self.bottom_info(self.tr('Loading Addresses ...'))
         logging.info('Loading Addresses ...')
+        self.addresses_tableWidget.setSortingEnabled(False)
         self.addresses_tableWidget.setRowCount(len(result_out))
         logging.info('\n------wallet address list----- \n' + str(result_out))
         for row in result_out:
@@ -1148,10 +1150,13 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             btn_setpubkey.clicked.connect(self.set_pubkey)
         self.bottom_info(self.tr('Loading Addresses finished'))
         logging.info('Loading Addresses finished')
+        self.addresses_tableWidget.setSortingEnabled(True)
+        # self.hide_address_checkBox.setCheckState(False)
         self.update_addresses_table()
 
     @pyqtSlot()
     def hide_addresses(self):
+        self.unhide_addresses()
         if self.hide_address_checkBox.checkState():
             rowcount = self.addresses_tableWidget.rowCount()
             while True:
@@ -1160,13 +1165,14 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
                     self.addresses_tableWidget.setRowHidden(rowcount, True)
                 if rowcount == 0:
                     break
-        else:
-            rowcount = self.addresses_tableWidget.rowCount()
-            while True:
-                rowcount = rowcount - 1
-                self.addresses_tableWidget.setRowHidden(rowcount, False)
-                if rowcount == 0:
-                    break
+
+    def unhide_addresses(self):
+        rowcount = self.addresses_tableWidget.rowCount()
+        while True:
+            rowcount = rowcount - 1
+            self.addresses_tableWidget.setRowHidden(rowcount, False)
+            if rowcount == 0:
+                break
 
     @pyqtSlot(int, int)
     def addresstable_itemcontext(self, row, column):
@@ -1621,7 +1627,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         if result_out[0]:
             result = json.loads(result_out[0])
             self.addresses_privkey_tableWidget.setRowCount(len(result))
-            # self.addresses_privkey_tableWidget.autoScrollMargin()
+            self.addresses_privkey_tableWidget.setSortingEnabled(False)
             for address in result:
                 row_number = result.index(address)
                 btn_seeprivkey = QPushButton(qta.icon('mdi.shield-key', color='#cc2900'), '')
@@ -1633,7 +1639,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
                 self.addresses_privkey_tableWidget.horizontalHeader().setSectionResizeMode(1,
                                                                                            QHeaderView.ResizeToContents)
                 btn_seeprivkey.clicked.connect(self.set_seeprivkey)
-
+            self.addresses_privkey_tableWidget.setSortingEnabled(True)
         elif result_out[1]:
             self.bottom_err_info(result_out[1])
 
@@ -1876,6 +1882,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     def getaddresstxids_result(self, result_out):
         if result_out[1] == 0:
             self.transactions_tableWidget.setRowCount(len(result_out[0]))
+            self.transactions_tableWidget.setSortingEnabled(False)
             if len(result_out[0]) == 0:
                 self.transactions_tableWidget.setRowCount(0)
                 self.bottom_err_info(self.tr("No transaction found between selected dates."))
@@ -1896,6 +1903,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
                     self.transactions_tableWidget.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
                     self.transactions_tableWidget.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
                     btn_explorer.clicked.connect(self.open_in_explorer)
+            self.transactions_tableWidget.setSortingEnabled(True)
         if result_out[1] == 1:
             self.bottom_err_info(result_out[1])
 
@@ -2004,6 +2012,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     def set_credit_request_table(self, credit_request_list):
         self.loop_request_tableWidget.setRowCount(len(credit_request_list))
         self.loop_request_tableWidget.setColumnHidden(5, True)
+        self.loop_request_tableWidget.setSortingEnabled(False)
         for row in credit_request_list:
             row_number = credit_request_list.index(row)
             btn_review = QPushButton(qta.icon('mdi.text-box-check-outline', color='#728FCE'), '')
@@ -2020,6 +2029,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             self.loop_request_tableWidget.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
             self.loop_request_tableWidget.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
             btn_review.clicked.connect(self.review_creditloop_request)
+        self.loop_request_tableWidget.setSortingEnabled(True)
 
     @pyqtSlot()
     def review_creditloop_request(self):
@@ -2033,6 +2043,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     def set_transfer_request_table(self, transfer_request_list):
         self.transferrequests_tableWidget.setRowCount(len(transfer_request_list))
         self.transferrequests_tableWidget.setColumnHidden(5, True)
+        self.transferrequests_tableWidget.setSortingEnabled(False)
         for row in transfer_request_list:
             row_number = transfer_request_list.index(row)
             btn_review = QPushButton(qta.icon('mdi.text-box-check-outline', color='#728FCE'), '')
@@ -2049,6 +2060,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             self.transferrequests_tableWidget.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
             self.transferrequests_tableWidget.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
             btn_review.clicked.connect(self.review_credittransfer_request)
+        self.transferrequests_tableWidget.setSortingEnabled(True)
 
     @pyqtSlot()
     def review_credittransfer_request(self):
@@ -2274,6 +2286,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     def set_activeloops_table(self, loop_info):
         self.activeloops_tableWidget.setColumnHidden(5, True)
         self.activeloops_tableWidget.setRowCount(len(loop_info))
+        self.activeloops_tableWidget.setSortingEnabled(False)
         for section in loop_info:
             row_number = loop_info.index(section)
             for item in section:
@@ -2285,6 +2298,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
                 self.activeloops_tableWidget.setItem(row_number, column_no, QTableWidgetItem(str(item)))
                 self.activeloops_tableWidget.horizontalHeader().setSectionResizeMode(column_no,
                                                                                      QHeaderView.ResizeToContents)
+        self.activeloops_tableWidget.setSortingEnabled(True)
 
     def clear_search_active_loops_result(self):
         self.activeloops_total_amount_value_label.clear()
@@ -2324,6 +2338,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     def set_holder_loops_table(self, loop_info):
         self.transferableloops_tableWidget.setColumnHidden(5, True)
         self.transferableloops_tableWidget.setRowCount(len(loop_info))
+        self.transferableloops_tableWidget.setSortingEnabled(False)
         for section in loop_info:
             row_number = loop_info.index(section)
             for item in section:
@@ -2334,7 +2349,8 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
                     item = self.change_block_to_date(item)
                 self.transferableloops_tableWidget.setItem(row_number, column_no, QTableWidgetItem(str(item)))
                 self.transferableloops_tableWidget.horizontalHeader().setSectionResizeMode(column_no,
-                                                                                     QHeaderView.ResizeToContents)
+                                                                                      QHeaderView.ResizeToContents)
+        self.transferableloops_tableWidget.setSortingEnabled(True)
 
     @pyqtSlot(int, int)
     def activeloop_itemcontext(self, row, column):
@@ -2521,7 +2537,8 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         contact_name = self.contactname_lineEdit.text()
         contact_address = self.contactaddress_lineEdit.text().replace(' ', '')
         contact_pubkey = self.contactpubkey_lineEdit.text().replace(' ', '')
-        new_record = [contact_name, contact_address, contact_pubkey]
+        contact_group = self.contactgroup_lineEdit.text().replace(' ', '')
+        new_record = [contact_name, contact_address, contact_pubkey, contact_group]
         unique_record = self.unique_contacts(contact_name, contact_address, contact_pubkey)
         if unique_record:
             response = self.custom_message(self.tr("Error Adding Contact"),
@@ -2575,56 +2592,69 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.contactname_lineEdit.clear()
         self.contactaddress_lineEdit.clear()
         self.contactpubkey_lineEdit.clear()
+        self.contactgroup_lineEdit.clear()
         self.contact_editing_row = None
 
     def update_contact_tablewidget(self, contacts_data=None):
+        self.contacts_tableWidget.setSortingEnabled(False)
         if contacts_data:
             pass
         elif not contacts_data:
             contacts_data = configuration.ContactsSettings().read_csv_file()
         self.contacts_tableWidget.setRowCount(len(contacts_data) - 1)  # -1 for exclude header
-        self.contacts_tableWidget.autoScrollMargin()
+        del contacts_data[0]
+        # self.contacts_tableWidget.autoScrollMargin()
         for row in contacts_data:
-            if not row[0] == 'Name':
-                row_number = contacts_data.index(row) - 1  # -1 for exclude header
-                for item in row:
-                    self.contacts_tableWidget.setItem(row_number, row.index(item), QTableWidgetItem(str(item)))
-                    self.contacts_tableWidget.horizontalHeader().setSectionResizeMode(row.index(item),
+            row_number = contacts_data.index(row)  # -1 for exclude header
+            if len(row) < 4:
+                row.append('')
+            for item in row:
+                self.contacts_tableWidget.setItem(row_number, row.index(item), QTableWidgetItem(str(item)))
+                self.contacts_tableWidget.horizontalHeader().setSectionResizeMode(row.index(item),
                                                                                       QHeaderView.ResizeToContents)
+        self.contacts_tableWidget.setSortingEnabled(True)
 
     @pyqtSlot(int, int)
     def get_contact_info(self, row, column):
         contact_name = ""
         contact_address = ""
         contact_pubkey = ""
+        contact_group = ""
         if self.contacts_tableWidget.item(row, 0):
             contact_name = self.contacts_tableWidget.item(row, 0).text()
         if self.contacts_tableWidget.item(row, 1):
             contact_address = self.contacts_tableWidget.item(row, 1).text()
         if self.contacts_tableWidget.item(row, 2):
             contact_pubkey = self.contacts_tableWidget.item(row, 2).text()
+        if self.contacts_tableWidget.item(row, 3):
+            contact_group = self.contacts_tableWidget.item(row, 3).text()
         self.contactname_lineEdit.setText(contact_name)
         self.contactaddress_lineEdit.setText(contact_address)
         self.contactpubkey_lineEdit.setText(contact_pubkey)
+        self.contactgroup_lineEdit.setText(contact_group)
         self.contact_editing_row = row
 
     @pyqtSlot()
     def update_contact(self):
+        self.contacts_tableWidget.setSortingEnabled(False)
         if self.contact_editing_row is not None:
             read_contacts_data = configuration.ContactsSettings().read_csv_file()
             contact_name = self.contactname_lineEdit.text()
             contact_address = self.contactaddress_lineEdit.text().replace(' ', '')
             contact_pubkey = self.contactpubkey_lineEdit.text().replace(' ', '')
+            contact_group = self.contactgroup_lineEdit.text().replace(' ', '')
             contact_data = configuration.ContactsSettings().read_csv_file()
-            del contact_data[self.contact_editing_row + 1]  # removing editing record to don't check same record
+            item_name = self.contacts_tableWidget.item(self.contact_editing_row, 0).text()
+            for row in contact_data:
+                if row[0] == item_name:
+                    self.contact_editing_row = contact_data.index(row)
+            del contact_data[self.contact_editing_row]  # removing editing record to don't check same record
             unique_record = self.unique_contacts(contact_name, contact_address, contact_pubkey, contact_data)
             if unique_record:
                 self.bottom_info(unique_record.get('error'))
                 logging.error(unique_record.get('error'))
             if not unique_record:
-                read_contacts_data[self.contact_editing_row + 1][0] = contact_name  # +1 for exclude header
-                read_contacts_data[self.contact_editing_row + 1][1] = contact_address  # +1 for exclude header
-                read_contacts_data[self.contact_editing_row + 1][2] = contact_pubkey  # +1 for exclude header
+                read_contacts_data[self.contact_editing_row] = [contact_name, contact_address, contact_pubkey, contact_group]
                 configuration.ContactsSettings().update_csv_file(read_contacts_data)
                 self.update_contact_tablewidget()
                 self.clear_contacts_line_edit()
@@ -2633,6 +2663,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
                                               self.tr('You did not select a contact from table.'),
                                               "information",
                                               QMessageBox.Information)
+        self.contacts_tableWidget.setSortingEnabled(True)
 
     @pyqtSlot()
     def delete_contact(self):
@@ -2777,6 +2808,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         out_json = out_list[0]
         if type(out_json) is list:
             self.exchange_market_tableWidget.setRowCount(len(out_json))
+            self.exchange_market_tableWidget.setSortingEnabled(False)
             for row in out_json:
                 row_number = out_json.index(row)
                 self.exchange_market_tableWidget.setItem(row_number, 0, QTableWidgetItem(str(row.get('exchange_name'))))
@@ -2790,6 +2822,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
                 self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
                 self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
                 self.bottom_info(self.tr('fetched exchange values'))
+            self.exchange_market_tableWidget.setSortingEnabled(True)
         if type(out_json) is str:
             if out_json == 'error':
                 self.bottom_err_info(self.tr('Error in getting exchange values'))

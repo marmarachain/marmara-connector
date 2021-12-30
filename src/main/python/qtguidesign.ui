@@ -24,7 +24,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="main_tab">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="login_tab">
        <attribute name="title">
@@ -762,7 +762,7 @@
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>4</number>
           </property>
           <property name="iconSize">
            <size>
@@ -4694,6 +4694,16 @@
                  </property>
                 </widget>
                </item>
+               <item row="3" column="1">
+                <widget class="QLineEdit" name="contactgroup_lineEdit"/>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="contactgroup_label">
+                 <property name="text">
+                  <string>Group</string>
+                 </property>
+                </widget>
+               </item>
               </layout>
              </widget>
             </item>
@@ -4832,6 +4842,11 @@
                </property>
                <property name="textAlignment">
                 <set>AlignLeading|AlignTop</set>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Group</string>
                </property>
               </column>
              </widget>

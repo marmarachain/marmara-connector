@@ -116,7 +116,7 @@ class ServerSettings:
 
 class ContactsSettings:
     contacts_file = "contacts.csv"
-    header = ['Name', 'Address', 'Pubkey']
+    header = ['Name', 'Address', 'Pubkey', 'Group']
     contacts_file_path = os.path.join(user_data_path, contacts_file)
 
     def create_csv_file(self):
