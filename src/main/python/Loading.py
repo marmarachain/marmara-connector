@@ -15,7 +15,7 @@ class LoadingScreen(QWidget):
         self.move(QDesktopWidget().availableGeometry().center() - QtCore.QPoint(100, 100))
         self.label_animation = QLabel(self)
         # self.label_animation.setStyleSheet("background: transparent;")
-        self.movie = QMovie(qtguistyle.icon_path + "/fluid-loader.gif")
+        self.movie = QMovie(qtguistyle.icon_path + "/connector-loader.gif")
         self.movie.setScaledSize(QtCore.QSize(200, 200))
         self.label_animation.setMovie(self.movie)
         # self.label_animation.setStyleSheet("background-color: rgba(0,0,0,0%)")
