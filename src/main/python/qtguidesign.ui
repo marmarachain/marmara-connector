@@ -762,7 +762,7 @@
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>2</number>
+           <number>4</number>
           </property>
           <property name="iconSize">
            <size>
@@ -814,7 +814,7 @@
                <enum>QFrame::Raised</enum>
               </property>
               <property name="currentIndex">
-               <number>0</number>
+               <number>2</number>
               </property>
               <widget class="QWidget" name="chainaddresses_page">
                <layout class="QGridLayout" name="gridLayout_26">
@@ -941,6 +941,9 @@
                     </property>
                     <property name="horizontalScrollMode">
                      <enum>QAbstractItemView::ScrollPerPixel</enum>
+                    </property>
+                    <property name="sortingEnabled">
+                     <bool>true</bool>
                     </property>
                     <property name="rowCount">
                      <number>0</number>
@@ -1466,6 +1469,9 @@
                     </property>
                     <property name="horizontalScrollMode">
                      <enum>QAbstractItemView::ScrollPerPixel</enum>
+                    </property>
+                    <property name="sortingEnabled">
+                     <bool>true</bool>
                     </property>
                     <attribute name="horizontalHeaderDefaultSectionSize">
                      <number>150</number>
@@ -2335,6 +2341,9 @@
               <property name="horizontalScrollMode">
                <enum>QAbstractItemView::ScrollPerPixel</enum>
               </property>
+              <property name="sortingEnabled">
+               <bool>true</bool>
+              </property>
               <attribute name="horizontalHeaderDefaultSectionSize">
                <number>150</number>
               </attribute>
@@ -2772,7 +2781,7 @@
                <enum>QTabWidget::Rounded</enum>
               </property>
               <property name="currentIndex">
-               <number>2</number>
+               <number>0</number>
               </property>
               <widget class="QWidget" name="looprequests_tab">
                <attribute name="title">
@@ -2947,6 +2956,9 @@
                     <property name="horizontalScrollMode">
                      <enum>QAbstractItemView::ScrollPerPixel</enum>
                     </property>
+                    <property name="sortingEnabled">
+                     <bool>true</bool>
+                    </property>
                     <attribute name="horizontalHeaderDefaultSectionSize">
                      <number>150</number>
                     </attribute>
@@ -3096,6 +3108,9 @@
                     </property>
                     <property name="horizontalScrollMode">
                      <enum>QAbstractItemView::ScrollPerPixel</enum>
+                    </property>
+                    <property name="sortingEnabled">
+                     <bool>true</bool>
                     </property>
                     <property name="wordWrap">
                      <bool>true</bool>
@@ -3672,6 +3687,9 @@
                     <property name="horizontalScrollMode">
                      <enum>QAbstractItemView::ScrollPerPixel</enum>
                     </property>
+                    <property name="sortingEnabled">
+                     <bool>true</bool>
+                    </property>
                     <property name="wordWrap">
                      <bool>true</bool>
                     </property>
@@ -3824,6 +3842,9 @@
                     </property>
                     <property name="horizontalScrollMode">
                      <enum>QAbstractItemView::ScrollPerPixel</enum>
+                    </property>
+                    <property name="sortingEnabled">
+                     <bool>true</bool>
                     </property>
                     <property name="wordWrap">
                      <bool>true</bool>
@@ -4673,6 +4694,16 @@
                  </property>
                 </widget>
                </item>
+               <item row="3" column="1">
+                <widget class="QLineEdit" name="contactgroup_lineEdit"/>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="contactgroup_label">
+                 <property name="text">
+                  <string>Group</string>
+                 </property>
+                </widget>
+               </item>
               </layout>
              </widget>
             </item>
@@ -4780,6 +4811,9 @@
               <property name="showGrid">
                <bool>true</bool>
               </property>
+              <property name="sortingEnabled">
+               <bool>true</bool>
+              </property>
               <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
                <bool>true</bool>
               </attribute>
@@ -4808,6 +4842,11 @@
                </property>
                <property name="textAlignment">
                 <set>AlignLeading|AlignTop</set>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Group</string>
                </property>
               </column>
              </widget>
@@ -5319,6 +5358,9 @@
                 </property>
                 <property name="horizontalScrollMode">
                  <enum>QAbstractItemView::ScrollPerPixel</enum>
+                </property>
+                <property name="sortingEnabled">
+                 <bool>true</bool>
                 </property>
                 <attribute name="horizontalHeaderDefaultSectionSize">
                  <number>120</number>

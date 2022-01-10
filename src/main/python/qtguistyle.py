@@ -427,6 +427,8 @@ class GuiStyle(Ui_MainWindow):
         self.contactaddress_lineEdit.setFont(font)
         self.contactpubkey_label.setFont(font)
         self.contactpubkey_lineEdit.setFont(font)
+        self.contactgroup_lineEdit.setFont(font)
+        self.contactgroup_label.setFont(font)
         self.deletecontact_button.setFont(font)
         self.clear_contact_button.setFont(font)
         # Stats Page
