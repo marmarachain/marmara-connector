@@ -2,7 +2,7 @@ linux_d = './komodod -ac_name=MCL '
 windows_d = 'komodod.exe -ac_name=MCL '
 linux_cli = './komodo-cli -ac_name=MCL '
 windows_cli = 'komodo-cli.exe -ac_name=MCL '
-marmarad = '-ac_supply=2000000 -ac_cc=2 -addnode=37.148.210.158 -addnode=37.148.212.36 -addnode=149.202.158.145 -addressindex=1 -spentindex=1 -ac_marmara=1 -ac_staked=75 -ac_reward=3000000000'
+marmarad = '-ac_supply=2000000 -ac_cc=2 -addnode=161.97.146.150 -addnode=5.189.149.242 -addnode=149.202.158.145 -addressindex=1 -spentindex=1 -ac_marmara=1 -ac_staked=75 -ac_reward=3000000000'
 getinfo = "getinfo"
 validateaddress = 'validateaddress'
 getaddressesbyaccount = 'getaddressesbyaccount'
