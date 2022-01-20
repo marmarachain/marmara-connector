@@ -401,6 +401,34 @@ QCheckBox::indicator:unchecked:hover
 	border: 1px solid #366b96;
 }
 
+QRadioButton
+{
+    background-color: transparent;
+    outline: none;
+    color: lightgray;
+    padding: 2px;
+}
+
+QRadioButton::indicator
+{
+    color: #b1b1b1;
+    background-color: #cccccc;
+    border: 1px solid #8c8c8c;
+    width: 15px;
+    height: 15px;
+}
+
+QRadioButton::indicator:checked
+{
+  background-color: #346792;
+  border: 1px solid #dae7f1;
+}
+
+QRadioButton::indicator:unchecked:hover
+{
+    border: 1px solid #366b96;
+}
+
 QDialogButtonBox QPushButton
 {
     min-height: 1.1em;

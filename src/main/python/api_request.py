@@ -55,7 +55,7 @@ def latest_app_release_url():
 
 def get_marmara_stats():
     try:
-        response = requests.get('https://explorer3.marmara.io/insight-api-komodo/stats', timeout=5)
+        response = requests.get('https://explorer.marmara.io/insight-api-komodo/stats', timeout=5)
         return response.json()
     except Exception:
         try:
@@ -63,7 +63,7 @@ def get_marmara_stats():
             return response.json()
         except Exception:
             try:
-                response = requests.get('https://explorer.marmara.io/insight-api-komodo/stats', timeout=5)
+                response = requests.get('https://explorer3.marmara.io/insight-api-komodo/stats', timeout=5)
                 return response.json()
             except Exception as e:
                 logging.error(e)
@@ -84,9 +84,9 @@ def mcl_exchange_market(api_list_key):
 
 
 def get_blocks_details(block, hash):
-    api_url_list = ['https://explorer3.marmara.io/insight-api-komodo/blocks',
+    api_url_list = ['https://explorer.marmara.io/insight-api-komodo/blocks',
                     'https://explorer2.marmara.io/insight-api-komodo/blocks',
-                    'https://explorer.marmara.io/insight-api-komodo/blocks']
+                    'https://explorer3.marmara.io/insight-api-komodo/blocks']
     result_lists = []
     for api_url in api_url_list:
         try:
@@ -97,7 +97,7 @@ def get_blocks_details(block, hash):
             previous_hash_e = None
             for item in response_json:
                 index = response_json.index(item)
-                if int(item.get('height')) == int(block):
+                if int(item.get('height')) == int(block) and item.get('isMainChain') == True:
                     block_e = item.get('height')
                     hash_e = item.get('hash')
                     previous_hash_e = response_json[index+1].get('hash')
@@ -126,9 +126,9 @@ def get_blocks_details(block, hash):
 
 
 def get_block_hash(hash, index):
-    api_url_list = ['https://explorer3.marmara.io/insight-api-komodo/block/' + hash,
+    api_url_list = ['https://explorer.marmara.io/insight-api-komodo/block/' + hash,
                     'https://explorer2.marmara.io/insight-api-komodo/block/' + hash,
-                    'https://explorer.marmara.io/insight-api-komodo/block/' + hash]
+                    'https://explorer3.marmara.io/insight-api-komodo/block/' + hash]
     try:
         response_e = requests.get(api_url_list[index], timeout=15)
         return response_e.json()

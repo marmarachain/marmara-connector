@@ -117,6 +117,9 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.newaddress_button.clicked.connect(self.get_new_address)
         self.address_seed_button.clicked.connect(self.convertpassphrase)
         self.addresspage_back_button.clicked.connect(self.back_chain_widget_index)
+        self.new_address_frame.setEnabled(False)
+        self.add_with_seed_radiobutton.clicked.connect(self.change_address_frame_visibility)
+        self.add_without_seed_radiobutton.clicked.connect(self.change_address_frame_visibility)
         # - private key page ----
         self.importprivkey_button.clicked.connect(self.importprivkey)
         self.privatekeypage_back_button.clicked.connect(self.back_chain_widget_index)
@@ -1509,6 +1512,16 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     # ------------------
     # Chain  --- wallet Address Add, import
     # -------------------
+    @pyqtSlot()
+
+    def change_address_frame_visibility(self):
+        if self.add_with_seed_radiobutton.isChecked():
+            self.new_address_frame.setEnabled(False)
+            self.add_seed_address_frame.setEnabled(True)
+        if self.add_without_seed_radiobutton.isChecked():
+            self.new_address_frame.setEnabled(True)
+            self.add_seed_address_frame.setEnabled(False)
+
     @pyqtSlot()
     def get_address_page(self):
         self.chain_stackedWidget.setCurrentIndex(1)

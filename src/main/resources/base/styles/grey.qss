@@ -355,6 +355,34 @@ QHeaderView::section:horizontal
     border-left: 1px solid #353635;
 }
 
+QRadioButton
+{
+    background-color: transparent;
+    outline: none;
+    color: lightgray;
+    padding: 2px;
+}
+
+QRadioButton::indicator
+{
+    color: #b1b1b1;
+    background-color: #323232;
+    border: 1px solid #a6a6a6;
+    width: 15px;
+    height: 15px;
+}
+
+QRadioButton::indicator:checked
+{
+  background-color: #b78620;
+  border: 1px solid #3a546e;
+}
+
+QRadioButton::indicator:unchecked:hover
+{
+    border: 1px solid #b78620;
+}
+
 QCheckBox
 {
 	background-color: transparent;
