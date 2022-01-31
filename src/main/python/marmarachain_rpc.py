@@ -180,12 +180,15 @@ def start_chain(pubkey=None):
         if not pubkey:
             marmara_param = marmara_path + marmara_param
         if pubkey:
-            marmara_param = marmara_param + ' -pubkey=' + str(pubkey)
+            marmara_param = marmara_path + marmara_param + ' -pubkey=' + str(pubkey)
         try:
             start = remote_connection.server_start_chain(marmara_param)
-            time.sleep(0.3)
-            start.close()
-            logging.info('shell closed')
+            while True:
+                pid = mcl_chain_status()
+                if not len(pid) == 0:
+                    start.close()
+                    logging.info('shell closed')
+                    break
         except Exception as error:
             logging.error(error)
 
@@ -369,13 +372,14 @@ class RpcHandler(QtCore.QObject):
     @pyqtSlot()
     def stopping_chain(self):
         result_out = handle_rpc(cp.stop, [])
-        self.command_out.emit(result_out)
         if result_out[0]:
+            self.command_out.emit(result_out)
             while True:
                 pid = mcl_chain_status()
                 if len(pid[0]) == 0:
                     self.finished.emit()
-                    self.command_out.emit(pid)
+                    out = 0, None, 0
+                    self.command_out.emit(out)
                     logging.info('chain stopped')
                     break
                 time.sleep(1)
@@ -408,7 +412,7 @@ class RpcHandler(QtCore.QObject):
                 wallet_list.append(address_list)
             return wallet_list
         elif addresses[1]:
-            logging.info(addresses[1])
+            logging.error(addresses[1])
             return False
 
     @pyqtSlot()
@@ -417,6 +421,7 @@ class RpcHandler(QtCore.QObject):
         if type(addresses) == list:
             self.walletlist_out.emit(addresses)
         else:
+            self.walletlist_out.emit([])
             logging.info('could not get addresses')
             self.finished.emit()
         time.sleep(0.2)
@@ -631,7 +636,7 @@ class Autoinstall(QtCore.QObject):
         self.mcl_linux_zipname = 'MCL-linux.zip'
         self.mcl_win_zipname = 'MCL-win.zip'
         self.linux_command_list = ['sudo apt-get update', 'sudo apt-get install libgomp1 -y',
-                                   'sudo wget ' + str(self.mcl_download_url) + '/' + self.mcl_linux_zipname +
+                                   'wget ' + str(self.mcl_download_url) + '/' + self.mcl_linux_zipname +
                                    " -O " + self.mcl_linux_zipname, 'sudo apt-get install unzip -y',
                                    'unzip -o MCL-linux.zip', 'sudo chmod +x komodod komodo-cli fetch-params.sh',
                                    './fetch-params.sh']

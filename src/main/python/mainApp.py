@@ -58,6 +58,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.actionConsole.setVisible(False)
         self.actionConsole.triggered.connect(self.open_debug_console)
         self.actionSee_Log_File.triggered.connect(self.open_log_file)
+        self.actionSee_chain_Log_File.triggered.connect(self.open_chain_log_file)
         self.actionCheck_for_Update.triggered.connect(self.check_app_version)
         self.actionAppearances.triggered.connect(self.show_style_themes)
         #   Login page Host Selection
@@ -113,6 +114,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.latest_chain_version = None
         self.chain_versiyon_tag = None
         self.update_chain_textBrowser.setVisible(False)
+        self.debug_button.clicked.connect(self.toggle_textbrowser)
         # - add address page ----
         self.newaddress_button.clicked.connect(self.get_new_address)
         self.address_seed_button.clicked.connect(self.convertpassphrase)
@@ -491,6 +493,18 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         text_path = configuration.log_file_path
         webbrowser.open_new(text_path)
 
+    @pyqtSlot()
+    def open_chain_log_file(self):
+        operating_system = platform.system()
+        debug_log_path = ''
+        if operating_system == 'Darwin':
+            debug_log_path = os.environ['HOME'] + '/Library/Application Support/Komodo/MCL'
+        elif operating_system == 'Linux':
+            debug_log_path = os.environ['HOME'] + '/.komodo/MCL'
+        elif operating_system == 'Win64' or operating_system == 'Windows':
+            debug_log_path = '%s/komodo/MCL' % os.environ['APPDATA']
+        debug_log_file = str(debug_log_path + '/' + 'debug.log')
+        webbrowser.open_new(debug_log_file)
 
     @pyqtSlot(int)
     def mcl_tab_changed(self, index):
@@ -684,6 +698,15 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
                     err_result = err_result + ' ' + str(line)
                 logging.error(err_result)
                 self.bottom_info(err_result)
+                if str(err_result == "(7, 'Failed to connect to 127.0.0.1 port 33825: Connection refused')"):
+                    if self.chain_status:
+                        self.custom_message(self.tr('Chain is not Working'),
+                                            self.tr('Make sure the marmara chain is running!'), 'information',
+                                            QMessageBox.Warning)
+                        self.chain_status = False
+                        self.chainstatus_label_value.setPixmap(self.inactive_icon_pixmap)
+
+
 
     def login_page_info(self, info):
         self.login_message_label.setText(info)
@@ -806,7 +829,6 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
 
     @pyqtSlot(str)
     def check_chain_update_err(self, err):
-        print(err)
         self.bottom_info(err)
         self.update_chain_button.setHidden(False)
         logging.error(err)
@@ -835,19 +857,21 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
 
     @pyqtSlot(tuple)
     def result_stopchain(self, result_out):
-        if result_out[0]:
-            print_result = ""
-            for line in str(result_out[0]).splitlines():
-                print_result = print_result + ' ' + str(line)
-            logging.info("Stopping chain:" + print_result)
-            self.bottom_info(print_result)
-        if len(result_out[0]) == 0:
-            self.bottom_info(self.tr('Marmarachain stopped'))
-            logging.info('Marmarachain stopped')
-            self.chain_status = False
-            self.myCCActivatedAddress = None
-            self.chainstatus_label_value.setPixmap(self.inactive_icon_pixmap)
-            self.update_addresses_table()
+        if result_out[2] != 1:
+            if result_out[0]:
+                print_result = ""
+                for line in str(result_out[0]).splitlines():
+                    print_result = print_result + ' ' + str(line)
+                logging.info("Stopping chain:" + print_result)
+                self.bottom_info(print_result)
+
+            if result_out[0] == 0:
+                self.bottom_info(self.tr('Marmarachain stopped'))
+                logging.info('Marmarachain stopped')
+                self.chain_status = False
+                self.myCCActivatedAddress = None
+                self.chainstatus_label_value.setPixmap(self.inactive_icon_pixmap)
+                self.update_addresses_table()
         elif result_out[1]:
             self.bottom_err_info(result_out[1])
 
@@ -1126,36 +1150,42 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     # getting addresses for address table widget
     @pyqtSlot()
     def getaddresses(self):
-        self.bottom_info(self.tr('getting wallet addresses'))
-        logging.info('getting wallet addresses')
-        self.worker_getaddresses = marmarachain_rpc.RpcHandler()
-        self.worker_thread(thread=self.thread_getaddresses, worker=self.worker_getaddresses,
-                           worker_output=self.set_getaddresses_result, execute='get_addresses')
+        if self.chain_status:
+            self.bottom_info(self.tr('getting wallet addresses'))
+            logging.info('getting wallet addresses')
+            self.worker_getaddresses = marmarachain_rpc.RpcHandler()
+            self.worker_thread(thread=self.thread_getaddresses, worker=self.worker_getaddresses,
+                               worker_output=self.set_getaddresses_result, execute='get_addresses')
+        else:
+            self.update_addresses_table()
 
     @pyqtSlot(list)
     def set_getaddresses_result(self, result_out):
-        self.bottom_info(self.tr('Loading Addresses ...'))
-        logging.info('Loading Addresses ...')
-        self.addresses_tableWidget.setSortingEnabled(False)
-        self.addresses_tableWidget.setRowCount(len(result_out))
-        logging.info('\n------wallet address list----- \n' + str(result_out))
-        for row in result_out:
-            row_number = result_out.index(row)
-            if self.pubkey_status:
-                self.addresses_tableWidget.setColumnHidden(0, True)
-            btn_setpubkey = QPushButton('Set pubkey')
-            self.addresses_tableWidget.setCellWidget(row_number, 0, btn_setpubkey)
-            self.addresses_tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
-            for item in row:
-                self.addresses_tableWidget.setItem(row_number, (row.index(item) + 1), QTableWidgetItem(str(item)))
-                self.addresses_tableWidget.horizontalHeader().setSectionResizeMode((row.index(item) + 1),
-                                                                                   QHeaderView.ResizeToContents)
-            btn_setpubkey.clicked.connect(self.set_pubkey)
-        self.bottom_info(self.tr('Loading Addresses finished'))
-        logging.info('Loading Addresses finished')
-        self.addresses_tableWidget.setSortingEnabled(True)
-        # self.hide_address_checkBox.setCheckState(False)
-        self.update_addresses_table()
+        if result_out == []:
+            self.bottom_err_info(self.tr('could not get addresses. make sure chain is running'))
+        else:
+            self.bottom_info(self.tr('Loading Addresses ...'))
+            logging.info('Loading Addresses ...')
+            self.addresses_tableWidget.setSortingEnabled(False)
+            self.addresses_tableWidget.setRowCount(len(result_out))
+            logging.info('\n------wallet address list----- \n' + str(result_out))
+            for row in result_out:
+                row_number = result_out.index(row)
+                if self.pubkey_status:
+                    self.addresses_tableWidget.setColumnHidden(0, True)
+                btn_setpubkey = QPushButton('Set pubkey')
+                self.addresses_tableWidget.setCellWidget(row_number, 0, btn_setpubkey)
+                self.addresses_tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+                for item in row:
+                    self.addresses_tableWidget.setItem(row_number, (row.index(item) + 1), QTableWidgetItem(str(item)))
+                    self.addresses_tableWidget.horizontalHeader().setSectionResizeMode((row.index(item) + 1),
+                                                                                       QHeaderView.ResizeToContents)
+                btn_setpubkey.clicked.connect(self.set_pubkey)
+            self.bottom_info(self.tr('Loading Addresses finished'))
+            logging.info('Loading Addresses finished')
+            self.addresses_tableWidget.setSortingEnabled(True)
+            # self.hide_address_checkBox.setCheckState(False)
+            self.update_addresses_table()
 
     @pyqtSlot()
     def hide_addresses(self):
@@ -1509,6 +1539,13 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             self.check_chain_update()
         else:
             self.custom_message(self.tr('Update Failed'), self.tr('Something went wrong update failed.'), 'information')
+
+    @pyqtSlot()
+    def toggle_textbrowser(self):
+        if self.update_chain_textBrowser.isVisible():
+            self.update_chain_textBrowser.setVisible(False)
+        else:
+            self.update_chain_textBrowser.setVisible(True)
     # ------------------
     # Chain  --- wallet Address Add, import
     # -------------------
@@ -2250,7 +2287,6 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             self.set_loop_amount_result(result_out[1])
             self.refresh_loopinfo_button.setVisible(True)
         if result_out[2] == 1:
-            print(result_out[1])
             self.bottom_err_info(result_out[1])
             logging.error(str(result_out[1]))
 
@@ -2344,7 +2380,6 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             self.holderloops_closed_amount_label_value.setText(str(result_out[1].get('numclosed')))
             self.holderloops_closed_number_label_value.setText(str(result_out[1].get('totalclosed')))
         if result_out[2] == 1:
-            print(result_out[1])
             self.bottom_err_info(result_out[1])
             logging.error(str(result_out[1]))
 

@@ -73,6 +73,8 @@ class GuiStyle(Ui_MainWindow):
         self.importprivkey_button.setIconSize(QtCore.QSize(24, 24))
         self.privkey_page_button.setIcon(qta.icon('mdi.incognito', color=color))
         self.privkey_page_button.setIconSize(QtCore.QSize(24, 24))
+        self.debug_button.setIcon(qta.icon('fa.bug', color=color))
+        self.debug_button.setIconSize(QtCore.QSize(16, 16))
         # menubar
         self.actionQuit.setIcon(qta.icon('fa.close', color=color))
         self.actionLogout.setIcon(qta.icon('mdi.logout', color=color))
@@ -81,6 +83,7 @@ class GuiStyle(Ui_MainWindow):
         self.actionLanguage_Selection.setIcon(qta.icon('ei.flag', color=color))
         self.actionAppearances.setIcon(qta.icon('fa.paint-brush', color=color))
         self.actionSee_Log_File.setIcon(qta.icon('mdi.file-document-outline', color=color))
+        self.actionSee_chain_Log_File.setIcon(qta.icon('mdi.file-document-outline', color=color))
         self.actionCheck_for_Update.setIcon(qta.icon('mdi.open-in-app', color=color))
         # mcl tab
         self.mcl_tab.setTabIcon(0, qta.icon('fa.chain', color=color))
@@ -264,6 +267,7 @@ class GuiStyle(Ui_MainWindow):
         self.download_blocks_button.setFont(font)
         self.check_fork_button.setFont(font)
         self.update_chain_button.setFont(font)
+        self.debug_button.setFont(font)
         self.newaddress_button.setFont(font)
         self.address_seed_button.setFont(font)
         self.add_with_seed_radiobutton.setFont(font)
@@ -487,6 +491,7 @@ class GuiStyle(Ui_MainWindow):
         self.actionLanguage_Selection.setFont(font)
         self.menuHelp.setFont(font)
         self.actionSee_Log_File.setFont(font)
+        self.actionSee_chain_Log_File.setFont(font)
         # smaller fontsize
         font.setPointSize(size-2)
         self.login_message_label.setFont(font)
