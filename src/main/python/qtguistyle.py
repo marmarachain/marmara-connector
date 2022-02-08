@@ -52,6 +52,23 @@ class GuiStyle(Ui_MainWindow):
         # self.set_icon_color('black')
 
     def set_icon_color(self, color):
+        # Login remote tab
+        self.serveradd_button.setIcon(qta.icon('fa.plus', color=color))
+        self.serveradd_button.setIconSize(QtCore.QSize(24, 24))
+        self.serveredit_button.setIcon(qta.icon('ei.edit', color=color))
+        self.serveredit_button.setIconSize(QtCore.QSize(24, 24))
+        self.connect_button.setIcon(qta.icon('mdi.lan-connect', color=color))
+        self.connect_button.setIconSize(QtCore.QSize(24, 24))
+        self.home_button.setIcon(qta.icon('fa.home', color=color))
+        self.home_button.setIconSize(QtCore.QSize(24, 24))
+        self.edit_serversave_button.setIcon(qta.icon('fa.save', color=color))
+        self.edit_serversave_button.setIconSize(QtCore.QSize(24, 24))
+        self.add_serversave_button.setIcon(qta.icon('fa.save', color=color))
+        self.add_serversave_button.setIconSize(QtCore.QSize(24, 24))
+        self.servercancel_button.setIcon(qta.icon('mdi.cancel', color=color))
+        self.servercancel_button.setIconSize(QtCore.QSize(24, 24))
+        self.serverdelete_button.setIcon(qta.icon('mdi.delete-forever', color=color))
+        self.serverdelete_button.setIconSize(QtCore.QSize(24, 24))
         # Chain page
         self.download_blocks_button.setIcon(qta.icon('mdi.cloud-download-outline', color=color))
         self.download_blocks_button.setIconSize(QtCore.QSize(24, 24))
@@ -105,6 +122,12 @@ class GuiStyle(Ui_MainWindow):
         self.fontsize_minus_button.setIconSize(QtCore.QSize(24, 24))
         self.fontsize_plus_button.setIcon(qta.icon('mdi.format-font-size-increase', color=color))
         self.fontsize_plus_button.setIconSize(QtCore.QSize(24, 24))
+        self.youtube_button.setIcon(qta.icon('fa5b.youtube', color=color))
+        self.youtube_button.setIconSize(QtCore.QSize(18, 18))
+        self.discord_button.setIcon(qta.icon('fa5b.discord', color=color))
+        self.discord_button.setIconSize(QtCore.QSize(18, 18))
+        self.website_button.setIcon(qta.icon('mdi.web', color=color))
+        self.website_button.setIconSize(QtCore.QSize(18, 18))
         # Wallet page button icons
         self.lock_button.setIcon(QtGui.QIcon(qta.icon('fa5s.lock', color=color)))
         self.lock_button.setIconSize(QtCore.QSize(32, 32))
@@ -217,6 +240,8 @@ class GuiStyle(Ui_MainWindow):
         self.edit_remotehost_label.setFont(font)
         self.home_button.setFont(font)
         self.server_comboBox.setFont(font)
+        self.ssh_port_checkBox.setFont(font)
+        self.ssh_port_lineEdit.setFont(font)
         # Install Page
         self.sudo_password_lineEdit.setFont(font)
         self.start_install_button.setFont(font)

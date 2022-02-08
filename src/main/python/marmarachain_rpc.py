@@ -183,6 +183,7 @@ def start_chain(pubkey=None):
             marmara_param = marmara_path + marmara_param + ' -pubkey=' + str(pubkey)
         try:
             start = remote_connection.server_start_chain(marmara_param)
+            time.sleep(0.3)
             while True:
                 pid = mcl_chain_status()
                 if not len(pid) == 0:

@@ -261,49 +261,6 @@
              </widget>
              <widget class="QWidget" name="hostlogin_page">
               <layout class="QGridLayout" name="gridLayout_7">
-               <item row="3" column="0">
-                <layout class="QGridLayout" name="serverselection_Layout">
-                 <item row="0" column="2">
-                  <widget class="QPushButton" name="serveradd_button">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="text">
-                    <string>Add</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="1" rowspan="2">
-                  <widget class="QComboBox" name="server_comboBox">
-                   <property name="minimumSize">
-                    <size>
-                     <width>250</width>
-                     <height>60</height>
-                    </size>
-                   </property>
-                   <property name="editable">
-                    <bool>false</bool>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="2">
-                  <widget class="QPushButton" name="serveredit_button">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="text">
-                    <string>Edit</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
                <item row="4" column="0">
                 <layout class="QGridLayout" name="serverpw_Layout">
                  <item row="0" column="0">
@@ -321,21 +278,102 @@
                  </item>
                 </layout>
                </item>
-               <item row="0" column="0">
-                <layout class="QGridLayout" name="remoteloginlabel_Layout">
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="remotelogin_label">
-                   <property name="text">
-                    <string>Login Remote Host</string>
+               <item row="3" column="0">
+                <layout class="QGridLayout" name="serverselection_Layout">
+                 <item row="0" column="2">
+                  <widget class="QPushButton" name="serveradd_button">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
                    </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
+                   <property name="text">
+                    <string>Add</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="3">
+                  <widget class="QPushButton" name="serveredit_button">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="text">
+                    <string>Edit</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QComboBox" name="server_comboBox">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="editable">
+                    <bool>false</bool>
                    </property>
                   </widget>
                  </item>
                 </layout>
                </item>
                <item row="5" column="0">
+                <layout class="QGridLayout" name="gridLayout_58">
+                 <item row="0" column="2">
+                  <spacer name="horizontalSpacer_86">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QLineEdit" name="ssh_port_lineEdit">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>50</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>22</string>
+                   </property>
+                   <property name="placeholderText">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QCheckBox" name="ssh_port_checkBox">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="text">
+                    <string>Port</string>
+                   </property>
+                   <property name="checked">
+                    <bool>false</bool>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item row="6" column="0">
                 <layout class="QHBoxLayout" name="serverconnect_lLayout">
                  <item>
                   <spacer name="horizontalSpacer_6">
@@ -390,6 +428,20 @@
                     </size>
                    </property>
                   </spacer>
+                 </item>
+                </layout>
+               </item>
+               <item row="0" column="0">
+                <layout class="QGridLayout" name="remoteloginlabel_Layout">
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="remotelogin_label">
+                   <property name="text">
+                    <string>Login Remote Host</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </item>
@@ -719,7 +771,81 @@
         <string>Marmara</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_8">
-        <item row="3" column="0" colspan="3">
+        <item row="3" column="1" colspan="4">
+         <layout class="QHBoxLayout" name="horizontalLayout_10">
+          <item>
+           <spacer name="horizontalSpacer_87">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="youtube_button">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="sizeIncrement">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
+            </property>
+            <property name="default">
+             <bool>false</bool>
+            </property>
+            <property name="flat">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="discord_button">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="default">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="website_button">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="3" column="0">
          <widget class="QLabel" name="bottom_message_label">
           <property name="maximumSize">
            <size>
@@ -741,7 +867,7 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="0">
+        <item row="0" column="0" rowspan="3">
          <widget class="QTabWidget" name="mcl_tab">
           <property name="minimumSize">
            <size>
@@ -820,6 +946,19 @@
                <layout class="QGridLayout" name="gridLayout_26">
                 <item row="0" column="0">
                  <layout class="QGridLayout" name="chainaddresses_Layout">
+                  <item row="11" column="1">
+                   <spacer name="verticalSpacer_15">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
                   <item row="2" column="1">
                    <layout class="QGridLayout" name="gridLayout_29">
                     <item row="1" column="4">
@@ -1042,19 +1181,6 @@
                     </property>
                    </spacer>
                   </item>
-                  <item row="10" column="1">
-                   <spacer name="verticalSpacer_15">
-                    <property name="orientation">
-                     <enum>Qt::Vertical</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>20</width>
-                      <height>40</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
                   <item row="5" column="1">
                    <spacer name="verticalSpacer_33">
                     <property name="orientation">
@@ -1064,32 +1190,6 @@
                      <size>
                       <width>20</width>
                       <height>40</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="1" column="0" rowspan="10">
-                   <spacer name="horizontalSpacer_61">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="1" column="2" rowspan="10">
-                   <spacer name="horizontalSpacer_62">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
                      </size>
                     </property>
                    </spacer>
@@ -1130,13 +1230,6 @@
                       </property>
                      </spacer>
                     </item>
-                    <item>
-                     <widget class="QPushButton" name="debug_button">
-                      <property name="text">
-                       <string/>
-                      </property>
-                     </widget>
-                    </item>
                    </layout>
                   </item>
                   <item row="7" column="1">
@@ -1161,6 +1254,32 @@
                   </item>
                   <item row="9" column="1">
                    <widget class="QTextBrowser" name="update_chain_textBrowser"/>
+                  </item>
+                  <item row="1" column="2" rowspan="9">
+                   <spacer name="horizontalSpacer_62">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="1" column="0" rowspan="9">
+                   <spacer name="horizontalSpacer_61">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
                   </item>
                  </layout>
                 </item>
@@ -1652,6 +1771,36 @@
                </layout>
               </widget>
              </widget>
+            </item>
+            <item row="2" column="0">
+             <layout class="QHBoxLayout" name="horizontalLayout_11">
+              <item>
+               <spacer name="horizontalSpacer_88">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QPushButton" name="debug_button">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
            </layout>
           </widget>
@@ -5782,7 +5931,7 @@
           </widget>
          </widget>
         </item>
-        <item row="0" column="1" colspan="2">
+        <item row="0" column="1" rowspan="3" colspan="4">
          <widget class="QFrame" name="side_panel_frame">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
@@ -5952,13 +6101,6 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="0" rowspan="2">
-               <widget class="QLabel" name="chainsync_label">
-                <property name="text">
-                 <string>Chain Sync</string>
-                </property>
-               </widget>
-              </item>
               <item row="8" column="2">
                <widget class="QLabel" name="connections_warning_label">
                 <property name="text">
@@ -6020,8 +6162,8 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="1" colspan="2">
-               <widget class="QLabel" name="chainsync_label_value">
+              <item row="0" column="1" colspan="2">
+               <widget class="QLabel" name="chainstatus_label_value">
                 <property name="text">
                  <string/>
                 </property>
@@ -6030,8 +6172,15 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="1" colspan="2">
-               <widget class="QLabel" name="chainstatus_label_value">
+              <item row="1" column="0" rowspan="4">
+               <widget class="QLabel" name="chainsync_label">
+                <property name="text">
+                 <string>Chain Sync</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1" rowspan="4" colspan="2">
+               <widget class="QLabel" name="chainsync_label_value">
                 <property name="text">
                  <string/>
                 </property>
@@ -6654,7 +6803,6 @@
  <tabstops>
   <tabstop>server_comboBox</tabstop>
   <tabstop>serveradd_button</tabstop>
-  <tabstop>serveredit_button</tabstop>
   <tabstop>serverpw_lineEdit</tabstop>
   <tabstop>connect_button</tabstop>
   <tabstop>add_servername_lineEdit</tabstop>

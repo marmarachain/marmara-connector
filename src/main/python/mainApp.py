@@ -70,13 +70,14 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.connect_button.clicked.connect(self.server_connect)
         self.serverpw_lineEdit.returnPressed.connect(self.server_connect)
         self.serveredit_button.clicked.connect(self.server_edit_selected)
+        self.ssh_port_checkBox.clicked.connect(self.enable_ssh_custom_port)
         # install page
         self.start_install_button.clicked.connect(self.start_autoinstall)
         self.sudo_password_lineEdit.returnPressed.connect(self.start_autoinstall)
-        #  Add Server Settings page
+        ##  Add Server Settings page
         self.add_serversave_button.clicked.connect(self.save_server_settings)
         self.servercancel_button.clicked.connect(self.add_cancel_selected)
-        # Edit Server Settings page
+        ## Edit Server Settings page
         self.edit_serversave_button.clicked.connect(self.edit_server_settings)
         self.serverdelete_button.clicked.connect(self.delete_server_setting)
         # MCL tabwidget
@@ -100,6 +101,9 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.support_pushButton.clicked.connect(self.send_coins_to_team)
         self.fontsize_plus_button.clicked.connect(self.increase_fontsize)
         self.fontsize_minus_button.clicked.connect(self.decrease_fontsize)
+        self.discord_button.clicked.connect(self.open_discord)
+        self.youtube_button.clicked.connect(self.open_youtube)
+        self.website_button.clicked.connect(self.open_website)
         # Chain page
         self.stopchain_button.clicked.connect(self.stop_chain)
         self.addaddress_page_button.clicked.connect(self.get_address_page)
@@ -236,6 +240,10 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.exchange_market_request_button.setToolTip(self.tr("can be refreshed once in 20 seconds"))
         self.fontsize_plus_button.setToolTip(self.tr("Increase font size"))
         self.fontsize_minus_button.setToolTip(self.tr("Decrease font size"))
+        self.youtube_button.setToolTip('Youtube MARMARA')
+        self.discord_button.setToolTip('Discord MARMARA')
+        self.website_button.setToolTip("marmara.io")
+        self.debug_button.setToolTip('Debug')
 
     def center_ui(self):
         qr = self.frameGeometry()
@@ -528,7 +536,8 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         selected_server_info = server_list[self.server_comboBox.currentIndex()]
         selected_server_info = selected_server_info.split(",")
         remote_connection.set_server_connection(ip=selected_server_info[2], username=selected_server_info[1],
-                                                pw=self.serverpw_lineEdit.text())
+                                                pw=self.serverpw_lineEdit.text(),
+                                                ssh_port=self.ssh_port_lineEdit.text())
         validate = remote_connection.check_server_connection()
         if validate == 'error':
             self.login_page_info(self.tr("Authentication or Connection Error"))
@@ -698,7 +707,8 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
                     err_result = err_result + ' ' + str(line)
                 logging.error(err_result)
                 self.bottom_info(err_result)
-                if str(err_result == "(7, 'Failed to connect to 127.0.0.1 port 33825: Connection refused')"):
+                if str(err_msg) == "(7, 'Failed to connect to 127.0.0.1 port 33825: Connection refused')" or \
+                        str(err_msg).find("error: couldn't connect to server: unknown (code -1)") != -1:
                     if self.chain_status:
                         self.custom_message(self.tr('Chain is not Working'),
                                             self.tr('Make sure the marmara chain is running!'), 'information',
@@ -900,21 +910,40 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     def set_getinfo_result(self, getinfo_result):
         if getinfo_result.get('synced'):
             self.chainsync_label_value.setPixmap(self.active_icon_pixmap)
+            self.chainsync_label_value.setAlignment(QtCore.Qt.AlignCenter)
             self.chain_synced = True
-        elif not getinfo_result.get('synced'):
-            self.chainsync_label_value.setPixmap(self.inactive_icon_pixmap)
+        if not getinfo_result.get('synced'):
             self.chain_synced = False
+            if int(getinfo_result['longestchain']) == 0:
+                self.chainsync_label_value.setAlignment(QtCore.Qt.AlignCenter)
+                self.chainsync_label_value.setPixmap(self.inactive_icon_pixmap)
+            else:
+                block_diff = int(getinfo_result['longestchain']) - int(getinfo_result['blocks'])
+                days_sync = None
+                if 0 < block_diff < 1140:
+                    days_sync = str(round(block_diff/1440)) + self.tr(' Hour')
+                if block_diff > 1140:
+                    days_sync = str(round(block_diff/1440)) + self.tr(' Day')
+                if block_diff == 0:
+                    days_sync = None
+                    self.chainsync_label_value.setAlignment(QtCore.Qt.AlignCenter)
+                    self.chainsync_label_value.setPixmap(self.inactive_icon_pixmap)
+                if block_diff:
+                    self.chainsync_label_value.setAlignment(QtCore.Qt.AlignLeft)
+                    self.chainsync_label_value.setText(days_sync)
+                    print(days_sync)
+        print(getinfo_result.get('errors'))
         if getinfo_result.get('pubkey'):
             self.pubkey_status = True
             self.current_pubkey_value.setText(str(getinfo_result['pubkey']))
-        if getinfo_result.get('pubkey') is None:
+        if getinfo_result.get('pubkey') is None or getinfo_result.get('pubkey') is "":
             self.bottom_info(self.tr('pubkey is not set'))
             logging.warning('pubkey is not set')
             self.pubkey_status = False
             self.current_pubkey_value.setText("")
-        if getinfo_result.get('errors') is None:
+        if getinfo_result.get('errors') is "":
             self.update_chain_textBrowser.setVisible(False)
-        if getinfo_result.get('errors'):
+        if getinfo_result.get('errors') is not "":
             self.update_chain_textBrowser.setVisible(True)
             self.update_chain_textBrowser.setText(str(getinfo_result.get('errors')))
         self.difficulty_value_label.setText(str(int(getinfo_result['difficulty'])))
@@ -1001,6 +1030,18 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         else:
             self.bottom_info(self.tr('no pubkey value set'))
             logging.warning('no pubkey value set')
+
+    @pyqtSlot()
+    def open_discord(self):
+        webbrowser.open_new('https://discord.com/invite/eMJ5yjyJVM')
+
+    @pyqtSlot()
+    def open_youtube(self):
+        webbrowser.open_new('https://www.youtube.com/channel/UC_Ym-tICCd7ATlBU_1ToEKw')
+
+    @pyqtSlot()
+    def open_website(self):
+        webbrowser.open_new('https://marmara.io')
 
     @pyqtSlot()
     def toggle_staking(self):
@@ -2935,6 +2976,13 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.edit_serverusername_lineEdit.setText(selected_server_info[1])
         self.edit_serverip_lineEdit.setText(selected_server_info[2])
 
+    @pyqtSlot()
+    def enable_ssh_custom_port(self):
+        if self.ssh_port_checkBox.isChecked():
+            self.ssh_port_lineEdit.setEnabled(True)
+        else:
+            self.ssh_port_lineEdit.setEnabled(False)
+            self.ssh_port_lineEdit.setText('22')
 
     @pyqtSlot()
     def save_server_settings(self):
