@@ -1,0 +1,44 @@
+name: Build Marmara Connector
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build_Debian:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v1
+        with:
+          python-version: "3.6"
+      - name: Build debian
+        shell: bash
+        run: |
+          sudo apt update
+          sudo apt install -y --no-install-recommends python3 python3-pip python3-venv
+          python3 -m venv venv
+          source venv/bin/activate
+          pip3 install pip -U
+          pip3 install -r requirements.txt
+          fbs freeze
+          cp /usr/lib/x86_64-linux-gnu/qt5/plugins/platforminputcontexts/libfcitxplatforminputcontextplugin.so target/marmara-connector/PyQt5/Qt/plugins/platforminputcontexts
+          sudo chmod +x target/marmara-connector/PyQt5/Qt/plugins/platforminputcontexts/*.so
+          fbs installer
+          
+      - name: Upload a Build Artifact (Linux AppImage)
+        uses: actions/upload-artifact@v2.3.1
+        with:
+          name: marmara-connector.deb
+          path: target/marmara-connector.deb
+          retention-days: 7
+      
+      - name: Upload a Build Artifact (Linux ZIP)
+        uses: actions/upload-artifact@v2.3.1
+        with:
+          name: marmara-connector.zip
+          path: target/marmara-connector.zip
+          retention-days: 7
+      
