@@ -18,12 +18,13 @@ jobs:
         shell: bash
         run: |
           sudo apt update
-          sudo apt install -y --no-install-recommends python3 python3-pip python3-venv
+          sudo apt install -y --no-install-recommends python3 python3-pip python3-venv qttools5-dev-tools python3-pyqt5
           sudo gem install fpm
           python3 -m venv venv
           source venv/bin/activate
-          pip3 install pip -U
-          pip3 install -r requirements.txt
+          pip install wheel
+          pip install pip -U
+          pip install -r requirements.txt
           fbs freeze
           cp /usr/lib/x86_64-linux-gnu/qt5/plugins/platforminputcontexts/libfcitxplatforminputcontextplugin.so target/marmara-connector/PyQt5/Qt/plugins/platforminputcontexts
           sudo chmod +x target/marmara-connector/PyQt5/Qt/plugins/platforminputcontexts/*.so
