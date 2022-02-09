@@ -32,13 +32,9 @@ jobs:
       - name: Upload a Build Artifact (Linux AppImage)
         uses: actions/upload-artifact@v2.3.1
         with:
-          name: marmara-connector.deb
-          path: target/marmara-connector.deb
           retention-days: 7
       
       - name: Upload a Build Artifact (Linux ZIP)
         uses: actions/upload-artifact@v2.3.1
         with:
-          name: marmara-connector.zip
-          path: target/marmara-connector.zip
           retention-days: 7
