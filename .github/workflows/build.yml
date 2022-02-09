@@ -32,9 +32,11 @@ jobs:
       - name: Upload a Build Artifact (Linux AppImage)
         uses: actions/upload-artifact@v2.3.1
         with:
+          path: target/
           retention-days: 7
       
       - name: Upload a Build Artifact (Linux ZIP)
         uses: actions/upload-artifact@v2.3.1
         with:
+          path: target/
           retention-days: 7
