@@ -945,8 +945,6 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
                 if block_diff:
                     self.chainsync_label_value.setAlignment(QtCore.Qt.AlignLeft)
                     self.chainsync_label_value.setText(days_sync)
-                    print(days_sync)
-        print(getinfo_result.get('errors'))
         if getinfo_result.get('pubkey'):
             self.pubkey_status = True
             self.current_pubkey_value.setText(str(getinfo_result['pubkey']))
