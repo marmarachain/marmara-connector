@@ -70,6 +70,10 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.connect_button.clicked.connect(self.server_connect)
         self.serverpw_lineEdit.returnPressed.connect(self.server_connect)
         self.serveredit_button.clicked.connect(self.server_edit_selected)
+        self.regex = QRegExp("[1-90_]{1,5}")
+        self.validator = QRegExpValidator(self.regex)
+        self.ssh_port_lineEdit.setValidator(self.validator)
+        self.ssh_port_lineEdit.setText('22')
         self.ssh_port_checkBox.clicked.connect(self.enable_ssh_custom_port)
         # install page
         self.start_install_button.clicked.connect(self.start_autoinstall)
@@ -88,8 +92,8 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.staking_button.setChecked(False)
         self.staking_button.clicked.connect(self.toggle_staking)
         self.mining_button.setChecked(False)
-        self.regex = QRegExp("[1-90_]{1,4}")
-        self.validator = QRegExpValidator(self.regex)
+        # self.regex = QRegExp("[1-90_]{1,4}")
+        # self.validator = QRegExpValidator(self.regex)
         self.cpu_core_lineEdit.setValidator(self.validator)
         self.cpu_core_selection_off()
         self.cpu_core_set_button.clicked.connect(self.setmining_cpu_core)
@@ -187,6 +191,10 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.exchange_market_request_button.clicked.connect(self.get_mcl_exchange_market)
         self.mcl_amount_lineEdit.textEdited.connect(self.calculate_usd_price)
         self.usd_amount_lineEdit.textEdited.connect(self.calculate_mcl_price)
+        self.mcl_exchange_market_result = None
+        self.mcl_exchange_ticker_result = None
+        self.market_fiat_comboBox.addItems(['USD', 'TRY', 'BTC', 'EUR', 'RUB'])
+        self.market_fiat_comboBox.currentTextChanged.connect(self.market_fiat_changed)
 
         # Thread setup
         self.thread_marmarad_path = QThread()
@@ -429,6 +437,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.login_message_label.clear()
         self.chain_status = False
         self.chain_synced = False
+        self.host_name_label.clear()
 
     def logout_host(self):
         self.current_pubkey_value.clear()
@@ -474,6 +483,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         logging.info('is local connection: ' + str(marmarachain_rpc.is_local))
         self.check_marmara_path()
         self.download_blocks_button.show()
+        self.host_name_label.setText(self.tr('LOCAL'))
 
     def remote_selection(self):
         self.login_stackedWidget.setCurrentIndex(1)
@@ -491,6 +501,25 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             self.connect_button.setEnabled(False)
             self.serveredit_button.setEnabled(False)
 
+    @pyqtSlot()
+    def server_connect(self):
+        server_list = configuration.ServerSettings().read_file()
+        selected_server_info = server_list[self.server_comboBox.currentIndex()]
+        selected_server_info = selected_server_info.split(",")
+        if not self.ssh_port_lineEdit.text():
+            self.ssh_port_lineEdit.setText('22')
+        remote_connection.set_server_connection(ip=selected_server_info[2], username=selected_server_info[1],
+                                                pw=self.serverpw_lineEdit.text(),
+                                                ssh_port=self.ssh_port_lineEdit.text())
+        validate = remote_connection.check_server_connection()
+        if validate == 'error':
+            self.login_page_info(self.tr("Authentication or Connection Error"))
+        else:
+            self.check_marmara_path()
+            marmarachain_rpc.set_sshclient(validate)
+            self.host_name_label.setText(self.tr('Remote: ') + self.server_comboBox.currentText())
+
+    @pyqtSlot()
     def open_debug_console(self):
         QMessageBox.information(self,
                           self.tr("Debug Console"),
@@ -529,21 +558,6 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     def credit_tab_changed(self, index):
         if index == 1:
             self.get_contact_names_pubkeys()
-
-    @pyqtSlot()
-    def server_connect(self):
-        server_list = configuration.ServerSettings().read_file()
-        selected_server_info = server_list[self.server_comboBox.currentIndex()]
-        selected_server_info = selected_server_info.split(",")
-        remote_connection.set_server_connection(ip=selected_server_info[2], username=selected_server_info[1],
-                                                pw=self.serverpw_lineEdit.text(),
-                                                ssh_port=self.ssh_port_lineEdit.text())
-        validate = remote_connection.check_server_connection()
-        if validate == 'error':
-            self.login_page_info(self.tr("Authentication or Connection Error"))
-        else:
-            self.check_marmara_path()
-            marmarachain_rpc.set_sshclient(validate)
 
     def worker_thread(self, thread, worker, method=None, params=None, worker_output=None, execute=None):
         if self.chain_status:
@@ -1033,11 +1047,11 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
 
     @pyqtSlot()
     def open_discord(self):
-        webbrowser.open_new('https://discord.com/invite/eMJ5yjyJVM')
+        webbrowser.open_new('https://marmara.io/discord')
 
     @pyqtSlot()
     def open_youtube(self):
-        webbrowser.open_new('https://www.youtube.com/channel/UC_Ym-tICCd7ATlBU_1ToEKw')
+        webbrowser.open_new('https://www.youtube.com/c/MarmaraCreditLoops')
 
     @pyqtSlot()
     def open_website(self):
@@ -2896,58 +2910,80 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     def set_mcl_exchange_market_result(self, out_list):
         out_json = out_list[0]
         if type(out_json) is list:
-            self.exchange_market_tableWidget.setRowCount(len(out_json))
-            self.exchange_market_tableWidget.setSortingEnabled(False)
-            for row in out_json:
-                row_number = out_json.index(row)
-                self.exchange_market_tableWidget.setItem(row_number, 0, QTableWidgetItem(str(row.get('exchange_name'))))
-                self.exchange_market_tableWidget.setItem(row_number, 1, QTableWidgetItem(str(row.get('pair'))))
-                self.exchange_market_tableWidget.setItem(row_number, 2, QTableWidgetItem(str(row.get('quotes').get('USD').get('price'))))
-                self.exchange_market_tableWidget.setItem(row_number, 3, QTableWidgetItem(str(row.get('quotes').get('USD').get('volume_24h'))))
-                self.exchange_market_tableWidget.setItem(row_number, 4, QTableWidgetItem(str(row.get('last_updated')).replace('T', ' ').replace('Z', '')))
-                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
-                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
-                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
-                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
-                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
-                self.bottom_info(self.tr('fetched exchange values'))
-            self.exchange_market_tableWidget.setSortingEnabled(True)
+            self.mcl_exchange_market_result = out_json
+            self.update_exchange_table()
         if type(out_json) is str:
             if out_json == 'error':
                 self.bottom_err_info(self.tr('Error in getting exchange values'))
         if out_list[1]:
             if type(out_list[1]) is dict:
-                self.ticker_price_label_value.setText(str(out_list[1].get('quotes').get('USD').get('price')))
-                self.ticker_volume_label_value.setText(str(out_list[1].get('quotes').get('USD').get('volume_24h')))
-                self.ticker_1hour_label_value.setText(str(out_list[1].get('quotes').get('USD').get('percent_change_1h')))
-                self.ticker_24hour_label_value.setText(str(out_list[1].get('quotes').get('USD').get('percent_change_24h')))
-                self.ticker_1week_label_value.setText(str(out_list[1].get('quotes').get('USD').get('percent_change_7d')))
-                self.ticker_1month_label_value.setText(str(out_list[1].get('quotes').get('USD').get('percent_change_30d')))
-                if self.ticker_price_label_value.text():
-                    self.mcl_amount_lineEdit.setEnabled(True)
-                    self.usd_amount_lineEdit.setEnabled(True)
+                self.mcl_exchange_ticker_result = out_list[1]
+                self.update_ticker_table()
             if type(out_list[1]) is str:
                 if out_list[1] == 'error':
                     self.bottom_err_info(self.tr('Error in getting exchange values'))
 
+    def update_exchange_table(self):
+        self.exchange_market_tableWidget.setRowCount(len(self.mcl_exchange_market_result))
+        self.exchange_market_tableWidget.setSortingEnabled(False)
+        fiat = self.market_fiat_comboBox.currentText()
+        for row in self.mcl_exchange_market_result:
+            price = ('%.8f' % row.get('quotes').get(fiat).get('price'))
+            volume = ('%.8f' % row.get('quotes').get(fiat).get('volume_24h'))
+            row_number = self.mcl_exchange_market_result.index(row)
+            self.exchange_market_tableWidget.setItem(row_number, 0, QTableWidgetItem(str(row.get('exchange_name'))))
+            self.exchange_market_tableWidget.setItem(row_number, 1, QTableWidgetItem(str(row.get('pair'))))
+            self.exchange_market_tableWidget.setItem(row_number, 2, QTableWidgetItem(str(price)))
+            self.exchange_market_tableWidget.setItem(row_number, 3, QTableWidgetItem(str(volume)))
+            self.exchange_market_tableWidget.setItem(row_number, 4, QTableWidgetItem(
+                str(row.get('last_updated')).replace('T', ' ').replace('Z', '')))
+            self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+            self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
+            self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
+            self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
+            self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
+            self.bottom_info(self.tr('fetched exchange values'))
+        self.exchange_market_tableWidget.setSortingEnabled(True)
+
+    def update_ticker_table(self):
+        fiat = self.market_fiat_comboBox.currentText()
+        price = ('%.8f' % self.mcl_exchange_ticker_result.get('quotes').get(fiat).get('price'))
+        volume = ('%.8f' % self.mcl_exchange_ticker_result.get('quotes').get(fiat).get('volume_24h'))
+        self.ticker_price_label_value.setText(str(price))
+        self.ticker_volume_label_value.setText(str(volume))
+        self.ticker_1hour_label_value.setText(str(self.mcl_exchange_ticker_result.get('quotes').get(fiat).get('percent_change_1h')))
+        self.ticker_24hour_label_value.setText(str(self.mcl_exchange_ticker_result.get('quotes').get(fiat).get('percent_change_24h')))
+        self.ticker_1week_label_value.setText(str(self.mcl_exchange_ticker_result.get('quotes').get(fiat).get('percent_change_7d')))
+        self.ticker_1month_label_value.setText(str(self.mcl_exchange_ticker_result.get('quotes').get(fiat).get('percent_change_30d')))
+        if self.ticker_price_label_value.text():
+            self.mcl_amount_lineEdit.setEnabled(True)
+            self.usd_amount_lineEdit.setEnabled(True)
+
+    @pyqtSlot()
+    def market_fiat_changed(self):
+        self.convert_usd_label.setText(self.market_fiat_comboBox.currentText())
+        self.calculate_usd_price()
+        if self.mcl_exchange_market_result and self.mcl_exchange_ticker_result:
+            self.update_exchange_table()
+            self.update_ticker_table()
+
+
+
     @pyqtSlot()
     def calculate_usd_price(self):
         if self.mcl_amount_lineEdit.text():
-            price = float(self.ticker_price_label_value.text())
+            current_fiat = self.market_fiat_comboBox.currentText()
+            price = float(self.mcl_exchange_ticker_result.get('quotes').get(current_fiat).get('price'))
             calculation = float(self.mcl_amount_lineEdit.text()) * price
-            self.usd_amount_lineEdit.setText(str(round(calculation, 12)))
+            self.usd_amount_lineEdit.setText(str('%.8f' % calculation))
 
     @pyqtSlot()
     def calculate_mcl_price(self):
         if self.usd_amount_lineEdit.text():
-            price = float(self.ticker_price_label_value.text())
+            current_fiat = self.market_fiat_comboBox.currentText()
+            price = float(self.mcl_exchange_ticker_result.get('quotes').get(current_fiat).get('price'))
             calculation = float(self.usd_amount_lineEdit.text()) / price
-            self.mcl_amount_lineEdit.setText(str(round(calculation, 12)))
-
-    # @pyqtSlot(str)
-    # def err_mcl_exchange_market_result(self, err):
-    #     if err == 'error':
-    #         self.bottom_err_info(self.tr('Error in getting exchange values'))
+            self.mcl_amount_lineEdit.setText(str('%.8f' % calculation))
 
     @pyqtSlot()
     def enable_market_request(self):

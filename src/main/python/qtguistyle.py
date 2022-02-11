@@ -499,6 +499,7 @@ class GuiStyle(Ui_MainWindow):
         self.ticker_1month_label.setFont(font)
         self.ticker_1month_label_value.setFont(font)
         self.exchange_market_comboBox.setFont(font)
+        self.market_fiat_comboBox.setFont(font)
         # header label fontsize
         font.setPointSize(size + 4)
         self.login_label.setFont(font)
@@ -507,6 +508,7 @@ class GuiStyle(Ui_MainWindow):
         self.edit_remotehost_label.setFont(font)
         # Menu items font
         font.setPointSize(size - 1)
+        self.host_name_label.setFont(font)
         self.actionQuit.setFont(font)
         self.actionAbout.setFont(font)
         self.actionLogout.setFont(font)
