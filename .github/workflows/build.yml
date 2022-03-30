@@ -30,13 +30,13 @@ jobs:
           fbs freeze
           fbs installer
       - name: Upload a Build Artifact (Linux AppImage)
-        uses: actions/upload-artifact@v2.3.1
+        uses: actions/upload-artifact@v3.0.0
         with:
-          path: target/
+          path: target/*.deb
           retention-days: 7
       
       - name: Upload a Build Artifact (Linux ZIP)
-        uses: actions/upload-artifact@v2.3.1
+        uses: actions/upload-artifact@v3.0.0
         with:
-          path: target/
+          path: target/*.zip
           retention-days: 7
