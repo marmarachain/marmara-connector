@@ -35,8 +35,8 @@ jobs:
           path: target/*.deb
           retention-days: 7
       
-      - name: Upload a Build Artifact (Linux ZIP)
+      - name: Upload a Build Artifact (Linux Portable)
         uses: actions/upload-artifact@v3.0.0
         with:
-          path: target/*.zip
+          path: target/MarmaraConnector-*
           retention-days: 7
