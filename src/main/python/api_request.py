@@ -8,8 +8,8 @@ app_release_url = 'https://github.com/marmarachain/marmara-connector/releases/'
 marmara_api_url = "https://api.github.com/repos/marmarachain/marmara/releases/latest"
 app_api_url = "https://api.github.com/repos/marmarachain/marmara-connector/releases/latest"
 
-coinpaprika = ['https://api.coinpaprika.com/v1/coins/mcl-marmara-credit-loops/markets',
-               'https://api.coinpaprika.com/v1/tickers/mcl-marmara-credit-loops/']
+coinpaprika = ['https://api.coinpaprika.com/v1/coins/mcl-marmara-credit-loops/markets?quotes=USD,TRY,BTC,EUR,RUB',
+               'https://api.coinpaprika.com/v1/tickers/mcl-marmara-credit-loops?quotes=USD,TRY,BTC,EUR,RUB']
 exchange_market_api_list = {'coinpaprika': coinpaprika}
 """
 requests to get the latest releases' tag_name of a git api url

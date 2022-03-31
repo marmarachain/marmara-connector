@@ -5,31 +5,33 @@ server_hostname = ""
 server_username = ""
 server_password = ""
 port = 22
-timeout = 4
-ssh_key = ""
+ssh_key = None
 
 
-def set_server_connection(ip, username, pw):
-    global server_hostname, server_username, server_password
+def set_server_connection(ip, username, pw, ssh_port=None, sshkey=None):
+    global server_hostname, server_username, server_password, port, ssh_key
     server_hostname = ip
     server_username = username
     server_password = pw
+    port = int(ssh_port)
+    ssh_key = sshkey
 
-
-def server_ssh_connect(ssh_key=None):
+def server_ssh_connect(time_out=None):
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    if ssh_key is not None:
-        ssh_key = paramiko.RSAKey.from_private_key(StringIO(ssh_key))
-    ssh.connect(hostname=server_hostname, username=server_username, password=server_password, port=port, pkey=ssh_key)
+    # global ssh_key
+    # if ssh_key:
+    #     # ssh_key = paramiko.RSAKey.from_private_key(StringIO(ssh_key))
+    #     print(ssh_key)
+    ssh.connect(hostname=server_hostname, username=server_username, password=server_password, port=port, timeout=time_out)
     return ssh
-
 
 def check_server_connection():
     try:
-        client = server_ssh_connect()
+        client = server_ssh_connect(time_out=15)
         return client
-    except paramiko.SSHException as e:
+    except Exception as e:
+        print(e)
         return 'error'
 
 

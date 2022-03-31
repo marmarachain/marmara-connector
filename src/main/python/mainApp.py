@@ -58,6 +58,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.actionConsole.setVisible(False)
         self.actionConsole.triggered.connect(self.open_debug_console)
         self.actionSee_Log_File.triggered.connect(self.open_log_file)
+        self.actionSee_chain_Log_File.triggered.connect(self.open_chain_log_file)
         self.actionCheck_for_Update.triggered.connect(self.check_app_version)
         self.actionAppearances.triggered.connect(self.show_style_themes)
         #   Login page Host Selection
@@ -69,13 +70,18 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.connect_button.clicked.connect(self.server_connect)
         self.serverpw_lineEdit.returnPressed.connect(self.server_connect)
         self.serveredit_button.clicked.connect(self.server_edit_selected)
+        self.regex = QRegExp("[1-90_]{1,5}")
+        self.validator = QRegExpValidator(self.regex)
+        self.ssh_port_lineEdit.setValidator(self.validator)
+        self.ssh_port_lineEdit.setText('22')
+        self.ssh_port_checkBox.clicked.connect(self.enable_ssh_custom_port)
         # install page
         self.start_install_button.clicked.connect(self.start_autoinstall)
         self.sudo_password_lineEdit.returnPressed.connect(self.start_autoinstall)
-        #  Add Server Settings page
+        ##  Add Server Settings page
         self.add_serversave_button.clicked.connect(self.save_server_settings)
         self.servercancel_button.clicked.connect(self.add_cancel_selected)
-        # Edit Server Settings page
+        ## Edit Server Settings page
         self.edit_serversave_button.clicked.connect(self.edit_server_settings)
         self.serverdelete_button.clicked.connect(self.delete_server_setting)
         # MCL tabwidget
@@ -86,8 +92,8 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.staking_button.setChecked(False)
         self.staking_button.clicked.connect(self.toggle_staking)
         self.mining_button.setChecked(False)
-        self.regex = QRegExp("[1-90_]{1,4}")
-        self.validator = QRegExpValidator(self.regex)
+        # self.regex = QRegExp("[1-90_]{1,4}")
+        # self.validator = QRegExpValidator(self.regex)
         self.cpu_core_lineEdit.setValidator(self.validator)
         self.cpu_core_selection_off()
         self.cpu_core_set_button.clicked.connect(self.setmining_cpu_core)
@@ -99,6 +105,9 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.support_pushButton.clicked.connect(self.send_coins_to_team)
         self.fontsize_plus_button.clicked.connect(self.increase_fontsize)
         self.fontsize_minus_button.clicked.connect(self.decrease_fontsize)
+        self.discord_button.clicked.connect(self.open_discord)
+        self.youtube_button.clicked.connect(self.open_youtube)
+        self.website_button.clicked.connect(self.open_website)
         # Chain page
         self.stopchain_button.clicked.connect(self.stop_chain)
         self.addaddress_page_button.clicked.connect(self.get_address_page)
@@ -113,6 +122,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.latest_chain_version = None
         self.chain_versiyon_tag = None
         self.update_chain_textBrowser.setVisible(False)
+        self.debug_button.clicked.connect(self.toggle_textbrowser)
         # - add address page ----
         self.newaddress_button.clicked.connect(self.get_new_address)
         self.address_seed_button.clicked.connect(self.convertpassphrase)
@@ -181,6 +191,10 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.exchange_market_request_button.clicked.connect(self.get_mcl_exchange_market)
         self.mcl_amount_lineEdit.textEdited.connect(self.calculate_usd_price)
         self.usd_amount_lineEdit.textEdited.connect(self.calculate_mcl_price)
+        self.mcl_exchange_market_result = None
+        self.mcl_exchange_ticker_result = None
+        self.market_fiat_comboBox.addItems(['USD', 'TRY', 'BTC', 'EUR', 'RUB'])
+        self.market_fiat_comboBox.currentTextChanged.connect(self.market_fiat_changed)
 
         # Thread setup
         self.thread_marmarad_path = QThread()
@@ -234,6 +248,10 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.exchange_market_request_button.setToolTip(self.tr("can be refreshed once in 20 seconds"))
         self.fontsize_plus_button.setToolTip(self.tr("Increase font size"))
         self.fontsize_minus_button.setToolTip(self.tr("Decrease font size"))
+        self.youtube_button.setToolTip('Youtube MARMARA')
+        self.discord_button.setToolTip('Discord MARMARA')
+        self.website_button.setToolTip("marmara.io")
+        self.debug_button.setToolTip('Debug')
 
     def center_ui(self):
         qr = self.frameGeometry()
@@ -419,6 +437,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.login_message_label.clear()
         self.chain_status = False
         self.chain_synced = False
+        self.host_name_label.clear()
 
     def logout_host(self):
         self.current_pubkey_value.clear()
@@ -464,6 +483,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         logging.info('is local connection: ' + str(marmarachain_rpc.is_local))
         self.check_marmara_path()
         self.download_blocks_button.show()
+        self.host_name_label.setText(self.tr('LOCAL'))
 
     def remote_selection(self):
         self.login_stackedWidget.setCurrentIndex(1)
@@ -481,6 +501,25 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             self.connect_button.setEnabled(False)
             self.serveredit_button.setEnabled(False)
 
+    @pyqtSlot()
+    def server_connect(self):
+        server_list = configuration.ServerSettings().read_file()
+        selected_server_info = server_list[self.server_comboBox.currentIndex()]
+        selected_server_info = selected_server_info.split(",")
+        if not self.ssh_port_lineEdit.text():
+            self.ssh_port_lineEdit.setText('22')
+        remote_connection.set_server_connection(ip=selected_server_info[2], username=selected_server_info[1],
+                                                pw=self.serverpw_lineEdit.text(),
+                                                ssh_port=self.ssh_port_lineEdit.text())
+        validate = remote_connection.check_server_connection()
+        if validate == 'error':
+            self.login_page_info(self.tr("Authentication or Connection Error"))
+        else:
+            self.check_marmara_path()
+            marmarachain_rpc.set_sshclient(validate)
+            self.host_name_label.setText(self.tr('Remote: ') + self.server_comboBox.currentText())
+
+    @pyqtSlot()
     def open_debug_console(self):
         QMessageBox.information(self,
                           self.tr("Debug Console"),
@@ -491,6 +530,18 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         text_path = configuration.log_file_path
         webbrowser.open_new(text_path)
 
+    @pyqtSlot()
+    def open_chain_log_file(self):
+        operating_system = platform.system()
+        debug_log_path = ''
+        if operating_system == 'Darwin':
+            debug_log_path = os.environ['HOME'] + '/Library/Application Support/Komodo/MCL'
+        elif operating_system == 'Linux':
+            debug_log_path = os.environ['HOME'] + '/.komodo/MCL'
+        elif operating_system == 'Win64' or operating_system == 'Windows':
+            debug_log_path = '%s/komodo/MCL' % os.environ['APPDATA']
+        debug_log_file = str(debug_log_path + '/' + 'debug.log')
+        webbrowser.open_new(debug_log_file)
 
     @pyqtSlot(int)
     def mcl_tab_changed(self, index):
@@ -507,20 +558,6 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     def credit_tab_changed(self, index):
         if index == 1:
             self.get_contact_names_pubkeys()
-
-    @pyqtSlot()
-    def server_connect(self):
-        server_list = configuration.ServerSettings().read_file()
-        selected_server_info = server_list[self.server_comboBox.currentIndex()]
-        selected_server_info = selected_server_info.split(",")
-        remote_connection.set_server_connection(ip=selected_server_info[2], username=selected_server_info[1],
-                                                pw=self.serverpw_lineEdit.text())
-        validate = remote_connection.check_server_connection()
-        if validate == 'error':
-            self.login_page_info(self.tr("Authentication or Connection Error"))
-        else:
-            self.check_marmara_path()
-            marmarachain_rpc.set_sshclient(validate)
 
     def worker_thread(self, thread, worker, method=None, params=None, worker_output=None, execute=None):
         if self.chain_status:
@@ -684,6 +721,16 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
                     err_result = err_result + ' ' + str(line)
                 logging.error(err_result)
                 self.bottom_info(err_result)
+                if str(err_msg) == "(7, 'Failed to connect to 127.0.0.1 port 33825: Connection refused')" or \
+                        str(err_msg).find("error: couldn't connect to server: unknown (code -1)") != -1:
+                    if self.chain_status:
+                        self.custom_message(self.tr('Chain is not Working'),
+                                            self.tr('Make sure the marmara chain is running!'), 'information',
+                                            QMessageBox.Warning)
+                        self.chain_status = False
+                        self.chainstatus_label_value.setPixmap(self.inactive_icon_pixmap)
+
+
 
     def login_page_info(self, info):
         self.login_message_label.setText(info)
@@ -806,7 +853,6 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
 
     @pyqtSlot(str)
     def check_chain_update_err(self, err):
-        print(err)
         self.bottom_info(err)
         self.update_chain_button.setHidden(False)
         logging.error(err)
@@ -835,19 +881,21 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
 
     @pyqtSlot(tuple)
     def result_stopchain(self, result_out):
-        if result_out[0]:
-            print_result = ""
-            for line in str(result_out[0]).splitlines():
-                print_result = print_result + ' ' + str(line)
-            logging.info("Stopping chain:" + print_result)
-            self.bottom_info(print_result)
-        if len(result_out[0]) == 0:
-            self.bottom_info(self.tr('Marmarachain stopped'))
-            logging.info('Marmarachain stopped')
-            self.chain_status = False
-            self.myCCActivatedAddress = None
-            self.chainstatus_label_value.setPixmap(self.inactive_icon_pixmap)
-            self.update_addresses_table()
+        if result_out[2] != 1:
+            if result_out[0]:
+                print_result = ""
+                for line in str(result_out[0]).splitlines():
+                    print_result = print_result + ' ' + str(line)
+                logging.info("Stopping chain:" + print_result)
+                self.bottom_info(print_result)
+
+            if result_out[0] == 0:
+                self.bottom_info(self.tr('Marmarachain stopped'))
+                logging.info('Marmarachain stopped')
+                self.chain_status = False
+                self.myCCActivatedAddress = None
+                self.chainstatus_label_value.setPixmap(self.inactive_icon_pixmap)
+                self.update_addresses_table()
         elif result_out[1]:
             self.bottom_err_info(result_out[1])
 
@@ -876,21 +924,38 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     def set_getinfo_result(self, getinfo_result):
         if getinfo_result.get('synced'):
             self.chainsync_label_value.setPixmap(self.active_icon_pixmap)
+            self.chainsync_label_value.setAlignment(QtCore.Qt.AlignCenter)
             self.chain_synced = True
-        elif not getinfo_result.get('synced'):
-            self.chainsync_label_value.setPixmap(self.inactive_icon_pixmap)
+        if not getinfo_result.get('synced'):
             self.chain_synced = False
+            if int(getinfo_result['longestchain']) == 0:
+                self.chainsync_label_value.setAlignment(QtCore.Qt.AlignCenter)
+                self.chainsync_label_value.setPixmap(self.inactive_icon_pixmap)
+            else:
+                block_diff = int(getinfo_result['longestchain']) - int(getinfo_result['blocks'])
+                days_sync = None
+                if 0 < block_diff < 1140:
+                    days_sync = str(round(block_diff/1440)) + self.tr(' Hour')
+                if block_diff > 1140:
+                    days_sync = str(round(block_diff/1440)) + self.tr(' Day')
+                if block_diff == 0:
+                    days_sync = None
+                    self.chainsync_label_value.setAlignment(QtCore.Qt.AlignCenter)
+                    self.chainsync_label_value.setPixmap(self.inactive_icon_pixmap)
+                if block_diff:
+                    self.chainsync_label_value.setAlignment(QtCore.Qt.AlignLeft)
+                    self.chainsync_label_value.setText(days_sync)
         if getinfo_result.get('pubkey'):
             self.pubkey_status = True
             self.current_pubkey_value.setText(str(getinfo_result['pubkey']))
-        if getinfo_result.get('pubkey') is None:
+        if getinfo_result.get('pubkey') is None or getinfo_result.get('pubkey') is "":
             self.bottom_info(self.tr('pubkey is not set'))
             logging.warning('pubkey is not set')
             self.pubkey_status = False
             self.current_pubkey_value.setText("")
-        if getinfo_result.get('errors') is None:
+        if getinfo_result.get('errors') is "":
             self.update_chain_textBrowser.setVisible(False)
-        if getinfo_result.get('errors'):
+        if getinfo_result.get('errors') is not "":
             self.update_chain_textBrowser.setVisible(True)
             self.update_chain_textBrowser.setText(str(getinfo_result.get('errors')))
         self.difficulty_value_label.setText(str(int(getinfo_result['difficulty'])))
@@ -977,6 +1042,18 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         else:
             self.bottom_info(self.tr('no pubkey value set'))
             logging.warning('no pubkey value set')
+
+    @pyqtSlot()
+    def open_discord(self):
+        webbrowser.open_new('https://marmara.io/discord')
+
+    @pyqtSlot()
+    def open_youtube(self):
+        webbrowser.open_new('https://www.youtube.com/c/MarmaraCreditLoops')
+
+    @pyqtSlot()
+    def open_website(self):
+        webbrowser.open_new('https://marmara.io')
 
     @pyqtSlot()
     def toggle_staking(self):
@@ -1126,36 +1203,42 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     # getting addresses for address table widget
     @pyqtSlot()
     def getaddresses(self):
-        self.bottom_info(self.tr('getting wallet addresses'))
-        logging.info('getting wallet addresses')
-        self.worker_getaddresses = marmarachain_rpc.RpcHandler()
-        self.worker_thread(thread=self.thread_getaddresses, worker=self.worker_getaddresses,
-                           worker_output=self.set_getaddresses_result, execute='get_addresses')
+        if self.chain_status:
+            self.bottom_info(self.tr('getting wallet addresses'))
+            logging.info('getting wallet addresses')
+            self.worker_getaddresses = marmarachain_rpc.RpcHandler()
+            self.worker_thread(thread=self.thread_getaddresses, worker=self.worker_getaddresses,
+                               worker_output=self.set_getaddresses_result, execute='get_addresses')
+        else:
+            self.update_addresses_table()
 
     @pyqtSlot(list)
     def set_getaddresses_result(self, result_out):
-        self.bottom_info(self.tr('Loading Addresses ...'))
-        logging.info('Loading Addresses ...')
-        self.addresses_tableWidget.setSortingEnabled(False)
-        self.addresses_tableWidget.setRowCount(len(result_out))
-        logging.info('\n------wallet address list----- \n' + str(result_out))
-        for row in result_out:
-            row_number = result_out.index(row)
-            if self.pubkey_status:
-                self.addresses_tableWidget.setColumnHidden(0, True)
-            btn_setpubkey = QPushButton('Set pubkey')
-            self.addresses_tableWidget.setCellWidget(row_number, 0, btn_setpubkey)
-            self.addresses_tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
-            for item in row:
-                self.addresses_tableWidget.setItem(row_number, (row.index(item) + 1), QTableWidgetItem(str(item)))
-                self.addresses_tableWidget.horizontalHeader().setSectionResizeMode((row.index(item) + 1),
-                                                                                   QHeaderView.ResizeToContents)
-            btn_setpubkey.clicked.connect(self.set_pubkey)
-        self.bottom_info(self.tr('Loading Addresses finished'))
-        logging.info('Loading Addresses finished')
-        self.addresses_tableWidget.setSortingEnabled(True)
-        # self.hide_address_checkBox.setCheckState(False)
-        self.update_addresses_table()
+        if result_out == []:
+            self.bottom_err_info(self.tr('could not get addresses. make sure chain is running'))
+        else:
+            self.bottom_info(self.tr('Loading Addresses ...'))
+            logging.info('Loading Addresses ...')
+            self.addresses_tableWidget.setSortingEnabled(False)
+            self.addresses_tableWidget.setRowCount(len(result_out))
+            logging.info('\n------wallet address list----- \n' + str(result_out))
+            for row in result_out:
+                row_number = result_out.index(row)
+                if self.pubkey_status:
+                    self.addresses_tableWidget.setColumnHidden(0, True)
+                btn_setpubkey = QPushButton('Set pubkey')
+                self.addresses_tableWidget.setCellWidget(row_number, 0, btn_setpubkey)
+                self.addresses_tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+                for item in row:
+                    self.addresses_tableWidget.setItem(row_number, (row.index(item) + 1), QTableWidgetItem(str(item)))
+                    self.addresses_tableWidget.horizontalHeader().setSectionResizeMode((row.index(item) + 1),
+                                                                                       QHeaderView.ResizeToContents)
+                btn_setpubkey.clicked.connect(self.set_pubkey)
+            self.bottom_info(self.tr('Loading Addresses finished'))
+            logging.info('Loading Addresses finished')
+            self.addresses_tableWidget.setSortingEnabled(True)
+            # self.hide_address_checkBox.setCheckState(False)
+            self.update_addresses_table()
 
     @pyqtSlot()
     def hide_addresses(self):
@@ -1509,6 +1592,13 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             self.check_chain_update()
         else:
             self.custom_message(self.tr('Update Failed'), self.tr('Something went wrong update failed.'), 'information')
+
+    @pyqtSlot()
+    def toggle_textbrowser(self):
+        if self.update_chain_textBrowser.isVisible():
+            self.update_chain_textBrowser.setVisible(False)
+        else:
+            self.update_chain_textBrowser.setVisible(True)
     # ------------------
     # Chain  --- wallet Address Add, import
     # -------------------
@@ -2250,7 +2340,6 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             self.set_loop_amount_result(result_out[1])
             self.refresh_loopinfo_button.setVisible(True)
         if result_out[2] == 1:
-            print(result_out[1])
             self.bottom_err_info(result_out[1])
             logging.error(str(result_out[1]))
 
@@ -2344,7 +2433,6 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             self.holderloops_closed_amount_label_value.setText(str(result_out[1].get('numclosed')))
             self.holderloops_closed_number_label_value.setText(str(result_out[1].get('totalclosed')))
         if result_out[2] == 1:
-            print(result_out[1])
             self.bottom_err_info(result_out[1])
             logging.error(str(result_out[1]))
 
@@ -2820,58 +2908,80 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     def set_mcl_exchange_market_result(self, out_list):
         out_json = out_list[0]
         if type(out_json) is list:
-            self.exchange_market_tableWidget.setRowCount(len(out_json))
-            self.exchange_market_tableWidget.setSortingEnabled(False)
-            for row in out_json:
-                row_number = out_json.index(row)
-                self.exchange_market_tableWidget.setItem(row_number, 0, QTableWidgetItem(str(row.get('exchange_name'))))
-                self.exchange_market_tableWidget.setItem(row_number, 1, QTableWidgetItem(str(row.get('pair'))))
-                self.exchange_market_tableWidget.setItem(row_number, 2, QTableWidgetItem(str(row.get('quotes').get('USD').get('price'))))
-                self.exchange_market_tableWidget.setItem(row_number, 3, QTableWidgetItem(str(row.get('quotes').get('USD').get('volume_24h'))))
-                self.exchange_market_tableWidget.setItem(row_number, 4, QTableWidgetItem(str(row.get('last_updated')).replace('T', ' ').replace('Z', '')))
-                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
-                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
-                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
-                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
-                self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
-                self.bottom_info(self.tr('fetched exchange values'))
-            self.exchange_market_tableWidget.setSortingEnabled(True)
+            self.mcl_exchange_market_result = out_json
+            self.update_exchange_table()
         if type(out_json) is str:
             if out_json == 'error':
                 self.bottom_err_info(self.tr('Error in getting exchange values'))
         if out_list[1]:
             if type(out_list[1]) is dict:
-                self.ticker_price_label_value.setText(str(out_list[1].get('quotes').get('USD').get('price')))
-                self.ticker_volume_label_value.setText(str(out_list[1].get('quotes').get('USD').get('volume_24h')))
-                self.ticker_1hour_label_value.setText(str(out_list[1].get('quotes').get('USD').get('percent_change_1h')))
-                self.ticker_24hour_label_value.setText(str(out_list[1].get('quotes').get('USD').get('percent_change_24h')))
-                self.ticker_1week_label_value.setText(str(out_list[1].get('quotes').get('USD').get('percent_change_7d')))
-                self.ticker_1month_label_value.setText(str(out_list[1].get('quotes').get('USD').get('percent_change_30d')))
-                if self.ticker_price_label_value.text():
-                    self.mcl_amount_lineEdit.setEnabled(True)
-                    self.usd_amount_lineEdit.setEnabled(True)
+                self.mcl_exchange_ticker_result = out_list[1]
+                self.update_ticker_table()
             if type(out_list[1]) is str:
                 if out_list[1] == 'error':
                     self.bottom_err_info(self.tr('Error in getting exchange values'))
 
+    def update_exchange_table(self):
+        self.exchange_market_tableWidget.setRowCount(len(self.mcl_exchange_market_result))
+        self.exchange_market_tableWidget.setSortingEnabled(False)
+        fiat = self.market_fiat_comboBox.currentText()
+        for row in self.mcl_exchange_market_result:
+            price = ('%.8f' % row.get('quotes').get(fiat).get('price'))
+            volume = ('%.8f' % row.get('quotes').get(fiat).get('volume_24h'))
+            row_number = self.mcl_exchange_market_result.index(row)
+            self.exchange_market_tableWidget.setItem(row_number, 0, QTableWidgetItem(str(row.get('exchange_name'))))
+            self.exchange_market_tableWidget.setItem(row_number, 1, QTableWidgetItem(str(row.get('pair'))))
+            self.exchange_market_tableWidget.setItem(row_number, 2, QTableWidgetItem(str(price)))
+            self.exchange_market_tableWidget.setItem(row_number, 3, QTableWidgetItem(str(volume)))
+            self.exchange_market_tableWidget.setItem(row_number, 4, QTableWidgetItem(
+                str(row.get('last_updated')).replace('T', ' ').replace('Z', '')))
+            self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+            self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
+            self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
+            self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
+            self.exchange_market_tableWidget.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
+            self.bottom_info(self.tr('fetched exchange values'))
+        self.exchange_market_tableWidget.setSortingEnabled(True)
+
+    def update_ticker_table(self):
+        fiat = self.market_fiat_comboBox.currentText()
+        price = ('%.8f' % self.mcl_exchange_ticker_result.get('quotes').get(fiat).get('price'))
+        volume = ('%.8f' % self.mcl_exchange_ticker_result.get('quotes').get(fiat).get('volume_24h'))
+        self.ticker_price_label_value.setText(str(price))
+        self.ticker_volume_label_value.setText(str(volume))
+        self.ticker_1hour_label_value.setText(str(self.mcl_exchange_ticker_result.get('quotes').get(fiat).get('percent_change_1h')))
+        self.ticker_24hour_label_value.setText(str(self.mcl_exchange_ticker_result.get('quotes').get(fiat).get('percent_change_24h')))
+        self.ticker_1week_label_value.setText(str(self.mcl_exchange_ticker_result.get('quotes').get(fiat).get('percent_change_7d')))
+        self.ticker_1month_label_value.setText(str(self.mcl_exchange_ticker_result.get('quotes').get(fiat).get('percent_change_30d')))
+        if self.ticker_price_label_value.text():
+            self.mcl_amount_lineEdit.setEnabled(True)
+            self.usd_amount_lineEdit.setEnabled(True)
+
+    @pyqtSlot()
+    def market_fiat_changed(self):
+        self.convert_usd_label.setText(self.market_fiat_comboBox.currentText())
+        self.calculate_usd_price()
+        if self.mcl_exchange_market_result and self.mcl_exchange_ticker_result:
+            self.update_exchange_table()
+            self.update_ticker_table()
+
+
+
     @pyqtSlot()
     def calculate_usd_price(self):
         if self.mcl_amount_lineEdit.text():
-            price = float(self.ticker_price_label_value.text())
+            current_fiat = self.market_fiat_comboBox.currentText()
+            price = float(self.mcl_exchange_ticker_result.get('quotes').get(current_fiat).get('price'))
             calculation = float(self.mcl_amount_lineEdit.text()) * price
-            self.usd_amount_lineEdit.setText(str(round(calculation, 12)))
+            self.usd_amount_lineEdit.setText(str('%.8f' % calculation))
 
     @pyqtSlot()
     def calculate_mcl_price(self):
         if self.usd_amount_lineEdit.text():
-            price = float(self.ticker_price_label_value.text())
+            current_fiat = self.market_fiat_comboBox.currentText()
+            price = float(self.mcl_exchange_ticker_result.get('quotes').get(current_fiat).get('price'))
             calculation = float(self.usd_amount_lineEdit.text()) / price
-            self.mcl_amount_lineEdit.setText(str(round(calculation, 12)))
-
-    # @pyqtSlot(str)
-    # def err_mcl_exchange_market_result(self, err):
-    #     if err == 'error':
-    #         self.bottom_err_info(self.tr('Error in getting exchange values'))
+            self.mcl_amount_lineEdit.setText(str('%.8f' % calculation))
 
     @pyqtSlot()
     def enable_market_request(self):
@@ -2900,6 +3010,13 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.edit_serverusername_lineEdit.setText(selected_server_info[1])
         self.edit_serverip_lineEdit.setText(selected_server_info[2])
 
+    @pyqtSlot()
+    def enable_ssh_custom_port(self):
+        if self.ssh_port_checkBox.isChecked():
+            self.ssh_port_lineEdit.setEnabled(True)
+        else:
+            self.ssh_port_lineEdit.setEnabled(False)
+            self.ssh_port_lineEdit.setText('22')
 
     @pyqtSlot()
     def save_server_settings(self):
