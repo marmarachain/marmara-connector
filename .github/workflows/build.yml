@@ -42,12 +42,12 @@ jobs:
           retention-days: 7
           
   build_Windows:
-    runs-on: windows-latest
+    runs-on: windows-2019
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v1
         with:
-          python-version: "3.6"
+          python-version: "3.6.x"
       - name: Install python dependencies
         shell: powershell
         run: |
