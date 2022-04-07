@@ -17,6 +17,11 @@ marmara_path = None
 is_local = None
 logging.getLogger(__name__)
 ssh_client = None
+zcash_path = None
+zcash_files = ['/sapling-output.params', '/sapling-spend.params', '/sprout-groth16.params',
+               '/sprout-proving.key', '/sprout-verifying.key']
+zcash_files_size = [3592860, 47958396, 725523612, 910173851, 1449]
+
 
 def set_connection_local():
     global is_local
@@ -27,13 +32,38 @@ def set_connection_remote():
     global is_local
     is_local = False
 
+
 def set_sshclient(client):
     global ssh_client
     ssh_client = client
 
+
 def set_marmara_path(path):
     global marmara_path
     marmara_path = path
+
+
+def get_zcash_path():
+    global zcash_path
+    if is_local:
+        if platform.system() == 'Win64' or platform.system() == 'Windows':
+            zcash_path = '%s/ZcashParams' % os.environ['APPDATA']
+        if platform.system() == 'Linux':
+            zcash_path = str(pathlib.Path.home()) + '/.zcash-params'
+        logging.info('zcash_path= ' + zcash_path)
+        return zcash_path
+    else:
+        if not ssh_client:
+            set_sshclient(remote_connection.server_ssh_connect())
+        pwd_r = remote_connection.server_execute_command('pwd', ssh_client)
+        time.sleep(0.2)
+        if not pwd_r[0]:
+            set_sshclient(remote_connection.server_ssh_connect())
+            pwd_r = remote_connection.server_execute_command('pwd', ssh_client)
+            time.sleep(0.1)
+        zcash_path = str(pwd_r[0]).replace('\n', '').replace('\r', '') + '/.zcash-params'
+        logging.info('zcash_path_r= ' + zcash_path)
+        return zcash_path
 
 
 def start_param_local(marmarad):
@@ -156,6 +186,54 @@ def check_path_windows(search_list):
             out_path = ""
             break
     return out_path
+
+
+def check_zcashparams():
+    zcash_path = get_zcash_path()
+    if is_local:
+        if os.path.exists(zcash_path):
+            missing = []
+            currupted = []
+            for item in zcash_files:
+                index = zcash_files.index(item)
+                if os.path.exists(zcash_path + item):
+                    file_size = os.stat(zcash_path + item).st_size
+                    if file_size < zcash_files_size[index]:
+                        currupted.append(item)
+                else:
+                    missing.append(item)
+            if missing == [] and currupted == []:
+                return 0, None
+            else:
+                return 1, currupted, missing
+        else:
+            return 1, ' folder missing', None
+    else:
+        if not ssh_client:
+            set_sshclient(remote_connection.server_ssh_connect())
+        try:
+            cmd = 'ls -l ' + zcash_path
+            zcp_path = remote_connection.server_execute_command(cmd, ssh_client)
+            if zcp_path[1]:
+                return 1, ' folder missing', None
+            if zcp_path[0]:
+                missing = []
+                currupted = []
+                for item in zcash_files:
+                    index = zcash_files.index(item)
+                    cmd = 'stat -c %s ' + zcash_path + item
+                    zcp_file_size = remote_connection.server_execute_command(cmd, ssh_client)
+                    if zcp_file_size[0] and not zcp_file_size[1]:
+                        if int(zcp_file_size[0].strip('\n')) < zcash_files_size[index]:
+                            currupted.append(item)
+                    if not zcp_file_size[0] and zcp_file_size[1]:
+                        missing.append(item)
+                if missing == [] and currupted == []:
+                    return 0, None
+                else:
+                    return 1, currupted, missing
+        except Exception as error:
+            logging.error(error)
 
 
 def start_chain(pubkey=None):
@@ -648,9 +726,13 @@ class Autoinstall(QtCore.QObject):
                                  " > " + self.mcl_win_zipname, 'PowerShell Expand-Archive .\MCL-win.zip . -Force',
                                  'fetch-params.bat']
         self.sudo_password = ""
+        self.input_list = None
 
     def set_password(self, password):
         self.sudo_password = password
+
+    def set_input_list(self, value):
+        self.input_list = value
 
     @pyqtSlot()
     def start_install(self):
@@ -829,6 +911,66 @@ class Autoinstall(QtCore.QObject):
             session.close()
         self.finished.emit()
         sshclient.close()
+
+    def fetch_params_install(self):
+        cmd_lst = []
+        if is_local:
+            if platform.system() == 'Win64' or platform.system() == 'Windows':
+                if self.input_list:
+                    for file in self.input_list:
+                        cmd_lst.append('del ' + zcash_path + str(file).replace('/', '\\'))
+                cmd_lst.append(marmara_path + 'fetch-params.bat')
+            if platform.system() == 'Linux':
+                if self.input_list:
+                    for file in self.input_list:
+                        cmd_lst.append('rm ' + zcash_path + file)
+                cmd_lst.append(marmara_path + 'fetch-params.sh')
+            for cmd in cmd_lst:
+                self.out_text.emit(cmd)
+                proc = subprocess.Popen(cmd, cwd=str(pathlib.Path.home()), shell=True, stdin=subprocess.PIPE,
+                                        stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                while not proc.stdout.closed:
+                    out = proc.stdout.readline()
+                    try:
+                        out_d = out.decode().replace('\n', '')
+                    except Exception as e:
+                        out_d = e
+                    logging.info(out_d)
+                    self.out_text.emit(out_d)
+                    if not out:
+                        proc.stdout.close()
+                exit_status = proc.poll()
+                logging.info('exit_status  ' + str(exit_status))
+                proc.terminate()
+            self.finished.emit()
+        if not is_local:
+            if self.input_list:
+                for file in self.input_list:
+                    cmd_lst.append('rm ' + zcash_path + file)
+            cmd_lst.append(marmara_path + 'fetch-params.sh')
+            sshclient = remote_connection.server_ssh_connect()
+            for cmd in cmd_lst:
+                session = sshclient.get_transport().open_session()
+                session.set_combine_stderr(True)
+                session.get_pty()
+                session.exec_command(cmd)
+                stdout = session.makefile('rb', -1)
+                while not stdout.channel.exit_status_ready():
+                    if stdout.channel.recv_ready():
+                        out = stdout.channel.recv(65535)
+                        try:
+                            out_d = out.decode()
+                        except Exception as e:
+                            out_d = e
+                        logging.info(str(out_d))
+                        self.out_text.emit(str(out_d))
+                    else:
+                        time.sleep(1)
+                exit_status = session.recv_exit_status()  # Blocking call
+                logging.info(exit_status)
+                session.close()
+            self.finished.emit()
+            sshclient.close()
 
 class ApiWorker(QtCore.QObject):
     out_list = pyqtSignal(list)

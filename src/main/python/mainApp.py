@@ -233,6 +233,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.thread_getblock = QThread()
         self.thread_api_chain_update_check = QThread()
         self.thread_chain_update = QThread()
+        self.thread_fetch_params = QThread()
 
         # Loading Gif
         # --------------------------------------------------
@@ -747,18 +748,67 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         logging.info('chain_status ' + str(self.chain_status))
         self.bottom_info(self.tr('chain_status ' + str(self.chain_status)))
         time.sleep(0.1)
-        if not self.chain_status:
-            logging.info('Checking marmarachain')
-            self.bottom_info(self.tr('Checking marmarachain'))
-            marmara_pid = marmarachain_rpc.mcl_chain_status()
-            if len(marmara_pid[0]) > 0:
-                self.bottom_info(self.tr('marmarachain has pid'))
-                logging.info('marmarachain has pid')
-            if len(marmara_pid[0]) == 0:
-                logging.info('sending chain start command')
-                self.bottom_info(self.tr('sending chain start command'))
-                marmarachain_rpc.start_chain()
-            self.is_chain_ready()
+        zcash_status = marmarachain_rpc.check_zcashparams()
+        if zcash_status[0] == 0:
+            if not self.chain_status:
+                logging.info('Checking marmarachain')
+                self.bottom_info(self.tr('Checking marmarachain'))
+                marmara_pid = marmarachain_rpc.mcl_chain_status()
+                if len(marmara_pid[0]) > 0:
+                    self.bottom_info(self.tr('marmarachain has pid'))
+                    logging.info('marmarachain has pid')
+                if len(marmara_pid[0]) == 0:
+                    logging.info('sending chain start command')
+                    self.bottom_info(self.tr('sending chain start command'))
+                    marmarachain_rpc.start_chain()
+                self.is_chain_ready()
+        if zcash_status[0] == 1:
+            message_content = ""
+            corrupted_files = ""
+            if type(zcash_status[1]) is str:
+                message_content = self.tr('ZcashParams folder missing')
+            else:
+                if len(zcash_status[1]) > 0:
+                    for item in zcash_status[1]:
+                        corrupted_files = corrupted_files + item.strip('/') + ' '
+                    message_content = message_content + self.tr(' incomplete files: ') + corrupted_files + '\n'
+                if len(zcash_status[2]) > 0:
+                    missing_files = ""
+                    for item in zcash_status[2]:
+                        missing_files = missing_files + item.strip('/') + ', '
+                    message_content = message_content + self.tr(' missing files: ') + missing_files
+            message_box = self.custom_message('Incomplete ZcashParams',
+                                              message_content + self.tr('\n Do you want to install'),
+                                              'question', QMessageBox.Warning)
+            if message_box == QMessageBox.Yes:
+                self.run_fetch_params(zcash_status[1])
+            if message_box == QMessageBox.No:  # Abort
+                self.logout_host()
+
+
+    def run_fetch_params(self, zc_file=None):
+        self.start_animation()
+        self.worker_fetch_params = marmarachain_rpc.Autoinstall()
+        if zc_file:
+            self.worker_fetch_params.set_input_list(zc_file)
+        self.worker_fetch_params.moveToThread(self.thread_fetch_params)
+        self.worker_fetch_params.finished.connect(self.thread_fetch_params.quit)
+        self.worker_fetch_params.finished.connect(self.stop_animation)
+        self.worker_fetch_params.finished.connect(self.fetch_params_install_finished)
+        self.thread_fetch_params.started.connect(self.worker_fetch_params.fetch_params_install)
+        self.thread_fetch_params.start()
+        self.update_chain_textBrowser.setVisible(True)
+        self.worker_fetch_params.out_text.connect(self.fetch_params_install_result)
+
+
+    def fetch_params_install_result(self, output):
+        self.update_chain_textBrowser.append(output)
+
+    def fetch_params_install_finished(self):
+        message_box = self.custom_message(self.tr('ZcashParams Finished'), self.tr('Starting Chain'), 'information')
+        if message_box == QMessageBox.Ok:
+            self.chain_init()
+
 
     def is_chain_ready(self):
         self.bottom_info(self.tr('Checking if marmarachain is ready for rpc'))
@@ -1267,32 +1317,33 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.bottom_info(self.tr("Copied  ") + str(item))
 
     def update_addresses_table(self):
-        if self.pubkey_status:
-            self.addresses_tableWidget.setColumnHidden(0, True)
-            if self.current_pubkey_value.text() == "":
-                self.get_getinfo()
-            current_pubkey = self.current_pubkey_value.text()
-            rowcount = self.addresses_tableWidget.rowCount()
-            while True:
-                rowcount = rowcount - 1
-                if current_pubkey == self.addresses_tableWidget.item(rowcount, 3).text():
-                    self.currentaddress_value.setText(self.addresses_tableWidget.item(rowcount, 2).text())
-                if rowcount == 0:
-                    break
-        if not self.chain_status:
-            self.addresses_tableWidget.setColumnHidden(0, False)
-            rowcount = self.addresses_tableWidget.rowCount()
-            self.addresses_tableWidget.setRowCount(rowcount)
-            while True:
-                btn_start = QPushButton('Start')
-                btn_start.setIcon(QIcon(self.icon_path + "/start_icon.png"))
-                rowcount = rowcount - 1
-                self.addresses_tableWidget.setCellWidget(rowcount, 0, btn_start)
-                btn_start.clicked.connect(self.start_chain_with_pubkey)
-                if rowcount == 0:
-                    break
-        self.hide_addresses()
-        self.get_known_addresses()
+        if self.addresses_tableWidget.rowCount() > 0:
+            if self.pubkey_status:
+                self.addresses_tableWidget.setColumnHidden(0, True)
+                if self.current_pubkey_value.text() == "":
+                    self.get_getinfo()
+                current_pubkey = self.current_pubkey_value.text()
+                rowcount = self.addresses_tableWidget.rowCount()
+                while True:
+                    rowcount = rowcount - 1
+                    if current_pubkey == self.addresses_tableWidget.item(rowcount, 3).text():
+                        self.currentaddress_value.setText(self.addresses_tableWidget.item(rowcount, 2).text())
+                    if rowcount == 0:
+                        break
+            if not self.chain_status:
+                self.addresses_tableWidget.setColumnHidden(0, False)
+                rowcount = self.addresses_tableWidget.rowCount()
+                self.addresses_tableWidget.setRowCount(rowcount)
+                while True:
+                    btn_start = QPushButton('Start')
+                    btn_start.setIcon(QIcon(self.icon_path + "/start_icon.png"))
+                    rowcount = rowcount - 1
+                    self.addresses_tableWidget.setCellWidget(rowcount, 0, btn_start)
+                    btn_start.clicked.connect(self.start_chain_with_pubkey)
+                    if rowcount == 0:
+                        break
+            self.hide_addresses()
+            self.get_known_addresses()
 
     def check_address_contact_name(self, address):
         contacts_data = configuration.ContactsSettings().read_csv_file()
@@ -1971,6 +2022,8 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         end_date = self.transactions_endtdate_dateTimeEdit.dateTime()
         start_height = int(self.currentblock_value_label.text()) - int(self.change_datetime_to_block_age(start_date))
         end_height = int(self.currentblock_value_label.text()) - int(self.change_datetime_to_block_age(end_date))
+        if end_date > datetime.now():
+            end_height = self.currentblock_value_label.text()
         if address == "":
             self.bottom_info(self.tr('A pubkey is not set yet! Please set a pubkey first.'))
             logging.info('A pubkey is not set yet! Please set a pubkey first.')
