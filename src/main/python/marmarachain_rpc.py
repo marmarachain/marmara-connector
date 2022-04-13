@@ -5,6 +5,8 @@ import time
 import subprocess
 import pathlib
 import logging
+from datetime import datetime, timedelta
+
 from PyQt5 import QtCore
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
 import remote_connection
@@ -333,6 +335,7 @@ def handle_rpc(method, params):
             logging.error(error)
             set_sshclient(remote_connection.server_ssh_connect())
             return None, error, 1
+
 
 class RpcHandler(QtCore.QObject):
     command_out = pyqtSignal(tuple)
@@ -702,7 +705,104 @@ class RpcHandler(QtCore.QObject):
             self.command_out.emit(result_err)
             self.finished.emit()
 
+    @pyqtSlot()
+    def calc_wallet_earnings(self):
+        method_list = [self.method, self.method, cp.listaddressgroupings, cp.marmaralistactivatedaddresses]
+        param_list = [[str(self.params[0])], [str(self.params[1])], [], []]
+        normaladdresseslist = []
+        activatedaddresslist = []
+        days = []
+        begin_day = None
+        end_day = None
+        index = 0
+        for method in method_list:
+            result = handle_rpc(method, param_list[index])
+            if result[2] == 200 or result[2] == 0:
+                if index == 0:
+                    begin_day = datetime.fromtimestamp(json.loads(result[0]).get('time')).date()
+                if index == 1:
+                    end_day = datetime.fromtimestamp(json.loads(result[0]).get('time')).date()
+                if index == 2:
+                    normaladdresses = json.loads(result[0])
+                    if len(normaladdresses) > 0:
+                        normaladdresses = normaladdresses[0]
+                    else:
+                        normaladdresses = normaladdresses
+                    for item in normaladdresses:
+                        normaladdresseslist.append(item[0])
+                if index == 3:
+                    for item in json.loads(result[0]).get("WalletActivatedAddresses"):
+                        activatedaddresslist.append(item.get('activatedaddress'))
+            else:
+                result_err = None, result[1], 1
+                self.command_out.emit(result_err)
+                self.finished.emit()
+            if index < 3:
+                index = index + 1
+        days.append(begin_day)
+        day_delta = (end_day - begin_day).days
+        count = 0
+        while day_delta != count:
+            days.append(days[count] + timedelta(days=1))
+            count = count + 1
+        normaladdresstxidslist = []
+        activatedaddresstxidslist = []
+        self.output.emit('normal txids')
+        for naddress in normaladdresseslist:
+            normaladdresstxids = handle_rpc(cp.getaddresstxids, [{'addresses': [naddress], 'start': self.params[0],
+                                                                  'end': self.params[1]}])[0]
+            if normaladdresstxids:
+                for txid in json.loads(normaladdresstxids):
+                    normaladdresstxidslist.append(txid)
+        self.output.emit('activated txids')
+        for activatedaddress in activatedaddresslist:
+            activatedaddresstxids = handle_rpc(cp.getaddresstxids, [{'addresses': [activatedaddress],
+                                                                     'start': self.params[0],
+                                                                     'end': self.params[1]}, 0])[0]
+            if activatedaddresstxids:
+                for txid in json.loads(activatedaddresstxids):
+                    activatedaddresstxidslist.append(txid)
+        na_earninglist = {}
+        aa_earninglist = {}
+        self.output.emit('calculating earnings')
+        for daytime in days:
+            na_earninglist.__setitem__(daytime, 0)
+            aa_earninglist.__setitem__(daytime, 0)
+        for txid in normaladdresstxidslist:
+            coinbase = self.get_coinbase(txid)
+            if coinbase[0]:  # coinbase[0]= timestamp, coinbase[1] = amount
+                prv_value = na_earninglist.__getitem__(coinbase[0])
+                na_earninglist.__setitem__(coinbase[0], (prv_value + coinbase[1]))
+        for txid in activatedaddresstxidslist:
+            coinbase = self.get_coinbase(txid)
+            if coinbase[0]:
+                prv_value = aa_earninglist.__getitem__(coinbase[0])
+                aa_earninglist.__setitem__(coinbase[0], (prv_value + coinbase[1]))
+        earningresult = na_earninglist, aa_earninglist, 0
+        self.command_out.emit(earningresult)
+        self.finished.emit()
 
+    def get_coinbase(self, txid):
+        rawtxid = handle_rpc(cp.getrawtransaction, [txid])
+        if rawtxid[2] == 200 or rawtxid[2] == 0:
+            if is_local:
+                rawtx = json.loads(rawtxid[0])
+            if not is_local:
+                rawtx = rawtxid[0]
+            decodedtx = handle_rpc(cp.decoderawtransaction, [str(rawtx)])
+            if decodedtx[2] == 200 or decodedtx[2] == 0:
+                txdetail = json.loads(decodedtx[0])
+                for vin in txdetail.get('vin'):
+                    if vin.get('coinbase'):
+                        timestmp = datetime.fromtimestamp(txdetail.get('locktime')).date()
+                        amount = txdetail.get('vout')[0].get('value')
+                        return timestmp, amount
+                    else:
+                        return None, None
+            else:
+                return None, None
+        else:
+            return None, None
 
 class Autoinstall(QtCore.QObject):
     out_text = pyqtSignal(str)
@@ -719,7 +819,6 @@ class Autoinstall(QtCore.QObject):
                                    " -O " + self.mcl_linux_zipname, 'sudo apt-get install unzip -y',
                                    'unzip -o MCL-linux.zip', 'sudo chmod +x komodod komodo-cli fetch-params.sh',
                                    './fetch-params.sh']
-
 
         self.win_command_list = ['mkdir marmara',
                                  'curl -L ' + str(self.mcl_download_url) + '/' + self.mcl_win_zipname +
@@ -971,6 +1070,7 @@ class Autoinstall(QtCore.QObject):
                 session.close()
             self.finished.emit()
             sshclient.close()
+
 
 class ApiWorker(QtCore.QObject):
     out_list = pyqtSignal(list)
