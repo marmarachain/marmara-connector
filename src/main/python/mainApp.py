@@ -99,6 +99,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.cpu_core_set_button.clicked.connect(self.setmining_cpu_core)
         self.mining_button.clicked.connect(self.toggle_mining)
         self.getinfo_refresh_button.clicked.connect(self.refresh_side_panel)
+        self.walletsummary_hide_button.clicked.connect(self.toggle_walletsummary)
         self.cup_lineEdit.setValidator(self.validator)
         self.cup_lineEdit.textChanged.connect(self.calculate_amount)
         self.cup_lineEdit.returnPressed.connect(self.send_coins_to_team)
@@ -123,6 +124,10 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.chain_versiyon_tag = None
         self.update_chain_textBrowser.setVisible(False)
         self.debug_button.clicked.connect(self.toggle_textbrowser)
+        self.rescan_checkBox.setVisible(False)
+        self.reindex_checkBox.setVisible(False)
+        self.startchain_button.setVisible(False)
+        self.startchain_button.clicked.connect(self.start_chain_settings)
         # - add address page ----
         self.newaddress_button.clicked.connect(self.get_new_address)
         self.address_seed_button.clicked.connect(self.convertpassphrase)
@@ -241,11 +246,15 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.thread_chain_update = QThread()
         self.thread_fetch_params = QThread()
         self.thread_earnings = QThread()
+        self.thread_api_app_ver = QThread()
 
         # Loading Gif
         # --------------------------------------------------
         self.loading = LoadingScreen()
         # --------------------------------------------------
+        # Check for update
+        self.check_app_version()
+        # ---------------------------------------------------
 
     def set_tooltip_texts(self):
         QToolTip.setFont(QFont('SansSerif', 10))
@@ -261,6 +270,12 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.discord_button.setToolTip('Discord MARMARA')
         self.website_button.setToolTip("marmara.io")
         self.debug_button.setToolTip('Debug')
+        self.export_earning_table_button.setToolTip(self.tr('Export to CSV'))
+        self.reindex_checkBox.setToolTip(self.tr('starts from beginning and re-indexes currently '
+                                                 'synced blockchain data)'))
+        self.rescan_checkBox.setToolTip(self.tr('starts scanning wallet data in blockchain data'))
+        self.walletsummary_hide_button.setToolTip(self.tr('Hide'))
+        self.connections_warning_label.setToolTip(self.tr('Check your Network Connection'))
 
     def center_ui(self):
         qr = self.frameGeometry()
@@ -324,21 +339,34 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.setStyleSheet(self.selected_stylesheet)
         self.set_font_size(self.default_fontsize)
 
+    @pyqtSlot()
     def check_app_version(self):
+        self.worker_api_app_ver = marmarachain_rpc.ApiWorker()
+        self.worker_api_app_ver.moveToThread(self.thread_api_app_ver)
+        self.worker_api_app_ver.finished.connect(self.thread_api_app_ver.quit)
+        self.thread_api_app_ver.started.connect(self.worker_api_app_ver.app_ver_check)
+        self.thread_api_app_ver.start()
+        self.worker_api_app_ver.out_list.connect(self.check_app_version_listout)
+        self.worker_api_app_ver.out_err.connect(self.check_app_version_errtout)
+
+    @pyqtSlot(list)
+    def check_app_version_listout(self, out):
+        latest_app_tag = out[0]
+        latest_app_version = out[1]
         base_version = configuration.version
-        latest_app_tag = api_request.git_request_tag(api_request.app_api_url)
-        latest_app_version = api_request.latest_app_release_url()
-        if latest_app_tag == 'Connection Error' or latest_app_version == 'Connection Error':
+        if base_version != latest_app_tag:
+            QMessageBox.information(self, self.tr('Software Update Available'),
+                                    self.tr('A new update is available. <br>Follow the link ')
+                                    + "<a href='" + latest_app_version + "'>" + self.tr("here") + '</a>')
+        else:
+            self.bottom_info(self.tr('No Update Available Current App version is ') + base_version)
+
+    @pyqtSlot(str)
+    def check_app_version_errtout(self, out):
+        if out == 'Connection Error':
             self.custom_message(self.tr('Connection Error'), self.tr('Check your internet Connection '), 'information',
                                 QMessageBox.Information)
-        else:
-            if base_version != latest_app_tag:
-                QMessageBox.information(self, self.tr('Software Update Available'),
-                                        self.tr('A new update is available. <br>Follow the link ')
-                                        + "<a href='" + latest_app_version + "'>" + self.tr("here") + '</a>')
-            else:
-                self.custom_message(self.tr('No Update Available'), self.tr('Current App version is ') + base_version,
-                                    'information', QMessageBox.Information)
+
 
     def read_lang_setting(self):
         language = configuration.ApplicationConfig().get_value('USER', 'lang')
@@ -460,6 +488,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.transferrequests_tableWidget.setRowCount(0)
         self.activeloops_tableWidget.setRowCount(0)
         self.transferableloops_tableWidget.setRowCount(0)
+        self.earning_stats_tableWidget.setRowCount(0)
         self.chain_version_label.clear()
         self.latest_chain_version = None
         self.chain_versiyon_tag = None
@@ -486,6 +515,8 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.numberof_transferrable_loop_amount_label_value.clear()
         self.holderloops_closed_amount_label_value.clear()
         self.holderloops_closed_number_label_value.clear()
+        self.activated_earning_value.clear()
+        self.normal_earning_value.clear()
 
     def local_selection(self):
         marmarachain_rpc.set_connection_local()
@@ -766,11 +797,12 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
                 if len(marmara_pid[0]) > 0:
                     self.bottom_info(self.tr('marmarachain has pid'))
                     logging.info('marmarachain has pid')
+                    self.is_chain_ready()
                 if len(marmara_pid[0]) == 0:
-                    logging.info('sending chain start command')
-                    self.bottom_info(self.tr('sending chain start command'))
-                    marmarachain_rpc.start_chain()
-                self.is_chain_ready()
+                    logging.info('marmarachain is not running')
+                    self.bottom_info(self.tr('marmarachain is not running'))
+                    self.enable_start_button()
+
         if zcash_status[0] == 1:
             message_content = ""
             corrupted_files = ""
@@ -854,6 +886,14 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
                 logging.info('Chain init completed.')
         elif result_out[1]:
             self.bottom_err_info(result_out[1])
+
+    def enable_start_button(self):
+        self.startchain_button.setVisible(True)
+        self.stopchain_button.setVisible(False)
+
+    def disable_start_button(self):
+        self.startchain_button.setVisible(False)
+        self.stopchain_button.setVisible(True)
 
     def check_chain_update(self):
         self.update_chain_button.setHidden(True)
@@ -989,8 +1029,10 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             else:
                 block_diff = int(getinfo_result['longestchain']) - int(getinfo_result['blocks'])
                 days_sync = None
-                if 0 < block_diff < 1140:
-                    days_sync = str(round(block_diff / 1440)) + self.tr(' Hour')
+                if 0 < block_diff < 61:
+                    days_sync = str(block_diff) + self.tr(' Min')
+                if 60 < block_diff < 1140:
+                    days_sync = str(round(block_diff / 60)) + self.tr(' Hour')
                 if block_diff > 1140:
                     days_sync = str(round(block_diff / 1440)) + self.tr(' Day')
                 if block_diff == 0:
@@ -1042,6 +1084,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         # date = (str(datetime.now().date()))
         last_update_time = str(datetime.now().time().replace(microsecond=0))
         self.last_update_label.setText(last_update + last_update_time)
+        self.update_datetime_edit_maxdates()
 
     @pyqtSlot(tuple)
     def refresh_side_panel_result(self, result_out):
@@ -1061,6 +1104,13 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
                 logging.info('Refresh completed.')
         elif result_out[1]:
             self.bottom_err_info(result_out[1])
+
+    def update_datetime_edit_maxdates(self):
+        self.transactions_startdate_dateTimeEdit.setMaximumDateTime(QDateTime.currentDateTime())
+        self.earning_stop_dateTimeEdit.setMaximumDateTime(QDateTime.currentDateTime())
+        self.earning_stop_dateTimeEdit.setDateTime(QDateTime.currentDateTime())
+        self.transactions_endtdate_dateTimeEdit.setDateTime(QDateTime.currentDateTime())
+        self.make_credit_loop_matures_dateTimeEdit.setMinimumDateTime(QDateTime.currentDateTime())
 
     @pyqtSlot()
     def copyaddress_clipboard(self):
@@ -1218,6 +1268,17 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     def setmining_cpu_core(self):
         cpu_no = self.cpu_core_lineEdit.text()
         self.setgenerate([True, int(cpu_no)])
+
+    @pyqtSlot()
+    def toggle_walletsummary(self):
+        if self.walletsummary_amount_frame.isHidden():
+            self.walletsummary_hide_button.setIcon(qta.icon('ei.eye-close', color='#cc2900'))
+            self.walletsummary_hide_button.setToolTip(self.tr('Hide'))
+            self.walletsummary_amount_frame.setHidden(False)
+        else:
+            self.walletsummary_hide_button.setIcon(qta.icon('ei.eye-open', color='#cc2900'))
+            self.walletsummary_hide_button.setToolTip(self.tr('Show'))
+            self.walletsummary_amount_frame.setHidden(True)
 
     @pyqtSlot()
     def calculate_amount(self):
@@ -1409,53 +1470,73 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             pubkey = self.addresses_tableWidget.item(index.row(), 3).text()
             self.start_chain_settings(pubkey)
 
-    def start_chain_settings(self, pubkey):
-        self.bottom_info(self.tr('Chain started with pubkey'))
-        logging.info('Chain started with pubkey')
-        self.start_pubkey = pubkey
-        font = QFont()
-        font.setPointSize(self.default_fontsize)
-        startchainDialog = QDialog(self)
-        startchainDialog.setWindowTitle(self.tr('Settings for Chain Start'))
-        startchainDialog.layout = QVBoxLayout()
-        startchainDialog.setFont(font)
-        apply_button = QPushButton('Start')
-        apply_button.setIcon(QIcon(self.icon_path + "/start_icon.png"))
-        apply_button.setFont(font)
-        button_layout = QHBoxLayout()
-        self.reindex = QtWidgets.QCheckBox('reindex' + self.tr(' (starts from beginning and re-indexes currently '
-                                                               'synced blockchain data)'))
-        self.reindex.setChecked(False)
-        self.rescan = QtWidgets.QCheckBox('rescan' + self.tr(' (starts scanning wallet data in blockchain data)'))
-        self.rescan.setChecked(False)
-        self.reindex.setFont(font)
-        self.rescan.setFont(font)
-        spacer_item = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        startchainDialog.setLayout(startchainDialog.layout)
-        startchainDialog.layout.addWidget(self.reindex)
-        startchainDialog.layout.addWidget(self.rescan)
-        startchainDialog.layout.addLayout(button_layout)
-        button_layout.addItem(spacer_item)
-        button_layout.addWidget(apply_button)
+    def start_chain_settings(self, pubkey=None):
+        if pubkey:
+            self.bottom_info(self.tr('Chain started with pubkey'))
+            logging.info('Chain started with pubkey')
+            reindex_param = ''
+            rescan_param = ''
+            if self.reindex_checkBox.checkState():
+                reindex_param = ' -reindex'
+            if self.rescan_checkBox.checkState():
+                rescan_param = ' -rescan'
+            start_param = pubkey + reindex_param + rescan_param
+            logging.info(start_param)
+            marmarachain_rpc.start_chain(start_param)
+            time.sleep(0.5)
+            self.addresses_tableWidget.setColumnHidden(0, True)
+            self.is_chain_ready()
+        else:
+            logging.info('sending chain start command')
+            self.bottom_info(self.tr('sending chain start command'))
+            marmarachain_rpc.start_chain()
+            self.disable_start_button()
+            self.is_chain_ready()
+        # self.is_chain_ready()
+        # self.start_pubkey = pubkey
+        # font = QFont()
+        # font.setPointSize(self.default_fontsize)
+        # startchainDialog = QDialog(self)
+        # startchainDialog.setWindowTitle(self.tr('Settings for Chain Start'))
+        # startchainDialog.layout = QVBoxLayout()
+        # startchainDialog.setFont(font)
+        # apply_button = QPushButton('Start')
+        # apply_button.setIcon(QIcon(self.icon_path + "/start_icon.png"))
+        # apply_button.setFont(font)
+        # button_layout = QHBoxLayout()
+        # self.reindex = QtWidgets.QCheckBox('reindex' + self.tr(' (starts from beginning and re-indexes currently '
+        #                                                        'synced blockchain data)'))
+        # self.reindex.setChecked(False)
+        # self.rescan = QtWidgets.QCheckBox('rescan' + self.tr(' (starts scanning wallet data in blockchain data)'))
+        # self.rescan.setChecked(False)
+        # self.reindex.setFont(font)
+        # self.rescan.setFont(font)
+        # spacer_item = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        # startchainDialog.setLayout(startchainDialog.layout)
+        # startchainDialog.layout.addWidget(self.reindex)
+        # startchainDialog.layout.addWidget(self.rescan)
+        # startchainDialog.layout.addLayout(button_layout)
+        # button_layout.addItem(spacer_item)
+        # button_layout.addWidget(apply_button)
+        #
+        # apply_button.clicked.connect(self.start_chain_with_settings)
+        # apply_button.clicked.connect(startchainDialog.close)
+        # startchainDialog.exec_()
 
-        apply_button.clicked.connect(self.start_chain_with_settings)
-        apply_button.clicked.connect(startchainDialog.close)
-        startchainDialog.exec_()
-
-    @pyqtSlot()
-    def start_chain_with_settings(self):
-        reindex_param = ''
-        rescan_param = ''
-        if self.reindex.checkState():
-            reindex_param = ' -reindex'
-        if self.rescan.checkState():
-            rescan_param = ' -rescan'
-        start_param = self.start_pubkey + reindex_param + rescan_param
-        logging.info(start_param)
-        marmarachain_rpc.start_chain(start_param)
-        time.sleep(0.5)
-        self.addresses_tableWidget.setColumnHidden(0, True)
-        self.is_chain_ready()
+    # @pyqtSlot()
+    # def start_chain_with_settings(self):
+    #     reindex_param = ''
+    #     rescan_param = ''
+    #     if self.reindex.checkState():
+    #         reindex_param = ' -reindex'
+    #     if self.rescan.checkState():
+    #         rescan_param = ' -rescan'
+    #     start_param = self.start_pubkey + reindex_param + rescan_param
+    #     logging.info(start_param)
+    #     marmarachain_rpc.start_chain(start_param)
+    #     time.sleep(0.5)
+    #     self.addresses_tableWidget.setColumnHidden(0, True)
+    #     self.is_chain_ready()
 
     @pyqtSlot()
     def download_blocks(self):
@@ -1653,8 +1734,14 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     def toggle_textbrowser(self):
         if self.update_chain_textBrowser.isVisible():
             self.update_chain_textBrowser.setVisible(False)
+            self.rescan_checkBox.setVisible(False)
+            self.reindex_checkBox.setVisible(False)
         else:
             self.update_chain_textBrowser.setVisible(True)
+            if not self.chain_status:
+                self.rescan_checkBox.setVisible(True)
+                self.reindex_checkBox.setVisible(True)
+
 
     # ------------------
     # Chain  --- wallet Address Add, import
@@ -1972,17 +2059,22 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     # --------------------------------------------------------------------
     @pyqtSlot()
     def create_currentaddress_qrcode(self):
-        # creating a pix map of qr code
-        qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_H, box_size=7, border=1)
-        qr.add_data(self.currentaddress_value.text())
-        # set image to the Icon
-        qr_image = qr.make_image(image_factory=Image).pixmap()
-        msg = QMessageBox()
-        msg.setStyleSheet(self.selected_stylesheet)
-        msg.setIcon(QMessageBox.Information)
-        msg.setIconPixmap(qr_image)
-        msg.setWindowTitle(self.tr('Qr Code'))
-        msg.exec_()
+        if self.currentaddress_value.text() != "":
+            # creating a pix map of qr code
+            qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_H, box_size=7, border=1)
+            qr.add_data(self.currentaddress_value.text())
+            # set image to the Icon
+            qr_image = qr.make_image(image_factory=Image).pixmap()
+            msg = QMessageBox()
+            msg.setStyleSheet(self.selected_stylesheet)
+            msg.setIcon(QMessageBox.Information)
+            msg.setIconPixmap(qr_image)
+            msg.setWindowTitle(self.currentaddress_value.text() + "  ")
+            msg.setStandardButtons(QMessageBox.Close)
+            msg.exec_()
+        else:
+            self.bottom_info(self.tr('no address value set'))
+            logging.warning('no address value set')
 
     @pyqtSlot()
     def sendtoaddress(self):
@@ -2025,17 +2117,21 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         end_date = self.transactions_endtdate_dateTimeEdit.dateTime()
         start_height = int(self.currentblock_value_label.text()) - int(self.change_datetime_to_block_age(start_date))
         end_height = int(self.currentblock_value_label.text()) - int(self.change_datetime_to_block_age(end_date))
-        if end_date > datetime.now():
-            end_height = self.currentblock_value_label.text()
-        if address == "":
-            self.bottom_info(self.tr('A pubkey is not set yet! Please set a pubkey first.'))
-            logging.info('A pubkey is not set yet! Please set a pubkey first.')
+        if start_height < end_height:
+            if end_date > datetime.now():
+                end_height = self.currentblock_value_label.text()
+            if address == "":
+                self.bottom_info(self.tr('A pubkey is not set yet! Please set a pubkey first.'))
+                logging.info('A pubkey is not set yet! Please set a pubkey first.')
+            else:
+                self.worker_getaddresstxids = marmarachain_rpc.RpcHandler()
+                method = cp.getaddresstxids
+                params = [{'addresses': [address], 'start': int(start_height), 'end': int(end_height)}]
+                self.worker_thread(self.thread_getaddresstxids, self.worker_getaddresstxids, method, params,
+                                   self.getaddresstxids_result, execute='txids_detail')
         else:
-            self.worker_getaddresstxids = marmarachain_rpc.RpcHandler()
-            method = cp.getaddresstxids
-            params = [{'addresses': [address], 'start': int(start_height), 'end': int(end_height)}]
-            self.worker_thread(self.thread_getaddresstxids, self.worker_getaddresstxids, method, params,
-                               self.getaddresstxids_result, execute='txids_detail')
+            self.bottom_info(self.tr('Start Date should be before the Stop Date'))
+            logging.info('Start Date should be before the Stop Date')
 
     @pyqtSlot(tuple)
     def getaddresstxids_result(self, result_out):

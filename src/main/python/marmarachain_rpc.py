@@ -1111,3 +1111,15 @@ class ApiWorker(QtCore.QObject):
         else:
             self.out_err.emit('Connection Error')
             self.finished.emit()
+
+    @pyqtSlot()
+    def app_ver_check(self):
+        latest_app_tag = api_request.git_request_tag(api_request.app_api_url)
+        latest_app_version = api_request.latest_app_release_url()
+        if latest_app_tag == 'Connection Error' or latest_app_version == 'Connection Error':
+            self.out_err.emit('Connection Error')
+            self.finished.emit()
+        else:
+            out_list = [latest_app_tag, latest_app_version]
+            self.out_list.emit(out_list)
+            self.finished.emit()
