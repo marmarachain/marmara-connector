@@ -5511,7 +5511,7 @@
                   <item row="7" column="0" colspan="2">
                    <widget class="QLabel" name="total_earning_amount_label">
                     <property name="text">
-                     <string>Total earning amount</string>
+                     <string>Total earning amounts</string>
                     </property>
                    </widget>
                   </item>

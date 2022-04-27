@@ -272,7 +272,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.debug_button.setToolTip('Debug')
         self.export_earning_table_button.setToolTip(self.tr('Export to CSV'))
         self.reindex_checkBox.setToolTip(self.tr('starts from beginning and re-indexes currently '
-                                                 'synced blockchain data)'))
+                                                 'synced blockchain data'))
         self.rescan_checkBox.setToolTip(self.tr('starts scanning wallet data in blockchain data'))
         self.walletsummary_hide_button.setToolTip(self.tr('Hide'))
         self.connections_warning_label.setToolTip(self.tr('Check your Network Connection'))
@@ -819,7 +819,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
                         missing_files = missing_files + item.strip('/') + ', '
                     message_content = message_content + self.tr(' missing files: ') + missing_files
             message_box = self.custom_message('Incomplete ZcashParams',
-                                              message_content + self.tr('\n Do you want to install'),
+                                              message_content + "\n" + self.tr(' Do you want to install'),
                                               'question', QMessageBox.Warning)
             if message_box == QMessageBox.Yes:
                 self.run_fetch_params(zcash_status[1])
@@ -1298,8 +1298,8 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         team_address = 'RXWqisAoJKEGVyXj46Zo3fDZnZTwQA6kQE'
         self.support_pushButton.setText(self.tr('Support') + ' (' + str(amount) + ' MCL)')
         message_box = self.custom_message(self.tr('Confirm Transaction'),
-                                          self.tr(
-                                              f'You are about to send {amount} MCL to Marmara Team.'),
+                                          self.tr(f'The amount to be send to the Marmara Team is ') + str(amount)
+                                          + ' MCL',
                                           "question",
                                           QMessageBox.Question)
         if message_box == QMessageBox.Yes:
@@ -3107,8 +3107,8 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
                 self.bottom_info(self.tr('Transaction aborted'))
                 logging.info('Transaction aborted')
         else:
-            self.bottom_info(self.tr('Table has no rows to export'))
-            logging.info('Table has no rows to export')
+            self.bottom_info(self.tr('Table has no data to export'))
+            logging.info('Table has no data to export')
 
     @pyqtSlot(tuple)
     def export_table_to_csv(self, txid):

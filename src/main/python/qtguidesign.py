@@ -3031,7 +3031,7 @@ class Ui_MainWindow(object):
         item = self.earning_stats_tableWidget.horizontalHeaderItem(2)
         item.setText(_translate("MainWindow", "Activated"))
         self.earnings_search_button.setText(_translate("MainWindow", "Search"))
-        self.total_earning_amount_label.setText(_translate("MainWindow", "Total earning amount"))
+        self.total_earning_amount_label.setText(_translate("MainWindow", "Total earning amounts"))
         self.normal_earning_label.setText(_translate("MainWindow", "Normal "))
         self.activated_earning_label.setText(_translate("MainWindow", "Activated "))
         self.earning_stopdate_label.setText(_translate("MainWindow", "End"))
