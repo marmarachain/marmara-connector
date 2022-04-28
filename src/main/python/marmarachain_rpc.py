@@ -5,6 +5,8 @@ import time
 import subprocess
 import pathlib
 import logging
+from datetime import datetime, timedelta
+
 from PyQt5 import QtCore
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
 import remote_connection
@@ -17,6 +19,11 @@ marmara_path = None
 is_local = None
 logging.getLogger(__name__)
 ssh_client = None
+zcash_path = None
+zcash_files = ['/sapling-output.params', '/sapling-spend.params', '/sprout-groth16.params',
+               '/sprout-proving.key', '/sprout-verifying.key']
+zcash_files_size = [3592860, 47958396, 725523612, 910173851, 1449]
+
 
 def set_connection_local():
     global is_local
@@ -27,13 +34,38 @@ def set_connection_remote():
     global is_local
     is_local = False
 
+
 def set_sshclient(client):
     global ssh_client
     ssh_client = client
 
+
 def set_marmara_path(path):
     global marmara_path
     marmara_path = path
+
+
+def get_zcash_path():
+    global zcash_path
+    if is_local:
+        if platform.system() == 'Win64' or platform.system() == 'Windows':
+            zcash_path = '%s/ZcashParams' % os.environ['APPDATA']
+        if platform.system() == 'Linux':
+            zcash_path = str(pathlib.Path.home()) + '/.zcash-params'
+        logging.info('zcash_path= ' + zcash_path)
+        return zcash_path
+    else:
+        if not ssh_client:
+            set_sshclient(remote_connection.server_ssh_connect())
+        pwd_r = remote_connection.server_execute_command('pwd', ssh_client)
+        time.sleep(0.2)
+        if not pwd_r[0]:
+            set_sshclient(remote_connection.server_ssh_connect())
+            pwd_r = remote_connection.server_execute_command('pwd', ssh_client)
+            time.sleep(0.1)
+        zcash_path = str(pwd_r[0]).replace('\n', '').replace('\r', '') + '/.zcash-params'
+        logging.info('zcash_path_r= ' + zcash_path)
+        return zcash_path
 
 
 def start_param_local(marmarad):
@@ -158,6 +190,54 @@ def check_path_windows(search_list):
     return out_path
 
 
+def check_zcashparams():
+    zcash_path = get_zcash_path()
+    if is_local:
+        if os.path.exists(zcash_path):
+            missing = []
+            currupted = []
+            for item in zcash_files:
+                index = zcash_files.index(item)
+                if os.path.exists(zcash_path + item):
+                    file_size = os.stat(zcash_path + item).st_size
+                    if file_size < zcash_files_size[index]:
+                        currupted.append(item)
+                else:
+                    missing.append(item)
+            if missing == [] and currupted == []:
+                return 0, None
+            else:
+                return 1, currupted, missing
+        else:
+            return 1, ' folder missing', None
+    else:
+        if not ssh_client:
+            set_sshclient(remote_connection.server_ssh_connect())
+        try:
+            cmd = 'ls -l ' + zcash_path
+            zcp_path = remote_connection.server_execute_command(cmd, ssh_client)
+            if zcp_path[1]:
+                return 1, ' folder missing', None
+            if zcp_path[0]:
+                missing = []
+                currupted = []
+                for item in zcash_files:
+                    index = zcash_files.index(item)
+                    cmd = 'stat -c %s ' + zcash_path + item
+                    zcp_file_size = remote_connection.server_execute_command(cmd, ssh_client)
+                    if zcp_file_size[0] and not zcp_file_size[1]:
+                        if int(zcp_file_size[0].strip('\n')) < zcash_files_size[index]:
+                            currupted.append(item)
+                    if not zcp_file_size[0] and zcp_file_size[1]:
+                        missing.append(item)
+                if missing == [] and currupted == []:
+                    return 0, None
+                else:
+                    return 1, currupted, missing
+        except Exception as error:
+            logging.error(error)
+
+
 def start_chain(pubkey=None):
     if is_local:
         marmara_param = start_param_local(cp.marmarad)
@@ -255,6 +335,7 @@ def handle_rpc(method, params):
             logging.error(error)
             set_sshclient(remote_connection.server_ssh_connect())
             return None, error, 1
+
 
 class RpcHandler(QtCore.QObject):
     command_out = pyqtSignal(tuple)
@@ -624,7 +705,104 @@ class RpcHandler(QtCore.QObject):
             self.command_out.emit(result_err)
             self.finished.emit()
 
+    @pyqtSlot()
+    def calc_wallet_earnings(self):
+        method_list = [self.method, self.method, cp.listaddressgroupings, cp.marmaralistactivatedaddresses]
+        param_list = [[str(self.params[0])], [str(self.params[1])], [], []]
+        normaladdresseslist = []
+        activatedaddresslist = []
+        days = []
+        begin_day = None
+        end_day = None
+        index = 0
+        for method in method_list:
+            result = handle_rpc(method, param_list[index])
+            if result[2] == 200 or result[2] == 0:
+                if index == 0:
+                    begin_day = datetime.fromtimestamp(json.loads(result[0]).get('time')).date()
+                if index == 1:
+                    end_day = datetime.fromtimestamp(json.loads(result[0]).get('time')).date()
+                if index == 2:
+                    normaladdresses = json.loads(result[0])
+                    if len(normaladdresses) > 0:
+                        normaladdresses = normaladdresses[0]
+                    else:
+                        normaladdresses = normaladdresses
+                    for item in normaladdresses:
+                        normaladdresseslist.append(item[0])
+                if index == 3:
+                    for item in json.loads(result[0]).get("WalletActivatedAddresses"):
+                        activatedaddresslist.append(item.get('activatedaddress'))
+            else:
+                result_err = None, result[1], 1
+                self.command_out.emit(result_err)
+                self.finished.emit()
+            if index < 3:
+                index = index + 1
+        days.append(begin_day)
+        day_delta = (end_day - begin_day).days
+        count = 0
+        while day_delta != count:
+            days.append(days[count] + timedelta(days=1))
+            count = count + 1
+        normaladdresstxidslist = []
+        activatedaddresstxidslist = []
+        self.output.emit('normal txids')
+        for naddress in normaladdresseslist:
+            normaladdresstxids = handle_rpc(cp.getaddresstxids, [{'addresses': [naddress], 'start': self.params[0],
+                                                                  'end': self.params[1]}])[0]
+            if normaladdresstxids:
+                for txid in json.loads(normaladdresstxids):
+                    normaladdresstxidslist.append(txid)
+        self.output.emit('activated txids')
+        for activatedaddress in activatedaddresslist:
+            activatedaddresstxids = handle_rpc(cp.getaddresstxids, [{'addresses': [activatedaddress],
+                                                                     'start': self.params[0],
+                                                                     'end': self.params[1]}, 0])[0]
+            if activatedaddresstxids:
+                for txid in json.loads(activatedaddresstxids):
+                    activatedaddresstxidslist.append(txid)
+        na_earninglist = {}
+        aa_earninglist = {}
+        self.output.emit('calculating earnings')
+        for daytime in days:
+            na_earninglist.__setitem__(daytime, 0)
+            aa_earninglist.__setitem__(daytime, 0)
+        for txid in normaladdresstxidslist:
+            coinbase = self.get_coinbase(txid)
+            if coinbase[0]:  # coinbase[0]= timestamp, coinbase[1] = amount
+                prv_value = na_earninglist.__getitem__(coinbase[0])
+                na_earninglist.__setitem__(coinbase[0], (prv_value + coinbase[1]))
+        for txid in activatedaddresstxidslist:
+            coinbase = self.get_coinbase(txid)
+            if coinbase[0]:
+                prv_value = aa_earninglist.__getitem__(coinbase[0])
+                aa_earninglist.__setitem__(coinbase[0], (prv_value + coinbase[1]))
+        earningresult = na_earninglist, aa_earninglist, 0
+        self.command_out.emit(earningresult)
+        self.finished.emit()
 
+    def get_coinbase(self, txid):
+        rawtxid = handle_rpc(cp.getrawtransaction, [txid])
+        if rawtxid[2] == 200 or rawtxid[2] == 0:
+            if is_local:
+                rawtx = json.loads(rawtxid[0])
+            if not is_local:
+                rawtx = rawtxid[0]
+            decodedtx = handle_rpc(cp.decoderawtransaction, [str(rawtx)])
+            if decodedtx[2] == 200 or decodedtx[2] == 0:
+                txdetail = json.loads(decodedtx[0])
+                for vin in txdetail.get('vin'):
+                    if vin.get('coinbase'):
+                        timestmp = datetime.fromtimestamp(txdetail.get('locktime')).date()
+                        amount = txdetail.get('vout')[0].get('value')
+                        return timestmp, amount
+                    else:
+                        return None, None
+            else:
+                return None, None
+        else:
+            return None, None
 
 class Autoinstall(QtCore.QObject):
     out_text = pyqtSignal(str)
@@ -642,15 +820,18 @@ class Autoinstall(QtCore.QObject):
                                    'unzip -o MCL-linux.zip', 'sudo chmod +x komodod komodo-cli fetch-params.sh',
                                    './fetch-params.sh']
 
-
         self.win_command_list = ['mkdir marmara',
                                  'curl -L ' + str(self.mcl_download_url) + '/' + self.mcl_win_zipname +
                                  " > " + self.mcl_win_zipname, 'PowerShell Expand-Archive .\MCL-win.zip . -Force',
                                  'fetch-params.bat']
         self.sudo_password = ""
+        self.input_list = None
 
     def set_password(self, password):
         self.sudo_password = password
+
+    def set_input_list(self, value):
+        self.input_list = value
 
     @pyqtSlot()
     def start_install(self):
@@ -830,6 +1011,67 @@ class Autoinstall(QtCore.QObject):
         self.finished.emit()
         sshclient.close()
 
+    def fetch_params_install(self):
+        cmd_lst = []
+        if is_local:
+            if platform.system() == 'Win64' or platform.system() == 'Windows':
+                if self.input_list:
+                    for file in self.input_list:
+                        cmd_lst.append('del ' + zcash_path + str(file).replace('/', '\\'))
+                cmd_lst.append(marmara_path + 'fetch-params.bat')
+            if platform.system() == 'Linux':
+                if self.input_list:
+                    for file in self.input_list:
+                        cmd_lst.append('rm ' + zcash_path + file)
+                cmd_lst.append(marmara_path + 'fetch-params.sh')
+            for cmd in cmd_lst:
+                self.out_text.emit(cmd)
+                proc = subprocess.Popen(cmd, cwd=str(pathlib.Path.home()), shell=True, stdin=subprocess.PIPE,
+                                        stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                while not proc.stdout.closed:
+                    out = proc.stdout.readline()
+                    try:
+                        out_d = out.decode().replace('\n', '')
+                    except Exception as e:
+                        out_d = e
+                    logging.info(out_d)
+                    self.out_text.emit(out_d)
+                    if not out:
+                        proc.stdout.close()
+                exit_status = proc.poll()
+                logging.info('exit_status  ' + str(exit_status))
+                proc.terminate()
+            self.finished.emit()
+        if not is_local:
+            if self.input_list:
+                for file in self.input_list:
+                    cmd_lst.append('rm ' + zcash_path + file)
+            cmd_lst.append(marmara_path + 'fetch-params.sh')
+            sshclient = remote_connection.server_ssh_connect()
+            for cmd in cmd_lst:
+                session = sshclient.get_transport().open_session()
+                session.set_combine_stderr(True)
+                session.get_pty()
+                session.exec_command(cmd)
+                stdout = session.makefile('rb', -1)
+                while not stdout.channel.exit_status_ready():
+                    if stdout.channel.recv_ready():
+                        out = stdout.channel.recv(65535)
+                        try:
+                            out_d = out.decode()
+                        except Exception as e:
+                            out_d = e
+                        logging.info(str(out_d))
+                        self.out_text.emit(str(out_d))
+                    else:
+                        time.sleep(1)
+                exit_status = session.recv_exit_status()  # Blocking call
+                logging.info(exit_status)
+                session.close()
+            self.finished.emit()
+            sshclient.close()
+
+
 class ApiWorker(QtCore.QObject):
     out_list = pyqtSignal(list)
     out_dict = pyqtSignal(dict)
@@ -868,4 +1110,16 @@ class ApiWorker(QtCore.QObject):
             self.finished.emit()
         else:
             self.out_err.emit('Connection Error')
+            self.finished.emit()
+
+    @pyqtSlot()
+    def app_ver_check(self):
+        latest_app_tag = api_request.git_request_tag(api_request.app_api_url)
+        latest_app_version = api_request.latest_app_release_url()
+        if latest_app_tag == 'Connection Error' or latest_app_version == 'Connection Error':
+            self.out_err.emit('Connection Error')
+            self.finished.emit()
+        else:
+            out_list = [latest_app_tag, latest_app_version]
+            self.out_list.emit(out_list)
             self.finished.emit()

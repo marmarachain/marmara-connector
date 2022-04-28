@@ -35,3 +35,5 @@ getaddresstxids = 'getaddresstxids'  # '{"addresses": ["address"], "start": 7997
 marmaralistactivatedaddresses = 'marmaralistactivatedaddresses'
 gettransaction = 'gettransaction'  # + txid
 getblock = 'getblock'  # + block
+getrawtransaction = 'getrawtransaction'  # + txid
+decoderawtransaction = 'decoderawtransaction'  # rawtxid
