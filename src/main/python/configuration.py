@@ -160,6 +160,6 @@ class ContactsSettings:
 
 def export_as_scv(file_name_path, data):
     exprt_csv = open(file_name_path, 'w', newline='')
-    create = csv.writer(exprt_csv)
+    create = csv.writer(exprt_csv, delimiter=';')
     create.writerows(data)
     exprt_csv.close()

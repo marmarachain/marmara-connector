@@ -5475,199 +5475,7 @@
                </attribute>
                <layout class="QGridLayout" name="gridLayout_63">
                 <item row="2" column="1">
-                 <widget class="QTableWidget" name="earning_stats_tableWidget">
-                  <property name="sizeAdjustPolicy">
-                   <enum>QAbstractScrollArea::AdjustToContents</enum>
-                  </property>
-                  <attribute name="horizontalHeaderDefaultSectionSize">
-                   <number>100</number>
-                  </attribute>
-                  <column>
-                   <property name="text">
-                    <string>Date</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>Normal</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>Activated</string>
-                   </property>
-                  </column>
-                 </widget>
-                </item>
-                <item row="2" column="2">
-                 <layout class="QGridLayout" name="gridLayout_62">
-                  <item row="2" column="1">
-                   <widget class="QPushButton" name="earnings_search_button">
-                    <property name="text">
-                     <string>Search</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="7" column="0" colspan="2">
-                   <widget class="QLabel" name="total_earning_amount_label">
-                    <property name="text">
-                     <string>Total earning amounts</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="8" column="0" colspan="2">
-                   <layout class="QGridLayout" name="gridLayout_61">
-                    <item row="1" column="0">
-                     <widget class="QLabel" name="normal_earning_label">
-                      <property name="text">
-                       <string>Normal </string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="1" rowspan="2">
-                     <widget class="Line" name="line">
-                      <property name="orientation">
-                       <enum>Qt::Vertical</enum>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="2" column="2">
-                     <widget class="QLabel" name="activated_earning_value">
-                      <property name="frameShape">
-                       <enum>QFrame::WinPanel</enum>
-                      </property>
-                      <property name="frameShadow">
-                       <enum>QFrame::Sunken</enum>
-                      </property>
-                      <property name="text">
-                       <string/>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="2">
-                     <widget class="QLabel" name="activated_earning_label">
-                      <property name="text">
-                       <string>Activated </string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="2" column="0">
-                     <widget class="QLabel" name="normal_earning_value">
-                      <property name="frameShape">
-                       <enum>QFrame::WinPanel</enum>
-                      </property>
-                      <property name="frameShadow">
-                       <enum>QFrame::Sunken</enum>
-                      </property>
-                      <property name="text">
-                       <string/>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="3" column="0" colspan="3">
-                     <spacer name="verticalSpacer_57">
-                      <property name="orientation">
-                       <enum>Qt::Vertical</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>20</width>
-                        <height>40</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                   </layout>
-                  </item>
-                  <item row="6" column="0" colspan="2">
-                   <spacer name="verticalSpacer_56">
-                    <property name="orientation">
-                     <enum>Qt::Vertical</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>20</width>
-                      <height>40</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="4" column="0" rowspan="2" colspan="2">
-                   <layout class="QGridLayout" name="gridLayout_64">
-                    <item row="1" column="0">
-                     <widget class="QLabel" name="earning_stopdate_label">
-                      <property name="text">
-                       <string>End</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="0" column="1">
-                     <widget class="QDateTimeEdit" name="earning_start_dateTimeEdit">
-                      <property name="minimumDate">
-                       <date>
-                        <year>2020</year>
-                        <month>1</month>
-                        <day>17</day>
-                       </date>
-                      </property>
-                      <property name="calendarPopup">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="0" column="0">
-                     <widget class="QLabel" name="earning_startdate_label">
-                      <property name="text">
-                       <string>Start</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="1">
-                     <widget class="QDateTimeEdit" name="earning_stop_dateTimeEdit">
-                      <property name="minimumDate">
-                       <date>
-                        <year>2020</year>
-                        <month>1</month>
-                        <day>17</day>
-                       </date>
-                      </property>
-                      <property name="calendarPopup">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item row="3" column="0" colspan="2">
-                   <spacer name="verticalSpacer_55">
-                    <property name="orientation">
-                     <enum>Qt::Vertical</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>20</width>
-                      <height>40</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                 </layout>
-                </item>
-                <item row="2" column="3">
-                 <spacer name="horizontalSpacer_96">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item row="0" column="1" colspan="2">
-                 <spacer name="verticalSpacer_53">
+                 <spacer name="verticalSpacer_55">
                   <property name="orientation">
                    <enum>Qt::Vertical</enum>
                   </property>
@@ -5679,7 +5487,7 @@
                   </property>
                  </spacer>
                 </item>
-                <item row="3" column="1" colspan="2">
+                <item row="6" column="1" colspan="2">
                  <spacer name="verticalSpacer_54">
                   <property name="orientation">
                    <enum>Qt::Vertical</enum>
@@ -5692,48 +5500,8 @@
                   </property>
                  </spacer>
                 </item>
-                <item row="1" column="1" colspan="2">
-                 <layout class="QHBoxLayout" name="horizontalLayout_13">
-                  <item>
-                   <widget class="QPushButton" name="export_earning_table_button">
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <spacer name="horizontalSpacer_90">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item>
-                   <widget class="QLabel" name="earningstat_table_label">
-                    <property name="text">
-                     <string>Earning Amount Table</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <spacer name="horizontalSpacer_91">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
+                <item row="1" column="1">
+                 <layout class="QHBoxLayout" name="horizontalLayout_8">
                   <item>
                    <spacer name="horizontalSpacer_92">
                     <property name="orientation">
@@ -5747,9 +5515,168 @@
                     </property>
                    </spacer>
                   </item>
+                  <item>
+                   <widget class="QLabel" name="earning_startdate_label">
+                    <property name="text">
+                     <string>Start</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QDateTimeEdit" name="earning_start_dateTimeEdit">
+                    <property name="minimumDate">
+                     <date>
+                      <year>2020</year>
+                      <month>1</month>
+                      <day>17</day>
+                     </date>
+                    </property>
+                    <property name="calendarPopup">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="earning_stopdate_label">
+                    <property name="text">
+                     <string>End</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QDateTimeEdit" name="earning_stop_dateTimeEdit">
+                    <property name="minimumDate">
+                     <date>
+                      <year>2020</year>
+                      <month>1</month>
+                      <day>17</day>
+                     </date>
+                    </property>
+                    <property name="calendarPopup">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="earnings_search_button">
+                    <property name="text">
+                     <string>Search</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_94">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
                  </layout>
                 </item>
-                <item row="1" column="0" rowspan="2">
+                <item row="5" column="1">
+                 <layout class="QGridLayout" name="gridLayout_61">
+                  <item row="3" column="1">
+                   <widget class="QLabel" name="normal_earning_value">
+                    <property name="frameShape">
+                     <enum>QFrame::WinPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                     <enum>QFrame::Sunken</enum>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QLabel" name="normal_earning_label">
+                    <property name="text">
+                     <string>Normal </string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0" rowspan="3">
+                   <spacer name="horizontalSpacer_91">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="1" column="1" colspan="3">
+                   <widget class="QLabel" name="total_earnings_label">
+                    <property name="text">
+                     <string>Total earnings</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="2">
+                   <widget class="QLabel" name="activated_earning_value">
+                    <property name="frameShape">
+                     <enum>QFrame::WinPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                     <enum>QFrame::Sunken</enum>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="3">
+                   <widget class="QLabel" name="total_earning_label">
+                    <property name="text">
+                     <string>Total</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="2">
+                   <widget class="QLabel" name="activated_earning_label">
+                    <property name="text">
+                     <string>Activated </string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="3">
+                   <widget class="QLabel" name="total_earning_value">
+                    <property name="frameShape">
+                     <enum>QFrame::WinPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                     <enum>QFrame::Sunken</enum>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="4" rowspan="3">
+                   <spacer name="horizontalSpacer_97">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+                <item row="1" column="0" rowspan="5">
                  <spacer name="horizontalSpacer_95">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -5758,6 +5685,145 @@
                    <size>
                     <width>40</width>
                     <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="3" column="1">
+                 <layout class="QGridLayout" name="gridLayout_66">
+                  <item row="0" column="2" colspan="2">
+                   <widget class="QLabel" name="earningstat_table_label">
+                    <property name="text">
+                     <string>Earnings Table</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="4">
+                   <spacer name="horizontalSpacer_100">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="0" column="0" rowspan="2">
+                   <spacer name="horizontalSpacer_96">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="0" column="1">
+                   <spacer name="horizontalSpacer_101">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="0" column="5">
+                   <widget class="QPushButton" name="export_earning_table_button">
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1" colspan="5">
+                   <widget class="QTableWidget" name="earning_stats_tableWidget">
+                    <property name="sizeAdjustPolicy">
+                     <enum>QAbstractScrollArea::AdjustToContents</enum>
+                    </property>
+                    <attribute name="horizontalHeaderDefaultSectionSize">
+                     <number>100</number>
+                    </attribute>
+                    <column>
+                     <property name="text">
+                      <string>Date</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Normal</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Activated</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Total</string>
+                     </property>
+                    </column>
+                   </widget>
+                  </item>
+                  <item row="0" column="7" rowspan="2">
+                   <spacer name="horizontalSpacer_90">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+                <item row="1" column="2" rowspan="5">
+                 <spacer name="horizontalSpacer_98">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="4" column="1">
+                 <spacer name="verticalSpacer_56">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="0" column="1">
+                 <spacer name="verticalSpacer_53">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
                    </size>
                   </property>
                  </spacer>

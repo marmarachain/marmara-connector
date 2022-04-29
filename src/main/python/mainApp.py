@@ -517,6 +517,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.holderloops_closed_number_label_value.clear()
         self.activated_earning_value.clear()
         self.normal_earning_value.clear()
+        self.total_earning_value.clear()
 
     def local_selection(self):
         marmarachain_rpc.set_connection_local()
@@ -3052,7 +3053,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
                 self.worker_thread(self.thread_earnings, self.worker_earnings, method, params,
                                    worker_output=self.set_earnings_output, execute='wallet_earnings')
             else:
-                self.bottom_info(self.tr('Begin and end date differance can not be more than 40 days'))
+                self.bottom_info(self.tr('Difference between start and end dates cannot exceed 40 days'))
 
     @pyqtSlot(tuple)
     def set_earnings_output(self, output):
@@ -3064,16 +3065,26 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             for n_item, ac_item in zip(output[0], output[1]):
                 normal_amount_sum = output[0].get(n_item) + normal_amount_sum
                 activated_amount_sum = output[1].get(ac_item) + activated_amount_sum
+                normal_amount = str(output[0].get(n_item))
+                actve_amount = str(output[1].get(ac_item))
+                total_amount = str(output[0].get(n_item) + output[1].get(ac_item))
+                if configuration.ApplicationConfig().get_value('USER', 'lang') == 'TR':
+                    normal_amount = normal_amount.replace('.', ',')
+                    actve_amount = actve_amount.replace('.', ',')
+                    total_amount = total_amount.replace('.', ',')
                 self.earning_stats_tableWidget.setItem(row_index, 0, QTableWidgetItem(str(n_item)))
-                self.earning_stats_tableWidget.setItem(row_index, 1, QTableWidgetItem(str(output[0].get(n_item))))
-                self.earning_stats_tableWidget.setItem(row_index, 2, QTableWidgetItem(str(output[1].get(ac_item))))
+                self.earning_stats_tableWidget.setItem(row_index, 1, QTableWidgetItem(normal_amount))
+                self.earning_stats_tableWidget.setItem(row_index, 2, QTableWidgetItem(actve_amount))
+                self.earning_stats_tableWidget.setItem(row_index, 3, QTableWidgetItem(total_amount))
                 self.earning_stats_tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
                 self.earning_stats_tableWidget.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
                 self.earning_stats_tableWidget.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
+                self.earning_stats_tableWidget.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
                 if row_index < len(output[0]) - 1:
                     row_index = row_index + 1
             self.normal_earning_value.setText(str(normal_amount_sum))
             self.activated_earning_value.setText(str(activated_amount_sum))
+            self.total_earning_value.setText(str(normal_amount_sum + activated_amount_sum))
             self.bottom_info(self.tr('finished getting earning stats'))
         if output[2] == 1:
             self.bottom_err_info(output[1])
@@ -3115,20 +3126,23 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         if txid[0]:
             logging.info(txid[0])
             self.bottom_info('txid : ' + str(txid[0]).replace('\n', ''))
-            strt_date = str(self.earning_start_dateTimeEdit.dateTime().date().toString(QtCore.Qt.ISODate))
-            stp_date = str(self.earning_stop_dateTimeEdit.dateTime().date().toString(QtCore.Qt.ISODate))
-            if platform.system() == 'Linux':
-                destination_path = str(pathlib.Path.home()) + '/Documents'
-                csv_name = '/earning-stats_' + strt_date + '_' +stp_date + '.csv'
-            if platform.system() == 'Win64' or platform.system() == 'Windows':
-                destination_path = str(pathlib.Path.home()) + '\Documents'
-                csv_name = '\earning-stats_' + strt_date + '_' +stp_date + '.csv'
             earnings_data = self.get_table_datas(self.earning_stats_tableWidget)
-            filename = QFileDialog.getExistingDirectory(self, 'Choose Location to save csv file', str(destination_path))
-            configuration.export_as_scv(filename + csv_name, earnings_data)
+            self.export_as_csv_file(earnings_data)
         if txid[1]:
             self.bottom_err_info(txid[1])
 
+    def export_as_csv_file(self, export_data):
+        strt_date = str(self.earning_start_dateTimeEdit.dateTime().date().toString(QtCore.Qt.ISODate))
+        stp_date = str(self.earning_stop_dateTimeEdit.dateTime().date().toString(QtCore.Qt.ISODate))
+        if platform.system() == 'Linux':
+            destination_path = str(pathlib.Path.home()) + '/Documents'
+            csv_name = '/earning-stats_' + strt_date + '_' + stp_date + '.csv'
+        if platform.system() == 'Win64' or platform.system() == 'Windows':
+            destination_path = str(pathlib.Path.home()) + '\Documents'
+            csv_name = '\earning-stats_' + strt_date + '_' + stp_date + '.csv'
+
+        filename = QFileDialog.getExistingDirectory(self, 'Choose Location to save csv file', str(destination_path))
+        configuration.export_as_scv(filename + csv_name, export_data)
 
     def get_table_datas(self, table):
         col_cnt = table.columnCount()
