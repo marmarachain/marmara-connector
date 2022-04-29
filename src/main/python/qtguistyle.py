@@ -154,6 +154,10 @@ class GuiStyle(Ui_MainWindow):
         self.creditloop_tabWidget.setTabIcon(2, qta.icon('mdi.vector-circle', color=color))
         self.creditloop_tabWidget.setTabIcon(3, qta.icon('mdi.database-search', color=color))
         self.creditloop_tabWidget.setIconSize(QSize(24, 24))
+        # Stats page
+        self.stats_tabWidget.setTabIcon(0, qta.icon('fa.pie-chart', color=color))
+        self.stats_tabWidget.setTabIcon(1, qta.icon('mdi.pickaxe', color=color))
+        self.stats_tabWidget.setIconSize(QSize(24, 24))
 
         self.looprequest_search_button.setIcon(qta.icon('fa.search', color=color))
         self.looprequest_search_button.setIconSize(QSize(24, 24))
@@ -189,6 +193,8 @@ class GuiStyle(Ui_MainWindow):
         self.stats_calculate_pushButton.setIconSize(QSize(24, 24))
         self.export_earning_table_button.setIcon(qta.icon('mdi.file-export-outline', color=color))
         self.export_earning_table_button.setIconSize(QSize(24,24))
+        self.earnings_search_button.setIcon(qta.icon('fa.search', color=color))
+        self.earnings_search_button.setIconSize(QSize(24,24))
         # Market
         self.exchange_market_request_button.setIcon(qta.icon('mdi.arrow-bottom-left-thick', color=color))
         self.exchange_market_request_button.setIconSize(QSize(24, 24))
@@ -494,7 +500,9 @@ class GuiStyle(Ui_MainWindow):
         self.earning_stopdate_label.setFont(font)
         self.earning_stop_dateTimeEdit.setFont(font)
         self.earning_stop_dateTimeEdit.calendarWidget().setFont(font)
-        self.total_earning_amount_label.setFont(font)
+        self.total_earnings_label.setFont(font)
+        self.total_earning_label.setFont(font)
+        self.total_earning_value.setFont(font)
         self.normal_earning_label.setFont(font)
         self.normal_earning_value.setFont(font)
         self.activated_earning_label.setFont(font)
