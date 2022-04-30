@@ -915,7 +915,7 @@
     <message>
         <location filename="../../../python/qtguidesign.py" line="2834"/>
         <source>Start Chain</source>
-        <translation>Zimciri Başlat</translation>
+        <translation>Zinciri Başlat</translation>
     </message>
     <message>
         <location filename="../../../python/qtguidesign.py" line="3003"/>
