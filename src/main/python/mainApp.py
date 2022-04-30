@@ -50,6 +50,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.get_initial_style_settings()
         self.read_lang_setting()
         self.set_tooltip_texts()
+        self.get_balance_hide()
         # paths settings
         # Menu Actions
         self.actionAbout.triggered.connect(self.show_about)
@@ -289,6 +290,12 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         if fontsize_conf:
             self.default_fontsize = int(fontsize_conf)
 
+    def get_balance_hide(self):
+        if configuration.ApplicationConfig().get_value('USER', 'balance_hide') == 'True':
+            self.walletsummary_amount_frame.setHidden(True)
+        else:
+            self.walletsummary_amount_frame.setHidden(False)
+
     def get_initial_style_settings(self):
         style_conf = configuration.ApplicationConfig().get_value('USER', 'style')
         if style_conf:
@@ -296,6 +303,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         else:
             self.set_icon_color('black')
 
+    @pyqtSlot()
     def show_style_themes(self):
         font = QFont()
         font.setPointSize(self.default_fontsize)
@@ -1276,10 +1284,12 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             self.walletsummary_hide_button.setIcon(qta.icon('ei.eye-close', color='#cc2900'))
             self.walletsummary_hide_button.setToolTip(self.tr('Hide'))
             self.walletsummary_amount_frame.setHidden(False)
+            configuration.ApplicationConfig().set_key_value('USER', 'balance_hide', 'False')
         else:
             self.walletsummary_hide_button.setIcon(qta.icon('ei.eye-open', color='#cc2900'))
             self.walletsummary_hide_button.setToolTip(self.tr('Show'))
             self.walletsummary_amount_frame.setHidden(True)
+            configuration.ApplicationConfig().set_key_value('USER', 'balance_hide', 'True')
 
     @pyqtSlot()
     def calculate_amount(self):
