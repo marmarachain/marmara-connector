@@ -292,9 +292,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
 
     def get_balance_hide(self):
         if configuration.ApplicationConfig().get_value('USER', 'balance_hide') == 'True':
-            self.walletsummary_amount_frame.setHidden(True)
-        else:
-            self.walletsummary_amount_frame.setHidden(False)
+            self.toggle_walletsummary()
 
     def get_initial_style_settings(self):
         style_conf = configuration.ApplicationConfig().get_value('USER', 'style')
