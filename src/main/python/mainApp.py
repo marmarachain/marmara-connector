@@ -292,9 +292,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
 
     def get_balance_hide(self):
         if configuration.ApplicationConfig().get_value('USER', 'balance_hide') == 'True':
-            self.walletsummary_amount_frame.setHidden(True)
-        else:
-            self.walletsummary_amount_frame.setHidden(False)
+            self.toggle_walletsummary()
 
     def get_initial_style_settings(self):
         style_conf = configuration.ApplicationConfig().get_value('USER', 'style')
@@ -1948,7 +1946,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             self.worker_get_address_amounts = marmarachain_rpc.RpcHandler()
             self.worker_thread(self.thread_get_address_amounts, self.worker_get_address_amounts,
                                worker_output=self.set_address_amounts, execute='get_balances')
-        if pubkey is None:
+        if pubkey is "":
             self.bottom_info(self.tr('pubkey is not set!'))
             logging.warning('pubkey is not set!')
 
@@ -2123,26 +2121,30 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
 
     @pyqtSlot()
     def getaddresstxids(self):
-        address = self.currentaddress_value.text()
-        start_date = self.transactions_startdate_dateTimeEdit.dateTime()
-        end_date = self.transactions_endtdate_dateTimeEdit.dateTime()
-        start_height = int(self.currentblock_value_label.text()) - int(self.change_datetime_to_block_age(start_date))
-        end_height = int(self.currentblock_value_label.text()) - int(self.change_datetime_to_block_age(end_date))
-        if start_height < end_height:
-            if end_date > datetime.now():
-                end_height = self.currentblock_value_label.text()
-            if address == "":
-                self.bottom_info(self.tr('A pubkey is not set yet! Please set a pubkey first.'))
-                logging.info('A pubkey is not set yet! Please set a pubkey first.')
+        if self.chain_status:
+            address = self.currentaddress_value.text()
+            start_date = self.transactions_startdate_dateTimeEdit.dateTime()
+            end_date = self.transactions_endtdate_dateTimeEdit.dateTime()
+            start_height = int(self.currentblock_value_label.text()) - int(self.change_datetime_to_block_age(start_date))
+            end_height = int(self.currentblock_value_label.text()) - int(self.change_datetime_to_block_age(end_date))
+            if start_height < end_height:
+                if end_date > datetime.now():
+                    end_height = self.currentblock_value_label.text()
+                if address == "":
+                    self.bottom_info(self.tr('A pubkey is not set yet! Please set a pubkey first.'))
+                    logging.info('A pubkey is not set yet! Please set a pubkey first.')
+                else:
+                    self.worker_getaddresstxids = marmarachain_rpc.RpcHandler()
+                    method = cp.getaddresstxids
+                    params = [{'addresses': [address], 'start': int(start_height), 'end': int(end_height)}]
+                    self.worker_thread(self.thread_getaddresstxids, self.worker_getaddresstxids, method, params,
+                                       self.getaddresstxids_result, execute='txids_detail')
             else:
-                self.worker_getaddresstxids = marmarachain_rpc.RpcHandler()
-                method = cp.getaddresstxids
-                params = [{'addresses': [address], 'start': int(start_height), 'end': int(end_height)}]
-                self.worker_thread(self.thread_getaddresstxids, self.worker_getaddresstxids, method, params,
-                                   self.getaddresstxids_result, execute='txids_detail')
+                self.bottom_info(self.tr('Start Date should be before the Stop Date'))
+                logging.info('Start Date should be before the Stop Date')
         else:
-            self.bottom_info(self.tr('Start Date should be before the Stop Date'))
-            logging.info('Start Date should be before the Stop Date')
+            self.bottom_info(self.tr('Marmarachain is not started'))
+            logging.warning('Marmarachain is not started')
 
     @pyqtSlot(tuple)
     def getaddresstxids_result(self, result_out):
@@ -2497,7 +2499,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
                                execute='active_loops_details')
         else:
             self.bottom_info('pubkey not set!')
-            self.clear_search_active_loops_result()
+            self.clear_search_active_loops_labels()
 
     @pyqtSlot(tuple)
     def loops_details_result(self, result_out):
@@ -2545,7 +2547,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             if result.get('result') == "error":
                 self.bottom_info(result.get('error'))
                 logging.error(result.get('error'))
-                self.clear_search_active_loops_result()
+                self.clear_search_active_loops_labels()
         elif result_out[1]:
             self.bottom_err_info(result_out[1])
 
@@ -2566,11 +2568,17 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
                                                                                      QHeaderView.ResizeToContents)
         self.activeloops_tableWidget.setSortingEnabled(True)
 
-    def clear_search_active_loops_result(self):
-        self.activeloops_total_amount_value_label.clear()
+    def clear_search_active_loops_labels(self):
+        self.total_issuer_loop_amount_label_value.clear()
         self.closedloops_total_amount_value_label.clear()
-        self.activeloops_total_number_value_label.clear()
+        self.activeloops_pending_number_value_label.clear()
         self.closedloops_total_number_value_label.clear()
+
+    def clear_search_holder_loops_labels(self):
+        self.total_transferrable_loop_amount_label_value.clear()
+        self.numberof_transferrable_loop_amount_label_value.clear()
+        self.holderloops_closed_amount_label_value.clear()
+        self.holderloops_closed_number_label_value.clear()
 
     @pyqtSlot()
     def marmaraholderloops(self):
@@ -2585,7 +2593,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
                                worker_output=self.marmaraholderloops_result, execute='holder_loop_detail')
         else:
             self.bottom_info('pubkey not set!')
-            self.clear_search_active_loops_result()
+            self.clear_search_holder_loops_labels()
 
     @pyqtSlot(tuple)
     def marmaraholderloops_result(self, result_out):
@@ -3048,22 +3056,26 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
 
     @pyqtSlot()
     def get_wallet_earnings(self):
-        start_datetime = self.earning_start_dateTimeEdit.dateTime()
-        stop_datetime = self.earning_stop_dateTimeEdit.dateTime()
-        latest_block = self.currentblock_value_label.text()
-        beginheigth = int(latest_block) - int(self.change_datetime_to_block_age(start_datetime))
-        endheigth = int(latest_block) - int(self.change_datetime_to_block_age(stop_datetime))
-        if not beginheigth < endheigth <= int(latest_block):
-            self.bottom_info(self.tr('Wrong Date Selection. start date should be less then stop date'))
-        else:
-            if (endheigth - beginheigth) <= 57600:  # if more less 40 days
-                self.worker_earnings = marmarachain_rpc.RpcHandler()
-                method = cp.getblock
-                params = [beginheigth, endheigth]
-                self.worker_thread(self.thread_earnings, self.worker_earnings, method, params,
-                                   worker_output=self.set_earnings_output, execute='wallet_earnings')
+        if self.chain_status:
+            start_datetime = self.earning_start_dateTimeEdit.dateTime()
+            stop_datetime = self.earning_stop_dateTimeEdit.dateTime()
+            latest_block = self.currentblock_value_label.text()
+            beginheigth = int(latest_block) - int(self.change_datetime_to_block_age(start_datetime))
+            endheigth = int(latest_block) - int(self.change_datetime_to_block_age(stop_datetime))
+            if not beginheigth < endheigth <= int(latest_block):
+                self.bottom_info(self.tr('Wrong Date Selection. start date should be less then stop date'))
             else:
-                self.bottom_info(self.tr('Difference between start and end dates cannot exceed 40 days'))
+                if (endheigth - beginheigth) <= 57600:  # if more less 40 days
+                    self.worker_earnings = marmarachain_rpc.RpcHandler()
+                    method = cp.getblock
+                    params = [beginheigth, endheigth]
+                    self.worker_thread(self.thread_earnings, self.worker_earnings, method, params,
+                                       worker_output=self.set_earnings_output, execute='wallet_earnings')
+                else:
+                    self.bottom_info(self.tr('Difference between start and end dates cannot exceed 40 days'))
+        else:
+            self.bottom_info(self.tr('Marmarachain is not started'))
+            logging.warning('Marmarachain is not started')
 
     @pyqtSlot(tuple)
     def set_earnings_output(self, output):
