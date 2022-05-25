@@ -163,13 +163,16 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         self.looprequest_search_button.clicked.connect(self.search_marmarareceivelist)
         self.request_date_checkBox.clicked.connect(self.set_request_date_state)
         self.request_dateTimeEdit.setDateTime(QDateTime.currentDateTime())
-
+        self.contactpk_otherpk_looprequest_comboBox.currentTextChanged.connect(self.get_selected_contact_pukey)
         # -----Make credit Loop Request
         self.contactpk_makeloop_comboBox.currentTextChanged.connect(self.get_selected_contact_loop_pubkey)
         self.contactpk_transferrequest_comboBox.currentTextChanged.connect(self.get_selected_contact_transfer_pubkey)
         self.make_credit_loop_matures_dateTimeEdit.setMinimumDateTime(QDateTime.currentDateTime())
         self.send_loop_request_button.clicked.connect(self.marmarareceive)
         self.send_transfer_request_button.clicked.connect(self.marmararecieve_transfer)
+        self.looprequest_otherpk_radioButton.clicked.connect(self.change_visibilty_looprequestpubkey)
+        self.looprequest_currentpk_radioButton.clicked.connect(self.change_visibilty_looprequestpubkey)
+        self.change_visibilty_looprequestpubkey()
         # -----Total Credit Loops page -----
         self.activeloops_search_button.clicked.connect(self.search_active_loops)
         self.holderloops_search_button.clicked.connect(self.marmaraholderloops)
@@ -372,7 +375,6 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         if out == 'Connection Error':
             self.custom_message(self.tr('Connection Error'), self.tr('Check your internet Connection '), 'information',
                                 QMessageBox.Information)
-
 
     def read_lang_setting(self):
         language = configuration.ApplicationConfig().get_value('USER', 'lang')
@@ -1115,6 +1117,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     def update_datetime_edit_maxdates(self):
         self.transactions_startdate_dateTimeEdit.setMaximumDateTime(QDateTime.currentDateTime())
         self.earning_stop_dateTimeEdit.setMaximumDateTime(QDateTime.currentDateTime())
+        self.earning_start_dateTimeEdit.setMaximumDateTime(QDateTime.currentDateTime())
         self.earning_stop_dateTimeEdit.setDateTime(QDateTime.currentDateTime())
         self.transactions_endtdate_dateTimeEdit.setDateTime(QDateTime.currentDateTime())
         self.make_credit_loop_matures_dateTimeEdit.setMinimumDateTime(QDateTime.currentDateTime())
@@ -1589,7 +1592,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     def browse_bootstrap(self):
         home_path = str(pathlib.Path.home())
         get_bootstrap_path = QFileDialog.getOpenFileName(self, caption=self.tr('select bootstrap.tar.gz'),
-                                                                   directory=home_path, filter='*.tar.gz')
+                                                         directory=home_path, filter='*.tar.gz')
         bootstrap_path = str(get_bootstrap_path).split(',')[0].replace('(', '').replace("'", '')
         if platform.system() == 'Darwin':
             destination_path = os.environ['HOME'] + '/Library/Application Support/Komodo/MCL'
@@ -1750,7 +1753,6 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             if not self.chain_status:
                 self.rescan_checkBox.setVisible(True)
                 self.reindex_checkBox.setVisible(True)
-
 
     # ------------------
     # Chain  --- wallet Address Add, import
@@ -2125,7 +2127,8 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             address = self.currentaddress_value.text()
             start_date = self.transactions_startdate_dateTimeEdit.dateTime()
             end_date = self.transactions_endtdate_dateTimeEdit.dateTime()
-            start_height = int(self.currentblock_value_label.text()) - int(self.change_datetime_to_block_age(start_date))
+            start_height = int(self.currentblock_value_label.text()) - int(
+                self.change_datetime_to_block_age(start_date))
             end_height = int(self.currentblock_value_label.text()) - int(self.change_datetime_to_block_age(end_date))
             if start_height < end_height:
                 if end_date > datetime.now():
@@ -2237,7 +2240,38 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             self.request_dateTimeEdit.setMaximumDateTime(QDateTime.currentDateTime())
 
     @pyqtSlot()
+    def change_visibilty_looprequestpubkey(self):
+        if self.looprequest_currentpk_radioButton.isChecked():
+            self.looprequest_otherpk_lineEdit.setHidden(True)
+            self.contactpk_otherpk_looprequest_comboBox.setHidden(True)
+            self.transferrequests_tableWidget.setColumnHidden(0, False)
+            self.loop_request_tableWidget.setColumnHidden(0, False)
+            self.loop_request_tableWidget.setRowCount(0)
+            self.transferrequests_tableWidget.setRowCount(0)
+        if self.looprequest_otherpk_radioButton.isChecked():
+            self.looprequest_otherpk_lineEdit.setHidden(False)
+            self.looprequest_otherpk_lineEdit.clear()
+            self.contactpk_otherpk_looprequest_comboBox.setHidden(False)
+            self.loop_request_tableWidget.setColumnHidden(0, True)
+            self.transferrequests_tableWidget.setColumnHidden(0, True)
+            self.loop_request_tableWidget.setRowCount(0)
+            self.transferrequests_tableWidget.setRowCount(0)
+            self.get_contact_names_pubkeys()
+
+    @pyqtSlot()
+    def get_selected_contact_pukey(self):
+        contacts_data = configuration.ContactsSettings().read_csv_file()
+        selected_contactpubkey_transfer = contacts_data[self.contactpk_otherpk_looprequest_comboBox.currentIndex()]
+        if selected_contactpubkey_transfer[2] != 'Pubkey':
+            self.looprequest_otherpk_lineEdit.setText(selected_contactpubkey_transfer[2])
+        if selected_contactpubkey_transfer[2] == 'Pubkey':
+            self.looprequest_otherpk_lineEdit.clear()
+
+    @pyqtSlot()
     def search_marmarareceivelist(self):
+        pubkey = self.current_pubkey_value.text()
+        if self.looprequest_otherpk_radioButton.isChecked():
+            pubkey = self.looprequest_otherpk_lineEdit.text()
         if self.request_date_checkBox.checkState():
             maxage = '1440'
         else:
@@ -2248,7 +2282,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         logging.info('querying incoming loop requests with marmarareceivelist')
         self.worker_marmarareceivelist = marmarachain_rpc.RpcHandler()
         method = cp.marmarareceivelist
-        params = [self.current_pubkey_value.text(), str(maxage)]
+        params = [pubkey, str(maxage)]
         self.worker_thread(self.thread_marmarareceivelist, self.worker_marmarareceivelist, method, params,
                            self.search_marmarareceivelist_result)
 
@@ -2258,26 +2292,30 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             self.bottom_info(self.tr('finished searching incoming loop requests'))
             logging.info('finished querying incoming loop requests')
             result = json.loads(str(result_out[0]))
-            self.loop_request_tableWidget.setRowCount(len(result))
-            loop_create_request_list = []
-            loop_transfer_request_list = []
-            for item in result:
-                tx_id = item.get('txid')
-                func_id = item.get('funcid')
-                amount = item.get('amount')
-                matures = item.get('matures')
-                maturity = self.change_block_to_date(matures)
-                receive_pk = item.get('receivepk')
-                receive_pubkey = self.check_pubkey_contact_name(receive_pk)
-                # issuer_pk = item.get('issuerpk')
-                if func_id == 'B':
-                    row = [tx_id, amount, maturity, receive_pubkey, receive_pk]
-                    loop_create_request_list.append(row)
-                if func_id == 'R':
-                    row = [tx_id, amount, maturity, receive_pubkey, receive_pk]
-                    loop_transfer_request_list.append(row)
-            self.set_credit_request_table(loop_create_request_list)
-            self.set_transfer_request_table(loop_transfer_request_list)
+            if type(result) == list:
+                self.loop_request_tableWidget.setRowCount(len(result))
+                loop_create_request_list = []
+                loop_transfer_request_list = []
+                for item in result:
+                    tx_id = item.get('txid')
+                    func_id = item.get('funcid')
+                    amount = item.get('amount')
+                    matures = item.get('matures')
+                    maturity = self.change_block_to_date(matures)
+                    receive_pk = item.get('receivepk')
+                    receive_pubkey = self.check_pubkey_contact_name(receive_pk)
+                    # issuer_pk = item.get('issuerpk')
+                    if func_id == 'B':
+                        row = [tx_id, amount, maturity, receive_pubkey, receive_pk]
+                        loop_create_request_list.append(row)
+                    if func_id == 'R':
+                        row = [tx_id, amount, maturity, receive_pubkey, receive_pk]
+                        loop_transfer_request_list.append(row)
+                self.set_credit_request_table(loop_create_request_list)
+                self.set_transfer_request_table(loop_transfer_request_list)
+            if type(result) == dict:
+                if result.get('result') == 'error':
+                    self.bottom_err_info(result.get('error'))
         elif result_out[1]:
             self.bottom_err_info(result_out[1])
 
@@ -2774,15 +2812,18 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     def get_contact_names_pubkeys(self):
         self.contactpk_makeloop_comboBox.clear()
         self.contactpk_transferrequest_comboBox.clear()
+        self.contactpk_otherpk_looprequest_comboBox.clear()
         self.make_credit_loop_senderpubkey_lineEdit.clear()
         self.transfer_senderpubkey_lineEdit.clear()
         self.contactpk_makeloop_comboBox.addItem(self.tr('Contacts'))
         self.contactpk_transferrequest_comboBox.addItem(self.tr('Contacts'))
+        self.contactpk_otherpk_looprequest_comboBox.addItem(self.tr('Contacts'))
         contacts_data = configuration.ContactsSettings().read_csv_file()
         for name in contacts_data:
             if name[0] != 'Name':
                 self.contactpk_makeloop_comboBox.addItem(name[0])
                 self.contactpk_transferrequest_comboBox.addItem(name[0])
+                self.contactpk_otherpk_looprequest_comboBox.addItem(name[0])
 
     @pyqtSlot()
     def get_selected_contact_loop_pubkey(self):
@@ -3120,7 +3161,6 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
         if output == 'calculating earnings':
             self.bottom_info(self.tr('Calculating earnings for normal and activated addresses'))
 
-
     @pyqtSlot()
     def pay_for_export(self):
         if self.earning_stats_tableWidget.rowCount() > 0:
@@ -3249,18 +3289,18 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
 
     def update_ticker_table(self):
         fiat = self.market_fiat_comboBox.currentText()
-        price = ('%.8f' % self.mcl_exchange_ticker_result.get('quotes').get(fiat).get('price'))
-        volume = ('%.8f' % self.mcl_exchange_ticker_result.get('quotes').get(fiat).get('volume_24h'))
+        price = ('%.8f' % self.mcl_exchange_ticker_result.get(fiat).get('price'))
+        volume = ('%.8f' % self.mcl_exchange_ticker_result.get(fiat).get('volume_24h'))
         self.ticker_price_label_value.setText(str(price))
         self.ticker_volume_label_value.setText(str(volume))
         self.ticker_1hour_label_value.setText(
-            str(self.mcl_exchange_ticker_result.get('quotes').get(fiat).get('percent_change_1h')))
+            str(self.mcl_exchange_ticker_result.get(fiat).get('percent_change_1h')))
         self.ticker_24hour_label_value.setText(
-            str(self.mcl_exchange_ticker_result.get('quotes').get(fiat).get('percent_change_24h')))
+            str(self.mcl_exchange_ticker_result.get(fiat).get('percent_change_24h')))
         self.ticker_1week_label_value.setText(
-            str(self.mcl_exchange_ticker_result.get('quotes').get(fiat).get('percent_change_7d')))
+            str(self.mcl_exchange_ticker_result.get(fiat).get('percent_change_7d')))
         self.ticker_1month_label_value.setText(
-            str(self.mcl_exchange_ticker_result.get('quotes').get(fiat).get('percent_change_30d')))
+            str(self.mcl_exchange_ticker_result.get(fiat).get('percent_change_30d')))
         if self.ticker_price_label_value.text():
             self.mcl_amount_lineEdit.setEnabled(True)
             self.usd_amount_lineEdit.setEnabled(True)

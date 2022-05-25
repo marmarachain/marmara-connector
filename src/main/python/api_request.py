@@ -8,8 +8,9 @@ app_release_url = 'https://github.com/marmarachain/marmara-connector/releases/'
 marmara_api_url = "https://api.github.com/repos/marmarachain/marmara/releases/latest"
 app_api_url = "https://api.github.com/repos/marmarachain/marmara-connector/releases/latest"
 
-coinpaprika = ['https://api.coinpaprika.com/v1/coins/mcl-marmara-credit-loops/markets?quotes=USD,TRY,BTC,EUR,RUB',
-               'https://api.coinpaprika.com/v1/tickers/mcl-marmara-credit-loops?quotes=USD,TRY,BTC,EUR,RUB']
+coinpaprika = {'market': 'https://api.coinpaprika.com/v1/coins/mcl-marmara-credit-loops/markets?quotes=USD,TRY,BTC,EUR,RUB',
+               'tickers': 'https://api.coinpaprika.com/v1/tickers/mcl-marmara-credit-loops?quotes=',
+               'fiatlist': ['USD', 'TRY', 'BTC', 'EUR', 'RUB']}
 exchange_market_api_list = {'coinpaprika': coinpaprika}
 """
 requests to get the latest releases' tag_name of a git api url
@@ -73,13 +74,23 @@ def get_marmara_stats():
 def mcl_exchange_market(api_list_key):
     api_url_list = exchange_market_api_list.get(api_list_key)
     response_list = []
-    for api_url in api_url_list:
+    tickers_list = {}
+    try:
+        response = requests.get(api_url_list.get('market'), timeout=5)
+        response_list.append(response.json())
+    except Exception as e:
+        logging.error(e)
+        response_list.append('error')
+
+    for app_api_url in api_url_list.get('fiatlist'):
+        app_api_url = api_url_list.get('tickers') + app_api_url
         try:
-            response = requests.get(api_url, timeout=5)
-            response_list.append(response.json())
+            response = requests.get(app_api_url, timeout=5)
+            tickers_list.update(response.json().get('quotes'))
         except Exception as e:
             logging.error(e)
             response_list.append('error')
+    response_list.append(tickers_list)
     return response_list
 
 
@@ -134,5 +145,4 @@ def get_block_hash(hash, index):
         return response_e.json()
     except Exception:
         return
-
 
