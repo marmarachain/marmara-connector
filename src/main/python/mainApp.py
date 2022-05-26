@@ -3317,7 +3317,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     def calculate_usd_price(self):
         if self.mcl_amount_lineEdit.text():
             current_fiat = self.market_fiat_comboBox.currentText()
-            price = float(self.mcl_exchange_ticker_result.get('quotes').get(current_fiat).get('price'))
+            price = float(self.mcl_exchange_ticker_result.get(current_fiat).get('price'))
             calculation = float(self.mcl_amount_lineEdit.text()) * price
             self.usd_amount_lineEdit.setText(str('%.8f' % calculation))
 
@@ -3325,7 +3325,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     def calculate_mcl_price(self):
         if self.usd_amount_lineEdit.text():
             current_fiat = self.market_fiat_comboBox.currentText()
-            price = float(self.mcl_exchange_ticker_result.get('quotes').get(current_fiat).get('price'))
+            price = float(self.mcl_exchange_ticker_result.get(current_fiat).get('price'))
             calculation = float(self.usd_amount_lineEdit.text()) / price
             self.mcl_amount_lineEdit.setText(str('%.8f' % calculation))
 
