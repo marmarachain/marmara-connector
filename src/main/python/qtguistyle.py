@@ -374,6 +374,10 @@ class GuiStyle(Ui_MainWindow):
         self.request_date_checkBox.setFont(font)
         self.loop_request_label.setFont(font)
         self.transferrequests_label.setFont(font)
+        self.looprequest_otherpk_radioButton.setFont(font)
+        self.looprequest_currentpk_radioButton.setFont(font)
+        self.looprequest_otherpk_lineEdit.setFont(font)
+        self.contactpk_otherpk_looprequest_comboBox.setFont(font)
         # make loop request
         self.create_loop_request_label.setFont(font)
         self.send_loop_request_button.setFont(font)

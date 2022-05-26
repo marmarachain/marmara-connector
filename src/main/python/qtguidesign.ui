@@ -792,7 +792,7 @@
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>3</number>
           </property>
           <property name="iconSize">
            <size>
@@ -2980,7 +2980,72 @@
                 </item>
                 <item>
                  <layout class="QGridLayout" name="receivedloop_searchlimit_Layout">
-                  <item row="1" column="2">
+                  <item row="0" column="1" colspan="3">
+                   <layout class="QHBoxLayout" name="horizontalLayout_14">
+                    <property name="bottomMargin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="QRadioButton" name="looprequest_currentpk_radioButton">
+                      <property name="text">
+                       <string>Current pubkey</string>
+                      </property>
+                      <property name="checked">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_15">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item>
+                     <widget class="QRadioButton" name="looprequest_otherpk_radioButton">
+                      <property name="layoutDirection">
+                       <enum>Qt::LeftToRight</enum>
+                      </property>
+                      <property name="text">
+                       <string>Other pubkey</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item row="3" column="1">
+                   <widget class="QCheckBox" name="request_date_checkBox">
+                    <property name="enabled">
+                     <bool>true</bool>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true"/>
+                    </property>
+                    <property name="text">
+                     <string>last 24 Hours</string>
+                    </property>
+                    <property name="checked">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="3">
+                   <widget class="QComboBox" name="contactpk_otherpk_looprequest_comboBox">
+                    <item>
+                     <property name="text">
+                      <string>Contacts</string>
+                     </property>
+                    </item>
+                   </widget>
+                  </item>
+                  <item row="3" column="2">
                    <widget class="QDateTimeEdit" name="request_dateTimeEdit">
                     <property name="enabled">
                      <bool>false</bool>
@@ -2997,49 +3062,10 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="3">
-                   <widget class="QPushButton" name="looprequest_search_button">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>Search</string>
-                    </property>
-                   </widget>
+                  <item row="1" column="1" colspan="2">
+                   <widget class="QLineEdit" name="looprequest_otherpk_lineEdit"/>
                   </item>
-                  <item row="0" column="1" colspan="3">
-                   <widget class="QLabel" name="requestdate_label">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>Request date</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
-                   <widget class="QCheckBox" name="request_date_checkBox">
-                    <property name="enabled">
-                     <bool>true</bool>
-                    </property>
-                    <property name="styleSheet">
-                     <string notr="true"/>
-                    </property>
-                    <property name="text">
-                     <string>last 24 Hours</string>
-                    </property>
-                    <property name="checked">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="0" rowspan="2">
+                  <item row="0" column="0" rowspan="4">
                    <spacer name="horizontalSpacer_37">
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
@@ -3052,7 +3078,7 @@
                     </property>
                    </spacer>
                   </item>
-                  <item row="0" column="4" rowspan="2">
+                  <item row="0" column="4" rowspan="4">
                    <spacer name="horizontalSpacer_39">
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
@@ -3065,7 +3091,49 @@
                     </property>
                    </spacer>
                   </item>
+                  <item row="3" column="3">
+                   <widget class="QPushButton" name="looprequest_search_button">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>Search</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1" colspan="3">
+                   <layout class="QHBoxLayout" name="horizontalLayout_15">
+                    <property name="topMargin">
+                     <number>12</number>
+                    </property>
+                    <item>
+                     <widget class="QLabel" name="requestdate_label">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="frameShape">
+                       <enum>QFrame::NoFrame</enum>
+                      </property>
+                      <property name="frameShadow">
+                       <enum>QFrame::Raised</enum>
+                      </property>
+                      <property name="text">
+                       <string>Request date</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
                  </layout>
+                </item>
+                <item>
+                 <layout class="QGridLayout" name="gridLayout_62"/>
                 </item>
                 <item>
                  <spacer name="verticalSpacer_34">
@@ -7368,9 +7436,7 @@
   <tabstop>mining_button</tabstop>
   <tabstop>addresspage_back_button</tabstop>
   <tabstop>creditloop_tabWidget</tabstop>
-  <tabstop>request_date_checkBox</tabstop>
   <tabstop>loop_request_tableWidget</tabstop>
-  <tabstop>looprequest_search_button</tabstop>
   <tabstop>activeloops_tableWidget</tabstop>
   <tabstop>privatekeypage_back_button</tabstop>
   <tabstop>privkey_lineEdit</tabstop>
@@ -7383,7 +7449,6 @@
   <tabstop>transfer_baton_lineEdit</tabstop>
   <tabstop>addresses_privkey_tableWidget</tabstop>
   <tabstop>stopchain_button</tabstop>
-  <tabstop>request_dateTimeEdit</tabstop>
  </tabstops>
  <resources/>
  <connections>
