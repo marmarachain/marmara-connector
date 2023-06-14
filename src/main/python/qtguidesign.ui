@@ -2521,11 +2521,11 @@
               <property name="sortingEnabled">
                <bool>true</bool>
               </property>
-              <attribute name="horizontalHeaderDefaultSectionSize">
-               <number>150</number>
-              </attribute>
               <attribute name="horizontalHeaderMinimumSectionSize">
                <number>60</number>
+              </attribute>
+              <attribute name="horizontalHeaderDefaultSectionSize">
+               <number>150</number>
               </attribute>
               <attribute name="horizontalHeaderStretchLastSection">
                <bool>false</bool>
@@ -6488,17 +6488,19 @@
               <property name="bottomMargin">
                <number>6</number>
               </property>
-              <item row="6" column="0">
-               <widget class="QLabel" name="currentblock_label">
-                <property name="text">
-                 <string>Current Block</string>
+              <item row="6" column="1" colspan="2">
+               <widget class="QLabel" name="currentblock_value_label">
+                <property name="frameShape">
+                 <enum>QFrame::NoFrame</enum>
                 </property>
-               </widget>
-              </item>
-              <item row="5" column="0">
-               <widget class="QLabel" name="difficulty_label">
+                <property name="frameShadow">
+                 <enum>QFrame::Plain</enum>
+                </property>
                 <property name="text">
-                 <string>Difficulty</string>
+                 <string/>
+                </property>
+                <property name="textInteractionFlags">
+                 <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
                 </property>
                </widget>
               </item>
@@ -6516,10 +6518,70 @@
                 </property>
                </widget>
               </item>
+              <item row="0" column="1" colspan="2">
+               <widget class="QLabel" name="chainstatus_label_value">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
               <item row="0" column="0">
                <widget class="QLabel" name="chainstatus_label">
                 <property name="text">
                  <string>Chain Status</string>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="1" colspan="2">
+               <widget class="QLabel" name="longestchain_value_label">
+                <property name="frameShape">
+                 <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Sunken</enum>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="textInteractionFlags">
+                 <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0" rowspan="4">
+               <widget class="QLabel" name="chainsync_label">
+                <property name="text">
+                 <string>Chain Sync</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="0">
+               <widget class="QLabel" name="currentblock_label">
+                <property name="text">
+                 <string>Current Block</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1" rowspan="4" colspan="2">
+               <widget class="QLabel" name="chainsync_label_value">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="8" column="2">
+               <widget class="QLabel" name="connections_warning_label">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                 </property>
                </widget>
               </item>
@@ -6542,49 +6604,14 @@
                 </property>
                </widget>
               </item>
-              <item row="8" column="2">
-               <widget class="QLabel" name="connections_warning_label">
+              <item row="9" column="0">
+               <widget class="QLabel" name="difficulty_label">
                 <property name="text">
-                 <string/>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                 <string>Difficulty</string>
                 </property>
                </widget>
               </item>
-              <item row="7" column="1" colspan="2">
-               <widget class="QLabel" name="longestchain_value_label">
-                <property name="frameShape">
-                 <enum>QFrame::NoFrame</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Sunken</enum>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="textInteractionFlags">
-                 <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="1" colspan="2">
-               <widget class="QLabel" name="currentblock_value_label">
-                <property name="frameShape">
-                 <enum>QFrame::NoFrame</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Plain</enum>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="textInteractionFlags">
-                 <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="1" colspan="2">
+              <item row="9" column="1" colspan="2">
                <widget class="QLabel" name="difficulty_value_label">
                 <property name="minimumSize">
                  <size>
@@ -6603,33 +6630,6 @@
                 </property>
                 <property name="textInteractionFlags">
                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1" colspan="2">
-               <widget class="QLabel" name="chainstatus_label_value">
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0" rowspan="4">
-               <widget class="QLabel" name="chainsync_label">
-                <property name="text">
-                 <string>Chain Sync</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1" rowspan="4" colspan="2">
-               <widget class="QLabel" name="chainsync_label_value">
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
                 </property>
                </widget>
               </item>
