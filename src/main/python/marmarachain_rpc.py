@@ -962,7 +962,8 @@ class Autoinstall(QtCore.QObject):
         cmd_list = None
         if platform.system() == 'Linux':
             cmd_list = ['wget ' + str(self.mcl_download_url) + '/' + self.mcl_linux_zipname + " -O " +
-                        self.mcl_linux_zipname, 'unzip -o ' + self.mcl_linux_zipname]
+                        self.mcl_linux_zipname, 'unzip -o ' + self.mcl_linux_zipname,
+                        'chmod +x komodod komodo-cli fetch-params.sh']
         if platform.system() == 'Windows':
             cmd_list = [self.win_command_list[1], self.win_command_list[2]]
         if cmd_list:
@@ -986,7 +987,9 @@ class Autoinstall(QtCore.QObject):
 
     def remote_chain_update(self):
         cmd_list = ['curl -L ' + str(self.mcl_download_url) + '/' + self.mcl_linux_zipname + ' > ' + marmara_path +
-                    self.mcl_linux_zipname, 'unzip -o ' + marmara_path + self.mcl_linux_zipname + ' -d ' + marmara_path]
+                    self.mcl_linux_zipname, 'unzip -o ' + marmara_path + self.mcl_linux_zipname + ' -d ' + marmara_path,
+                    'chmod +x ' + marmara_path + 'komodod ' + marmara_path + 'komodo-cli ' + marmara_path +
+                    'fetch-params.sh']
         sshclient = remote_connection.server_ssh_connect()
         for cmd in cmd_list:
             session = sshclient.get_transport().open_session()

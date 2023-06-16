@@ -2639,8 +2639,8 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
             self.set_holder_loops_table(result_out[0])
             self.total_transferrable_loop_amount_label_value.setText(str(result_out[1].get('totalamount')))
             self.numberof_transferrable_loop_amount_label_value.setText(str(result_out[1].get('numpending')))
-            self.holderloops_closed_amount_label_value.setText(str(result_out[1].get('numclosed')))
-            self.holderloops_closed_number_label_value.setText(str(result_out[1].get('totalclosed')))
+            self.holderloops_closed_amount_label_value.setText(str(result_out[1].get('totalclosed')))
+            self.holderloops_closed_number_label_value.setText(str(result_out[1].get('numclosed')))
         if result_out[2] == 1:
             self.bottom_err_info(result_out[1])
             logging.error(str(result_out[1]))
