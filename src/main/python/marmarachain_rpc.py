@@ -90,7 +90,7 @@ def set_pid_local(command):
     if platform.system() == 'Linux' or platform.system() == 'Darwin':
         return command
     if platform.system() == 'Windows':
-        marmara_pid = 'tasklist | findstr komodod'
+        marmara_pid = 'tasklist | findstr marmarad'
         return marmara_pid
 
 
@@ -134,7 +134,7 @@ def search_marmarad_path():  # will be added for windows search
             time.sleep(0.1)
         pwd = str(pwd_r[0]).replace('\n', '').replace('\r', '')
         logging.info('pwd_remote= ' + pwd)
-    search_list_linux = ['ls ' + pwd, 'ls ' + pwd + '/marmara/src', 'ls ' + pwd + '/komodo/src']
+    search_list_linux = ['ls ' + pwd, 'ls ' + pwd + '/marmara/src', 'ls ' + pwd + '/marmara/src']
     search_list_windows = ['PowerShell ls ' + pwd + '\marmara -name']
     if windows:
         out_path = check_path_windows(search_list_windows)
@@ -151,7 +151,7 @@ def check_path_linux(search_list):
         logging.info('search_path= ' + search_path)
         path = do_search_path(search_path)
         if not path[0] == ['']:
-            if 'komodod' in path[0] and 'komodo-cli' in path[0]:
+            if 'marmarad' in path[0] and 'marmara-cli' in path[0]:
                 out_path = search_path
                 out_path = out_path.replace('ls ', '') + '/'
                 logging.info('out_path= ' + out_path)
@@ -175,7 +175,7 @@ def check_path_windows(search_list):
         logging.info(path)
         if not path[0] == ['']:
             out = str(path[0]).replace('.exe', '').replace('\r', '')
-            if 'komodod' in out and 'komodo-cli' in out:
+            if 'marmarad' in out and 'marmara-cli' in out:
                 out_path = search_path.replace('` ', ' ')
                 out_path = out_path.replace('PowerShell ls ', '').replace(' -name', '') + '\\'
                 logging.info('out_path= ' + out_path)
@@ -195,19 +195,19 @@ def check_zcashparams():
     if is_local:
         if os.path.exists(zcash_path):
             missing = []
-            currupted = []
+            corrupted = []
             for item in zcash_files:
                 index = zcash_files.index(item)
                 if os.path.exists(zcash_path + item):
                     file_size = os.stat(zcash_path + item).st_size
                     if file_size < zcash_files_size[index]:
-                        currupted.append(item)
+                        corrupted.append(item)
                 else:
                     missing.append(item)
-            if missing == [] and currupted == []:
+            if missing == [] and corrupted == []:
                 return 0, None
             else:
-                return 1, currupted, missing
+                return 1, corrupted, missing
         else:
             return 1, ' folder missing', None
     else:
@@ -220,20 +220,20 @@ def check_zcashparams():
                 return 1, ' folder missing', None
             if zcp_path[0]:
                 missing = []
-                currupted = []
+                corrupted = []
                 for item in zcash_files:
                     index = zcash_files.index(item)
                     cmd = 'stat -c %s ' + zcash_path + item
                     zcp_file_size = remote_connection.server_execute_command(cmd, ssh_client)
                     if zcp_file_size[0] and not zcp_file_size[1]:
                         if int(zcp_file_size[0].strip('\n')) < zcash_files_size[index]:
-                            currupted.append(item)
+                            corrupted.append(item)
                     if not zcp_file_size[0] and zcp_file_size[1]:
                         missing.append(item)
-                if missing == [] and currupted == []:
+                if missing == [] and corrupted == []:
                     return 0, None
                 else:
-                    return 1, currupted, missing
+                    return 1, corrupted, missing
         except Exception as error:
             logging.error(error)
 
@@ -276,7 +276,7 @@ def start_chain(pubkey=None):
 
 def mcl_chain_status():
     if is_local:
-        marmara_pid = set_pid_local('pidof komodod')
+        marmara_pid = set_pid_local('pidof marmarad')
         try:
             marmarad_pid = subprocess.Popen(marmara_pid, shell=True, stdout=subprocess.PIPE)
             marmarad_pid.wait()
@@ -288,7 +288,7 @@ def mcl_chain_status():
         if not ssh_client:
             set_sshclient(remote_connection.server_ssh_connect())
         try:
-            marmarad_pid = remote_connection.server_execute_command('pidof komodod', ssh_client)
+            marmarad_pid = remote_connection.server_execute_command('pidof marmarad', ssh_client)
             return marmarad_pid
         except Exception as error:
             logging.error(error)
@@ -387,7 +387,7 @@ class RpcHandler(QtCore.QObject):
             verify_path = do_search_path(ls_cmd)
             if not verify_path[0] == ['']:
                 verify_path_out = str(verify_path[0]).replace('.exe', '')
-                if 'komodod' in verify_path_out and 'komodo-cli' in verify_path_out:
+                if 'marmarad' in verify_path_out and 'marmara-cli' in verify_path_out:
                     self.output.emit('marmarad found.')
                     set_marmara_path(marmarad_path)
                     self.finished.emit()
@@ -817,7 +817,7 @@ class Autoinstall(QtCore.QObject):
         self.linux_command_list = ['sudo apt-get update', 'sudo apt-get install libgomp1 -y',
                                    'wget ' + str(self.mcl_download_url) + '/' + self.mcl_linux_zipname +
                                    " -O " + self.mcl_linux_zipname, 'sudo apt-get install unzip -y',
-                                   'unzip -o MCL-linux.zip', 'sudo chmod +x komodod komodo-cli fetch-params.sh',
+                                   'unzip -o MCL-linux.zip', 'sudo chmod +x marmarad marmara-cli fetch-params.sh',
                                    './fetch-params.sh']
 
         self.win_command_list = ['mkdir marmara',
@@ -963,7 +963,7 @@ class Autoinstall(QtCore.QObject):
         if platform.system() == 'Linux':
             cmd_list = ['wget ' + str(self.mcl_download_url) + '/' + self.mcl_linux_zipname + " -O " +
                         self.mcl_linux_zipname, 'unzip -o ' + self.mcl_linux_zipname,
-                        'chmod +x komodod komodo-cli fetch-params.sh']
+                        'chmod +x marmarad marmara-cli fetch-params.sh']
         if platform.system() == 'Windows':
             cmd_list = [self.win_command_list[1], self.win_command_list[2]]
         if cmd_list:
@@ -988,7 +988,7 @@ class Autoinstall(QtCore.QObject):
     def remote_chain_update(self):
         cmd_list = ['curl -L ' + str(self.mcl_download_url) + '/' + self.mcl_linux_zipname + ' > ' + marmara_path +
                     self.mcl_linux_zipname, 'unzip -o ' + marmara_path + self.mcl_linux_zipname + ' -d ' + marmara_path,
-                    'chmod +x ' + marmara_path + 'komodod ' + marmara_path + 'komodo-cli ' + marmara_path +
+                    'chmod +x ' + marmara_path + 'marmarad ' + marmara_path + 'marmara-cli ' + marmara_path +
                     'fetch-params.sh']
         sshclient = remote_connection.server_ssh_connect()
         for cmd in cmd_list:

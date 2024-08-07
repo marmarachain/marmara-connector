@@ -1584,7 +1584,7 @@ class MarmaraMain(QMainWindow, qtguistyle.GuiStyle):
     @pyqtSlot()
     def download_bootstrap_via_webbrowser(self):
         if marmarachain_rpc.is_local:
-            webbrowser.open_new('https://eu.bootstrap.dexstats.info/MCL-bootstrap.tar.gz')
+            webbrowser.open_new('https://explorer2.marmara.io/bootstrap/MCL-bootstrap.tar.gz')
         else:
             pass
 
