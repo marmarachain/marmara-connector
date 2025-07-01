@@ -30,7 +30,7 @@
       <property name="currentIndex">
        <number>0</number>
       </property>
-      <widget class="QWidget" name="login_tab" native="true">
+      <widget class="QWidget" name="login_tab">
        <layout class="QGridLayout" name="gridLayout_4">
         <item row="4" column="1">
          <widget class="QFrame" name="home_frame">
@@ -539,6 +539,23 @@
                    </property>
                   </widget>
                  </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="label">
+                   <property name="text">
+                    <string>Port</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="1">
+                  <widget class="QSpinBox" name="spinBox">
+                   <property name="minimum">
+                    <number>22</number>
+                   </property>
+                   <property name="maximum">
+                    <number>65535</number>
+                   </property>
+                  </widget>
+                 </item>
                 </layout>
                </item>
               </layout>
@@ -767,7 +784,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="main_tab" native="true">
+      <widget class="QWidget" name="main_tab">
        <layout class="QGridLayout" name="gridLayout_8">
         <item row="0" column="0" rowspan="3">
          <widget class="QTabWidget" name="mcl_tab">
@@ -7182,7 +7199,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="install_tab" native="true">
+      <widget class="QWidget" name="install_tab">
        <layout class="QGridLayout" name="gridLayout_27">
         <item row="2" column="1">
          <spacer name="verticalSpacer_37">
