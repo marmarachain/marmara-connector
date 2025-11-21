@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '.\ui\mainwindow.ui'
+# Form implementation generated from reading ui file '.\mainwindow.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.11
 #
@@ -223,6 +223,14 @@ class Ui_MainWindow(object):
         self.add_serverip_lineEdit = QtWidgets.QLineEdit(self.hostadd_page)
         self.add_serverip_lineEdit.setObjectName("add_serverip_lineEdit")
         self.add_serversettings_Layout.setWidget(2, QtWidgets.QFormLayout.FieldRole, self.add_serverip_lineEdit)
+        self.label = QtWidgets.QLabel(self.hostadd_page)
+        self.label.setObjectName("label")
+        self.add_serversettings_Layout.setWidget(3, QtWidgets.QFormLayout.LabelRole, self.label)
+        self.spinBox = QtWidgets.QSpinBox(self.hostadd_page)
+        self.spinBox.setMinimum(22)
+        self.spinBox.setMaximum(65535)
+        self.spinBox.setObjectName("spinBox")
+        self.add_serversettings_Layout.setWidget(3, QtWidgets.QFormLayout.FieldRole, self.spinBox)
         self.gridLayout_13.addLayout(self.add_serversettings_Layout, 1, 0, 1, 1)
         self.login_stackedWidget.addWidget(self.hostadd_page)
         self.hostedit_page = QtWidgets.QWidget()
@@ -2764,13 +2772,13 @@ class Ui_MainWindow(object):
         self.actionCheck_for_Update.setObjectName("actionCheck_for_Update")
         self.actionSee_chain_Log_File = QtWidgets.QAction(MainWindow)
         self.actionSee_chain_Log_File.setObjectName("actionSee_chain_Log_File")
-        self.actionSettings = QtWidgets.QAction(MainWindow)
-        self.actionSettings.setObjectName("actionSettings")
+        self.actionPreferences = QtWidgets.QAction(MainWindow)
+        self.actionPreferences.setObjectName("actionPreferences")
         self.actionToolbar = QtWidgets.QAction(MainWindow)
         self.actionToolbar.setCheckable(True)
         self.actionToolbar.setObjectName("actionToolbar")
         self.menuFile.addAction(self.actionToolbar)
-        self.menuFile.addAction(self.actionSettings)
+        self.menuFile.addAction(self.actionPreferences)
         self.menuFile.addAction(self.actionLogout)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionQuit)
@@ -2783,7 +2791,7 @@ class Ui_MainWindow(object):
         self.menuBar.addAction(self.menuFile.menuAction())
         self.menuBar.addAction(self.menuHelp.menuAction())
         self.toolBar.addAction(self.actionLogout)
-        self.toolBar.addAction(self.actionSettings)
+        self.toolBar.addAction(self.actionPreferences)
 
         self.retranslateUi(MainWindow)
         self.main_tab.setCurrentIndex(0)
@@ -2864,6 +2872,7 @@ class Ui_MainWindow(object):
         self.add_serverusername_lineEdit.setPlaceholderText(_translate("MainWindow", "Server Username"))
         self.add_serverip_label.setText(_translate("MainWindow", "IP Address"))
         self.add_serverip_lineEdit.setPlaceholderText(_translate("MainWindow", "000.000.000.000"))
+        self.label.setText(_translate("MainWindow", "Port"))
         self.edit_serverip_lineEdit.setPlaceholderText(_translate("MainWindow", "000.000.000.000"))
         self.edit_serverip_label.setText(_translate("MainWindow", "IP Address"))
         self.edit_serverusername_label.setText(_translate("MainWindow", "Username"))
@@ -3161,17 +3170,7 @@ class Ui_MainWindow(object):
         self.actionQuit.setText(_translate("MainWindow", "Quit"))
         self.actionCheck_for_Update.setText(_translate("MainWindow", "Check for Update"))
         self.actionSee_chain_Log_File.setText(_translate("MainWindow", "See chain Log File"))
-        self.actionSettings.setText(_translate("MainWindow", "Settings"))
-        self.actionSettings.setToolTip(_translate("MainWindow", "Settings"))
+        self.actionPreferences.setText(_translate("MainWindow", "Preferances ..."))
+        self.actionPreferences.setToolTip(_translate("MainWindow", "Preferences"))
         self.actionToolbar.setText(_translate("MainWindow", "Toolbar"))
 import resources_rc
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec_())

@@ -20,7 +20,7 @@
    <string notr="true">Marmara Connector</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../resources.qrc">
+   <iconset resource="resources.qrc">
     <normaloff>:/images/icon.ico</normaloff>:/images/icon.ico</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -934,7 +934,7 @@
                        <string>Stop Chain</string>
                       </property>
                       <property name="icon">
-                       <iconset resource="../resources.qrc">
+                       <iconset resource="resources.qrc">
                         <normaloff>:/images/stop_icon.png</normaloff>:/images/stop_icon.png</iconset>
                       </property>
                       <property name="iconSize">
@@ -978,7 +978,7 @@
                        <string>Start Chain</string>
                       </property>
                       <property name="icon">
-                       <iconset resource="../resources.qrc">
+                       <iconset resource="resources.qrc">
                         <normaloff>:/images/start_icon.png</normaloff>:/images/start_icon.png</iconset>
                       </property>
                       <property name="iconSize">
@@ -6050,7 +6050,7 @@
                  <string/>
                 </property>
                 <property name="pixmap">
-                 <pixmap resource="../resources.qrc">:/images/arrow-double-icon.png</pixmap>
+                 <pixmap resource="resources.qrc">:/images/arrow-double-icon.png</pixmap>
                 </property>
                </widget>
               </item>
@@ -6562,7 +6562,7 @@
                  <string/>
                 </property>
                 <property name="pixmap">
-                 <pixmap resource="../resources.qrc">:/images/incircle-active.png</pixmap>
+                 <pixmap resource="resources.qrc">:/images/incircle-active.png</pixmap>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -6612,7 +6612,7 @@
                  <string/>
                 </property>
                 <property name="pixmap">
-                 <pixmap resource="../resources.qrc">:/images/incircle-active.png</pixmap>
+                 <pixmap resource="resources.qrc">:/images/incircle-active.png</pixmap>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -6625,7 +6625,7 @@
                  <string/>
                 </property>
                 <property name="pixmap">
-                 <pixmap resource="../resources.qrc">:/images/warning-icon.png</pixmap>
+                 <pixmap resource="resources.qrc">:/images/warning-icon.png</pixmap>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -6954,7 +6954,7 @@
                  <string/>
                 </property>
                 <property name="pixmap">
-                 <pixmap resource="../resources.qrc">:/images/Coffee-icon.png</pixmap>
+                 <pixmap resource="resources.qrc">:/images/Coffee-icon.png</pixmap>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -7367,7 +7367,7 @@
      <string>File</string>
     </property>
     <addaction name="actionToolbar"/>
-    <addaction name="actionPreferances"/>
+    <addaction name="actionPreferences"/>
     <addaction name="actionLogout"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
@@ -7402,7 +7402,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionLogout"/>
-   <addaction name="actionPreferances"/>
+   <addaction name="actionPreferences"/>
   </widget>
   <action name="actionConsole">
    <property name="text">
@@ -7448,9 +7448,12 @@
     <string>See chain Log File</string>
    </property>
   </action>
-  <action name="actionPreferances">
+  <action name="actionPreferences">
    <property name="text">
     <string>Preferances ...</string>
+   </property>
+   <property name="toolTip">
+    <string>Preferences</string>
    </property>
   </action>
   <action name="actionToolbar">
@@ -7514,7 +7517,8 @@
   <tabstop>stopchain_button</tabstop>
  </tabstops>
  <resources>
-  <include location="../resources.qrc"/>
+  <include location="resources.qrc"/>
+  <include location="resources.qrc"/>
  </resources>
  <connections>
   <connection>

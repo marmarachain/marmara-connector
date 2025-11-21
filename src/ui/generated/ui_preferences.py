@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '.\ui\settingsDialog.ui'
+# Form implementation generated from reading ui file '.\preferences.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.11
 #
@@ -11,13 +11,13 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_Settings(object):
-    def setupUi(self, Settings):
-        Settings.setObjectName("Settings")
-        Settings.resize(400, 300)
-        self.verticalLayout = QtWidgets.QVBoxLayout(Settings)
+class Ui_Preferences(object):
+    def setupUi(self, Preferences):
+        Preferences.setObjectName("Preferences")
+        Preferences.resize(400, 300)
+        self.verticalLayout = QtWidgets.QVBoxLayout(Preferences)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.tabWidget = QtWidgets.QTabWidget(Settings)
+        self.tabWidget = QtWidgets.QTabWidget(Preferences)
         self.tabWidget.setObjectName("tabWidget")
         self.main_tab = QtWidgets.QWidget()
         self.main_tab.setObjectName("main_tab")
@@ -115,7 +115,7 @@ class Ui_Settings(object):
         self.horizontalLayout.addWidget(self.scrollArea)
         self.tabWidget.addTab(self.path_tab, "")
         self.verticalLayout.addWidget(self.tabWidget)
-        self.buttonBox = QtWidgets.QDialogButtonBox(Settings)
+        self.buttonBox = QtWidgets.QDialogButtonBox(Preferences)
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName("buttonBox")
@@ -123,36 +123,26 @@ class Ui_Settings(object):
         self.lang_label.setBuddy(self.lang_comboBox)
         self.style_label.setBuddy(self.style_comboBox)
 
-        self.retranslateUi(Settings)
+        self.retranslateUi(Preferences)
         self.tabWidget.setCurrentIndex(0)
-        self.buttonBox.accepted.connect(Settings.accept) # type: ignore
-        self.buttonBox.rejected.connect(Settings.reject) # type: ignore
-        QtCore.QMetaObject.connectSlotsByName(Settings)
+        self.buttonBox.accepted.connect(Preferences.accept) # type: ignore
+        self.buttonBox.rejected.connect(Preferences.reject) # type: ignore
+        QtCore.QMetaObject.connectSlotsByName(Preferences)
 
-    def retranslateUi(self, Settings):
+    def retranslateUi(self, Preferences):
         _translate = QtCore.QCoreApplication.translate
-        Settings.setWindowTitle(_translate("Settings", "Settings"))
-        self.lang_groupBox.setTitle(_translate("Settings", "Language"))
-        self.lang_label.setText(_translate("Settings", "Languages"))
-        self.style_groupBox.setTitle(_translate("Settings", "Appereances"))
-        self.style_label.setText(_translate("Settings", "Styles"))
-        self.fontsize_label.setText(_translate("Settings", "Font Size"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.main_tab), _translate("Settings", "General"))
-        self.remote_host_save_file_label.setText(_translate("Settings", "Remote Hosts File"))
-        self.remote_host_file_search_Button.setText(_translate("Settings", "..."))
-        self.contacts_save_file_label.setText(_translate("Settings", "Contacts File"))
-        self.contacts_file_search_Button.setText(_translate("Settings", "..."))
-        self.local_chain_groupBox.setTitle(_translate("Settings", "Local Chain Location"))
-        self.local_chain_location_label.setText(_translate("Settings", "Marmara Chain"))
-        self.remote_chain_groupBox.setTitle(_translate("Settings", "Remote Chain Locations"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.path_tab), _translate("Settings", "Paths"))
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    Settings = QtWidgets.QDialog()
-    ui = Ui_Settings()
-    ui.setupUi(Settings)
-    Settings.show()
-    sys.exit(app.exec_())
+        Preferences.setWindowTitle(_translate("Preferences", "Preferences"))
+        self.lang_groupBox.setTitle(_translate("Preferences", "Language"))
+        self.lang_label.setText(_translate("Preferences", "Languages"))
+        self.style_groupBox.setTitle(_translate("Preferences", "Appereances"))
+        self.style_label.setText(_translate("Preferences", "Styles"))
+        self.fontsize_label.setText(_translate("Preferences", "Font Size"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.main_tab), _translate("Preferences", "General"))
+        self.remote_host_save_file_label.setText(_translate("Preferences", "Remote Hosts File"))
+        self.remote_host_file_search_Button.setText(_translate("Preferences", "..."))
+        self.contacts_save_file_label.setText(_translate("Preferences", "Contacts File"))
+        self.contacts_file_search_Button.setText(_translate("Preferences", "..."))
+        self.local_chain_groupBox.setTitle(_translate("Preferences", "Local Chain Location"))
+        self.local_chain_location_label.setText(_translate("Preferences", "Marmara Chain"))
+        self.remote_chain_groupBox.setTitle(_translate("Preferences", "Remote Chain Locations"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.path_tab), _translate("Preferences", "Paths"))
