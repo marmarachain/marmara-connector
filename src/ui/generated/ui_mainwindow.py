@@ -3170,7 +3170,7 @@ class Ui_MainWindow(object):
         self.actionQuit.setText(_translate("MainWindow", "Quit"))
         self.actionCheck_for_Update.setText(_translate("MainWindow", "Check for Update"))
         self.actionSee_chain_Log_File.setText(_translate("MainWindow", "See chain Log File"))
-        self.actionPreferences.setText(_translate("MainWindow", "Preferances ..."))
+        self.actionPreferences.setText(_translate("MainWindow", "Preferences..."))
         self.actionPreferences.setToolTip(_translate("MainWindow", "Preferences"))
         self.actionToolbar.setText(_translate("MainWindow", "Toolbar"))
 import resources_rc

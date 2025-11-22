@@ -1,10 +1,12 @@
 import sys
-from pathlib import Path
-sys.path.append(str(Path(__file__).resolve().parent / "ui" / "generated"))
 import platform
 import qtawesome as qta
 from PyQt5.QtWidgets import QMainWindow, QApplication, QDialog
 from PyQt5.QtCore import pyqtSlot, QTranslator
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parent / "ui" / "generated"))
+
 from ui.generated.ui_mainwindow import Ui_MainWindow
 from styles.mainwindow_style import MainWindowStyle
 from preferences_dialog import PreferencesDialog
@@ -18,10 +20,7 @@ class MainApp(QMainWindow):
         # UI
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-
-        # Stil ve ikonlar
         self.style = MainWindowStyle(self.ui)
-
         self.settings = SettingsManager()
         self.settings.restore_geometry(self)
         # mainApp attributes
@@ -49,8 +48,6 @@ class MainApp(QMainWindow):
         self.ui.serverpw_lineEdit.returnPressed.connect(self.server_connect)
         ##  Add Server Settings page
         self.ui.servercancel_button.clicked.connect(self.add_cancel_selected)
-
-
         self.ui.home_button.setVisible(False)
         #   Side Panel
         self.ui.fontsize_plus_button.clicked.connect(self.increase_fontsize)
@@ -58,23 +55,16 @@ class MainApp(QMainWindow):
 
     def load_from_settings(self):
         style = str(self.settings.get_style())
-        icon_color = 'black'
-        if style != 'light':
-            icon_color = '#eff0f1'
-            self.selected_styleSheet = self.settings.read_style(style + '.qss')
-        else:
-            self.selected_styleSheet = ""
+        icon_color = 'black' if style == 'light' else '#eff0f1'
+        self.selected_styleSheet = "" if style == "light" else self.settings.read_style(style + '.qss')
         self.style.set_icon_color(str(icon_color))
         self.setStyleSheet(self.selected_styleSheet)
-        if self.settings.get_font_size() is not None:
-            if int(self.settings.get_font_size()) != self.current_font_size:
-                self.current_font_size = int(self.settings.get_font_size())
         self.style.set_font_size(self.current_font_size)
         if self.current_language != self.settings.get_language():
             self.change_language(self.settings.get_language())
 
     def change_language(self, lang_name):
-        language_files = {file.stem: file for file in self.settings.language_path.iterdir() if file.suffix == '.qm'}
+        language_files = self.settings.language_files()
         if lang_name in language_files:
             self.trans.load(str(language_files[lang_name]))
             QApplication.instance().installTranslator(self.trans)
@@ -112,7 +102,6 @@ class MainApp(QMainWindow):
         self.ui.login_stackedWidget.setCurrentIndex(1)
         self.ui.home_button.setVisible(True)
         self.is_local = False
-        print(f"is_local : {self.is_local}")
 
     def host_selection(self):
         self.ui.main_tab.setCurrentIndex(0)
@@ -158,6 +147,7 @@ class MainApp(QMainWindow):
     @pyqtSlot()
     def server_edit_selected(self):
         self.ui.login_stackedWidget.setCurrentIndex(3)
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

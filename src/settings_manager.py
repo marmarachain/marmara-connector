@@ -1,24 +1,21 @@
+import os
 from pathlib import Path
 from PyQt5.QtCore import QSettings, QByteArray
 
 
 class SettingsManager:
-    def __init__(self, ini_path=None):
+
+    BASE_DIR = Path(__file__).resolve().parent
+    SETTINGS_INI_PATH = BASE_DIR.parent / "settings.ini"
+    STYLES_PATH = BASE_DIR / "styles"
+    IMAGES_PATH = BASE_DIR / "images"
+    LANGUAGE_PATH = BASE_DIR / "language"
+    APPLICATION_DATA_FOLDER = Path.home() / "Documents" / "MarmaraConnector"
+    APPLICATION_DATA_FOLDER.mkdir(parents=True, exist_ok=True)
+
+    def __init__(self):
         # INI dosyasının konumu
-        base_dir = Path(__file__).resolve().parent
-        if ini_path is None:
-            ini_path = base_dir / "app.ini"
-
-        self.ini_path = ini_path
-        self.styles_path = base_dir / 'styles'
-        self.images_path = base_dir / 'images'
-        self.language_path = base_dir / 'language'
-        self.settings = QSettings(str(ini_path), QSettings.IniFormat)
-
-        self.application_data_folder = (
-            Path.home() / "Documents" / "MarmaraConnector"
-        )
-        self.application_data_folder.mkdir(parents=True, exist_ok=True)
+        self.settings = QSettings(str(self.SETTINGS_INI_PATH), QSettings.IniFormat)
 
     # -------------------------------------------------
     # WINDOW GEOMETRY
@@ -59,8 +56,11 @@ class SettingsManager:
     # -------------------------------------------------
     # PATHS
     # -------------------------------------------------
-    def get_path(self, key, default=""):
-        return self.settings.value(f"paths/{key}", default)
+    def get_path(self, key):
+        path = self.settings.value(f"paths/{key}")
+        if not path:
+            return ""
+        return os.path.normpath(path)
 
     def set_path(self, key, value):
         self.settings.setValue(f"paths/{key}", value)
@@ -69,5 +69,8 @@ class SettingsManager:
     # STYLE FILE
     # -------------------------------------------------
     def read_style(self, style_name):
-        file_path = self.styles_path / style_name
+        file_path = self.STYLES_PATH / style_name
         return file_path.read_text()
+
+    def language_files(self):
+        return {file.stem: file for file in self.LANGUAGE_PATH.glob("*.qm")}
