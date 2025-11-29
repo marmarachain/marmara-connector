@@ -10,7 +10,7 @@ sys.path.append(str(Path(__file__).resolve().parent / "ui" / "generated"))
 from ui.generated.ui_mainwindow import Ui_MainWindow
 from styles.mainwindow_style import MainWindowStyle
 from preferences_dialog import PreferencesDialog
-from settings_manager import SettingsManager
+from config_manager import ConfigManager
 
 
 class MainApp(QMainWindow):
@@ -21,15 +21,15 @@ class MainApp(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.style = MainWindowStyle(self.ui)
-        self.settings = SettingsManager()
-        self.settings.restore_geometry(self)
+        self.config = ConfigManager()
+        self.config.restore_geometry(self)
         # mainApp attributes
         self.os_name = platform.system()
         self.trans = QTranslator(self)
         self.is_local = None
         self.selected_styleSheet = ""
         self.current_language = 'EN'
-        self.current_font_size = int(self.settings.get_font_size())
+        self.current_font_size = int(self.config.get_font_size())
         # Load from settings
         self.load_from_settings()
         # Connect signal & slot
@@ -54,17 +54,17 @@ class MainApp(QMainWindow):
         self.ui.fontsize_minus_button.clicked.connect(self.decrease_fontsize)
 
     def load_from_settings(self):
-        style = str(self.settings.get_style())
+        style = str(self.config.get_style())
         icon_color = 'black' if style == 'light' else '#eff0f1'
-        self.selected_styleSheet = "" if style == "light" else self.settings.read_style(style + '.qss')
+        self.selected_styleSheet = "" if style == "light" else self.config.read_style(style + '.qss')
         self.style.set_icon_color(str(icon_color))
         self.setStyleSheet(self.selected_styleSheet)
         self.style.set_font_size(self.current_font_size)
-        if self.current_language != self.settings.get_language():
-            self.change_language(self.settings.get_language())
+        if self.current_language != self.config.get_language():
+            self.change_language(self.config.get_language())
 
     def change_language(self, lang_name):
-        language_files = self.settings.language_files()
+        language_files = self.config.language_files()
         if lang_name in language_files:
             self.trans.load(str(language_files[lang_name]))
             QApplication.instance().installTranslator(self.trans)
@@ -73,7 +73,7 @@ class MainApp(QMainWindow):
 
     def closeEvent(self, event):
         """Save settings when the window is closed."""
-        self.settings.save_geometry(self)
+        self.config.save_geometry(self)
         super().closeEvent(event)
 
     @pyqtSlot()
@@ -81,14 +81,14 @@ class MainApp(QMainWindow):
         if self.current_font_size <= 20:
             self.current_font_size += 1
             self.style.set_font_size(self.current_font_size)
-            self.settings.set_font_size(self.current_font_size)
+            self.config.set_font_size(self.current_font_size)
 
     @pyqtSlot()
     def decrease_fontsize(self):
         if self.current_font_size >= 9:
             self.current_font_size -= 1
             self.style.set_font_size(self.current_font_size)
-            self.settings.set_font_size(self.current_font_size)
+            self.config.set_font_size(self.current_font_size)
 
     @pyqtSlot()
     def local_selection(self):
@@ -120,10 +120,10 @@ class MainApp(QMainWindow):
         self.ui.actionToolbar.setChecked(visible)
 
     def toggleToolbar(self):
-        self.ui.toolBar.setVisible(self.actionToolbar.isChecked())
+        self.ui.toolBar.setVisible(self.ui.actionToolbar.isChecked())
 
     def open_settings(self):
-        dialog = PreferencesDialog(self.settings)
+        dialog = PreferencesDialog(self.config)
         dialog.setWindowIcon(qta.icon('ph.gear-six'))
         result = dialog.exec_()
         if result == QDialog.Accepted:
